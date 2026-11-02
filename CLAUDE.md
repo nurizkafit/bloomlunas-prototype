@@ -1,0 +1,92 @@
+# BloomLunas core loop prototype
+
+three.js + Vite prototype of the BloomLunas core loop (Plan, Do, Check weekly; Act monthly).
+It is a living spec and a balance testbed for the Unity build. It is not the shipping game.
+
+Read these first:
+- `SPECS.md`: what to build (scope, architecture, classes, data, scene).
+- `MILESTONES.md`: the order of work and the status of each milestone.
+
+## Milestone gate (most important rule)
+
+- Work on ONE milestone at a time: the first milestone in `MILESTONES.md` with status `In progress` or `Approved`.
+- Do not start the next milestone until the user approves it in the chat.
+- When the exit criteria of a milestone pass:
+  1. Run `npm run check`.
+  2. Set the milestone status to `Review` in `MILESTONES.md`. Fill its "Result" lines.
+  3. Commit. Then stop and give the user a short report: what works, how to see it, open issues.
+- Only the user sets a milestone to `Done` and the next one to `Approved`.
+- If a task needs a design decision that `SPECS.md` does not answer, stop and ask. Do not invent game rules.
+
+## Architecture rules
+
+- Keep data, logic and view in separate classes.
+  - `data/*.json`: all content and numbers. No numbers in code (use `BalanceConfig`).
+  - `src/model/`: plain data classes. No three.js, no DOM.
+  - `src/systems/`, `src/phases/`, `src/core/`: logic. No three.js, no DOM.
+  - `src/views/`: three.js and DOM only. A view reads `GameState` and sends intents. A view never changes `GameState`.
+- Logic and view talk only through `EventBus` (`intent.*` from views, `*.changed` / `phase.*` from logic).
+- Logic must run headless in Node (`npm run sim`). If an import breaks the headless run, the layer rule is broken.
+- Class and field names match `SPECS.md`. The Unity dev maps them one to one to C#. Do not rename without updating `SPECS.md`.
+- All effects of activities, events and investments are `EffectData` lists, applied by `EffectApplier`.
+
+## Folder layout
+
+```
+CLAUDE.md  SPECS.md  MILESTONES.md
+index.html  package.json  vite.config.js
+data/          BalanceConfig.json, activities/, locations/, entities/, items/, events/, costs/, investments/, skills/, endings/
+src/main.js    browser entry: builds GameManager + views
+src/core/      GameManager, PhaseMachine, EventBus, ContentDB, SaveSystem
+src/model/     GameState, Calendar, Wallet, Inventory, DebtAccount, SkillBook, WeekPlan, Ledger
+src/systems/   TimeSystem, ActionRunner, EffectApplier, EconomySystem, EventSystem, PlanValidator, EndingChecker
+src/phases/    Phase, PlanPhase, DoPhase, CheckPhase, ActPhase, EndingPhase
+src/views/town/  TownView, AssetSlot, Avatar, PathGraph
+src/views/ui/    PlannerBookView, ActionMenuView, HudView, EventCardView, RecapView, MonthEndView, EndingView, DevOverlay
+src/sim/       Bot, runMonths.js (headless CLI), Testbed (browser panel), csv.js
+assets/models/ <slot id>.glb (optional; greybox shows when missing)
+tests/         *.test.js (Vitest, logic only)
+```
+
+## Commands
+
+- `npm run dev`: Vite dev server.
+- `npm run sim -- --months 1 --runs 100`: headless bot runs, prints a summary, writes `out/sim.csv`.
+- `npm test`: Vitest (logic only).
+- `npm run check`: `npm test` + one headless month + build.
+
+## Conventions
+
+- Plain JavaScript (ES modules) with JSDoc types. No framework for the UI (DOM + CSS).
+- One class per file. File name = class name.
+- Pin dependency versions in `package.json` (exact versions).
+- Placeholder numbers come from `SPECS.md` section 8. Mark a new placeholder with `"_placeholder": true` in its JSON.
+- Docs and UI text: short sentences, simple words (ASD-STE100 style).
+- Commit after each completed task, with a clear message. Do not push unless the user asks.
+
+## Skills, plugins and tools
+
+Project rules in this file win over skill defaults. Example: a skill may scaffold TypeScript or its own folders; use plain JS and the layout above.
+
+Project skills (`.claude/skills/`, copied, see `THIRD_PARTY_NOTICES.md`):
+
+| Skill | Use it in |
+| --- | --- |
+| prototype-fast | All milestones: keep scope small |
+| threejs-gameplay-systems | M1, M3: core loop, entities, camera, input |
+| threejs-scene-setup, threejs-materials-lighting, camera-systems | M3: town scene, isometric camera, day light |
+| threejs-gltf-loading | M3: `AssetSlot` model loading |
+| threejs-game-ui-designer, game-ui-ux | M2, M4, M5, M6: Planner Book, HUD, cards, recap, month-end, testbed |
+| save-systems | M5: `SaveSystem` |
+| threejs-debug-profiler | Any blank canvas, render or performance bug |
+| threejs-qa-release | M7: playtest QA, bot playtests, screenshots |
+| unity-scriptableobjects, unity-csharp-scripting | Check that data and class names map cleanly to Unity (no Unity code in this repo) |
+
+Plugins (Claude Code asks to install them when you trust this folder):
+- `frontend-design` (Anthropic): UI design for DOM screens.
+- `caveman`: short replies to save usage. Turn it off with `/plugin` if a report becomes unclear.
+
+MCP server `polyfork` (`.mcp.json`): search low-poly assets (`search_assets`, `get_asset`, `preview_scene`).
+- Use it only from M3, and only to fill an `AssetSlot` with a stand-in model. The greybox stays the default.
+- Write the chosen asset id in `data/locations/*.json` (`polyforkAssetId`), not in code.
+- Licence: commercial use allowed; do not redistribute asset files. Do not commit downloaded paid files.
