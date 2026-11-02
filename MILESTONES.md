@@ -24,10 +24,10 @@ Goal: the folder layout from `CLAUDE.md` exists and runs.
 Tasks:
 - [ ] `package.json` with exact versions: `three`, `vite`, `vitest`. Scripts: `dev`, `build`, `test`, `sim`, `check`.
 - [ ] Folder layout from `CLAUDE.md`, with empty class files and JSDoc headers.
-- [ ] `EventBus` (on, off, emit; typed message names from `SPECS.md` §5).
+- [ ] `EventBus` (on, off, emit; typed message names from `SPECS.md` §7).
 - [ ] `PhaseMachine` + `Phase` base with empty `PlanPhase`, `DoPhase`, `CheckPhase`, `ActPhase`, `EndingPhase` that only log enter and exit.
 - [ ] `ContentDB` loads `data/` in Node and in the browser.
-- [ ] `data/BalanceConfig.json` with the placeholder values from `SPECS.md` §8.
+- [ ] `data/BalanceConfig.json` with the placeholder values from `SPECS.md` §9.
 - [ ] npm scripts `graph:update` and `graph:query`; first graph build with `/graphify .` (see `CLAUDE.md`).
 
 Exit criteria:
@@ -44,17 +44,19 @@ Result: _(Claude fills this in at Review)_
 Goal: one month plays in Node with a bot, with no view.
 
 Tasks:
-- [ ] Model classes: `GameState`, `Calendar`, `Wallet`, `Inventory`, `DebtAccount`, `SkillBook`, `WeekPlan`, `Ledger`.
-- [ ] `TimeSystem`: clock moves only when an action runs; energy, fatigue, day end.
-- [ ] `EffectApplier` for every effect type in `SPECS.md` §6.
-- [ ] `ActionRunner`: rule checks (opening hours, materials, energy, gold), time cost, effects, ledger lines, XP, plan match bonus.
-- [ ] `EconomySystem`: hidden real price inside the forecast range; shop customers; buy and sell.
-- [ ] Data files for the prototype activities, locations, items (`SPECS.md` §6).
+- [ ] Model classes: `GameState`, `Calendar`, `Wallet`, `Inventory` (variants, age), `DebtAccount`, `SkillBook`, `Relationships`, `WeekPlan`, `Ledger`.
+- [ ] `TimeSystem`: clock moves only when an action runs; `ENERGY_MAX`, energy cost per action, fatigue, late wake-up, day end (`SPECS.md` §5).
+- [ ] `EffectApplier` for every effect type in `SPECS.md` §8.
+- [ ] `ActionRunner`: runs one action inside an activity (`SPECS.md` §4): rule checks (opening hours, materials, energy, gold), time and energy cost, effects, ledger lines, XP, plan match bonus.
+- [ ] `ProductionSystem` + `QualityCalculator`: 4 jam recipes, quality tiers, shelf life and spoilage, Sun drying and Grinding (`SPECS.md` §6).
+- [ ] `DebtSystem`: riba loan with monthly compound interest and hidden fee; unpaid amount becomes debt up to `DEBT_LIMIT`.
+- [ ] `EconomySystem`: hidden real price inside the forecast range; quality price multiplier; relationship price modifier; shop customers; buy and sell.
+- [ ] Data files for the prototype activities, actions, locations, products, recipes, materials, debt and quality config (`SPECS.md` §8).
 - [ ] `Bot` that follows a simple fixed plan. `runMonths.js` prints the ledger.
 
 Exit criteria:
 - [ ] `npm run sim -- --months 1 --runs 1` prints a week-by-week ledger and the end gold and debt.
-- [ ] Unit tests for `ActionRunner`, `EffectApplier`, `TimeSystem`.
+- [ ] Unit tests for `ActionRunner`, `EffectApplier`, `TimeSystem`, `QualityCalculator` (match the examples in docs `systems/production.md`), `DebtSystem`.
 - [ ] No three.js or DOM import under `src/model`, `src/systems`, `src/phases`, `src/core`.
 
 Result:
@@ -68,7 +70,7 @@ Goal: the player builds a week plan in the browser, on real `GameState`.
 Tasks:
 - [ ] Port the Planner Book v2 (`prototypes/plan-phase-book/index.html`) into `PlannerBookView`. Keep look and interactions.
 - [ ] Move its constants to `BalanceConfig`, its card types to `ActivityData`, its plan check to `PlanValidator`.
-- [ ] Card names follow the GDD (`SPECS.md` §7).
+- [ ] Card names and recipes follow the docs (`SPECS.md` §10).
 - [ ] Tabs read the current week and real data, not week 2 placeholders.
 - [ ] "Start the week" sends `intent.lockPlan`; `PlanPhase` writes `WeekPlan` and budget slots.
 
@@ -88,12 +90,12 @@ Tasks:
 - [ ] `TownView`: isometric orthographic camera, pan and zoom limits, ground, paths, light by time of day.
 - [ ] `AssetSlot`: greybox per slot id; loads `assets/models/<slot id>.glb` if the file exists; state switch.
 - [ ] `PathGraph` + `Avatar` walk between location door points.
-- [ ] `ActionMenuView` (click a location → its actions), `HudView` (day, clock, gold, energy).
+- [ ] `ActionMenuView` (click a location → its activities → their actions), `CraftView` (pick recipe and material variants; shows input cost next to expected sell price and quality tier), `HudView` (day, clock, gold, energy, fatigue).
 - [ ] Planned cards show in the HUD; plan match bonus shows on completion.
 - [ ] Change plan only for days not started (`SPECS.md` §4).
 
 Exit criteria:
-- [ ] Play Mon to Sun with Open shop, Sell to organization, Hand craft, Gather/Harvest, Buy, Commission, Rest, 1 service visit.
+- [ ] Play Mon to Sun with Open shop, Sell to organization, Buy, Craft, Sun drying, Grinding, Explore (City zone), Commission, Rest, 1 service visit.
 - [ ] Replace one greybox with a test `.glb` by file name, with no code change.
 
 Result:
@@ -123,7 +125,7 @@ Result:
 Goal: the month closes; the game can end; progress saves.
 
 Tasks:
-- [ ] `ActPhase` + `MonthEndView`: month summary, pay debt (minimum or more), pay utilities, 1 investment (Upgrade), book 1 service appointment for next month.
+- [ ] `ActPhase` + `MonthEndView`: month summary, riba interest and fees applied, pay debt (minimum or more), pay utilities, 1 investment (Upgrade), book 1 service appointment for next month.
 - [ ] Unpaid amount becomes new debt up to `DEBT_LIMIT`.
 - [ ] `EndingChecker` + `EndingView`: Good and Bad endings from `EndingData`.
 - [ ] `SaveSystem`: auto-save `GameState` as JSON at each phase end; load on start.

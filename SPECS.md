@@ -1,25 +1,30 @@
 # BloomLunas prototype specs
 
-Source of truth for game rules: the interactive GDD (1 Nov 2026). Plan doc: https://claude.ai/artifact/1VDXa751o9x39pXZkQhz17
-If this file and the GDD differ, the GDD wins. Ask the user, then update this file.
+Source of truth for game rules: the BloomLunas Docs repo `nurizkafit/bloomlunas-docs` (site: https://bloomlunas-docs.nurizka.workers.dev/, team password).
+Paths below like `docs:pages/products/salep.md` mean `content/pages/products/salep.md` in that repo.
+If this file and the docs differ, the docs win. Ask the user, then update this file.
+Last aligned with the docs: 2 Nov 2026.
 
 ## 1. Purpose and scope
 
 - Plays one full PDCA month (`JAM_MONTHS` = 1). Plan, Do, Check each week; Act at month-end.
 - Readers: the Unity dev (logic structure) and the technical artist (scene, asset slots, states).
 - Balance testbed: logic runs headless with a bot; results export to CSV for the balancing sheet.
+- Scope follows the Jam column of `docs:gdd/19-scope-and-plans.md` and the pages tagged `Jam`.
 
 | Feature | Prototype | Full scope (extension point only) |
 | --- | --- | --- |
-| Do activities | Open shop, Sell to organization, Hand craft, Gather/Harvest (wild spots), Buy, Commission (guild quest board), Rest, Respond to event, 1 organization visit (service) | Explore, Plant, Farm harvest, Run machine, Upkeep, Family time |
-| Entities | Shop, Market, 4 guilds (Merchant, Apothecary, Artisan/Smith, Adventurer) for buy, sell, quest board; gathering area | City Hall, Eagle Brigade, family, community, full guild services |
-| Events | Scheduled + random, small set (about 6) | 4 types, level scaling |
-| Act | Pay debt, pay utilities, 1 investment (Upgrade), book 1 service appointment | Permit, Training, refinancing |
-| Costs | 1 weekly (living), 1 monthly (utilities) | All |
-| Products | Jamu, Salep | Full list |
-| Skills | XP through use; 1 path active | Sun, Moon, Earth; training |
-| Endings | Good, Bad | 4 endings, unlimited mode |
-| Not in prototype | Audio, localization, mobile layout, accessibility settings | |
+| Activities (docs:pages/activities) | Open shop, Sell to organization, Buy, Craft (Brew, Concoct), Sun drying, Grinding, Explore (City zone only), Commission, Organization visit (1 service), Rest, Respond to event | Explore outside the City zone (permit), Farm, Run machine, Oil pressing, Distilling, Infusing, Fermenting, Family time, Blend line |
+| Products (docs:gdd/09a) | Fresh jamu, Salep; 2 jam recipes each | 9 types, 2 to 4 recipes each |
+| Materials (docs:gdd/09b) | 9 Common: turmeric, kencur, ginger, lemongrass, tamarind, palm sugar, rice, coconut oil, beeswax | 32 materials, 4 rarity tiers |
+| Entities | Home (shop, atelier, drying yard), Market, 4 guilds (Merchant, Apothecary, Artisan/Smith, Adventurer) for buy, sell, quest board; gathering area | City Hall, Eagle Brigade, extended family, community, full guild services |
+| Events | Scheduled + random, small set | Predicted, unexpected, level scaling |
+| Debt | Riba loan: compound interest + hidden fees (docs:pages/debt/riba-loan.md) | Flat-rate Sharia financing, refinancing, new loans |
+| Act | Pay debt, pay utilities, 1 investment (Upgrade), book 1 service appointment | Permit, Training |
+| Costs | `WEEKLY_EXPENSES` (Check), `MONTHLY_UTILITIES` (Act) | All costs |
+| Skills | XP through use; Moon skill level drives craft quality | Sun, Moon, Earth paths; training |
+| Endings | Good, Bad | True, Hidden Bad, unlimited mode |
+| Not in prototype | Audio, localization, mobile layout. Accessibility basics (text size, colorblind-safe colors) are jam scope but not prototype scope | |
 
 ## 2. Architecture
 
@@ -30,7 +35,7 @@ Logic --reads/writes--> Model (GameState)        Logic --reads--> Data (ContentD
 View --reads only--> Model
 ```
 
-## 3. Phase machine
+## 3. Phase machine (docs:gdd/06-core-loop.md, docs:pages/loop/)
 
 ```
 PlanPhase -> DoPhase (<-> event card) -> CheckPhase -> [last week of month?]
@@ -40,25 +45,79 @@ PlanPhase -> DoPhase (<-> event card) -> CheckPhase -> [last week of month?]
 
 | Phase | enter() | Player input | exit() writes |
 | --- | --- | --- | --- |
-| PlanPhase | Load forecast, ledger, public schedule, last notes | Place cards, set budget slots (expenses, purchases, buffer) | WeekPlan, budget slots |
-| DoPhase | Build week event queue; avatar at home | Pick next action; answer event cards | Ledger lines, XP, plan match bonus, lost cards |
-| CheckPhase | Sum the week; pay weekly living cost | Write a note | Notes, plan vs actual |
-| ActPhase | Sum the month; show debt and bills | Pay debt and utilities; pick investment; book appointment | Debt, investments, appointments |
+| PlanPhase | Load forecast, ledger, public schedule, last notes | Place activity cards, set budget slots (expenses, purchases, buffer) | WeekPlan, budget slots |
+| DoPhase | Build week event queue; avatar at home | Start each activity; run its actions; answer event cards | Ledger lines, XP, plan match bonus, lost cards |
+| CheckPhase | Sum the week; pay `WEEKLY_EXPENSES` | Write a note | Notes, plan vs actual, XP per path |
+| ActPhase | Sum the month; apply riba interest and fees; show debt and bills | Pay debt and utilities; pick investment; book appointment | Debt, investments, appointments |
 | EndingPhase | Show ending text | Restart | Nothing |
 
-## 4. Do rules (GDD, decided 1 Nov 2026)
+## 4. Activities and actions
 
-- The player picks each action from a menu. The avatar walks there on its own. The avatar never runs planned cards on its own.
-- Each action uses time and energy (Rest restores). When the player does nothing, time does not move.
+Two levels (docs:pages/activities, docs:pages/actions):
+- An **activity** is a card on the Plan calendar. It has a location, a category, a skill path and a list of actions.
+- An **action** is one turn inside an activity. It uses time (`ACTION_TIME_<ACTION>`) and energy (`ENERGY_COST_<ACTION>`). The player picks each action.
+
+| Activity | Location | Actions inside (jam) | Skill XP |
+| --- | --- | --- | --- |
+| Open shop | Home shop | travel, serve-customer, restock-shelf | Sun |
+| Sell to organization | A guild | travel, sell-item | Sun |
+| Buy | Market or a guild | travel, buy-item | Sun |
+| Craft | Home atelier | travel, prepare, brew, concoct, package | Moon (Cooking, Alchemy) |
+| Sun drying | Home drying yard | travel, start-batch, collect-batch (passive, days, needs sun) | Moon (Cooking) [Proposal] |
+| Grinding | Home atelier | travel, grind | Moon (Crafting) [Proposal] |
+| Explore (City zone) | Gathering area | travel, gather-harvest, pick-response | Earth |
+| Commission | Guild quest board, then job location | travel, take-quest, hand-in-quest | Path of the job |
+| Organization visit | Guild (1 service visit) | travel, service | Depends |
+| Rest | Home | travel, sleep (ends the day) | None |
+| Respond to event | Where the event is | pick-response | Depends |
+
+## 5. Do rules (docs:pages/loop/do.md, docs:pages/systems/time-and-energy.md, docs:pages/systems/activity-cards.md)
+
+- The player starts each activity on purpose. The avatar walks there on its own. The avatar never runs planned cards on its own.
+- Every action is a turn. Idle time does not move the clock. Day runs `DAY_START_HOUR` to `DAY_END_HOUR`.
+- Energy: start each day with up to `ENERGY_MAX`. Every action except Rest uses `ENERGY_COST_<ACTION>`. At 0 energy the player can only rest. Rest restores `ENERGY_REST_RECOVERY` and ends the day.
+- Fatigue: energy below `FATIGUE_THRESHOLD` or work after `DAY_END_HOUR` gives fatigue: `LATE_WAKE_CHANCE` and `FATIGUE_EFFICIENCY_PENALTY`.
 - Plan match bonus: same activity (`PLAN_MATCH_XP_BONUS_ACTIVITY`), + same day (`_DAY`), + same time slot (`_TIME`).
 - An event that uses the time of a planned card removes that card.
 - Change the plan only for days that have not started.
 - Appointments have fixed times. Late or missed: `APPOINTMENT_MISS_RELATIONSHIP_PENALTY`.
+- Relationship points `RELATIONSHIP_<ORG>` change guild prices and rates (`RELATIONSHIP_PRICE_MODIFIER`). Gain: completed Commissions. Loss: missed appointment.
 - Each action writes gold in or out to the ledger at once. Check shows the weekly total.
-- Buy and sell at an organization only in its opening hours. Market and shop need no appointment.
-- Commission (quest board job) has a deadline (`QUEST_DEADLINE_DAYS`); it gives income and relationship points.
+- Buy and sell at a guild only in its opening hours (`<ENTITY>_OPEN_HOURS`). Market and shop need no appointment.
+- Commission has a deadline (`QUEST_DEADLINE_DAYS`).
 
-## 5. EventBus messages
+## 6. Production, quality and shelf life (docs:pages/systems/production.md, docs:pages/systems/materials.md)
+
+Recipe slots: main herb (weight x3), aroma (x1), sweetener (x1), carrier (x1). "-" = empty slot. Water is free.
+
+| Product | Line (Moon skill) | Shelf life | Jam recipes (main herb / aroma / sweetener / carrier) |
+| --- | --- | --- | --- |
+| Fresh jamu | Brew (Cooking) | Short | Kunyit asam: turmeric (Fresh) / tamarind (Paste) / palm sugar (Block) / - |
+| | | | Beras kencur: kencur (Fresh) / ginger (Fresh) / palm sugar (Block) / rice (Grain) |
+| Salep | Concoct (Alchemy) | Long | Turmeric salep: turmeric (Fresh) / - / - / coconut oil (Oil) + beeswax (Block) |
+| | | | Lemongrass balm: lemongrass (Fresh) / - / - / coconut oil (Oil) + beeswax (Block) |
+
+Amounts and craft time per recipe: TBD in the docs. Use placeholders (§9).
+
+Quality (decided 2 Nov 2026, placeholder numbers):
+- Score = weighted average of material points x skill multiplier. The score picks the tier. The player sees only the tier.
+- Material points: Common 50, Rare 70, Epic 90, Legendary 100, Spoiled 20.
+- Skill multiplier by level 1–10: 50, 75, 100, 120, 140, 160, 180, 195, 210, 225 %.
+- Tiers (score from → price multiplier): Failed <25 (no sale, compost) · Amateur 25 → x0.75 · Standard 50 → x1.0 · Fine 100 → x1.25 · Premium 150 → x1.5 · Masterwork 200 → x2.0.
+- The craft screen shows input cost next to expected sell price (gross profit choice).
+
+Material variants and shelf life:
+
+| Variant | Made by | Shelf life |
+| --- | --- | --- |
+| Fresh | Gather/harvest, buy | Short |
+| Dried | Sun drying | Long |
+| Powder | Grinding | Long |
+| Spoiled | Fresh stock that is too old | Quality points 20 |
+
+Shelf life lengths in days: TBD in the docs (placeholder §9).
+
+## 7. EventBus messages
 
 | Message | Sender | Payload |
 | --- | --- | --- |
@@ -66,46 +125,77 @@ PlanPhase -> DoPhase (<-> event card) -> CheckPhase -> [last week of month?]
 | `intent.placeCard` / `intent.moveCard` / `intent.removeCard` | PlannerBookView | card, day, start, settings |
 | `intent.setBudget` | PlannerBookView | expenses, purchases, buffer |
 | `intent.lockPlan` | PlannerBookView | none |
-| `intent.runAction` | ActionMenuView | activityId, settings, locationId |
+| `intent.startActivity` | ActionMenuView | activityId, locationId |
+| `intent.runAction` | ActionMenuView | actionId, settings (for example recipe and chosen materials) |
 | `intent.respondEvent` | EventCardView | eventId, responseIndex |
 | `intent.writeNote` | RecapView | text |
 | `intent.payDebt` / `intent.payUtilities` / `intent.invest` / `intent.bookAppointment` | MonthEndView | amount or id |
 | `phase.entered` / `phase.exited` | PhaseMachine | phase name, calendar |
-| `clock.changed` | TimeSystem | day, minute, energy |
+| `clock.changed` | TimeSystem | day, minute, energy, fatigue |
 | `ledger.changed` | ActionRunner, EffectApplier | line |
-| `inventory.changed`, `skill.changed`, `debt.changed` | EffectApplier | delta |
-| `action.started` / `action.completed` / `action.refused` | ActionRunner | activity, reason, planMatch |
+| `inventory.changed`, `skill.changed`, `debt.changed`, `relationship.changed` | EffectApplier | delta |
+| `action.started` / `action.completed` / `action.refused` | ActionRunner | action, reason, planMatch, quality |
 | `event.fired` / `event.resolved` | EventSystem | event, response |
 | `plan.validated` | PlanValidator | problems, warnings, forecast |
 | `game.ended` | EndingChecker | endingId |
 
-## 6. Data files (data/*.json → Unity ScriptableObjects, same field names)
+## 8. Data files (data/*.json → Unity ScriptableObjects, same field names)
 
 | Type | Main fields | Prototype files |
 | --- | --- | --- |
-| BalanceConfig | all variables (§8) | 1 |
-| ActivityData | id, category, skillPath, locationIds, settings[] (option → duration, cost, inputs, outputs), canMiss, importance, needsAppointment, needsPermit | 9 |
-| LocationData | id, entityId, openHours per weekday, view (exterior, interior), assetSlotId, door point, walkTimes | 7 |
+| BalanceConfig | all variables (§9), names as in docs:gdd/08-economy-and-variables.md | 1 |
+| ActivityData | id, category, locationIds, actionIds[], skillPath, canMiss, importance, needsAppointment, needsPermit, build | 11 |
+| ActionData | id, timeCost, energyCost, inputs, outputs, effects[] | about 20 |
+| LocationData | id, entityId, openHours per weekday, view (exterior, interior), assetSlotId, door point, walkTimes, polyforkAssetId? | 9 |
 | EntityData | id, type (organization, people), services[], buys[], sells[], questBoard, relationshipStart | 6 |
-| ProductData / MaterialData | id, basePrice, forecast lo/hi, volatility, recipe (inputs → outputs) | 2 products, 4 materials |
+| ProductData | id, line, moonSkill, shelfLifeDays, basePrice, forecast lo/hi, recipes[] | 2 |
+| RecipeData | id, productId, slots {main, aroma, sweetener, carrier[]} (materialId + variant), output count, craft time | 4 |
+| MaterialData | id, tier, role, plantPart, variants[] (id, shelfLifeDays), baseCost, forecast lo/hi | 9 |
 | EventData | id, type (scheduled, random), source, trigger (day, chance, level), text, responses[] (label, cost, effects) | about 6 |
 | EffectData | type (gold, item, xp, relation, energy, debt, time), target, amount | inside other types |
 | CostData | id, period (weekly, monthly), amount, paidIn (Check, Act) | 2 |
+| DebtData | id, kind (riba, flat), principal, monthlyRate, hiddenFees[], minPayment, limit | 1 (riba) |
 | InvestmentData | id, branch (permit, upgrade, training), price, requirement, effects[] | 1 (Upgrade) |
-| SkillPathData | path, levels, xpPerLevel, unlocks | 1 active |
+| QualityConfig | material points, skill multipliers, tier thresholds, price multipliers | 1 |
+| SkillPathData | path, sub-skills, levels, xpPerLevel | 3 (only Moon affects quality in the prototype) |
 | EndingData | id, rule, text | Good, Bad |
 
-Prototype content (names from the GDD and the Planner Book):
-- Products: Jamu, Salep. Materials: Turmeric, Ginger, Beeswax, Coconut oil.
-- Recipes: Jamu batch = 2 Turmeric + 1 Ginger → 6 Jamu, 3 h. Salep batch = 1 Turmeric + 1 Beeswax + 1 Coconut oil → 4 Salep, 4 h.
-- Locations: `loc_home_shop`, `loc_market`, `loc_merchant_guild`, `loc_apothecary_guild`, `loc_artisan_guild`, `loc_adventurer_guild`, `loc_gather_area`.
+## 9. Placeholder values (not balanced)
 
-## 7. Planner Book port
+The docs list these variables as TBD. Use these values in `BalanceConfig.json` with `"_placeholder": true`, so the testbed can tune them.
+
+| Variable | Placeholder | Source |
+| --- | --- | --- |
+| `WEEKS_PER_MONTH` | 4 | Core Loop doc |
+| `JAM_MONTHS` | 1 | Scope |
+| `DAY_START_HOUR` / `DAY_END_HOUR` | 7 / 19 | Planner Book |
+| `GOLD_START` | 240 | Planner Book |
+| `WEEKLY_EXPENSES` | 40 | Planner Book |
+| `MONTHLY_UTILITIES` | 120 | Planner Book (shop rent) |
+| `DEBT_START` | 3000 | placeholder |
+| `DEBT_MIN_PAYMENT` | 300 | Planner Book (installment) |
+| `DEBT_INTEREST_RATE` | 2 % per month, compound on unpaid balance | placeholder |
+| `HIDDEN_FEE_<TYPE>` | 1 fee: `HIDDEN_FEE_LATE` 25 | placeholder |
+| `DEBT_LIMIT` | 4500 | placeholder |
+| `ENERGY_MAX` / `ENERGY_REST_RECOVERY` | 100 / 100 | placeholder |
+| `ENERGY_COST_<ACTION>` | 10 (Explore actions 20) | placeholder |
+| `FATIGUE_THRESHOLD` / `LATE_WAKE_CHANCE` / `FATIGUE_EFFICIENCY_PENALTY` | 20 / 0.3 / 0.25 | placeholder |
+| `ACTION_TIME_<ACTION>` | 30 to 120 min | placeholder |
+| `PRICE_FRESH_JAMU` / `PRICE_SALEP` | 6 / 12 (forecast 5–8 / 9–14) | Planner Book |
+| `COST_<MATERIAL>` | 2 to 9 per unit | placeholder |
+| Shelf life (days) | Fresh material 3, Fresh jamu 2, Salep 28, Dried / Powder 28 | placeholder |
+| Recipe output / craft time | Fresh jamu 6 per batch, 3 h; Salep 4 per batch, 4 h | Planner Book |
+| `PLAN_MATCH_XP_BONUS_ACTIVITY` / `_DAY` / `_TIME` | 1 / 2 / 3 | placeholder |
+| `RELATIONSHIP_PRICE_MODIFIER` | 2 % per level | placeholder |
+| `QUEST_DEADLINE_DAYS` | 7 | placeholder |
+| `EVENTS_PER_WEEK_MIN` / `_MAX` | 1 / 2 | Docs (early levels) |
+
+## 10. Planner Book port
 
 | Planner Book part | Goes to |
 | --- | --- |
-| Constants (DAY_START, DAY_END, NIGHT_END, WEEKLY_EXPENSES, MONTHLY_BILLS) | BalanceConfig |
-| 6 card types with settings | ActivityData |
+| Constants | BalanceConfig (docs names: `GOLD_START`, `WEEKLY_EXPENSES`, `MONTHLY_UTILITIES`) |
+| 6 card types with settings | ActivityData (names from §4) |
 | Plan state (placed cards, slots, test notes) | WeekPlan, Wallet |
 | Plan check (problems, warnings, forecast) | PlanValidator |
 | Market forecast, price history | EconomySystem + item data |
@@ -114,27 +204,9 @@ Prototype content (names from the GDD and the Planner Book):
 | Review modal, "Start the week" | PlanPhase.exit() → DoPhase |
 | Spec and Sheet overlays | DevOverlay |
 
-Card names: Sell → Open shop; Craft → Hand craft; Gather → Gather/Harvest; Errand (clinic order) → Organization visit (service); Errand (quest board) → Commission; add Sell to organization.
+Card renames: Sell → Open shop; Craft → Craft (recipe picks Brew or Concoct); Gather → Explore (City zone); Errand (clinic order) → Organization visit (service); Errand (quest board) → Commission. Add Sell to organization, Sun drying, Grinding. Jamu → Fresh jamu. Recipes and materials from §6, not from the Planner Book.
 
-## 8. Placeholder values (not balanced)
-
-| Variable | Value | Source |
-| --- | --- | --- |
-| WEEKS_PER_MONTH | 4 | Core Loop doc |
-| JAM_MONTHS | 1 | GDD scope |
-| DAY_START_HOUR / DAY_END_HOUR / NIGHT_END_HOUR | 7 / 19 / 23 | Planner Book |
-| START_GOLD | 240 | Planner Book |
-| START_MATERIALS | Turmeric 4, Ginger 2, Beeswax 1, Coconut oil 1 | Planner Book |
-| START_PRODUCTS | Jamu 3, Salep 1 | Planner Book |
-| WEEKLY_LIVING_COST | 40 | Planner Book |
-| MONTHLY_UTILITIES | 120 | Planner Book (shop rent) |
-| DEBT_MIN_PAYMENT | 300 | Planner Book (installment) |
-| DEBT_START, DEBT_LIMIT, interest or flat fee | TBD: ask the user | GDD |
-| Forecast ranges | Jamu 5–8, Salep 9–14, Turmeric 3–5, Ginger 4–7, Beeswax 8–12, Coconut oil 5–8 | Planner Book |
-| EVENTS_PER_WEEK_MIN / MAX | 1 / 2 | GDD (early levels) |
-| PLAN_MATCH_XP_BONUS_* , ENERGY, QUEST_DEADLINE_DAYS | TBD: use 1 / 2 / 3, 100, 7 and mark `_placeholder` | — |
-
-## 9. Town scene and asset slots
+## 11. Town scene and asset slots
 
 - Isometric orthographic camera; pan and zoom limits; click-only input.
 - 1 unit = 1 m; Y up; model pivot at ground centre, facing +Z.
@@ -144,6 +216,8 @@ Card names: Sell → Open shop; Craft → Hand craft; Gather → Gather/Harvest;
 | Slot id | Greybox | States |
 | --- | --- | --- |
 | loc_home_shop | box + roof | open, closed, busy |
+| int_home_atelier | room box | idle, crafting |
+| loc_home_drying_yard | flat racks | empty, drying, ready |
 | loc_market | low wide box | day, night |
 | loc_merchant_guild, loc_apothecary_guild, loc_artisan_guild, loc_adventurer_guild | tall box | open, closed |
 | loc_gather_area | green plane + cones | full, gathered |
@@ -151,28 +225,29 @@ Card names: Sell → Open shop; Craft → Hand craft; Gather → Gather/Harvest;
 | chr_customer | small capsule | walk, buy |
 | prop_event_marker | floating diamond | idle, alert |
 | env_ground, env_paths, env_sky | planes | day, evening, night |
-| int_shop | room box | craft, sell, rest |
 
-## 10. Class catalog (JS → Unity)
+## 12. Class catalog (JS → Unity)
 
 | Class | Layer | Unity form |
 | --- | --- | --- |
 | GameManager | Logic | MonoBehaviour singleton |
 | PhaseMachine, Phase + 5 subclasses | Logic | C# State pattern |
-| GameState, Calendar, Wallet, Inventory, DebtAccount, SkillBook, WeekPlan, Ledger | Model | [Serializable] classes → JSON |
-| TimeSystem, ActionRunner, EconomySystem, EventSystem, EndingChecker | Logic | C# services |
-| EffectApplier, PlanValidator | Logic | C# static classes |
+| GameState, Calendar, Wallet, Inventory (with variants and age), DebtAccount, SkillBook, Relationships, WeekPlan, Ledger | Model | [Serializable] classes → JSON |
+| TimeSystem (energy, fatigue), ActionRunner, EconomySystem, ProductionSystem (recipes, quality, spoilage), DebtSystem (riba interest, fees), EventSystem, EndingChecker | Logic | C# services |
+| EffectApplier, PlanValidator, QualityCalculator | Logic | C# static classes |
 | EventBus | Glue | C# events or ScriptableObject event channels |
 | ContentDB | Data | Resources or Addressables lookup |
 | TownView, AssetSlot, Avatar | View | Town scene, prefabs, Cinemachine |
-| PlannerBookView, ActionMenuView, HudView, EventCardView, RecapView, MonthEndView, EndingView | View | UI screens |
+| PlannerBookView, ActionMenuView, CraftView, HudView, EventCardView, RecapView, MonthEndView, EndingView | View | UI screens |
 
-## 11. Extension points for full scope
+## 13. Extension points for full scope
 
-Do not change for growth: the `Phase` interface, the `GameState` shape (add fields only), `EventBus` message names, the `EffectData` contract.
-New activities, events, investments, skills, endings = new data files. New rules = small new system classes (for example MachineSystem, TutorialDirector, a DebtAccount subclass for flat-rate financing).
+Do not change for growth: the `Phase` interface, the `GameState` shape (add fields only), `EventBus` message names, the `EffectData` contract, the activity → action model.
+New activities, actions, products, recipes, materials, events, investments, skills, endings = new data files. New rules = small new system classes (for example MachineSystem, FarmSystem, TutorialDirector, a flat-rate `DebtAccount` subclass for Sharia financing and refinancing).
 
-## 12. Open questions
+## 14. Open questions
 
-- DEBT_START, DEBT_LIMIT and the debt fee model.
+- Real values for all TBD variables (docs:gdd/08-economy-and-variables.md). The prototype uses §9 until then.
+- Recipe amounts and craft times (docs say TBD).
+- Flat-rate Sharia financing in the jam build: TBD in the docs.
 - Balancing sheet link (for the CSV import).

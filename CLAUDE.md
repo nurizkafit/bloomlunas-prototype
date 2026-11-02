@@ -16,7 +16,7 @@ Read these first:
   2. Set the milestone status to `Review` in `MILESTONES.md`. Fill its "Result" lines.
   3. Commit. Then stop and give the user a short report: what works, how to see it, open issues.
 - Only the user sets a milestone to `Done` and the next one to `Approved`.
-- If a task needs a design decision that `SPECS.md` does not answer, stop and ask. Do not invent game rules.
+- If a task needs a design decision that `SPECS.md` does not answer, check the BloomLunas Docs repo (`nurizkafit/bloomlunas-docs`, the source of truth). If the docs do not answer it either, stop and ask. Do not invent game rules.
 
 ## Architecture rules
 
@@ -35,14 +35,14 @@ Read these first:
 ```
 CLAUDE.md  SPECS.md  MILESTONES.md
 index.html  package.json  vite.config.js
-data/          BalanceConfig.json, activities/, locations/, entities/, items/, events/, costs/, investments/, skills/, endings/
+data/          BalanceConfig.json, QualityConfig.json, activities/, actions/, recipes/, debt/, locations/, entities/, items/, events/, costs/, investments/, skills/, endings/
 src/main.js    browser entry: builds GameManager + views
 src/core/      GameManager, PhaseMachine, EventBus, ContentDB, SaveSystem
-src/model/     GameState, Calendar, Wallet, Inventory, DebtAccount, SkillBook, WeekPlan, Ledger
-src/systems/   TimeSystem, ActionRunner, EffectApplier, EconomySystem, EventSystem, PlanValidator, EndingChecker
+src/model/     GameState, Calendar, Wallet, Inventory, DebtAccount, SkillBook, Relationships, WeekPlan, Ledger
+src/systems/   TimeSystem, ActionRunner, EffectApplier, EconomySystem, ProductionSystem, QualityCalculator, DebtSystem, EventSystem, PlanValidator, EndingChecker
 src/phases/    Phase, PlanPhase, DoPhase, CheckPhase, ActPhase, EndingPhase
 src/views/town/  TownView, AssetSlot, Avatar, PathGraph
-src/views/ui/    PlannerBookView, ActionMenuView, HudView, EventCardView, RecapView, MonthEndView, EndingView, DevOverlay
+src/views/ui/    PlannerBookView, ActionMenuView, CraftView, HudView, EventCardView, RecapView, MonthEndView, EndingView, DevOverlay
 src/sim/       Bot, runMonths.js (headless CLI), Testbed (browser panel), csv.js
 assets/models/ <slot id>.glb (optional; greybox shows when missing)
 tests/         *.test.js (Vitest, logic only)
@@ -60,7 +60,7 @@ tests/         *.test.js (Vitest, logic only)
 - Plain JavaScript (ES modules) with JSDoc types. No framework for the UI (DOM + CSS).
 - One class per file. File name = class name.
 - Pin dependency versions in `package.json` (exact versions).
-- Placeholder numbers come from `SPECS.md` section 8. Mark a new placeholder with `"_placeholder": true` in its JSON.
+- Placeholder numbers come from `SPECS.md` section 9. Mark a new placeholder with `"_placeholder": true` in its JSON.
 - Docs and UI text: short sentences, simple words (ASD-STE100 style).
 - Commit after each completed task, with a clear message. Do not push unless the user asks.
 
