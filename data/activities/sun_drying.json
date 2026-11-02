@@ -16,5 +16,11 @@
   "needsAppointment": false,
   "needsPermit": false,
   "build": "Jam",
-  "source": "docs:pages/activities/sun-drying.md"
+  "source": "docs:pages/activities/sun-drying.md",
+  "plannable": true,
+  "planDurationMin": 60,
+  "planDurationOptions": [
+    30,
+    60
+  ]
 }

@@ -122,7 +122,7 @@ Shelf life lengths in days: TBD in the docs (placeholder §9).
 | Message | Sender | Payload |
 | --- | --- | --- |
 | `intent.nextPhase` | View (dev) | none |
-| `intent.placeCard` / `intent.moveCard` / `intent.removeCard` | PlannerBookView | card, day, start, settings |
+| `intent.placeCard` / `intent.moveCard` / `intent.removeCard` | PlannerBookView | placeCard: card; moveCard: { uid, ...changes }; removeCard: { uid } |
 | `intent.setBudget` | PlannerBookView | expenses, purchases, buffer |
 | `intent.lockPlan` | PlannerBookView | none |
 | `intent.startActivity` | ActionMenuView | activityId, locationId |

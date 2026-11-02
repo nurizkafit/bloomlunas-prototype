@@ -19,5 +19,11 @@
   "needsAppointment": false,
   "needsPermit": false,
   "build": "Jam",
-  "source": "docs:pages/activities/buy.md"
+  "source": "docs:pages/activities/buy.md",
+  "plannable": true,
+  "planDurationMin": 60,
+  "planDurationOptions": [
+    60,
+    120
+  ]
 }

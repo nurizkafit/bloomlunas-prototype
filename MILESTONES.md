@@ -8,8 +8,8 @@ Rule: Claude works only on the milestone that is `Approved` or `In progress`. Af
 | --- | --- | --- |
 | M0 | Project skeleton | Done |
 | M1 | Logic core, headless month | Done |
-| M2 | Plan phase (Planner Book port) | In progress |
-| M3 | Do phase (town, avatar, actions) | Approved |
+| M2 | Plan phase (Planner Book port) | Review |
+| M3 | Do phase (town, avatar, actions) | In progress |
 | M4 | Events and Check | Approved |
 | M5 | Act, endings, save | Approved |
 | M6 | Balance testbed and CSV export | Not started |
@@ -80,17 +80,22 @@ Result:
 Goal: the player builds a week plan in the browser, on real `GameState`.
 
 Tasks:
-- [ ] Port the Planner Book v2 (`prototypes/plan-phase-book/index.html`) into `PlannerBookView`. Keep look and interactions.
-- [ ] Move its constants to `BalanceConfig`, its card types to `ActivityData`, its plan check to `PlanValidator`.
-- [ ] Card names and recipes follow the docs (`SPECS.md` §10).
-- [ ] Tabs read the current week and real data, not week 2 placeholders.
-- [ ] "Start the week" sends `intent.lockPlan`; `PlanPhase` writes `WeekPlan` and budget slots.
+- [x] Port the Planner Book v2 (`prototypes/plan-phase-book/index.html`) into `PlannerBookView`. Keep look and interactions.
+- [x] Move its constants to `BalanceConfig`, its card types to `ActivityData`, its plan check to `PlanValidator`.
+- [x] Card names and recipes follow the docs (`SPECS.md` §10).
+- [x] Tabs read the current week and real data, not week 2 placeholders.
+- [x] "Start the week" sends `intent.lockPlan`; `PlanPhase` writes `WeekPlan` and budget slots.
 
 Exit criteria:
-- [ ] Place, move (30 min snap) and set cards; problems and warnings show; lock the plan; the game moves to Do.
-- [ ] `PlanValidator` has unit tests.
+- [x] Place, move (30 min snap) and set cards; problems and warnings show; lock the plan; the game moves to Do.
+- [x] `PlanValidator` has unit tests.
 
 Result:
+- `npm run check` passes: 40 tests (8 tests for `PlanValidator`), headless month, build.
+- Browser test (Playwright): drag Open shop to Mon 09:00, Explore to Tue 07:00, Craft to Wed 13:00; drop on Sunday shop is refused (closed); card popover opens; all 5 tabs render; "Start the week" locks the plan and goes to Do. No console errors.
+- Port: same CSS and layout as Planner Book v2. Deck = all plannable activities from `data/activities` (`planDurationMin`, `planDurationOptions`). Settings: location (guild cards), hours, recipe (Craft). Budget slots exp, buy, buf.
+- `intent.moveCard` carries `{ uid, ...changes }` (day, startMin, durationMin, locationId, recipeId). `PlanPhase` runs `PlanValidator` after each change and sends `plan.validated`.
+- Not ported: Spec and Sheet overlays (M7), "Test this idea" note checks (notes come in M4), festival and wholesale cards (not in the jam scope).
 
 ---
 

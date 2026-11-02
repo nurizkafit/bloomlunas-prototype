@@ -19,5 +19,11 @@
   "needsAppointment": false,
   "needsPermit": false,
   "build": "Jam",
-  "source": "docs:pages/activities/commission.md"
+  "source": "docs:pages/activities/commission.md",
+  "plannable": true,
+  "planDurationMin": 60,
+  "planDurationOptions": [
+    60,
+    120
+  ]
 }

@@ -18,5 +18,11 @@
   "needsAppointment": false,
   "needsPermit": false,
   "build": "Jam",
-  "source": "docs:pages/activities/sell-to-organization.md"
+  "source": "docs:pages/activities/sell-to-organization.md",
+  "plannable": true,
+  "planDurationMin": 60,
+  "planDurationOptions": [
+    60,
+    120
+  ]
 }

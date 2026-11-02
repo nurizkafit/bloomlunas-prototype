@@ -18,5 +18,12 @@
   "needsAppointment": false,
   "needsPermit": false,
   "build": "Jam",
-  "source": "docs:pages/activities/craft.md"
+  "source": "docs:pages/activities/craft.md",
+  "plannable": true,
+  "planDurationMin": 180,
+  "planDurationOptions": [
+    180,
+    240
+  ],
+  "_planNote": "Planner Book card length. Craft length comes from the recipe."
 }

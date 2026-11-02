@@ -17,6 +17,8 @@ export class CheckPhase extends Phase {
     if (paid) sys.effects.apply([{ type: 'gold', amount: -paid, label: 'Weekly expenses' }], 'expenses');
     sys.debt.addUnpaid(cost - paid, 'Weekly expenses');
     const { month, week } = state.calendar;
+    state.priceHistory = state.priceHistory ?? [];
+    state.priceHistory.push({ month, week, prices: { ...state.prices } });
     const w = state.ledger.week(month, week);
     const made = {};
     for (const [t, n] of Object.entries(state.stats.made)) {

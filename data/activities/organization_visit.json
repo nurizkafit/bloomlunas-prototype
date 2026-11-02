@@ -18,5 +18,10 @@
   "needsAppointment": true,
   "needsPermit": false,
   "build": "Jam",
-  "source": "docs:pages/activities/organization-visit.md"
+  "source": "docs:pages/activities/organization-visit.md",
+  "plannable": true,
+  "planDurationMin": 60,
+  "planDurationOptions": [
+    60
+  ]
 }

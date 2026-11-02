@@ -16,5 +16,14 @@
   "needsAppointment": false,
   "needsPermit": false,
   "build": "Jam",
-  "source": "docs:pages/activities/open-shop.md"
+  "source": "docs:pages/activities/open-shop.md",
+  "plannable": true,
+  "planDurationMin": 240,
+  "planDurationOptions": [
+    120,
+    180,
+    240,
+    300,
+    360
+  ]
 }
