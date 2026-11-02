@@ -20,5 +20,7 @@
   "planDurationMin": 180,
   "planDurationOptions": [
     180
-  ]
+  ],
+  "planGroup": "processing",
+  "_planGroupNote": "Plan deck shows one Processing card; the popup picks Sun drying or Grinding (user, 2 Nov 2026)."
 }

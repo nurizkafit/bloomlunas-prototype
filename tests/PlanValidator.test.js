@@ -22,7 +22,7 @@ describe('PlanValidator', () => {
   it('closed day and outside hours are problems', () => {
     const { gm, place, last } = inPlan();
     place({ activityId: 'open_shop', day: 6, startMin: 9 * 60 });
-    place({ activityId: 'buy', day: 0, startMin: 15 * 60, locationId: 'loc_market' });
+    place({ activityId: 'visit', day: 0, startMin: 15 * 60, locationId: 'loc_market' });
     const [a, b] = gm.state.plan.cards;
     expect(last().issues[a.uid][0].msg).toMatch(/closed on Sun/);
     expect(last().issues[b.uid][0].msg).toMatch(/closed for all of this slot/);
@@ -32,7 +32,7 @@ describe('PlanValidator', () => {
     const { v } = inPlan();
     expect(v.slots().map((m) => m / 60)).toEqual([6, 9, 12, 15, 18, 21, 24]);
     expect(v.slotCheck({ activityId: 'explore', durationMin: 180 }, 1, 7 * 60).msg).toMatch(/slot edge/);
-    expect(v.duration({ activityId: 'buy', durationMin: 60 })).toBe(180);
+    expect(v.duration({ activityId: 'visit', durationMin: 60 })).toBe(180);
   });
 
   it('overlap is refused in slotCheck and reported in validate', () => {
@@ -44,14 +44,13 @@ describe('PlanValidator', () => {
     expect(last().bad).toBeGreaterThan(0);
   });
 
-  it('sleep: only night slots; 18-24 safe; 00-03 midnight is a warning; past 03:00 is a problem', () => {
-    const { v } = inPlan();
-    const sleep = { activityId: 'rest', durationMin: 180 };
-    expect(v.slotCheck(sleep, 2, 15 * 60).lvl).toBe('bad');
-    expect(v.slotCheck(sleep, 2, 18 * 60).lvl).toBe('ok');
-    expect(v.slotCheck(sleep, 2, 21 * 60).lvl).toBe('ok');
-    expect(v.slotCheck(sleep, 2, 24 * 60).lvl).toBe('warn');
-    expect(v.slotCheck({ activityId: 'rest', durationMin: 360 }, 2, 24 * 60).lvl).toBe('bad');
+  it('night slots 18-24 are fine; 00-03 midnight is a warning; past 03:00 is a problem; sleep is not a card', () => {
+    const { gm, v } = inPlan();
+    const craft = { activityId: 'grinding', durationMin: 180 };
+    expect(v.slotCheck(craft, 2, 21 * 60).lvl).toBe('ok');
+    expect(v.slotCheck(craft, 2, 24 * 60).lvl).toBe('warn');
+    expect(v.slotCheck({ activityId: 'grinding', durationMin: 360 }, 2, 24 * 60).lvl).toBe('bad');
+    expect(gm.content.get('activities', 'rest').plannable).toBe(false);
   });
 
   it('craft without materials: problem; with a buy card before it: warning', () => {
@@ -60,7 +59,7 @@ describe('PlanValidator', () => {
     const craft = gm.state.plan.cards[0];
     expect(last().issues[craft.uid][0].lvl).toBe('bad');
     gm.bus.emit(MSG.INTENT_MOVE_CARD, { uid: craft.uid, day: 2, startMin: 12 * 60 });
-    place({ activityId: 'buy', day: 2, startMin: 6 * 60, locationId: 'loc_market' });
+    place({ activityId: 'visit', day: 2, startMin: 6 * 60, locationId: 'loc_market' });
     expect(last().issues[craft.uid][0].lvl).toBe('warn');
   });
 
@@ -79,11 +78,11 @@ describe('PlanValidator', () => {
 
   it('remove and lock', () => {
     const { gm, place } = inPlan();
-    place({ activityId: 'rest', day: 0, startMin: 20 * 60 });
+    place({ activityId: 'grinding', day: 0, startMin: 18 * 60 });
     gm.bus.emit(MSG.INTENT_REMOVE_CARD, { uid: gm.state.plan.cards[0].uid });
     expect(gm.state.plan.cards.length).toBe(0);
     gm.bus.emit(MSG.INTENT_LOCK_PLAN);
-    place({ activityId: 'rest', day: 0, startMin: 20 * 60 });
+    place({ activityId: 'grinding', day: 0, startMin: 18 * 60 });
     expect(gm.state.plan.cards.length).toBe(0);
   });
 });

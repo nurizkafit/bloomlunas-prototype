@@ -45,6 +45,7 @@
 .aform input { width: 52px; font: inherit; font-size: 12px; padding: 4px; border-radius: 5px; border: 1px solid var(--ink-3); background: var(--paper-3); color: var(--ink); }
 .qrow { width: 100%; display: flex; justify-content: space-between; gap: 6px; align-items: center; font-size: 12px; }
 .go.sm { padding: 5px 10px; font-size: 12px; border-radius: 6px; }
+.amenu .go.enter { width: 100%; justify-content: center; margin: 4px 0 2px; }
 .go { white-space: nowrap; padding: 9px 16px; border-radius: 8px; border: 0; background: var(--gold); color: #2a1e05; font-weight: 700; font: inherit; font-weight: 700; cursor: pointer; }
 .go:disabled { opacity: .45; cursor: default; }
 .link { border: 0; background: none; color: var(--moon-ink); text-decoration: underline; cursor: pointer; font: inherit; font-size: 12px; padding: 4px 0; }

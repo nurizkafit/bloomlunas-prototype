@@ -79,7 +79,7 @@ describe('SaveSystem', () => {
     const gm = new GameManager(content);
     save.attach(gm);
     gm.start();
-    gm.bus.emit(MSG.INTENT_PLACE_CARD, { activityId: 'rest', day: 0, startMin: 20 * 60 });
+    gm.bus.emit(MSG.INTENT_PLACE_CARD, { activityId: 'grinding', day: 0, startMin: 18 * 60 });
     gm.bus.emit(MSG.INTENT_NEXT_PHASE); // Plan -> Do (saved, next = Do)
     gm.state.wallet.gold = 123;
     gm.state.pendingEvent = null;

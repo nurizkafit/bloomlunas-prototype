@@ -68,7 +68,7 @@ describe('CheckPhase recap', () => {
     gm.state.calendar.minute = 9 * 60;
     a.runAction('serve-customer');
     a.runAction('serve-customer');
-    a.startActivity('buy');
+    a.startActivity('visit');
     a.runAction('travel', { to: 'loc_market' });
     gm.state.calendar.minute = 9 * 60;
     a.runAction('buy-item', { item: 'rice', qty: 2 });
