@@ -123,3 +123,20 @@ describe('ActionRunner', () => {
     expect(s.relations.points.merchant_guild).toBe(-gm.content.num('QUEST_MISS_RELATIONSHIP_PENALTY'));
   });
 });
+
+describe('DoPhase plan changes', () => {
+  it('only days that have not started can change', async () => {
+    const { MSG } = await import('../src/core/EventBus.js');
+    const gm = gameInDo();
+    gm.state.calendar.day = 2;
+    gm.bus.emit(MSG.INTENT_PLACE_CARD, { activityId: 'rest', day: 1, startMin: 20 * 60 });
+    expect(gm.state.plan.cards.length).toBe(0);
+    gm.bus.emit(MSG.INTENT_PLACE_CARD, { activityId: 'rest', day: 3, startMin: 20 * 60 });
+    expect(gm.state.plan.cards.length).toBe(1);
+    const uid = gm.state.plan.cards[0].uid;
+    gm.bus.emit(MSG.INTENT_MOVE_CARD, { uid, day: 2 });
+    expect(gm.state.plan.cards[0].day).toBe(3);
+    gm.bus.emit(MSG.INTENT_MOVE_CARD, { uid, day: 4 });
+    expect(gm.state.plan.cards[0].day).toBe(4);
+  });
+});

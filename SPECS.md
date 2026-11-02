@@ -223,6 +223,7 @@ Card renames: Sell → Open shop; Craft → Craft (recipe picks Brew or Concoct)
 | Slot id | Greybox | States |
 | --- | --- | --- |
 | loc_home_shop | box + roof | open, closed, busy |
+| loc_home | small house | day, night |
 | int_home_atelier | room box | idle, crafting |
 | loc_home_drying_yard | flat racks | empty, drying, ready |
 | loc_market | low wide box | day, night |

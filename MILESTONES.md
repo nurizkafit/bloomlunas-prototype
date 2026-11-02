@@ -9,8 +9,8 @@ Rule: Claude works only on the milestone that is `Approved` or `In progress`. Af
 | M0 | Project skeleton | Done |
 | M1 | Logic core, headless month | Done |
 | M2 | Plan phase (Planner Book port) | Review |
-| M3 | Do phase (town, avatar, actions) | In progress |
-| M4 | Events and Check | Approved |
+| M3 | Do phase (town, avatar, actions) | Review |
+| M4 | Events and Check | In progress |
 | M5 | Act, endings, save | Approved |
 | M6 | Balance testbed and CSV export | Not started |
 | M7 | Full-month playtest and handoff | Not started |
@@ -104,18 +104,24 @@ Result:
 Goal: the player plays a week in the greybox town.
 
 Tasks:
-- [ ] `TownView`: isometric orthographic camera, pan and zoom limits, ground, paths, light by time of day.
-- [ ] `AssetSlot`: greybox per slot id; loads `assets/models/<slot id>.glb` if the file exists; state switch.
-- [ ] `PathGraph` + `Avatar` walk between location door points.
-- [ ] `ActionMenuView` (click a location → its activities → their actions), `CraftView` (pick recipe and material variants; shows input cost next to expected sell price and quality tier), `HudView` (day, clock, gold, energy, fatigue).
-- [ ] Planned cards show in the HUD; plan match bonus shows on completion.
-- [ ] Change plan only for days not started (`SPECS.md` §4).
+- [x] `TownView`: isometric orthographic camera, pan and zoom limits, ground, paths, light by time of day.
+- [x] `AssetSlot`: greybox per slot id; loads `assets/models/<slot id>.glb` if the file exists; state switch.
+- [x] `PathGraph` + `Avatar` walk between location door points.
+- [x] `ActionMenuView` (click a location → its activities → their actions), `CraftView` (pick recipe and material variants; shows input cost next to expected sell price and quality tier), `HudView` (day, clock, gold, energy, fatigue).
+- [x] Planned cards show in the HUD; plan match bonus shows on completion.
+- [x] Change plan only for days not started (`SPECS.md` §4).
 
 Exit criteria:
-- [ ] Play Mon to Sun with Open shop, Sell to organization, Buy, Craft, Sun drying, Grinding, Explore (City zone), Commission, Rest, 1 service visit.
-- [ ] Replace one greybox with a test `.glb` by file name, with no code change.
+- [x] Play Mon to Sun with Open shop, Sell to organization, Buy, Craft, Sun drying, Grinding, Explore (City zone), Commission, Rest, 1 service visit.
+- [x] Replace one greybox with a test `.glb` by file name, with no code change.
 
 Result:
+- `npm run check` passes (41 tests). New `npm run test:browser` (Playwright): Plan flow, a Do week through the UI, and the glTF swap. All pass with no console errors.
+- Do week test (UI clicks): Mon to Sun with Buy, Craft (Brew), Open shop, Sun drying, Explore, Commission, Sell to organization, Organization visit (service, appointment set by the test until M5), Grinding, Rest. The town click opens the right menu. "Week done" goes to Check.
+- glTF test: copy a test model to `assets/models/loc_market.glb`; the slot loads it and hides the greybox. No code change. (`tests/fixtures/test_model.glb`, made by `scripts/make_test_glb.py`.)
+- Town layout data: `position`, `door`, `greybox` in `data/locations/*.json`; path graph in `data/locations/_paths.json`. Vite serves `assets/` as the public folder (`./models/<slot id>.glb`).
+- "Change plan" in the HUD opens the Planner Book. Days that started are locked (view and `DoPhase` both check).
+- Open: customers are not drawn as figures yet (the shop slot shows state "busy"). The bundle is 745 kB (three.js); fine for a prototype.
 
 ---
 

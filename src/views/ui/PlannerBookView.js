@@ -19,6 +19,8 @@ export class PlannerBookView {
     this.c = gm.content;
     this.v = gm.ctx.sys.plan;
     this.tab = 'week';
+    /** 'plan' in the Plan phase; 'do' when opened from the HUD (only days not started can change). */
+    this.mode = 'plan';
     this.mkSel = 'fresh_jamu';
     this.R = null;
     /** Deck drafts: settings per activity before it is placed. */
@@ -60,10 +62,28 @@ export class PlannerBookView {
     this.#wire();
     this.bus.on(MSG.PHASE_ENTERED, ({ phase }) => {
       this.fit.hidden = phase !== 'Plan';
-      if (phase === 'Plan') { this.tab = 'week'; this.#fitScale(); }
+      this.mode = 'plan';
+      this.$('#confirmBtn').textContent = 'Review plan';
+      if (phase === 'Plan') { this.tab = 'week'; this.#fitScale(); this.render(); }
     });
-    this.bus.on(MSG.PLAN_VALIDATED, (r) => { this.R = r; if (!this.fit.hidden || this.s.plan) this.render(); });
+    this.bus.on(MSG.PLAN_VALIDATED, (r) => { this.R = r; if (!this.fit.hidden) this.render(); });
     addEventListener('resize', () => this.#fitScale());
+  }
+
+  /** Open the book during Do. Only days that have not started can change. */
+  openInDo() {
+    this.mode = 'do';
+    this.tab = 'week';
+    this.fit.hidden = false;
+    this.$('#confirmBtn').textContent = 'Back to town';
+    this.#fitScale();
+    this.render();
+  }
+
+  /** Why a day cannot change now (Do mode), or the location reason. */
+  #dayProblem(card, d) {
+    if (this.mode === 'do' && d <= this.s.calendar.day) return `${DAYS[d]} has started. Change only later days`;
+    return this.v.dayProblem(card, d);
   }
 
   #defaults(a) {
@@ -375,6 +395,7 @@ export class PlannerBookView {
       const key = bt.dataset.set, val = key === 'durationMin' ? Number(bt.dataset.val) : bt.dataset.val;
       if (card.uid) {
         const next = { ...card, [key]: val };
+        if (this.mode === 'do' && card.day <= this.s.calendar.day) { this.#toast('This day has started.', 'bad'); return; }
         if (key === 'locationId') { const why = this.v.dayProblem(next, card.day); if (why) { this.#toast(`${why}. Move the card first.`, 'bad'); return; } }
         const chk = this.v.slotCheck(next, card.day, card.startMin);
         if (chk.lvl === 'bad') { this.#toast(`${chk.msg}. The new setting does not fit here.`, 'bad'); return; }
@@ -446,13 +467,14 @@ export class PlannerBookView {
       const src = e.target.closest('.dc,.bc');
       if (!src || e.button > 0 || e.target.closest('.pop')) return;
       const isB = src.classList.contains('bc');
+      if (isB && this.mode === 'do' && Number(src.closest('.col').dataset.d) <= this.s.calendar.day) { this.#toast('This day has started. You cannot move this card.', 'bad'); return; }
       const grab = isB ? (e.clientY - src.getBoundingClientRect().top) / this.#scale() / this.#hpx() : 0.25;
       drag = { src, c: cardOf(src), uid: isB ? Number(src.dataset.uid) : null, grab, x0: e.clientX, y0: e.clientY, moving: false };
       src.setPointerCapture?.(e.pointerId);
     });
 
     const markCols = () => st.querySelectorAll('.col').forEach((col) => {
-      const why = this.v.dayProblem(drag.c, Number(col.dataset.d));
+      const why = this.#dayProblem(drag.c, Number(col.dataset.d));
       col.classList.toggle('ok', !why);
       col.classList.toggle('no', !!why);
       if (why) { const w = document.createElement('div'); w.className = 'why'; w.textContent = why; col.appendChild(w); }
@@ -516,7 +538,7 @@ export class PlannerBookView {
       const el = document.elementFromPoint(e.clientX, e.clientY);
       clearCols();
       if (d0.uid && el?.closest('#deck')) { this.bus.emit(MSG.INTENT_REMOVE_CARD, { uid: d0.uid }); this.#toast('Card removed from the plan.'); return; }
-      if (!d0.target) { if (el?.closest('.col')) this.#toast(this.v.dayProblem(d0.c, Number(el.closest('.col').dataset.d)) ?? 'You cannot drop it here.', 'bad'); this.render(); return; }
+      if (!d0.target) { if (el?.closest('.col')) this.#toast(this.#dayProblem(d0.c, Number(el.closest('.col').dataset.d)) ?? 'You cannot drop it here.', 'bad'); this.render(); return; }
       const { d, start, chk } = d0.target;
       if (chk.lvl === 'bad') { this.#toast(`${chk.msg}. Drop it in a free slot.`, 'bad'); this.render(); return; }
       if (d0.uid) this.bus.emit(MSG.INTENT_MOVE_CARD, { uid: d0.uid, day: d, startMin: start });
@@ -547,7 +569,7 @@ export class PlannerBookView {
       }
       const mk = e.target.closest('[data-mk]');
       if (mk) { this.mkSel = mk.dataset.mk; this.render(); return; }
-      if (e.target.closest('#confirmBtn')) { this.#openReview(); return; }
+      if (e.target.closest('#confirmBtn')) { if (this.mode === 'do') { this.fit.hidden = true; this.#closePop(); } else this.#openReview(); return; }
       if (!e.target.closest('.pop,.dc,.bc')) this.#closePop();
     });
 
@@ -564,7 +586,7 @@ export class PlannerBookView {
         const dd = e.key === 'ArrowLeft' ? -1 : e.key === 'ArrowRight' ? 1 : 0, dm = e.key === 'ArrowUp' ? -30 : e.key === 'ArrowDown' ? 30 : 0;
         const d = p.day + dd, s = p.startMin + dm;
         if (d < 0 || d > 6 || s < this.DS * 60 || s + this.#dur(p) > this.NE * 60) return;
-        const why = this.v.dayProblem(p, d);
+        const why = this.#dayProblem(p, d) ?? (this.mode === 'do' && p.day <= this.s.calendar.day ? 'This day has started' : null);
         if (why) { this.#toast(why, 'bad'); return; }
         const chk = this.v.slotCheck(p, d, s);
         if (chk.lvl === 'bad') { this.#toast(chk.msg, 'bad'); return; }

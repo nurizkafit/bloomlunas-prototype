@@ -1,5 +1,114 @@
+import { MSG } from '../../core/EventBus.js';
+import { DAYS, hm } from '../../systems/PlanValidator.js';
+import { ic, iconFor, colorFor } from './icons.js';
+import './game.css';
+
 /**
- * HudView: Day, clock, gold, energy, fatigue (M3).
- * Stub from M0. See SPECS.md and MILESTONES.md.
+ * HudView: Do phase heads-up display. Day, clock, gold, energy, fatigue, current activity,
+ * today's planned cards (plan match shows when earned), message log, "Change plan", "End the day", "Go to Check".
+ * Reads GameState; sends intents only. Unity: HUD canvas.
  */
-export class HudView {}
+export class HudView {
+  /** @param {HTMLElement} root @param {import('../../core/GameManager.js').GameManager} gm @param {{openPlan:()=>void, openLocation:(id:string)=>void}} hooks */
+  constructor(root, gm, hooks) {
+    this.gm = gm; this.s = gm.state; this.c = gm.content; this.hooks = hooks;
+    this.el = document.createElement('div');
+    this.el.className = 'hud';
+    this.el.hidden = true;
+    this.el.innerHTML = `
+      <header class="hud-bar">
+        <div class="brand">BloomLunas <small>Do</small></div>
+        <div class="steps"><span class="step">Plan</span><span class="step on">Do</span><span class="step">Check</span></div>
+        <div class="rs"><span class="k" id="hWeek"></span><span class="v disp" id="hDay"></span></div>
+        <div class="rs"><span class="k">Clock</span><span class="v num" id="hClock"></span></div>
+        <div class="sep"></div>
+        <div class="rs"><span class="k">Gold</span><span class="v num gold" id="hGold"></span></div>
+        <div class="rs"><span class="k">Energy</span><span class="ebar"><i id="hEnergy"></i></span><span class="num tiny" id="hEnergyN"></span></div>
+        <div id="hFat"></div>
+        <div class="rs"><span class="k">Activity</span><span class="v" id="hAct">–</span></div>
+        <div class="spacer"></div>
+        <button class="tbtn" id="hPlan">${ic('scroll')}Change plan</button>
+        <button class="tbtn" id="hSleep">${ic('moon')}End the day</button>
+        <button class="go" id="hCheck" hidden>Week done · Go to Check</button>
+      </header>
+      <aside class="hud-today"><h3>Today's plan</h3><div id="hCards"></div><p class="hint">Click a place in the town, or a card here, to act. Matching the plan gives bonus XP.</p></aside>
+      <div class="hud-log" id="hLog" role="log" aria-live="polite"></div>`;
+    root.appendChild(this.el);
+    const $ = (s) => this.el.querySelector(s);
+    this.$ = $;
+    $('#hPlan').onclick = () => hooks.openPlan();
+    $('#hSleep').onclick = () => this.#endDay();
+    $('#hCheck').onclick = () => gm.bus.emit(MSG.INTENT_NEXT_PHASE);
+    $('#hCards').addEventListener('click', (e) => {
+      const c = e.target.closest('[data-loc]');
+      if (c) hooks.openLocation(c.dataset.loc);
+    });
+    const bus = gm.bus;
+    bus.on(MSG.PHASE_ENTERED, ({ phase }) => { this.el.hidden = phase !== 'Do'; if (phase === 'Do') { this.$('#hLog').innerHTML = ''; this.render(); } });
+    for (const m of [MSG.CLOCK_CHANGED, MSG.LEDGER_CHANGED, MSG.PLAN_VALIDATED, MSG.INVENTORY_CHANGED]) bus.on(m, () => this.render());
+    bus.on(MSG.ACTION_STARTED, (r) => { if (r.bonus) this.log(`Plan match: +${r.bonus} XP`, 'ok'); this.render(); });
+    bus.on(MSG.ACTION_COMPLETED, (r) => { this.log(describe(r, this.c), 'ok'); this.render(); });
+    bus.on(MSG.ACTION_REFUSED, (r) => this.log(`Cannot do it: ${r.reason}.`, 'bad'));
+  }
+
+  /** @param {string} msg @param {string} [cls] */
+  log(msg, cls = '') {
+    const p = document.createElement('p');
+    p.className = cls;
+    p.textContent = `${this.s.calendar.clock()} · ${msg}`;
+    const box = this.$('#hLog');
+    box.prepend(p);
+    while (box.children.length > 6) box.lastChild.remove();
+  }
+
+  #endDay() {
+    const bus = this.gm.bus;
+    bus.emit(MSG.INTENT_START_ACTIVITY, { activityId: 'rest' });
+    if (this.s.player.location !== 'loc_home') bus.emit(MSG.INTENT_RUN_ACTION, { actionId: 'travel', params: { to: 'loc_home' } });
+    bus.emit(MSG.INTENT_RUN_ACTION, { actionId: 'sleep', params: {} });
+  }
+
+  render() {
+    if (this.el.hidden) return;
+    const s = this.s, cal = s.calendar, p = s.player, $ = this.$;
+    $('#hWeek').textContent = `Month ${cal.month} · Week ${cal.week}`;
+    $('#hDay').textContent = `${DAYS[cal.day]} · Day ${(cal.week - 1) * 7 + cal.day + 1}`;
+    $('#hClock').textContent = cal.clock();
+    $('#hClock').classList.toggle('late', cal.minute > this.c.num('DAY_END_HOUR') * 60);
+    $('#hGold').textContent = `${s.wallet.gold.toFixed(0)} G`;
+    const max = this.c.num('ENERGY_MAX');
+    $('#hEnergy').style.width = `${(p.energy / max) * 100}%`;
+    $('#hEnergy').className = p.energy < this.c.num('FATIGUE_THRESHOLD') ? 'low' : '';
+    $('#hEnergyN').textContent = `${p.energy}/${max}`;
+    $('#hFat').innerHTML = p.fatigued ? `<span class="pill warn" title="Actions take longer">Tired${p.lateWake ? ' · woke late' : ''}</span>` : '';
+    $('#hAct').textContent = p.activityId ? this.c.get('activities', p.activityId).name : '–';
+    $('#hCheck').hidden = !p.weekOver;
+    $('#hSleep').hidden = p.weekOver;
+    $('#hPlan').hidden = p.weekOver;
+    const cards = s.plan.cards.filter((c) => c.day === cal.day).sort((a, b) => a.startMin - b.startMin);
+    $('#hCards').innerHTML = cards.length ? cards.map((c) => {
+      const a = this.c.get('activities', c.activityId);
+      const loc = c.locationId ?? a.locationIds[0];
+      const dur = this.gm.ctx.sys.plan.duration(c);
+      const now = cal.minute >= c.startMin && cal.minute < c.startMin + dur;
+      return `<button class="tc${c.used ? ' done' : ''}${now ? ' now' : ''}" data-loc="${loc}" style="--k:${colorFor(a)}">${ic(iconFor(a))}<span><b>${a.name}</b><small class="num">${hm(c.startMin)}–${hm(c.startMin + dur)} · ${this.c.get('locations', loc).name}</small></span>${c.used ? '<em>✓ bonus</em>' : ''}</button>`;
+    }).join('') : '<p class="hint">No cards for today.</p>';
+  }
+}
+
+/** Short text for an action result. */
+function describe(r, c) {
+  const name = c.get('actions', r.actionId).name;
+  const t = r.minutes ? ` (${r.minutes} min)` : '';
+  switch (r.actionId) {
+    case 'travel': return `Walked to ${c.get('locations', r.to).name}${t}.`;
+    case 'buy-item': return `Bought ${r.qty} ${c.get('items', r.item).name} for ${-r.gold} G${t}.`;
+    case 'sell-item': return `Sold ${r.qty} ${c.get('items', r.item).name} for ${r.gold} G${t}.`;
+    case 'serve-customer': return `${r.customers} customers, ${r.sold} bought: +${r.gold} G${t}.`;
+    case 'brew': case 'concoct': return r.qty ? `Made ${r.qty} ${c.get('items', r.product).name}, quality ${r.tier}${t}.` : `Batch failed (quality ${r.tier}). It goes to compost.`;
+    case 'gather-harvest': return `Gathered ${r.got.map((g) => `${g.qty} ${c.get('items', g.item).name}`).join(', ') || 'nothing'}${t}.`;
+    case 'collect-batch': return `Collected ${r.collected} dried${t}.`;
+    case 'sleep': return 'Slept. A new day starts.';
+    default: return `${name} done${t}.`;
+  }
+}

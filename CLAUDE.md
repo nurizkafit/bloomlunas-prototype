@@ -55,6 +55,7 @@ tests/         *.test.js (Vitest, logic only)
 - `npm run sim -- --months 1 --runs 100`: headless bot runs, prints a summary, writes `out/sim.csv`.
 - `npm test`: Vitest (logic only).
 - `npm run check`: `npm test` + one headless month + build.
+- `npm run test:browser`: Playwright browser tests in `tests/browser/` (starts Vite, screenshots in `out/browser/`). Run it at each milestone with a view.
 
 ## Conventions
 

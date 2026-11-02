@@ -35,5 +35,15 @@
     "coconut_oil",
     "beeswax"
   ],
-  "_note": "The market has no guild entity. Its stalls sell the materials in sells."
+  "_note": "The market has no guild entity. Its stalls sell the materials in sells.",
+  "position": [
+    0,
+    -17
+  ],
+  "greybox": "market",
+  "door": [
+    0,
+    -14
+  ],
+  "polyforkAssetId": null
 }

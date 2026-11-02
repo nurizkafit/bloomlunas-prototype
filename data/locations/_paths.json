@@ -1,0 +1,100 @@
+{
+  "id": "_paths",
+  "_doc": "Town path graph (view layout, metres). Nodes = hubs; each location door links to its hub. Unity: waypoint graph in the town scene.",
+  "nodes": {
+    "home_lane": [
+      0,
+      4
+    ],
+    "home_east": [
+      7,
+      4
+    ],
+    "home_west": [
+      -7,
+      4
+    ],
+    "town_gate": [
+      0,
+      -6
+    ],
+    "square": [
+      0,
+      -13
+    ],
+    "west_road": [
+      -13,
+      -13
+    ],
+    "east_road": [
+      13,
+      -13
+    ],
+    "far_west": [
+      -15,
+      -20
+    ],
+    "far_east": [
+      15,
+      -20
+    ],
+    "north_gate": [
+      0,
+      13
+    ]
+  },
+  "edges": [
+    [
+      "home_lane",
+      "home_east"
+    ],
+    [
+      "home_lane",
+      "home_west"
+    ],
+    [
+      "home_lane",
+      "town_gate"
+    ],
+    [
+      "town_gate",
+      "square"
+    ],
+    [
+      "square",
+      "west_road"
+    ],
+    [
+      "square",
+      "east_road"
+    ],
+    [
+      "west_road",
+      "far_west"
+    ],
+    [
+      "east_road",
+      "far_east"
+    ],
+    [
+      "home_lane",
+      "north_gate"
+    ],
+    [
+      "home_east",
+      "north_gate"
+    ]
+  ],
+  "doors": {
+    "loc_home_shop": "home_lane",
+    "loc_home": "home_west",
+    "loc_home_atelier": "home_east",
+    "loc_home_drying_yard": "home_east",
+    "loc_market": "square",
+    "loc_merchant_guild": "west_road",
+    "loc_apothecary_guild": "east_road",
+    "loc_artisan_guild": "far_west",
+    "loc_adventurer_guild": "far_east",
+    "loc_gather_area": "north_gate"
+  }
+}

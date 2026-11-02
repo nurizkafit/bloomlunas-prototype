@@ -16,10 +16,11 @@ export class ActionRunner {
   get #c() { return this.ctx.content; }
   get #s() { return this.ctx.state; }
 
-  /** Start an activity. Gives the plan match bonus once per planned card. @param {string} activityId */
+  /** Start an activity (null = stop the current one). Gives the plan match bonus once per planned card. @param {string|null} activityId */
   startActivity(activityId) {
     const p = this.#s.player;
     if (p.dayOver || p.weekOver) return this.#refuse(null, 'the day is over');
+    if (!activityId) { p.activityId = null; this.ctx.bus.emit(MSG.ACTION_STARTED, { activityId: null, bonus: 0 }); return { ok: true, activityId: null, bonus: 0 }; }
     const activity = this.#c.get('activities', activityId);
     p.activityId = activityId;
     const bonus = this.#planBonus(activity);
