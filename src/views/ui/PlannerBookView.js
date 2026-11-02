@@ -195,6 +195,7 @@ export class PlannerBookView {
     const abs = this.s.calendar.absDay() - this.s.calendar.day + d;
     if (this.s.appointments.some((a) => a.absDay === abs && !a.done)) out += '<span class="chip">Appointment</span>';
     if (this.s.quests.some((q) => q.dueDay === abs)) out += '<span class="chip closed">Deadline</span>';
+    for (const e of this.gm.ctx.sys.events.scheduledThisWeek().filter((x) => x.trigger.day === d)) out += `<span class="chip fest" title="${e.text}">${e.title}</span>`;
     return out;
   }
 
@@ -318,6 +319,7 @@ export class PlannerBookView {
       if (mk[wd]) ev.push(['Scheduled', 'Market day']);
       for (const a of this.s.appointments.filter((x) => x.absDay === abs)) ev.push(['Scheduled', `Appointment ${a.serviceId}`]);
       for (const q of this.s.quests.filter((x) => x.dueDay === abs)) ev.push(['Predicted', `Quest due: ${q.ask.qty} ${q.ask.item}`]);
+      for (const e of this.c.all('events').filter((x) => x.type === 'scheduled' && (x.trigger.month ?? cal.month) === cal.month && (x.trigger.week - 1) * 7 + x.trigger.day + 1 === d)) ev.push(['Scheduled', e.title]);
       if (d === days) ev.push(['Bill', `Bills ${this.c.num('DEBT_MIN_PAYMENT') + this.c.num('MONTHLY_UTILITIES')} G`]);
       grid += `<div class="cd ${d < nowStart ? 'past' : ''} ${d >= nowStart && d < nowStart + 7 ? 'now' : ''} ${d === days ? 'bill' : ''}"><span class="n">${d}</span>${ev.map((e) => `<span class="e ${e[0]}">${e[1]}</span>`).join('')}</div>`;
     }

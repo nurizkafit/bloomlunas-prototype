@@ -10,6 +10,7 @@ import { EconomySystem } from '../systems/EconomySystem.js';
 import { DebtSystem } from '../systems/DebtSystem.js';
 import { ActionRunner } from '../systems/ActionRunner.js';
 import { PlanValidator } from '../systems/PlanValidator.js';
+import { EventSystem } from '../systems/EventSystem.js';
 import { PlanPhase } from '../phases/PlanPhase.js';
 import { DoPhase } from '../phases/DoPhase.js';
 import { CheckPhase } from '../phases/CheckPhase.js';
@@ -39,6 +40,7 @@ export class GameManager {
     sys.debt = new DebtSystem(this.ctx);
     sys.actions = new ActionRunner(this.ctx);
     sys.plan = new PlanValidator(this.ctx);
+    sys.events = new EventSystem(this.ctx);
     const phases = {
       Plan: new PlanPhase(),
       Do: new DoPhase(),

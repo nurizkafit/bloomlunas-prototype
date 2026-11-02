@@ -1,0 +1,64 @@
+{
+  "id": "festival",
+  "type": "scheduled",
+  "source": "Market and world",
+  "theme": "Opportunity",
+  "trigger": {
+    "week": 2,
+    "day": 4,
+    "hour": 16
+  },
+  "title": "Lantern Festival",
+  "text": "The town square fills with stalls and lanterns. Festival crowds pay more for fresh jamu.",
+  "responses": [
+    {
+      "label": "Sell 4 Fresh jamu at a stall",
+      "requires": {
+        "item": "fresh_jamu",
+        "qty": 4
+      },
+      "effects": [
+        {
+          "type": "item",
+          "target": "fresh_jamu",
+          "variant": "product",
+          "amount": -4
+        },
+        {
+          "type": "gold",
+          "amount": 40,
+          "label": "Festival sales"
+        },
+        {
+          "type": "time",
+          "amount": 180
+        },
+        {
+          "type": "energy",
+          "amount": -15
+        }
+      ]
+    },
+    {
+      "label": "Walk around and rest",
+      "effects": [
+        {
+          "type": "time",
+          "amount": 60
+        },
+        {
+          "type": "energy",
+          "amount": 10
+        }
+      ]
+    },
+    {
+      "label": "Stay home and work",
+      "effects": []
+    }
+  ],
+  "lesson": "Plan around known dates",
+  "source_doc": "docs:pages/events/scheduled.md",
+  "_placeholder": true,
+  "build": "Jam"
+}

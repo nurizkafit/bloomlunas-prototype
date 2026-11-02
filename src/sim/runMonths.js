@@ -36,6 +36,7 @@ for (let r = 1; r <= runs; r++) {
     for (const w of s.weekReports) {
       const made = Object.entries(w.made).map(([t, n]) => `${t} ${n}`).join(', ') || '-';
       console.log(`M${w.month} W${w.week} ${g(w.income)} ${g(w.expenses)} ${g(w.net)} ${g(w.gold)} ${g(w.debt)} ${String(w.sold).padStart(5)} ${String(w.waste).padStart(6)}  ${made}`);
+      for (const e of w.events) console.log(`        event: ${e.title} -> ${e.response}${e.lost.length ? ` (lost: ${e.lost.join(', ')})` : ''}`);
     }
     for (const m of s.monthReports) {
       console.log(`Act M${m.month}: paid ${m.paid.toFixed(2)} · interest ${m.interest.toFixed(2)} · fees ${m.fees} · unpaid utilities ${m.unpaidUtilities} · debt ${m.balance.toFixed(2)}${m.bankrupt ? ' · BANKRUPT' : ''}`);

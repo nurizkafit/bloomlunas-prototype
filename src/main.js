@@ -6,6 +6,8 @@ import { TownView } from './views/town/TownView.js';
 import { HudView } from './views/ui/HudView.js';
 import { CraftView } from './views/ui/CraftView.js';
 import { ActionMenuView } from './views/ui/ActionMenuView.js';
+import { EventCardView } from './views/ui/EventCardView.js';
+import { RecapView } from './views/ui/RecapView.js';
 import './style.css';
 
 // Browser entry: load all data files, build the GameManager and the views.
@@ -20,6 +22,8 @@ const menu = new ActionMenuView(app, gm, craft);
 const planner = new PlannerBookView(app, gm);
 new HudView(app, gm, { openPlan: () => planner.openInDo(), openLocation: (id) => menu.open(id) });
 town.onPick = (id) => menu.open(id);
+new EventCardView(app, gm);
+new RecapView(app, gm);
 new DevOverlay(app, gm.bus);
 gm.start();
 window.__gm = gm; // dev only: inspect state in the console

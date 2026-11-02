@@ -1,0 +1,45 @@
+{
+  "id": "caravan",
+  "type": "random",
+  "source": "Community",
+  "theme": "Opportunity",
+  "trigger": {
+    "chance": 1
+  },
+  "title": "A caravan stops by",
+  "text": "Tired travellers ask if you have jamu to sell. They pay well, but they are in a hurry.",
+  "responses": [
+    {
+      "label": "Sell them 3 Fresh jamu",
+      "requires": {
+        "item": "fresh_jamu",
+        "qty": 3
+      },
+      "effects": [
+        {
+          "type": "item",
+          "target": "fresh_jamu",
+          "variant": "product",
+          "amount": -3
+        },
+        {
+          "type": "gold",
+          "amount": 27,
+          "label": "Caravan sales"
+        },
+        {
+          "type": "time",
+          "amount": 60
+        }
+      ]
+    },
+    {
+      "label": "Let them go",
+      "effects": []
+    }
+  ],
+  "lesson": "Stock on hand is an option",
+  "source_doc": "docs:pages/events/how-events-work.md",
+  "_placeholder": true,
+  "build": "Jam"
+}

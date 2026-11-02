@@ -41,6 +41,8 @@ export class TownView {
     gm.bus.on(MSG.CLOCK_CHANGED, () => this.#light());
     gm.bus.on(MSG.ACTION_STARTED, () => this.#slotStates());
     gm.bus.on(MSG.ACTION_COMPLETED, (r) => this.#onAction(r));
+    gm.bus.on(MSG.EVENT_FIRED, () => { this.marker.root.visible = true; this.marker.setState('alert'); });
+    gm.bus.on(MSG.EVENT_RESOLVED, () => { this.marker.root.visible = false; });
     addEventListener('resize', () => this.resize());
     this.resize();
     this.renderer.setAnimationLoop(() => this.#frame());
@@ -89,6 +91,9 @@ export class TownView {
       seg(loc.door, paths.nodes[paths.doors[loc.id]]);
       this.#label(loc);
     }
+    this.marker = new AssetSlot('prop_event_marker', 'marker');
+    this.marker.root.visible = false;
+    sc.add(this.marker.root);
     this.avatar = new Avatar();
     sc.add(this.avatar.root);
     this.avatar.slot.tryLoadModel();
@@ -212,6 +217,11 @@ export class TownView {
     const dt = Math.min(this.clock.getDelta(), 0.05);
     if (this.el.hidden) return;
     this.avatar.update(dt);
+    if (this.marker.root.visible) {
+      this.marker.root.position.copy(this.avatar.root.position);
+      this.marker.root.position.y = 3 + Math.sin(performance.now() / 300) * 0.25;
+      this.marker.root.rotation.y += dt * 2;
+    }
     this.renderer.render(this.scene, this.camera);
   }
 }

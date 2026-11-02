@@ -1,0 +1,47 @@
+{
+  "id": "guild_auction",
+  "type": "scheduled",
+  "source": "Merchant Guild",
+  "theme": "Opportunity",
+  "trigger": {
+    "week": 3,
+    "day": 2,
+    "hour": 10
+  },
+  "title": "Guild auction",
+  "text": "The Merchant Guild sells a bulk lot of beeswax at a low price. Only today.",
+  "responses": [
+    {
+      "label": "Buy 4 Beeswax for 28 G",
+      "requires": {
+        "gold": 28
+      },
+      "effects": [
+        {
+          "type": "gold",
+          "amount": -28,
+          "label": "Auction: beeswax"
+        },
+        {
+          "type": "item",
+          "target": "beeswax",
+          "variant": "block",
+          "amount": 4
+        },
+        {
+          "type": "time",
+          "amount": 60
+        }
+      ]
+    },
+    {
+      "label": "Skip it",
+      "effects": []
+    }
+  ],
+  "lesson": "Opportunity cost and cash on hand",
+  "source_doc": "docs:pages/events/scheduled.md",
+  "_placeholder": true,
+  "_note": "Guild auction lesson is TBD in the docs.",
+  "build": "Jam"
+}

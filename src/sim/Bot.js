@@ -18,6 +18,11 @@ export class Bot {
     this.refusals = [];
     this.bus.on(MSG.ACTION_COMPLETED, (r) => { this.last = r; });
     this.bus.on(MSG.ACTION_REFUSED, (r) => { this.last = { ok: false, ...r }; this.refusals.push(r); });
+    // Events: pick the first response the bot can pay for.
+    this.bus.on(MSG.EVENT_FIRED, ({ event }) => {
+      const i = event.responses.findIndex((r) => !gm.ctx.sys.events.blocked(r));
+      this.bus.emit(MSG.INTENT_RESPOND_EVENT, { eventId: event.id, responseIndex: Math.max(0, i) });
+    });
   }
 
   /** Play from Plan week 1 until the Ending phase. */

@@ -46,6 +46,7 @@ export class ActionRunner {
   runAction(actionId, params = {}) {
     const s = this.#s, p = s.player;
     if (p.dayOver || p.weekOver) return this.#refuse(actionId, 'the day is over');
+    if (s.pendingEvent) return this.#refuse(actionId, 'answer the event first');
     if (!p.activityId) return this.#refuse(actionId, 'start an activity first');
     const activity = this.#c.get('activities', p.activityId);
     if (!activity.actionIds.includes(actionId)) return this.#refuse(actionId, `${actionId} is not part of ${activity.id}`);
@@ -72,8 +73,13 @@ export class ActionRunner {
       this.ctx.sys.time.advance(minutes);
     }
     if (action.xp?.amount) this.ctx.sys.effects.apply([{ type: 'xp', target: [action.xp.path, action.xp.sub].filter(Boolean).join('.'), amount: action.xp.amount }], actionId);
+    if (!isSleep) {
+      s.weekActual = s.weekActual ?? {};
+      s.weekActual[activity.id] = (s.weekActual[activity.id] ?? 0) + minutes;
+    }
     const out = { ok: true, actionId, minutes, energy: isSleep ? 0 : energy, ...result };
     this.ctx.bus.emit(MSG.ACTION_COMPLETED, out);
+    this.ctx.sys.events?.tick();
     return out;
   }
 

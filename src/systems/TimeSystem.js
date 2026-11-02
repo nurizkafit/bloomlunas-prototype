@@ -65,5 +65,6 @@ export class TimeSystem {
     sys.production.onDayStart();
     sys.economy.onDayStart();
     this.ctx.bus.emit(MSG.CLOCK_CHANGED, state.calendar.snapshot());
+    sys.events?.tick();
   }
 }

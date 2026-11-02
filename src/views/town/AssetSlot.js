@@ -117,6 +117,11 @@ function buildGreybox(kind) {
       }
       break;
     }
+    case 'marker':
+      g.add(mesh(new THREE.OctahedronGeometry(0.6), 0xe8735c, 0));
+      break;
+    case 'avatar':
+      break;
     default:
       g.add(mesh(new THREE.BoxGeometry(2, 2, 2), 0xaaaaaa, 1));
   }

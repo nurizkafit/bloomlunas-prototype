@@ -1,0 +1,47 @@
+{
+  "id": "tool_breaks",
+  "type": "random",
+  "source": "Market and world",
+  "theme": "Expense shock",
+  "trigger": {
+    "chance": 1
+  },
+  "title": "A tool breaks",
+  "text": "Your grinding stone cracks. You need it for work.",
+  "responses": [
+    {
+      "label": "Pay a mason to fix it now",
+      "requires": {
+        "gold": 25
+      },
+      "effects": [
+        {
+          "type": "gold",
+          "amount": -25,
+          "label": "Tool repair"
+        },
+        {
+          "type": "time",
+          "amount": 60
+        }
+      ]
+    },
+    {
+      "label": "Fix it yourself",
+      "effects": [
+        {
+          "type": "time",
+          "amount": 180
+        },
+        {
+          "type": "energy",
+          "amount": -20
+        }
+      ]
+    }
+  ],
+  "lesson": "Keep a buffer",
+  "source_doc": "docs:pages/events/random.md",
+  "_placeholder": true,
+  "build": "Jam"
+}

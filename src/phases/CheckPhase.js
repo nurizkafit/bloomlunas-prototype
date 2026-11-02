@@ -1,8 +1,9 @@
 import { Phase } from './Phase.js';
+import { MSG } from '../core/EventBus.js';
 
 /**
- * CheckPhase: end of week. Pays WEEKLY_EXPENSES (the part gold cannot cover becomes debt) and writes the week report.
- * Recap view and notes in M4. Goes to Act after the last week of the month.
+ * CheckPhase: end of week. Pays WEEKLY_EXPENSES (the part gold cannot cover becomes debt) and writes the week report:
+ * income, expenses, XP per path, plan vs actual minutes per activity, events, lost cards. intent.writeNote saves a note for the next Plan. Goes to Act after the last week of the month.
  */
 export class CheckPhase extends Phase {
   constructor() {
@@ -32,7 +33,20 @@ export class CheckPhase extends Phase {
       gold: state.wallet.gold, debt: state.debt.balance,
       sold: state.stats.sold - (state.weekStart?.sold ?? 0),
       waste: state.stats.waste - (state.weekStart?.waste ?? 0),
-      made, unpaid: cost - paid
+      made, unpaid: cost - paid,
+      doNet: round2(w.lines.filter((l) => l.kind !== 'expenses').reduce((n, l) => n + l.amount, 0)),
+      living: paid,
+      xp: Object.fromEntries(Object.entries(state.skills.pathXp).map(([k, v]) => [k, v - (state.weekStart?.pathXp?.[k] ?? 0)]).filter(([, v]) => v)),
+      planned: { ...(state.weekPlanned ?? {}) },
+      actual: { ...(state.weekActual ?? {}) },
+      events: [...(state.weekEvents ?? [])],
+      lost: (state.lostCards ?? []).filter((c) => c.month === month && c.week === week).map((c) => c.activityId)
+    });
+    this.listen(ctx, MSG.INTENT_WRITE_NOTE, ({ text }) => {
+      const t = String(text ?? '').trim();
+      if (!t) return;
+      state.notes = state.notes ?? [];
+      state.notes.push({ month, week, text: t });
     });
   }
 

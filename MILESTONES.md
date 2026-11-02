@@ -10,8 +10,8 @@ Rule: Claude works only on the milestone that is `Approved` or `In progress`. Af
 | M1 | Logic core, headless month | Done |
 | M2 | Plan phase (Planner Book port) | Review |
 | M3 | Do phase (town, avatar, actions) | Review |
-| M4 | Events and Check | In progress |
-| M5 | Act, endings, save | Approved |
+| M4 | Events and Check | Review |
+| M5 | Act, endings, save | In progress |
 | M6 | Balance testbed and CSV export | Not started |
 | M7 | Full-month playtest and handoff | Not started |
 
@@ -130,16 +130,21 @@ Result:
 Goal: events interrupt the week; the week ends with a recap.
 
 Tasks:
-- [ ] `EventSystem`: week queue from `EventData` (scheduled + random), card fires during Do, response applies effects, time loss removes planned cards.
-- [ ] `EventCardView` (situation, options with costs).
-- [ ] `CheckPhase` + `RecapView`: income and expenses, weekly living cost paid, XP per path, plan vs actual bars, note field.
-- [ ] Notes show in the next Plan (Journal tab).
+- [x] `EventSystem`: week queue from `EventData` (scheduled + random), card fires during Do, response applies effects, time loss removes planned cards.
+- [x] `EventCardView` (situation, options with costs).
+- [x] `CheckPhase` + `RecapView`: income and expenses, weekly living cost paid, XP per path, plan vs actual bars, note field.
+- [x] Notes show in the next Plan (Journal tab).
 
 Exit criteria:
-- [ ] A week with at least 1 scheduled and 1 random event plays and ends in a correct recap.
-- [ ] Ledger total in Check = sum of Do ledger lines (unit test).
+- [x] A week with at least 1 scheduled and 1 random event plays and ends in a correct recap.
+- [x] Ledger total in Check = sum of Do ledger lines (unit test).
 
 Result:
+- `npm run check` passes (46 tests: 4 for `EventSystem`, 1 recap test "Check ledger total = sum of Do ledger lines"). `npm run test:browser` passes (4 scripts).
+- Browser test: week 1 ends in the recap, a note is written, and the note shows in the week 2 Journal tab. The festival chip shows in the week 2 Plan. Week 2 has the Lantern Festival (scheduled) and a caravan (random). Both fire as cards, are answered, and show in the recap.
+- 5 events in `data/events` (all `_placeholder`; the docs list costs as TBD): festival and guild auction (scheduled), tool breaks, family request, caravan (random). Random events per week: `EVENTS_PER_WEEK_MIN`–`_MAX`, on top of the scheduled ones (my reading of the docs).
+- While an event card waits, actions are refused. The time an answer uses removes planned cards that overlap it (the recap lists them). The town shows `prop_event_marker` over the avatar.
+- Recap: money lines, weekly living cost, gold, debt, sold and waste, tiers made, XP per path, plan versus actual hours per activity, events, note.
 
 ---
 
