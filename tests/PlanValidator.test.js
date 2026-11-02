@@ -22,7 +22,7 @@ describe('PlanValidator', () => {
   it('closed day and outside hours are problems', () => {
     const { gm, place, last } = inPlan();
     place({ activityId: 'open_shop', day: 6, startMin: 9 * 60 });
-    place({ activityId: 'buy', day: 0, startMin: 15 * 60, locationId: 'loc_market' });
+    place({ activityId: 'visit', day: 0, startMin: 15 * 60, locationId: 'loc_market' });
     const [a, b] = gm.state.plan.cards;
     expect(last().issues[a.uid][0].msg).toMatch(/closed on Sun/);
     expect(last().issues[b.uid][0].msg).toMatch(/closed for all of this slot/);
@@ -32,7 +32,7 @@ describe('PlanValidator', () => {
     const { v } = inPlan();
     expect(v.slots().map((m) => m / 60)).toEqual([6, 9, 12, 15, 18, 21, 24]);
     expect(v.slotCheck({ activityId: 'explore', durationMin: 180 }, 1, 7 * 60).msg).toMatch(/slot edge/);
-    expect(v.duration({ activityId: 'buy', durationMin: 60 })).toBe(180);
+    expect(v.duration({ activityId: 'visit', durationMin: 60 })).toBe(180);
   });
 
   it('overlap is refused in slotCheck and reported in validate', () => {
@@ -59,7 +59,7 @@ describe('PlanValidator', () => {
     const craft = gm.state.plan.cards[0];
     expect(last().issues[craft.uid][0].lvl).toBe('bad');
     gm.bus.emit(MSG.INTENT_MOVE_CARD, { uid: craft.uid, day: 2, startMin: 12 * 60 });
-    place({ activityId: 'buy', day: 2, startMin: 6 * 60, locationId: 'loc_market' });
+    place({ activityId: 'visit', day: 2, startMin: 6 * 60, locationId: 'loc_market' });
     expect(last().issues[craft.uid][0].lvl).toBe('warn');
   });
 

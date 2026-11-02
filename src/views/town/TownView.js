@@ -19,7 +19,7 @@ export class TownView {
     this.gm = gm;
     this.c = gm.content;
     this.s = gm.state;
-    this.onPick = (_id) => {};
+    this.onPick = (_id, _o) => {};
     this.onPanel = (_panel) => {};
     /** @type {InteriorView|null} the interior shown now (view state only, not GameState) */
     this.inside = null;
@@ -231,7 +231,15 @@ export class TownView {
     if (!hit) return;
     let o = hit.object;
     while (o && !o.userData.locationId) o = o.parent;
-    if (o) this.onPick(o.userData.locationId);
+    if (o) this.onPick(o.userData.locationId, { fromTown: true });
+  }
+
+  /** Enter button of the building menu: show the interior if the player is in this building (view only, 0 min). @param {string} id */
+  enterBuilding(id) {
+    const int = this.interiors.get(id);
+    if (!int || this.#outer(this.s.player.location) !== id) return;
+    int.enterTo(this.s.player.location);
+    this.#enter(int);
   }
 
   #placeAvatarAt(locId) {

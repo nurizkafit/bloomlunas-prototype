@@ -248,7 +248,15 @@ table.led tr.tot td{border-top:1.5px solid var(--ink);border-bottom:0;font-weigh
 .pop .issue{margin-top:8px;padding:6px 8px;border-radius:6px;background:#c9563e22;color:var(--coral-ink);font-weight:600}
 .pop .issue.w{background:#e9b44c33;color:#7a5410}
 .pop .x{position:absolute;top:8px;right:10px;border:0;background:none;font-size:18px;color:var(--ink-2)}
-.pop .rm{margin-top:10px;width:100%;padding:6px;border-radius:6px;border:1px solid var(--ink-2);background:transparent;color:var(--ink);font-size:12px}
+.pop .rm{padding:6px 12px;border-radius:6px;border:1.5px solid var(--coral-ink);background:transparent;color:var(--coral-ink);font-size:12px;font-weight:600}
+.pop .kind{padding-right:20px}
+.pop h3 svg{color:var(--k)}
+.pop .pacts{display:flex;justify-content:space-between;gap:8px;margin-top:10px}
+.pop .pacts .go{padding:6px 16px;font-size:12.5px}
+#cardPop::before{content:"";position:absolute;top:18px;width:12px;height:12px;background:var(--paper-3);transform:rotate(45deg)}
+#cardPop.right::before{left:-6px} #cardPop.left::before{right:-6px}
+#cardPop{animation:popin .14s ease-out}
+@keyframes popin{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 .pop.spec{background:#1d1840;color:var(--text);border:1px solid #b7adff}
 .pop.spec h3{color:#b7adff} .pop.spec .sub{color:var(--muted)}
 .pop.spec td{border-top-color:#ffffff1a} .pop.spec td:first-child{color:var(--muted)}
@@ -326,3 +334,15 @@ table.led tr.tot td{border-top:1.5px solid var(--ink);border-bottom:0;font-weigh
 #ribbon .stat .v{font-size:20px}
 #ribbon .stat .ebar{width:90px}
 .tbtn[disabled]{opacity:.45;cursor:not-allowed}
+
+/* Budget: gold with no job, same look as Assets */
+.unas2{padding:4px 0 8px;border-bottom:1px solid var(--rule);margin-bottom:10px}
+/* Town: opening hours as merged blocks */
+.hgrid{display:grid;grid-template-columns:128px 1fr;gap:6px 10px;align-items:center;font-size:11.5px}
+.hdays,.hrow{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.hdays span{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);text-align:center;font-weight:600}
+.hn{font-weight:600;line-height:1.2}
+.hb{min-height:34px;border-radius:6px;background:#5cc29b33;border:1.5px solid #3f9a78;color:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2px 4px;line-height:1.15;overflow:hidden}
+.hb b{font-size:11.5px} .hb small{font-size:9.5px;color:var(--ink-2)}
+.hb.cl{background:repeating-linear-gradient(135deg,#c9563e14 0 5px,transparent 5px 10px);border:1.5px dashed #c9563e66;color:var(--coral-ink)}
+.hb.cl b{font-weight:600;font-size:10.5px}

@@ -47,7 +47,7 @@ describe('ActionRunner', () => {
 
   it('respects opening hours (apothecary opens at 8)', () => {
     const gm = gameInDo();
-    gm.ctx.sys.actions.startActivity('sell_to_organization');
+    gm.ctx.sys.actions.startActivity('visit');
     run(gm, 'travel', { to: 'loc_apothecary_guild' });
     expect(gm.state.calendar.minute).toBeLessThan(8 * 60);
     expect(run(gm, 'sell-item', { item: 'salep', qty: 1 }).reason).toMatch(/closed/);
@@ -61,7 +61,7 @@ describe('ActionRunner', () => {
   it('buys at the market and writes a ledger line', () => {
     const gm = gameInDo();
     const gold = gm.state.wallet.gold;
-    gm.ctx.sys.actions.startActivity('buy');
+    gm.ctx.sys.actions.startActivity('visit');
     run(gm, 'travel', { to: 'loc_market' });
     const r = run(gm, 'buy-item', { item: 'palm_sugar', qty: 2 });
     expect(r.ok).toBe(true);
@@ -139,9 +139,9 @@ describe('DoPhase plan changes', () => {
     const { MSG } = await import('../src/core/EventBus.js');
     const gm = gameInDo();
     gm.state.calendar.day = 2;
-    gm.bus.emit(MSG.INTENT_PLACE_CARD, { activityId: 'rest', day: 1, startMin: 20 * 60 });
+    gm.bus.emit(MSG.INTENT_PLACE_CARD, { activityId: 'grinding', day: 1, startMin: 18 * 60 });
     expect(gm.state.plan.cards.length).toBe(0);
-    gm.bus.emit(MSG.INTENT_PLACE_CARD, { activityId: 'rest', day: 3, startMin: 20 * 60 });
+    gm.bus.emit(MSG.INTENT_PLACE_CARD, { activityId: 'grinding', day: 3, startMin: 18 * 60 });
     expect(gm.state.plan.cards.length).toBe(1);
     const uid = gm.state.plan.cards[0].uid;
     gm.bus.emit(MSG.INTENT_MOVE_CARD, { uid, day: 2 });

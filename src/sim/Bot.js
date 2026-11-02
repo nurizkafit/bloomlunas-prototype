@@ -43,7 +43,7 @@ export class Bot {
   plan() {
     const start = this.content.num('DAY_START_HOUR') * 60;
     for (let day = 0; day < this.content.num('DAYS_PER_WEEK'); day++) {
-      const first = this.#marketDay(day) ? 'buy' : day >= 1 && day <= 4 ? 'explore' : null;
+      const first = this.#marketDay(day) ? 'visit' : day >= 1 && day <= 4 ? 'explore' : null;
       const slot = this.content.num('PLAN_SLOT_HOURS') * 60;
       if (first) this.bus.emit(MSG.INTENT_PLACE_CARD, { activityId: first, day, startMin: start, durationMin: slot });
       this.bus.emit(MSG.INTENT_PLACE_CARD, { activityId: 'craft', day, startMin: start + slot, durationMin: slot, recipeId: 'kunyit_asam' });
@@ -114,7 +114,7 @@ export class Bot {
   }
 
   #buy() {
-    this.#go('buy', 'loc_market');
+    this.#go('visit', 'loc_market');
     const wants = [['turmeric', 'fresh', 4], ['tamarind', 'paste', 1], ['palm_sugar', 'block', 1], ['coconut_oil', 'oil', 1], ['beeswax', 'block', 1]];
     for (const [item, variant, target] of wants) {
       const need = target - this.#have(item, variant);
@@ -131,7 +131,7 @@ export class Bot {
     this.#go('commission', 'loc_apothecary_guild');
     for (const q of [...this.state.quests]) this.#run('hand-in-quest', { questId: q.id });
     if (!this.state.quests.length) this.#run('take-quest', { questId: 'ap_q1' });
-    this.#start('sell_to_organization');
+    this.#start('visit');
     for (const variant of ['dried', 'powder']) {
       const n = this.#have('turmeric', variant);
       if (n) this.#run('sell-item', { item: 'turmeric', variant, qty: n });

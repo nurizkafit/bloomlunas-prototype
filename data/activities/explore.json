@@ -1,6 +1,6 @@
 {
   "id": "explore",
-  "name": "Explore (City zone)",
+  "name": "Exploration",
   "category": "fieldwork",
   "locationIds": [
     "loc_gather_area"

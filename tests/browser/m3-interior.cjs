@@ -43,7 +43,17 @@ const SP = process.argv[2];
   await p.click('#intExit'); await p.waitForTimeout(150);
   out.afterExit = await inside();
   await p.screenshot({ path: `${SP}/m3-interior-exit.png` });
-  await p.evaluate(() => window.__ui.menu.open('loc_market')); await p.click('[data-act="buy"]'); await p.waitForFunction(() => !window.__ui.town.avatar.walking, null, { timeout: 20000 }); await answer();
+  // Click the Home and shop building in the town: one menu with Enter and the activities of all stations.
+  const bxy = await p.evaluate(() => { const t = window.__ui.town, v = t.slots.get('loc_home_shop').root.position.clone(); v.y = 1.5; v.project(t.camera); const r = t.renderer.domElement.getBoundingClientRect(); return [r.left + (v.x + 1) / 2 * r.width, r.top + (1 - v.y) / 2 * r.height]; });
+  await p.mouse.click(bxy[0], bxy[1]); await p.waitForTimeout(150);
+  out.bMenu = await p.locator('.amenu:not(.stock) h3').textContent();
+  out.bEnter = await p.locator('[data-enter]').count();
+  out.bActs = await p.locator('.amenu [data-act]').evaluateAll((l) => l.map((x) => x.dataset.act));
+  await p.screenshot({ path: `${SP}/m3-building-menu.png` });
+  await p.click('[data-enter]'); await p.waitForTimeout(400);
+  out.entered = await inside();
+  await p.click('#intExit'); await p.waitForTimeout(150);
+  await p.evaluate(() => window.__ui.menu.open('loc_market')); await p.click('[data-act="visit"]'); await p.waitForFunction(() => !window.__ui.town.avatar.walking, null, { timeout: 20000 }); await answer();
   await p.evaluate(() => window.__ui.menu.open('loc_home_shop')); await p.click('[data-act="open_shop"]'); await answer();
   await p.waitForFunction(() => window.__ui.town.inside, null, { timeout: 20000 }).catch(() => {});
   out.walkedIn = await inside();
@@ -55,7 +65,8 @@ const SP = process.argv[2];
   await p.screenshot({ path: `${SP}/m3-interior-customer.png` });
   console.log('interior', JSON.stringify(out));
   console.log('errors', JSON.stringify(errs));
-  const ok = out.startInside === 'int_home_shop' && out.exitBar && /atelier/i.test(out.cauldronMenu) && /shop/i.test(out.counterMenu) && out.bedMenu === 'Home'
+  const ok = out.bMenu === 'Home and shop' && out.bEnter === 1 && ['open_shop', 'craft', 'grinding', 'rest'].every((x) => out.bActs.includes(x)) && out.entered === 'int_home_shop'
+    && out.startInside === 'int_home_shop' && out.exitBar && /atelier/i.test(out.cauldronMenu) && /shop/i.test(out.counterMenu) && out.bedMenu === 'Home'
     && out.shelf && out.walkInsideMin === 0 && out.stillInside && out.afterExit === null && out.walkedIn === 'int_home_shop' && out.customer
     && /Eat breakfast/.test(out.eatLabel) && /Ate breakfast: \+20 energy/.test(out.eatLog) && out.eatAgain && /Small rest: \+25 energy/.test(out.napLog) && out.endDayBtn === 0;
   await b.close();

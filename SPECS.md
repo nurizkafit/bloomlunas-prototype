@@ -60,14 +60,13 @@ Two levels (docs:pages/activities, docs:pages/actions):
 | Activity | Location | Actions inside (jam) | Skill XP |
 | --- | --- | --- | --- |
 | Open shop | Home shop | travel, serve-customer, restock-shelf | Sun |
-| Sell to organization | A guild | travel, sell-item | Sun |
-| Buy | Market or a guild | travel, buy-item | Sun |
+| Visit | Market or a guild | travel, buy-item, sell-item | Sun |
 | Craft | Home atelier | travel, prepare, brew, concoct, package | Moon (Cooking, Alchemy) |
 | Sun drying | Home drying yard | travel, start-batch, collect-batch (passive, days, needs sun) | Moon (Cooking) [Proposal] |
 | Grinding | Home atelier | travel, grind | Moon (Crafting) [Proposal] |
 | Explore (City zone) | Gathering area | travel, gather-harvest, pick-response | Earth |
 | Commission | Guild quest board, then job location | travel, take-quest, hand-in-quest | Path of the job |
-| Organization visit | Guild (1 service visit) | travel, service | Depends |
+| Appointment | Guild (1 service visit) | travel, service | Depends |
 | Rest | Home | travel, sleep (ends the day) | None |
 | Respond to event | Where the event is | pick-response | Depends |
 
@@ -225,11 +224,16 @@ Plan rules (user decision, 2 Nov 2026):
 - The week board has 3-hour slots (`PLAN_SLOT_HOURS`): 06–09, 09–12, 12–15, 15–18, 18–21, 21–24, 00–03. A card starts on a slot edge and fills whole slots (`planDurationOptions` are multiples of 180 min). Craft fills the recipe time rounded up to whole slots. The Do phase still counts minutes. Plan match "same time" = the action starts inside the card slots.
 - A location that is closed for all of a slot is a problem. Open for part of the slot is a warning. A location open all day (0–24) stays open after midnight.
 - Work in 00–03 is a warning (midnight). Sleep is not a card.
-- Deck: category tiles first (Production, Trade, Explore, Guilds). A tile shows its cards. A card shows its details (settings, issues, remove) in the same side panel; no popup. Drag a card onto a slot, or click a free slot and then pick a card.
+- Deck (user decision, 2 Nov 2026): the side panel is only the card stock. Category tiles first, then the cards of one tile. Drag a card onto a slot, or click a free slot and then pick a card.
+  - Tiles: Production (Craft, Processing), Shop (Open shop), Fieldwork (Exploration), Guild / Organization (Visit, Appointment, Commission). No Personal tile: sleep, meals and small rests are only in Do.
+  - Processing is one deck card for the activities with `planGroup: "processing"` (Sun drying, Grinding). The popup picks the process.
+  - Popup: when a card is dropped (or placed in a picked slot), a popup opens beside it. It holds the settings (process, organization or place, recipe, length), info, issues, Remove and Done. Click a placed card to open it again. Esc or a click outside closes it.
+- Ledger: "Gold with no job" uses the same big coin look as the Assets page.
+- Town tab: opening hours show as blocks per location. Days next to each other with the same hours merge into one block (example: Mon–Sat 8:00–15:00). Closed days are hatched.
 - Top bar: Gold, Debt, next payment (`DEBT_MIN_PAYMENT` + `MONTHLY_UTILITIES`, month end), weekly living cost, gold after the plan (end of week forecast), energy.
 - Sleep, meals and small rests are not cards. They happen in Do (the bed; HUD buttons).
 
-Card renames: Sell → Open shop; Craft → Craft (recipe picks Brew or Concoct); Gather → Explore (City zone); Errand (clinic order) → Organization visit (service); Errand (quest board) → Commission. Add Sell to organization, Sun drying, Grinding. Jamu → Fresh jamu. Recipes and materials from §6, not from the Planner Book.
+Card renames: Buy + Sell to organization → Visit (Guild / Organization); Organization visit → Appointment; Explore → Exploration (category Fieldwork); Open shop category → Shop. Earlier: Sell → Open shop; Craft → Craft (recipe picks Brew or Concoct); Gather → Explore (City zone); Errand (clinic order) → Organization visit (service); Errand (quest board) → Commission. Add Sell to organization, Sun drying, Grinding. Jamu → Fresh jamu. Recipes and materials from §6, not from the Planner Book.
 
 ## 11. Town scene and asset slots
 
@@ -239,6 +243,7 @@ Card renames: Sell → Open shop; Craft → Craft (recipe picks Brew or Concoct)
 - Interior view (user decision, 2 Nov 2026): only the home and shop has an interior. Other buildings open a menu only.
   - The town shows one "Home and shop" building. Home (bed) and atelier (cauldron) are stations inside it (`building: loc_home_shop`). The drying yard stays outside.
   - The view goes inside when the avatar walks through the door. "Exit to town" goes back. Exit is view only: no game time, the player location stays.
+  - Building menu (user decision, 2 Nov 2026): a click on the "Home and shop" building in the town opens one menu. It has an Enter button (only when the player is in the building; view only, 0 min) and the activities of each station (Shop counter, Cauldron, Bed). Picking an activity there walks to that station.
   - Do starts inside (the player wakes at home). After "End the day", the view goes inside again.
   - Camera: cutaway isometric room. Back walls stay, front walls are hidden (low rim). Warm lamp; the window follows the time of day.
   - Stations: cauldron (craft, grinding: loc_home_atelier), shop counter (open shop: loc_home_shop; customers walk in when you serve), shelf (stock panel, view only), bed (rest: loc_home).

@@ -27,8 +27,8 @@ export function ic(name, cls = '') {
 /** Card colors (Planner Book KC). */
 export const KC = { gather: '#5cc29b', buy: '#7fb7e6', craft: '#c98a3c', sell: '#e9b44c', org: '#b7adff', rest: '#9ba4c4', event: '#e8735c', dry: '#d9b25c' };
 
-const ICON_BY_ACTIVITY = { open_shop: 'coin', sell_to_organization: 'crate', buy: 'basket', craft: 'bowl', sun_drying: 'sun', grinding: 'mill', explore: 'leaf', commission: 'scroll', organization_visit: 'hand', rest: 'moon', respond_to_event: 'alert' };
-const COLOR_BY_ACTIVITY = { open_shop: KC.sell, sell_to_organization: KC.sell, buy: KC.buy, craft: KC.craft, sun_drying: KC.dry, grinding: KC.craft, explore: KC.gather, commission: KC.org, organization_visit: KC.org, rest: KC.rest, respond_to_event: KC.event };
+const ICON_BY_ACTIVITY = { open_shop: 'coin', visit: 'basket', craft: 'bowl', sun_drying: 'sun', grinding: 'mill', explore: 'leaf', commission: 'scroll', appointment: 'hand', rest: 'moon', respond_to_event: 'alert' };
+const COLOR_BY_ACTIVITY = { open_shop: KC.sell, visit: KC.buy, craft: KC.craft, sun_drying: KC.dry, grinding: KC.craft, explore: KC.gather, commission: KC.org, appointment: KC.org, rest: KC.rest, respond_to_event: KC.event };
 
 /** @param {{id:string}} a activity */
 export function iconFor(a) { return ICON_BY_ACTIVITY[a.id] ?? 'flag'; }

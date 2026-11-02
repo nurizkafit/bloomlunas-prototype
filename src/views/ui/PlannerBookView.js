@@ -6,9 +6,11 @@ import './planner.css';
 /**
  * PlannerBookView: the Plan phase screen, ported from the Planner Book v2 (prototypes/plan-phase-book).
  * Same look: ribbon, two-page book, divider tabs (Week, Ledger, Market, Town, Journal), review, "Start the week".
- * Prototype Iteration (2 Nov 2026): the week has 3-hour slots (06:00 to 03:00). The deck shows category tiles first,
- * then the cards of one category, then one card's details (settings, issues) in the same side panel (no popup).
- * Drag a card to a slot, or click an empty slot and then pick a card. The ribbon is the Plan top bar
+ * Prototype Iteration (2 Nov 2026): the week has 3-hour slots (06:00 to 03:00). The side panel is the card stock:
+ * category tiles first, then the cards of one category. Drag a card to a slot, or click an empty slot and then pick a card.
+ * A placed card opens a popup beside it (settings, info, issues, Remove). Click a placed card to open it again.
+ * Activities with the same planGroup (sun_drying, grinding = "processing") share one deck card; the popup picks one.
+ * The ribbon is the Plan top bar
  * (gold, debt, next payment, weekly living cost, gold after the plan, energy).
  * Reads GameState and PlanValidator results. Changes go out as intents only.
  * Unity: UI screen (UI Toolkit or uGUI) + drag handler.
@@ -26,12 +28,21 @@ export class PlannerBookView {
     this.mode = 'plan';
     this.mkSel = 'fresh_jamu';
     this.R = null;
-    /** Deck drafts: settings per activity before it is placed. */
+    /** Deck entries: one per plannable activity, or one per planGroup (the popup picks the activity). */
+    this.deck = [];
+    for (const a of this.c.all('activities').filter((x) => x.plannable)) {
+      const g = a.planGroup && this.deck.find((e) => e.key === a.planGroup);
+      if (g) { g.activityIds.push(a.id); continue; }
+      const G = a.planGroup ? GROUPS[a.planGroup] : null;
+      this.deck.push({ key: a.planGroup ?? a.id, activityIds: [a.id], category: a.category, name: G?.n ?? a.name, a });
+    }
+    /** Default settings of each deck card (activity, length, location, recipe). */
     this.draft = {};
-    this.deck = this.c.all('activities').filter((a) => a.plannable);
-    for (const a of this.deck) this.draft[a.id] = this.#defaults(a);
-    /** Deck side panel: 'cats' (category tiles), 'cards' (one category), 'detail' (one card). */
-    this.deckView = { mode: 'cats', cat: null, uid: null, type: null };
+    for (const e of this.deck) this.draft[e.key] = this.#defaults(e.a);
+    /** Deck side panel: 'cats' (category tiles) or 'cards' (one category). */
+    this.deckView = { mode: 'cats', cat: null };
+    /** Placed card shown in the popup beside it. @type {number|null} */
+    this.popUid = null;
     /** Empty slot picked by a click: the next card picked goes there. @type {{d:number, start:number}|null} */
     this.target = null;
     this.SLOT = this.c.num('PLAN_SLOT_HOURS');
@@ -75,7 +86,8 @@ export class PlannerBookView {
       this.fit.hidden = phase !== 'Plan';
       this.mode = 'plan';
       this.$('#confirmBtn').textContent = 'Review plan';
-      if (phase === 'Plan') { this.tab = 'week'; this.target = null; this.deckView = { mode: 'cats', cat: null, uid: null, type: null }; this.#fitScale(); this.render(); }
+      this.popUid = null;
+      if (phase === 'Plan') { this.tab = 'week'; this.target = null; this.deckView = { mode: 'cats', cat: null }; this.#fitScale(); this.render(); }
     });
     this.bus.on(MSG.PLAN_VALIDATED, (r) => { this.R = r; if (!this.fit.hidden) this.render(); });
     addEventListener('resize', () => this.#fitScale());
@@ -98,7 +110,7 @@ export class PlannerBookView {
   }
 
   #defaults(a) {
-    const d = { durationMin: a.planDurationMin };
+    const d = { activityId: a.id, durationMin: a.planDurationMin };
     if (a.locationIds.length > 1) d.locationId = a.locationIds[0];
     if (a.id === 'craft') d.recipeId = this.c.all('recipes')[0].id;
     return d;
@@ -158,6 +170,7 @@ export class PlannerBookView {
       e.style.setProperty('--tc', tc);
     });
     this[`render_${this.tab}`](R);
+    this.#renderPop(R);
   }
 
   #tabIssues(R) {
@@ -204,7 +217,7 @@ export class PlannerBookView {
       const a = this.c.get('activities', c.activityId);
       const iss = R.issues[c.uid] ?? [], b = iss.find((i) => i.lvl === 'bad'), w = iss.find((i) => i.lvl === 'warn');
       const h = this.#dur(c) / 60, s = c.startMin / 60, e = s + h;
-      const sel = this.deckView.mode === 'detail' && this.deckView.uid === c.uid;
+      const sel = this.popUid === c.uid;
       html += `<div class="bc${e > this.DE ? ' ot' : ''}${sel ? ' sel' : ''}" data-uid="${c.uid}" tabindex="0" style="--k:${colorFor(a)};top:calc(var(--hour) * ${s - this.DS} + 1px);height:calc(var(--hour) * ${h} - 2px)">
         <div class="t">${ic(iconFor(a))}${a.name}</div><div class="m num"><span>${hm(c.startMin)}–${hm(c.startMin + this.#dur(c))}</span></div><div class="m">${this.#sum(c)}</div>
         ${b ? '<span class="flag">✕</span>' : w ? '<span class="flag w">!</span>' : ''}</div>`;
@@ -229,33 +242,36 @@ export class PlannerBookView {
     this.$('#dayTag').textContent = `${hm(this.DS * 60)}–${hm(this.SLEEP * 60)} day · ${hm(this.SLEEP * 60)}–${hm(this.DE * 60)} night · ${hm(this.DE * 60)}–${hm(this.NE * 60)} midnight`;
     this.$('#fL').textContent = this.$('#fR').textContent = `Week ${this.s.calendar.week}`;
     this.$('#wkL').innerHTML = this.#hoursCol() + [0, 1, 2, 3].map((d) => this.#dayCol(d, R)).join('');
-    this.$('#wkR').innerHTML = this.#hoursCol() + [4, 5, 6].map((d) => this.#dayCol(d, R)).join('') + `<div class="deck" id="deck">${this.#deckHtml(R)}</div>`;
+    this.$('#wkR').innerHTML = this.#hoursCol() + [4, 5, 6].map((d) => this.#dayCol(d, R)).join('') + `<div class="deck" id="deck">${this.#deckHtml()}</div>`;
   }
 
-  /** Category of an activity for the deck tiles. */
-  #catOf(a) { return CATS.find((k) => k.cats.includes(a.category))?.id ?? 'other'; }
+  /** Deck tile id of a category. */
+  #catOf(category) { return CATS.find((k) => k.cats.includes(category))?.id ?? 'other'; }
+  /** Deck entry of a placed card. */
+  #entryOf(activityId) { return this.deck.find((e) => e.activityIds.includes(activityId)); }
 
-  #deckHtml(R) {
+  #deckHtml() {
     const v = this.deckView;
     const tgt = this.target ? `<div class="tgt">${ic('flag')}<span>Slot: <b>${DAYS[this.target.d]} ${hm(this.target.start)}–${hm(this.target.start + this.SLOT * 60)}</b></span><button class="lnk" data-untarget>Clear</button></div>` : '';
-    if (v.mode === 'detail') return this.#detailHtml(R);
     if (v.mode === 'cards') {
       const cat = CATS.find((k) => k.id === v.cat);
-      const list = this.deck.filter((a) => this.#catOf(a) === v.cat).map((a) => {
-        const card = { activityId: a.id, ...this.draft[a.id] };
-        const used = this.s.plan.cards.filter((p) => p.activityId === a.id).length;
-        return `<div class="dc" data-type="${a.id}" tabindex="0" style="--k:${colorFor(a)}">${used ? `<span class="used">×${used}</span>` : ''}
-          <div class="t">${ic(iconFor(a))}${a.name}</div>
-          <span class="m set">${a.id === 'craft' ? this.c.get('recipes', card.recipeId).name : this.#loc(card)}</span>
+      const list = this.deck.filter((e) => this.#catOf(e.category) === v.cat).map((e) => {
+        const card = this.draft[e.key], a = e.a;
+        const used = this.s.plan.cards.filter((p) => e.activityIds.includes(p.activityId)).length;
+        const set = e.activityIds.length > 1 ? e.activityIds.map((id) => this.#name(id)).join(' or ') : a.id === 'craft' ? 'Pick a recipe' : a.locationIds.length > 1 ? 'Pick a place' : this.#loc(card);
+        const icon = GROUPS[e.key]?.i ?? iconFor(a);
+        return `<div class="dc" data-type="${e.key}" tabindex="0" style="--k:${colorFor(a)}">${used ? `<span class="used">×${used}</span>` : ''}
+          <div class="t">${ic(icon)}${e.name}</div>
+          <span class="m set">${set}</span>
           <span class="m num">${this.#dur(card) / (this.SLOT * 60)} slot${this.#dur(card) > this.SLOT * 60 ? 's' : ''} · ${this.#openTxt(card)}</span></div>`;
       }).join('');
-      return `<button class="back" data-back="cats">‹ All categories</button><h3 style="--k:${cat.c}">${ic(cat.i)}${cat.n}</h3>${tgt}
-        <div class="hint">${this.target ? 'Click a card to put it in the slot.' : 'Drag a card onto a slot. Click a card to see its details.'}</div><div class="list">${list}</div>`;
+      return `<button class="back" data-back>‹ All categories</button><h3 style="--k:${cat.c}">${ic(cat.i)}${cat.n}</h3>${tgt}
+        <div class="hint">${this.target ? 'Click a card to put it in the slot.' : 'Drag a card onto a slot. Its settings open beside it.'}</div><div class="list">${list}</div>`;
     }
     const tiles = CATS.map((k) => {
-      const n = this.deck.filter((a) => this.#catOf(a) === k.id).length;
-      const used = this.s.plan.cards.filter((p) => this.#catOf(this.c.get('activities', p.activityId)) === k.id).length;
-      return n ? `<button class="cat" data-cat="${k.id}" style="--k:${k.c}">${ic(k.i)}<b>${k.n}</b><small>${k.sub}</small><span class="cnt">${n} card${n > 1 ? 's' : ''}${used ? ` · ${used} planned` : ''}</span></button>` : '';
+      const es = this.deck.filter((e) => this.#catOf(e.category) === k.id);
+      const used = this.s.plan.cards.filter((p) => this.#catOf(this.c.get('activities', p.activityId).category) === k.id).length;
+      return es.length ? `<button class="cat" data-cat="${k.id}" style="--k:${k.c}">${ic(k.i)}<b>${k.n}</b><small>${es.map((e) => e.name).join(', ')}</small><span class="cnt">${es.length} card${es.length > 1 ? 's' : ''}${used ? ` · ${used} planned` : ''}</span></button>` : '';
     }).join('');
     return `<h3>Card deck</h3>${tgt}<div class="hint">${this.target ? 'Pick a category, then a card for the slot.' : 'Pick a category. Then drag a card onto a slot, or click a free slot first.'} Sleep, meals and small rests happen in Do.</div><div class="cats">${tiles}</div>`;
   }
@@ -299,12 +315,12 @@ export class PlannerBookView {
     const exp = this.c.num('WEEKLY_EXPENSES');
     const sl = [
       { k: 'exp', n: 'Weekly expenses', i: 'home', why: 'Food, lamp oil, family allowance. Paid in Check.', hint: b.exp >= exp ? ['ok', `✓ Covers ${exp} G living costs`] : ['bad', `✕ Living costs are ${exp} G`] },
-      { k: 'buy', n: 'Purchases', i: 'basket', why: 'Gold for Buy cards. Real prices show only when you buy.', hint: b.buy > 0 ? ['ok', `✓ ${b.buy} G for purchases`] : ['', 'No gold for purchases'] },
+      { k: 'buy', n: 'Purchases', i: 'basket', why: 'Gold for Visit cards (buy at the Market or a guild). Real prices show only when you buy.', hint: b.buy > 0 ? ['ok', `✓ ${b.buy} G for purchases`] : ['', 'No gold for purchases'] },
       { k: 'buf', n: 'Buffer (savings)', i: 'lock', why: 'Carries to month-end: debt installment and utilities.', hint: ['', `Month-end bills: ${this.c.num('DEBT_MIN_PAYMENT') + this.c.num('MONTHLY_UTILITIES')} G`] }
     ];
     const seg = [['Weekly expenses', b.exp, '#c98a3c'], ['Purchases', b.buy, '#4f8fc4'], ['Buffer', b.buf, '#7a6fd6'], ['No job', Math.max(0, R.unassigned), '#b8a77e']];
     this.$('#ledR').innerHTML = `<div class="ph"><h2>Budget</h2><span class="tag">Step 1c · give every gold a job</span></div>
-      <div class="unas"><span>Gold with no job</span><b class="num" style="color:${R.unassigned < 0 ? 'var(--coral-ink)' : R.unassigned > 0 ? 'var(--gold-ink)' : 'var(--jade-ink)'}">${R.unassigned} G</b></div>
+      <div class="big unas2"><div class="coin" aria-hidden="true"></div><div><div class="v num" style="color:${R.unassigned < 0 ? 'var(--coral-ink)' : R.unassigned > 0 ? 'var(--gold-ink)' : 'var(--jade-ink)'}">${R.unassigned} G</div><div style="font-size:12.5px;color:var(--ink-2)">Gold with no job · ${R.unassigned > 0 ? 'give it a job below' : R.unassigned < 0 ? 'you planned more gold than you have' : 'every gold has a job'}</div></div></div>
       ${sl.map((x) => `<div class="slot"><span class="nm">${ic(x.i)}${x.n}</span><span class="ctl"><button data-s="${x.k}" data-v="-10" aria-label="Remove 10 G">−</button><span class="num">${b[x.k] ?? 0} G</span><button data-s="${x.k}" data-v="10" aria-label="Add 10 G">+</button></span><span class="why">${x.why}</span><span class="hint ${x.hint[0]}">${x.hint[1]}</span></div>`).join('')}
       <div class="sec"><span>Where the ${tot} G goes</span></div>
       <div class="stack">${seg.filter((x) => x[1] > 0).map((x) => `<div style="width:${(x[1] / tot) * 100}%;background:${x[2]}">${x[1]}</div>`).join('')}</div>
@@ -371,10 +387,22 @@ export class PlannerBookView {
       <p style="font-size:12px;color:var(--ink-2);margin:10px 0 0">Random events never show here. Only a buffer protects against them.</p>
       <span class="folio">Town · calendar</span>`;
     const locs = this.c.all('locations').filter((l) => l.openHours);
-    const cell = (h) => (h ? (h[0] === 0 && h[1] === 24 ? 'All day' : `${h[0]}–${h[1]}`) : 'Closed');
+    const cell = (h) => (h ? (h[0] === 0 && h[1] === 24 ? 'All day' : `${h[0]}:00–${h[1]}:00`) : 'Closed');
+    // Consecutive days with the same hours merge into one block.
+    const blocks = (oh) => {
+      const out = [];
+      oh.forEach((h, d) => {
+        const k = JSON.stringify(h), last = out.at(-1);
+        if (last && last.k === k) last.n++; else out.push({ k, h, d, n: 1 });
+      });
+      return out.map((b) => {
+        const days = b.n === 1 ? DAYS[b.d] : `${DAYS[b.d]}–${DAYS[b.d + b.n - 1]}`;
+        return `<div class="hb ${b.h ? '' : 'cl'}" style="grid-column:${b.d + 1} / span ${b.n}" title="${days}: ${cell(b.h)}"><b class="num">${cell(b.h)}</b>${b.n > 1 && b.h ? `<small>${days}</small>` : ''}</div>`;
+      }).join('');
+    };
     this.$('#twR').innerHTML = `<div class="ph"><h2>Opening hours · week ${cal.week}</h2><span class="tag"><span class="var">locations/*.openHours</span></span></div>
-      <table class="hrs"><tr><th>Location</th>${DAYS.map((d) => `<th>${d}</th>`).join('')}</tr>
-      ${locs.map((l) => `<tr><td>${l.name}</td>${l.openHours.map((h) => `<td class="num ${h ? '' : 'x'}">${cell(h)}</td>`).join('')}</tr>`).join('')}</table>
+      <div class="hgrid"><span></span><div class="hdays">${DAYS.map((d) => `<span>${d}</span>`).join('')}</div>
+      ${locs.map((l) => `<span class="hn">${l.name}</span><div class="hrow">${blocks(l.openHours)}</div>`).join('')}</div>
       <div class="sec" style="margin-top:14px"><span>Quest boards</span></div>
       <div class="evl">${this.c.all('entities').filter((e) => e.questBoard?.length).flatMap((e) => e.questBoard.map((q) => `<div class="ev"><span class="d">${e.id.split('_')[0]}</span><div>${q.ask.qty} ${this.c.get('items', q.ask.item).name}<small>Reward ${q.rewardGold} G · ${q.deadlineDays} days</small></div><span class="ty Scheduled">Quest</span></div>`)).join('')}</div>
       <span class="folio">Town · hours</span>`;
@@ -395,80 +423,80 @@ export class PlannerBookView {
       <span class="folio">Journal · recap</span>`;
   }
 
-  // ---------------------------------------------------------------- deck detail panel, toast, review
-  #closePop() {}
+  // ---------------------------------------------------------------- card popup, toast, review
+  #closePop() { if (this.popUid != null) { this.popUid = null; this.$('#cardPop')?.remove(); this.stage.querySelector('.bc.sel')?.classList.remove('sel'); } }
 
-  /** The card the detail panel shows: a placed card (uid) or a deck draft (type). */
-  #detailCard() {
-    const v = this.deckView;
-    if (v.uid) return this.s.plan.cards.find((x) => x.uid === v.uid) ?? null;
-    return v.type ? { activityId: v.type, ...this.draft[v.type] } : null;
-  }
+  /** Open the popup beside a placed card. @param {number} uid */
+  #openPop(uid) { this.popUid = uid; this.render(); }
 
-  /** Show one card in the side panel. @param {any} card placed card (uid) or deck draft */
-  #showDetail(card) {
-    const a = this.c.get('activities', card.activityId);
-    this.deckView = { mode: 'detail', cat: this.#catOf(a), uid: card.uid ?? null, type: card.uid ? null : a.id };
-    this.render();
-  }
-
-  #detailHtml(R) {
-    const card = this.#detailCard();
-    if (!card) { this.deckView = { mode: 'cats', cat: null, uid: null, type: null }; return this.#deckHtml(R); }
-    const a = this.c.get('activities', card.activityId);
-    const iss = card.uid ? R.issues[card.uid] ?? [] : [];
+  /** The popup beside the placed card: settings, info, issues, Remove. */
+  #renderPop(R) {
+    this.$('#cardPop')?.remove();
+    const card = this.popUid != null && this.s.plan.cards.find((x) => x.uid === this.popUid);
+    const el = card && this.tab === 'week' && this.stage.querySelector(`.bc[data-uid="${card.uid}"]`);
+    if (!el) { this.popUid = null; return; }
+    const a = this.c.get('activities', card.activityId), e = this.#entryOf(a.id);
+    const iss = R.issues[card.uid] ?? [];
+    const slots = (m) => `${m / (this.SLOT * 60)} slot${m > this.SLOT * 60 ? 's' : ''}`;
     const sets = [];
-    if (a.locationIds.length > 1) sets.push({ key: 'locationId', label: 'Where', opt: a.locationIds.map((id) => [id, this.c.get('locations', id).name.replace(/ guild$/i, '')]) });
-    if (a.id === 'craft') sets.push({ key: 'recipeId', label: 'Recipe', opt: this.c.all('recipes').map((r) => [r.id, `${r.name} (${Math.ceil(r.timeMin / (this.SLOT * 60))} slot${r.timeMin > this.SLOT * 60 ? 's' : ''})`]) });
-    else if (a.planDurationOptions?.length > 1) sets.push({ key: 'durationMin', label: 'Length', opt: a.planDurationOptions.map((m) => [m, `${m / (this.SLOT * 60)} slot${m > this.SLOT * 60 ? 's' : ''}`]) });
-    const settings = sets.length ? `<div class="sets">${sets.map((x) => `<div class="setrow"><span>${x.label}</span><div class="seg" role="radiogroup" aria-label="${x.label}">${x.opt.map(([val, l]) => `<button role="radio" aria-checked="${card[x.key] === val}" data-set="${x.key}" data-val="${val}">${l}</button>`).join('')}</div></div>`).join('')}</div>` : '';
+    if (e.activityIds.length > 1) sets.push({ key: 'activityId', label: GROUPS[e.key]?.ask ?? 'Kind', opt: e.activityIds.map((id) => [id, this.#name(id)]) });
+    if (a.locationIds.length > 1) sets.push({ key: 'locationId', label: a.category === 'organization' ? 'Organization' : 'Where', opt: a.locationIds.map((id) => [id, this.c.get('locations', id).name.replace(/ guild$/i, '')]) });
+    if (a.id === 'craft') sets.push({ key: 'recipeId', label: 'Recipe', opt: this.c.all('recipes').map((r) => [r.id, `${r.name} (${slots(Math.ceil(r.timeMin / (this.SLOT * 60)) * this.SLOT * 60)})`]) });
+    else if (a.planDurationOptions?.length > 1) sets.push({ key: 'durationMin', label: 'Length', opt: a.planDurationOptions.map((m) => [m, slots(m)]) });
+    const cur = (k) => (k === 'locationId' ? this.v.location(card) : card[k]);
+    const settings = sets.length ? `<div class="sets">${sets.map((x) => `<div class="setrow"><span>${x.label}</span><div class="seg" role="radiogroup" aria-label="${x.label}">${x.opt.map(([val, l]) => `<button role="radio" aria-checked="${String(cur(x.key)) === String(val)}" data-set="${x.key}" data-val="${val}">${l}</button>`).join('')}</div></div>`).join('')}</div>` : '';
     const actions = a.actionIds.filter((x) => x !== 'travel').map((x) => this.c.get('actions', x).name).join(', ');
-    let place = '';
-    if (!card.uid && this.target) {
-      const chk = this.v.slotCheck(card, this.target.d, this.target.start), why = this.#dayProblem(card, this.target.d);
-      place = `<button class="go wide" data-place ${why || chk.lvl === 'bad' ? 'disabled' : ''}>Put in ${DAYS[this.target.d]} ${hm(this.target.start)}</button>${why || chk.msg ? `<div class="issue ${chk.lvl === 'warn' && !why ? 'w' : ''}">${why ?? chk.msg}</div>` : ''}`;
-    }
-    return `<button class="back" data-back="${card.uid ? 'cats' : 'cards'}">‹ ${card.uid ? 'Card deck' : CATS.find((k) => k.id === this.#catOf(a)).n}</button>
-      <div class="kind">${card.uid ? 'Planned card' : 'Deck card'}</div><h3 style="--k:${colorFor(a)}">${ic(iconFor(a))}${a.name}</h3>
+    const pop = document.createElement('div');
+    pop.className = 'pop';
+    pop.id = 'cardPop';
+    pop.setAttribute('role', 'dialog');
+    pop.setAttribute('aria-label', `${a.name} settings`);
+    pop.innerHTML = `<button class="x" data-popx aria-label="Close">×</button>
+      <div class="kind">${e.activityIds.length > 1 ? e.name : 'Planned card'} · ${DAYS[card.day]} ${hm(card.startMin)}–${hm(card.startMin + this.#dur(card))}</div>
+      <h3 style="--k:${colorFor(a)}">${ic(iconFor(a))}${a.name}</h3>
       <div class="sub">Actions: ${actions}.</div>${settings}
-      <table class="dt"><tr><td>Location</td><td>${this.#loc(card)}</td></tr><tr><td>Length</td><td class="num">${this.#dur(card) / 60} h</td></tr>
+      <table><tr><td>Location</td><td>${this.#loc(card)}</td></tr><tr><td>Length</td><td class="num">${this.#dur(card) / 60} h</td></tr>
       <tr><td>Open</td><td>${this.#openTxt(card)}</td></tr>
       <tr><td>Importance</td><td><span class="pips">${'●'.repeat(a.importance)}${'○'.repeat(3 - a.importance)}</span>${a.canMiss ? '' : ' · must not miss'}</td></tr>
-      ${a.skillPath ? `<tr><td>Skill path</td><td>${a.skillPath}</td></tr>` : ''}
-      ${card.uid ? `<tr><td>Planned</td><td class="num">${DAYS[card.day]} ${hm(card.startMin)}–${hm(card.startMin + this.#dur(card))}</td></tr>` : ''}</table>
+      ${a.skillPath ? `<tr><td>Skill path</td><td>${a.skillPath}</td></tr>` : ''}</table>
       ${iss.map((i) => `<div class="issue ${i.lvl === 'warn' ? 'w' : ''}">${i.lvl === 'bad' ? '✕' : '!'} ${i.msg}</div>`).join('')}
-      ${place}${card.uid ? '<button class="rm" id="rmBtn">Remove from plan</button>' : !this.target ? '<div class="hint">Drag the card from the list onto a slot, or click a free slot.</div>' : ''}`;
+      <div class="pacts"><button class="rm" id="rmBtn">Remove</button><button class="go" data-popx>Done</button></div>`;
+    this.stage.appendChild(pop);
+    // Beside the card: right of it if there is room, else left.
+    const sc = this.#scale(), sr = this.stage.getBoundingClientRect(), r = el.getBoundingClientRect();
+    const L = (r.left - sr.left) / sc, R2 = (r.right - sr.left) / sc, T = (r.top - sr.top) / sc;
+    const w = pop.offsetWidth, h = pop.offsetHeight;
+    const left = R2 + 10 + w <= 1590 ? R2 + 10 : L - 10 - w;
+    pop.style.left = `${Math.max(10, left)}px`;
+    pop.style.top = `${Math.min(900 - h - 10, Math.max(10, T - 6))}px`;
+    pop.classList.add(left === R2 + 10 ? 'right' : 'left');
   }
 
-  /** A setting changed in the detail panel. */
-  #setDetail(key, raw) {
-    const card = this.#detailCard();
+  /** A setting changed in the popup. */
+  #setPop(key, raw) {
+    const card = this.s.plan.cards.find((x) => x.uid === this.popUid);
     if (!card) return;
-    const val = key === 'durationMin' ? Number(raw) : raw;
-    const a = this.c.get('activities', card.activityId);
-    if (card.uid) {
-      const next = { ...card, [key]: val };
-      if (this.mode === 'do' && card.day <= this.s.calendar.day) { this.#toast('This day has started.', 'bad'); return; }
-      if (key === 'locationId') { const why = this.v.dayProblem(next, card.day); if (why) { this.#toast(`${why}. Move the card first.`, 'bad'); return; } }
-      const chk = this.v.slotCheck(next, card.day, card.startMin);
-      if (chk.lvl === 'bad') { this.#toast(`${chk.msg}. The new setting does not fit here.`, 'bad'); return; }
-      this.bus.emit(MSG.INTENT_MOVE_CARD, { uid: card.uid, [key]: val });
-    } else {
-      this.draft[a.id] = { ...this.draft[a.id], [key]: val };
-    }
+    let ch = { [key]: key === 'durationMin' ? Number(raw) : raw };
+    if (key === 'activityId') { const a = this.c.get('activities', raw); ch = { activityId: raw, durationMin: a.planDurationMin, locationId: undefined, recipeId: raw === 'craft' ? card.recipeId : undefined }; }
+    const next = { ...card, ...ch };
+    if (this.mode === 'do' && card.day <= this.s.calendar.day) { this.#toast('This day has started.', 'bad'); return; }
+    const why = this.v.dayProblem(next, card.day);
+    if (why) { this.#toast(`${why}. Move the card first.`, 'bad'); return; }
+    const chk = this.v.slotCheck(next, card.day, card.startMin);
+    if (chk.lvl === 'bad') { this.#toast(`${chk.msg}. The new setting does not fit here.`, 'bad'); return; }
+    this.bus.emit(MSG.INTENT_MOVE_CARD, { uid: card.uid, ...ch });
     this.render();
   }
 
-  /** Put a deck card into the picked slot. @param {any} card */
+  /** Put a deck card into the picked slot, then open its popup. @param {any} card */
   #placeAtTarget(card) {
     const { d, start } = this.target;
     const why = this.#dayProblem(card, d), chk = this.v.slotCheck(card, d, start);
-    if (why || chk.lvl === 'bad') { this.#toast(`${why ?? chk.msg}. Pick another card or slot.`, 'bad'); this.#showDetail(card); return; }
+    if (why || chk.lvl === 'bad') { this.#toast(`${why ?? chk.msg}. Pick another card or slot.`, 'bad'); return; }
     this.bus.emit(MSG.INTENT_PLACE_CARD, { ...card, day: d, startMin: start });
     const placed = this.s.plan.cards.at(-1);
     this.target = null;
-    this.#toast(`${this.#name(placed.activityId)} planned on ${DAYS[d]}, ${hm(start)}–${hm(start + this.#dur(placed))}.`, 'ok');
-    this.#showDetail(placed);
+    this.#openPop(placed.uid);
   }
 
   #toast(msg, cls = '') {
@@ -520,7 +548,7 @@ export class PlannerBookView {
     let drag = null;
     const cardOf = (src) => (src.classList.contains('bc')
       ? this.s.plan.cards.find((x) => x.uid === Number(src.dataset.uid))
-      : { activityId: src.dataset.type, ...this.draft[src.dataset.type] });
+      : { ...this.draft[src.dataset.type] });
 
     st.addEventListener('pointerdown', (e) => {
       const src = e.target.closest('.dc,.bc');
@@ -594,25 +622,24 @@ export class PlannerBookView {
       const d0 = drag;
       drag = null;
       if (!d0.moving) {
-        if (!d0.uid && this.target) this.#placeAtTarget(d0.c);
-        else this.#showDetail(d0.c);
+        if (d0.uid) this.#openPop(d0.uid);
+        else if (this.target) this.#placeAtTarget(d0.c);
+        else this.#toast('Drag the card onto a slot, or click a free slot first.');
         return;
       }
       d0.ghost.remove();
       d0.src.classList.remove('dragging');
       const el = document.elementFromPoint(e.clientX, e.clientY);
       clearCols();
-      if (d0.uid && el?.closest('#deck')) { this.bus.emit(MSG.INTENT_REMOVE_CARD, { uid: d0.uid }); if (this.deckView.uid === d0.uid) this.deckView = { mode: 'cats', cat: null, uid: null, type: null }; this.#toast('Card removed from the plan.'); this.render(); return; }
+      if (d0.uid && el?.closest('#deck')) { this.bus.emit(MSG.INTENT_REMOVE_CARD, { uid: d0.uid }); if (this.popUid === d0.uid) this.popUid = null; this.#toast('Card removed from the plan.'); this.render(); return; }
       if (!d0.target) { if (el?.closest('.col')) this.#toast(this.#dayProblem(d0.c, Number(el.closest('.col').dataset.d)) ?? 'You cannot drop it here.', 'bad'); this.render(); return; }
       const { d, start, chk } = d0.target;
       if (chk.lvl === 'bad') { this.#toast(`${chk.msg}. Drop it in a free slot.`, 'bad'); this.render(); return; }
       if (d0.uid) this.bus.emit(MSG.INTENT_MOVE_CARD, { uid: d0.uid, day: d, startMin: start });
       else this.bus.emit(MSG.INTENT_PLACE_CARD, { ...d0.c, day: d, startMin: start });
       const placed = d0.uid ? this.s.plan.cards.find((x) => x.uid === d0.uid) : this.s.plan.cards.at(-1);
+      this.popUid = placed.uid;
       this.render();
-      const iss = (this.R?.issues[placed.uid] ?? []);
-      const b = iss.find((i) => i.lvl === 'bad'), w = iss.find((i) => i.lvl === 'warn');
-      this.#toast(b ? b.msg : w ? w.msg : `${this.#name(placed.activityId)} planned on ${DAYS[d]}, ${hm(start)}–${hm(start + this.#dur(placed))}.`, b ? 'bad' : w ? '' : 'ok');
     });
 
     st.addEventListener('pointercancel', () => {
@@ -621,6 +648,20 @@ export class PlannerBookView {
     });
 
     st.addEventListener('click', (e) => {
+      const pop = e.target.closest('#cardPop');
+      if (pop) {
+        const set = e.target.closest('[data-set]');
+        if (set) { this.#setPop(set.dataset.set, set.dataset.val); return; }
+        if (e.target.closest('[data-popx]')) { this.#closePop(); return; }
+        if (e.target.closest('#rmBtn')) {
+          this.bus.emit(MSG.INTENT_REMOVE_CARD, { uid: this.popUid });
+          this.popUid = null;
+          this.#toast('Card removed. It is back in the deck.');
+          this.render();
+        }
+        return;
+      }
+      if (this.popUid != null && !e.target.closest('.bc,.dc')) this.#closePop();
       const tb = e.target.closest('.tab');
       if (tb) { this.#go(tb.dataset.tab); return; }
       const gt = e.target.closest('[data-goto]');
@@ -638,26 +679,13 @@ export class PlannerBookView {
         const [d, m] = sl.dataset.slot.split(':').map(Number);
         if (this.mode === 'do' && d <= this.s.calendar.day) { this.#toast('This day has started.', 'bad'); return; }
         this.target = this.target && this.target.d === d && this.target.start === m ? null : { d, start: m };
-        if (this.deckView.mode === 'detail' && this.deckView.uid) this.deckView = { mode: 'cats', cat: null, uid: null, type: null };
         this.render();
         return;
       }
       if (e.target.closest('[data-untarget]')) { this.target = null; this.render(); return; }
       const cat = e.target.closest('[data-cat]');
-      if (cat) { this.deckView = { mode: 'cards', cat: cat.dataset.cat, uid: null, type: null }; this.render(); return; }
-      const back = e.target.closest('[data-back]');
-      if (back) { this.deckView = { mode: back.dataset.back, cat: back.dataset.back === 'cards' ? this.deckView.cat : null, uid: null, type: null }; this.render(); return; }
-      const set = e.target.closest('#deck [data-set]');
-      if (set) { this.#setDetail(set.dataset.set, set.dataset.val); return; }
-      if (e.target.closest('[data-place]')) { const c = this.#detailCard(); if (c && this.target) this.#placeAtTarget(c); return; }
-      if (e.target.closest('#rmBtn')) {
-        const uid = this.deckView.uid;
-        this.bus.emit(MSG.INTENT_REMOVE_CARD, { uid });
-        this.deckView = { mode: 'cats', cat: null, uid: null, type: null };
-        this.#toast('Card removed. It is back in the deck.');
-        this.render();
-        return;
-      }
+      if (cat) { this.deckView = { mode: 'cards', cat: cat.dataset.cat }; this.render(); return; }
+      if (e.target.closest('[data-back]')) { this.deckView = { mode: 'cats', cat: null }; this.render(); return; }
       const mk = e.target.closest('[data-mk]');
       if (mk) { this.mkSel = mk.dataset.mk; this.render(); return; }
       if (e.target.closest('#confirmBtn')) { if (this.mode === 'do') { this.fit.hidden = true; this.#closePop(); } else this.#openReview(); return; }
@@ -665,7 +693,7 @@ export class PlannerBookView {
 
     document.addEventListener('keydown', (e) => {
       if (this.fit.hidden) return;
-      if (e.key === 'Escape') { this.#closeModal(); if (this.target) { this.target = null; this.render(); } return; }
+      if (e.key === 'Escape') { this.#closeModal(); this.#closePop(); if (this.target) { this.target = null; this.render(); } return; }
       if (this.scrim || e.target.matches?.('input,textarea')) return;
       const i = Number(e.key);
       if (i >= 1 && i <= 5) { this.#go(TABS[i - 1].id); return; }
@@ -686,7 +714,8 @@ export class PlannerBookView {
       }
       if (e.key === 'Enter') {
         const c = e.target.closest?.('.dc,.bc');
-        if (c) this.#showDetail(cardOf(c));
+        if (c?.classList.contains('bc')) this.#openPop(Number(c.dataset.uid));
+        else if (c && this.target) this.#placeAtTarget(cardOf(c));
       }
     });
   }
@@ -694,11 +723,14 @@ export class PlannerBookView {
 
 /** Deck categories (activity.category -> tile). */
 const CATS = [
-  { id: 'production', n: 'Production', sub: 'Craft, dry, grind', cats: ['production'], i: 'bowl', c: '#c98a3c' },
-  { id: 'trade', n: 'Trade', sub: 'Shop, buy, sell', cats: ['trade'], i: 'coin', c: '#e9b44c' },
-  { id: 'explore', n: 'Explore', sub: 'Gather in the wild', cats: ['fieldwork'], i: 'leaf', c: '#5cc29b' },
-  { id: 'guilds', n: 'Guilds', sub: 'Quests, services', cats: ['organization'], i: 'scroll', c: '#b7adff' }
+  { id: 'production', n: 'Production', cats: ['production'], i: 'bowl', c: '#c98a3c' },
+  { id: 'shop', n: 'Shop', cats: ['shop'], i: 'coin', c: '#e9b44c' },
+  { id: 'fieldwork', n: 'Fieldwork', cats: ['fieldwork'], i: 'leaf', c: '#5cc29b' },
+  { id: 'organization', n: 'Guild / Organization', cats: ['organization'], i: 'scroll', c: '#b7adff' }
 ];
+
+/** Deck cards that hold several activities (activity.planGroup). The popup picks one. */
+const GROUPS = { processing: { n: 'Processing', ask: 'Process', i: 'mill' } };
 
 const TABS = [
   { id: 'week', n: 'Week', sub: 'Plan days', c: '#e9b44c' },

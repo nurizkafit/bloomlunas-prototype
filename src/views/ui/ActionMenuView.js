@@ -6,6 +6,8 @@ import { ic, iconFor, colorFor } from './icons.js';
  * ActionMenuView: click a location -> its activities -> their actions (SPECS §4).
  * Starting an activity sends intent.startActivity, then intent.runAction travel (the avatar walks there).
  * Each action has its own small form (item, quantity, recipe, quest, service). Results show in the HUD log.
+ * Building menu (Prototype Iteration): a click on a town building with an interior (Home and shop) opens one menu
+ * with an Enter button and the activities of every station inside (shop counter, atelier, bed).
  * Reads GameState; sends intents only. Unity: radial or list menu on the location.
  */
 export class ActionMenuView {
@@ -17,26 +19,62 @@ export class ActionMenuView {
     this.el.hidden = true;
     root.appendChild(this.el);
     this.locId = null;
+    /** Town building id when the menu shows a whole building, else null. */
+    this.building = null;
+    /** Set by main.js: show the interior of a building (view only). @param {string} _id */
+    this.onEnter = (_id) => {};
     this.el.addEventListener('click', (e) => this.#click(e));
     const rerender = () => { if (!this.el.hidden) this.render(); };
     for (const m of [MSG.ACTION_COMPLETED, MSG.ACTION_REFUSED, MSG.ACTION_STARTED, MSG.INVENTORY_CHANGED]) gm.bus.on(m, rerender);
     gm.bus.on(MSG.PHASE_ENTERED, () => this.close());
   }
 
-  /** @param {string} locId */
-  open(locId) {
+  /** @param {string} locId @param {{fromTown?: boolean}} [o] fromTown: a click on the building in the town */
+  open(locId, o = {}) {
     this.locId = locId;
+    this.building = o.fromTown && this.#interior(locId) ? locId : null;
     this.el.hidden = false;
     this.render();
   }
 
-  close() { this.el.hidden = true; this.locId = null; }
+  close() { this.el.hidden = true; this.locId = null; this.building = null; }
+
+  /** @param {string} buildingId */
+  #interior(buildingId) { return this.c.all('interiors').find((i) => i.buildingId === buildingId) ?? null; }
+
+  /** The town building of a location. @param {string} id */
+  #outer(id) { return this.c.get('locations', id).building ?? id; }
+
+  /** One menu for a whole building: Enter, then the activities per station. */
+  #renderBuilding() {
+    const int = this.#interior(this.building), p = this.s.player, day = this.s.calendar.day;
+    const inside = this.#outer(p.location) === this.building;
+    const locs = [...new Set(int.stations.map((st) => st.locationId).filter(Boolean))];
+    const label = (id) => int.stations.find((st) => st.locationId === id)?.label ?? this.c.get('locations', id).name;
+    const hours = (id) => {
+      const h = this.c.get('locations', id).openHours?.[day];
+      if (h === undefined) return '';
+      return h ? (h[0] === 0 && h[1] === 24 ? '' : ` · open ${h[0]}:00–${h[1]}:00`) : ` · closed on ${DAYS[day]}`;
+    };
+    const groups = locs.map((id) => {
+      const acts = this.c.all('activities').filter((a) => a.locationIds.includes(id));
+      if (!acts.length) return '';
+      return `<div class="sec">${label(id)}${hours(id)}</div>${acts.map((a) => `<button class="arow" data-act="${a.id}" data-loc="${id}" style="--k:${colorFor(a)}">${ic(iconFor(a))}<span><b>${a.name}</b><small>${a.actionIds.filter((x) => x !== 'travel').map((x) => this.c.get('actions', x).name).join(' · ')}</small></span></button>`).join('')}`;
+    }).join('');
+    const walk = inside ? 0 : this.gm.ctx.sys.actions.walkMinutes(p.location, this.building);
+    this.el.innerHTML = `<button class="x" data-close aria-label="Close">×</button>
+      <h3>${int.name}</h3>
+      <p class="sub">${inside ? 'You are here' : `Walk time from ${this.c.get('locations', p.location).name}: ${walk} min`}</p>
+      ${inside ? '<button class="go enter" data-enter>Enter</button>' : '<p class="hint">Pick an activity to walk here. You go inside at the door.</p>'}
+      ${groups}`;
+  }
 
   #activitiesHere() {
     return this.c.all('activities').filter((a) => a.locationIds.includes(this.locId));
   }
 
   render() {
+    if (this.building) { this.#renderBuilding(); return; }
     const loc = this.c.get('locations', this.locId), p = this.s.player, day = this.s.calendar.day;
     const h = loc.openHours?.[day];
     const here = p.location === this.locId;
@@ -114,8 +152,10 @@ export class ActionMenuView {
   #click(e) {
     const bus = this.gm.bus;
     if (e.target.closest('[data-close]')) { this.close(); return; }
+    if (e.target.closest('[data-enter]')) { const b = this.building; this.close(); this.onEnter(b); return; }
     const act = e.target.closest('[data-act]');
     if (act) {
+      if (act.dataset.loc) { this.locId = act.dataset.loc; this.building = null; }
       bus.emit(MSG.INTENT_START_ACTIVITY, { activityId: act.dataset.act });
       if (this.s.player.location !== this.locId) bus.emit(MSG.INTENT_RUN_ACTION, { actionId: 'travel', params: { to: this.locId } });
       this.render();

@@ -98,6 +98,7 @@ Result:
 - Not ported: Spec and Sheet overlays (M7), "Test this idea" note checks (notes come in M4), festival and wholesale cards (not in the jam scope).
 
 - Review fix (2 Nov 2026, user feedback, Prototype Iteration): 3-hour slots (06:00–03:00), category deck (tiles, then cards, then details in a side panel), click a free slot to pick a card, Plan top bar (sleep, meals and small rest are Do only, not cards), (gold, debt, next payment, living cost, gold after plan, energy). Browser test `m2-plan` rewritten.
+- Review fix (2 Nov 2026, Prototype Iteration, batch 2): sleep is not a card. Deck tiles Production (Craft, Processing), Shop, Fieldwork, Guild / Organization (Visit, Appointment, Commission). One Processing card (the popup picks Sun drying or Grinding). Popup beside a placed card (settings, info, issues, Remove); the side panel is only the card stock. Budget "gold with no job" as a big coin. Town tab opening hours as merged blocks. Data: buy + sell_to_organization → visit, organization_visit → appointment. Browser test `m2-plan` updated.
 ---
 
 ## M3 Do phase (town, avatar, actions)
@@ -126,6 +127,7 @@ Result:
 - Review fix (2 Nov 2026, user feedback): interior view of the home and shop (`InteriorView`, `data/interiors/int_home_shop.json`). Do starts inside; walk through the door to go in; "Exit to town" goes out. Stations: cauldron, shop counter, shelf (stock panel), bed. 0 min between stations. Customers walk to the counter when you serve. Town now has one "Home and shop" building. Browser test `m3-interior`. See SPECS §11.
 
 - Review fix (2 Nov 2026, Prototype Iteration): day 06:00–03:00, midnight 00–03 gives fatigue, late wake +3 h. Sleep at the bed from 18:00 (no "End the day" button). HUD Eat (meal windows) and Small rest. Bot eats, rests until 18:00, then sleeps.
+- Review fix (2 Nov 2026, Prototype Iteration, batch 2): a click on the Home and shop building in the town opens one menu with Enter and the activities of the shop counter, cauldron and bed. Browser test `m3-interior` checks it.
 ---
 
 ## M4 Events and Check

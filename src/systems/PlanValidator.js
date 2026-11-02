@@ -111,8 +111,8 @@ export class PlanValidator {
         if (a.needsAppointment && !state.appointments.some((x) => x.entityId === c.get('locations', loc).entityId && x.absDay === this.#absDay(d))) {
           add(card.uid, 'bad', 'Needs an appointment on this day. Book it in Act.');
         }
-        if (a.id === 'buy' || a.id === 'explore') boughtBefore = true;
-        if (a.id === 'buy') buyCards += 1;
+        if (a.id === 'visit' || a.id === 'explore') boughtBefore = true;
+        if (a.id === 'visit') buyCards += 1;
         if (a.id === 'craft') {
           if (!card.recipeId) add(card.uid, 'bad', 'Pick a recipe.');
           else {

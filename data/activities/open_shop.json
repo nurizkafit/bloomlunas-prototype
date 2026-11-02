@@ -1,7 +1,7 @@
 {
   "id": "open_shop",
   "name": "Open shop",
-  "category": "trade",
+  "category": "shop",
   "locationIds": [
     "loc_home_shop"
   ],
