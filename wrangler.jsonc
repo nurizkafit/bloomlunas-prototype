@@ -1,0 +1,10 @@
+{
+  // Cloudflare Workers static assets: serves the Vite build (dist/). No Worker script.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "bloomlunas-prototype",
+  "compatibility_date": "2026-11-01",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "single-page-application"
+  }
+}
