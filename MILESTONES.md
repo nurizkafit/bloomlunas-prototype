@@ -28,6 +28,7 @@ Tasks:
 - [ ] `PhaseMachine` + `Phase` base with empty `PlanPhase`, `DoPhase`, `CheckPhase`, `ActPhase`, `EndingPhase` that only log enter and exit.
 - [ ] `ContentDB` loads `data/` in Node and in the browser.
 - [ ] `data/BalanceConfig.json` with the placeholder values from `SPECS.md` §8.
+- [ ] npm scripts `graph:update` and `graph:query`; first graph build with `/graphify .` (see `CLAUDE.md`).
 
 Exit criteria:
 - [ ] `npm run sim` steps through Plan → Do → Check × `WEEKS_PER_MONTH` → Act → ending check, and prints each phase.

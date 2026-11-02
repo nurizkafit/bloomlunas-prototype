@@ -1,0 +1,10 @@
+# Build output and caches
+dist/
+out/
+node_modules/
+package-lock.json
+assets/models/
+graphify-out/
+CLAUDE.md
+.claude/
+THIRD_PARTY_NOTICES.md

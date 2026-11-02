@@ -90,3 +90,19 @@ MCP server `polyfork` (`.mcp.json`): search low-poly assets (`search_assets`, `g
 - Use it only from M3, and only to fill an `AssetSlot` with a stand-in model. The greybox stays the default.
 - Write the chosen asset id in `data/locations/*.json` (`polyforkAssetId`), not in code.
 - Licence: commercial use allowed; do not redistribute asset files. Do not commit downloaded paid files.
+
+## graphify (knowledge graph)
+
+Same tool and setup as the BloomLunas Docs repo: [Graphify-Labs/graphify](https://github.com/Graphify-Labs/graphify).
+
+Rules:
+- When `graphify-out/graph.json` exists, run `graphify query "<question>"` before your first grep, search or source-file read for a codebase question. Put this rule in every subagent prompt that explores code. Use `graphify path "<A>" "<B>"` and `graphify explain "<concept>"` for focused questions. Read `graphify-out/GRAPH_REPORT.md` only for a broad architecture review.
+- After you change code, run `graphify update .` (AST only, no token cost).
+- After you change `SPECS.md`, `MILESTONES.md` or other Markdown, run `/graphify . --update` (uses tokens).
+- At each milestone `Review`, update the graph and commit `graphify-out/` with the milestone commit. A large diff in `graph.json` is expected.
+
+Set up once (per machine):
+- `pip install graphifyy` (Python 3.10+; the package name has two y), then `graphify install`.
+- The hooks in `.claude/settings.json` do nothing when `graphify` is not installed.
+- First build: run `/graphify .` at the end of M0, when code exists. Excluded paths are in `.graphifyignore`.
+- M0 adds the npm scripts `"graph:update": "graphify update ."` and `"graph:query": "graphify query"`.

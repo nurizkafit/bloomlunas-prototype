@@ -2,3 +2,6 @@ node_modules/
 dist/
 out/
 .DS_Store
+# graphify: machine-specific files
+graphify-out/.graphify_python
+graphify-out/.graphify_root
