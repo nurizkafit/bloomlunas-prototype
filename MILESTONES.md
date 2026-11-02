@@ -6,8 +6,8 @@ Rule: Claude works only on the milestone that is `Approved` or `In progress`. Af
 
 | # | Milestone | Status |
 | --- | --- | --- |
-| M0 | Project skeleton | Review |
-| M1 | Logic core, headless month | Not started |
+| M0 | Project skeleton | Done |
+| M1 | Logic core, headless month | In progress |
 | M2 | Plan phase (Planner Book port) | Not started |
 | M3 | Do phase (town, avatar, actions) | Not started |
 | M4 | Events and Check | Not started |
