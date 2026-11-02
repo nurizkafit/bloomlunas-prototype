@@ -21,9 +21,8 @@
   "build": "Jam",
   "source": "docs:pages/activities/commission.md",
   "plannable": true,
-  "planDurationMin": 60,
+  "planDurationMin": 180,
   "planDurationOptions": [
-    60,
-    120
+    180
   ]
 }

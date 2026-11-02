@@ -22,8 +22,7 @@
   "plannable": true,
   "planDurationMin": 180,
   "planDurationOptions": [
-    180,
-    240
+    180
   ],
-  "_planNote": "Planner Book card length. Craft length comes from the recipe."
+  "_planNote": "Planner card length = recipe time rounded up to whole 3-hour slots (180 min recipe = 1 slot, 240 min = 2 slots)."
 }

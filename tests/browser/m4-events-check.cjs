@@ -5,6 +5,10 @@ const SP = process.argv[2];
   p.on('pageerror', e => errs.push(e.message)); p.on('console', m => m.type() === 'error' && errs.push(m.text()));
   await p.goto('http://localhost:5173'); await p.waitForTimeout(1000);
   const seen = [];
+  // Sleep at the bed (Prototype Iteration: sleep from 18:00). Test only: move the clock to 18:00 if it is earlier.
+  const sleepNow = async () => { if (await p.locator('.evscrim').isVisible()) return; await p.evaluate(() => { const g = window.__gm, m = g.content.num('SLEEP_EARLIEST_HOUR') * 60; if (g.state.calendar.minute < m) g.state.calendar.minute = m; });
+    await p.evaluate(() => window.__ui.menu.open('loc_home')); await p.click('[data-act="rest"]'); await p.waitForTimeout(60);
+    if (await p.locator('.evscrim').isVisible()) return; await p.locator('[data-run="sleep"]').first().click(); await p.waitForTimeout(80); };
   const playWeek = async (shot) => {
     for (let i = 0; i < 40; i++) {
       if (await p.locator('.evscrim').isVisible()) {
@@ -13,7 +17,7 @@ const SP = process.argv[2];
         await p.locator('.evopt:not([disabled])').last().click(); await p.waitForTimeout(80); continue;
       }
       if (await p.locator('#hCheck').isVisible()) { await p.click('#hCheck'); break; }
-      await p.click('#hSleep'); await p.waitForTimeout(80);
+      await sleepNow();
     }
   };
   // Week 1

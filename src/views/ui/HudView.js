@@ -28,16 +28,18 @@ export class HudView {
         <div class="rs"><span class="k">Activity</span><span class="v" id="hAct">–</span></div>
         <div class="spacer"></div>
         <button class="tbtn" id="hPlan">${ic('scroll')}Change plan</button>
-        <button class="tbtn" id="hSleep">${ic('moon')}End the day</button>
+        <button class="tbtn" id="hEat" title="Breakfast, lunch and dinner have set times. Food is paid by the weekly living cost.">${ic('bowl')}<span>Eat</span></button>
+        <button class="tbtn" id="hNap" title="Rest a short time for energy. Sleep is at the bed, from the night.">${ic('leaf')}Small rest</button>
         <button class="go" id="hCheck" hidden>Week done · Go to Check</button>
       </header>
-      <aside class="hud-today"><h3>Today's plan</h3><div id="hCards"></div><p class="hint">Click a place in the town, or a card here, to act. Matching the plan gives bonus XP.</p></aside>
+      <aside class="hud-today"><h3>Today's plan</h3><div id="hCards"></div><p class="hint">Click a place in the town, or a card here, to act. Matching the plan gives bonus XP. Sleep at the bed from 18:00 to end the day.</p></aside>
       <div class="hud-log" id="hLog" role="log" aria-live="polite"></div>`;
     root.appendChild(this.el);
     const $ = (s) => this.el.querySelector(s);
     this.$ = $;
     $('#hPlan').onclick = () => hooks.openPlan();
-    $('#hSleep').onclick = () => this.#endDay();
+    $('#hEat').onclick = () => gm.bus.emit(MSG.INTENT_RUN_ACTION, { actionId: 'eat', params: {} });
+    $('#hNap').onclick = () => gm.bus.emit(MSG.INTENT_RUN_ACTION, { actionId: 'small-rest', params: {} });
     $('#hCheck').onclick = () => gm.bus.emit(MSG.INTENT_NEXT_PHASE);
     $('#hCards').addEventListener('click', (e) => {
       const c = e.target.closest('[data-loc]');
@@ -61,13 +63,6 @@ export class HudView {
     while (box.children.length > 6) box.lastChild.remove();
   }
 
-  #endDay() {
-    const bus = this.gm.bus;
-    bus.emit(MSG.INTENT_START_ACTIVITY, { activityId: 'rest' });
-    if (this.s.player.location !== 'loc_home') bus.emit(MSG.INTENT_RUN_ACTION, { actionId: 'travel', params: { to: 'loc_home' } });
-    bus.emit(MSG.INTENT_RUN_ACTION, { actionId: 'sleep', params: {} });
-  }
-
   render() {
     if (this.el.hidden) return;
     const s = this.s, cal = s.calendar, p = s.player, $ = this.$;
@@ -83,7 +78,11 @@ export class HudView {
     $('#hFat').innerHTML = p.fatigued ? `<span class="pill warn" title="Actions take longer">Tired${p.lateWake ? ' · woke late' : ''}</span>` : '';
     $('#hAct').textContent = p.activityId ? this.c.get('activities', p.activityId).name : '–';
     $('#hCheck').hidden = !p.weekOver;
-    $('#hSleep').hidden = p.weekOver;
+    const meal = this.gm.ctx.sys.actions.mealNow(), eaten = (p.meals ?? []).includes(meal);
+    $('#hEat').hidden = p.weekOver;
+    $('#hEat').disabled = !meal || eaten;
+    $('#hEat').querySelector('span').textContent = meal ? (eaten ? `${cap(meal)} eaten` : `Eat ${meal}`) : 'Eat (no meal now)';
+    $('#hNap').hidden = p.weekOver;
     $('#hPlan').hidden = p.weekOver;
     const cards = s.plan.cards.filter((c) => c.day === cal.day).sort((a, b) => a.startMin - b.startMin);
     $('#hCards').innerHTML = cards.length ? cards.map((c) => {
@@ -109,6 +108,11 @@ function describe(r, c) {
     case 'gather-harvest': return `Gathered ${r.got.map((g) => `${g.qty} ${c.get('items', g.item).name}`).join(', ') || 'nothing'}${t}.`;
     case 'collect-batch': return `Collected ${r.collected} dried${t}.`;
     case 'sleep': return 'Slept. A new day starts.';
+    case 'eat': return `Ate ${r.meal}: +${r.gained} energy${t}.`;
+    case 'small-rest': return `Small rest: +${r.gained} energy${t}.`;
     default: return `${name} done${t}.`;
   }
 }
+
+/** @param {string} w */
+function cap(w) { return w[0].toUpperCase() + w.slice(1); }

@@ -20,8 +20,7 @@
   "plannable": true,
   "planDurationMin": 180,
   "planDurationOptions": [
-    120,
     180,
-    240
+    360
   ]
 }

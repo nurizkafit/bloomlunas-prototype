@@ -1,5 +1,5 @@
 {
-  "_doc": "All numbers for the prototype. Names follow bloomlunas-docs gdd/08-economy-and-variables.md. Values from SPECS.md \u00a79; _placeholder = not balanced.",
+  "_doc": "All numbers for the prototype. Names follow bloomlunas-docs gdd/08-economy-and-variables.md. Values from SPECS.md §9; _placeholder = not balanced.",
   "WEEKS_PER_MONTH": {
     "value": 4,
     "unit": "weeks",
@@ -13,16 +13,14 @@
     "_placeholder": true
   },
   "DAY_START_HOUR": {
-    "value": 7,
+    "value": 6,
     "unit": "hour",
-    "source": "Planner Book",
-    "_placeholder": true
+    "source": "user decision 2 Nov 2026 (Prototype Iteration)"
   },
   "DAY_END_HOUR": {
-    "value": 19,
-    "unit": "hour",
-    "source": "Planner Book",
-    "_placeholder": true
+    "value": 24,
+    "unit": "hour (after this = midnight: fatigue)",
+    "source": "user decision 2 Nov 2026 (Prototype Iteration)"
   },
   "GOLD_START": {
     "value": 240,
@@ -155,16 +153,14 @@
     "source": "docs (early levels)"
   },
   "NIGHT_END_HOUR": {
-    "value": 23,
-    "unit": "hour",
-    "source": "Planner Book",
-    "_placeholder": true
+    "value": 27,
+    "unit": "hour (27 = 03:00 next morning; hard limit)",
+    "source": "user decision 2 Nov 2026 (Prototype Iteration)"
   },
   "LATE_WAKE_DELAY_MIN": {
-    "value": 120,
+    "value": 180,
     "unit": "minutes",
-    "source": "placeholder",
-    "_placeholder": true
+    "source": "user decision 2 Nov 2026 (Prototype Iteration)"
   },
   "DAYS_PER_WEEK": {
     "value": 7,
@@ -351,6 +347,59 @@
     "value": 12,
     "unit": "months",
     "source": "placeholder (docs: TBD)",
+    "_placeholder": true
+  },
+  "PLAN_SLOT_HOURS": {
+    "value": 3,
+    "unit": "hours per Plan slot",
+    "source": "user decision 2 Nov 2026 (Prototype Iteration)"
+  },
+  "SLEEP_EARLIEST_HOUR": {
+    "value": 18,
+    "unit": "hour (sleep from here; night slots 18-21, 21-24 are safe)",
+    "source": "user decision 2 Nov 2026 (Prototype Iteration)"
+  },
+  "SMALL_REST_MIN": {
+    "value": 30,
+    "unit": "minutes",
+    "source": "placeholder",
+    "_placeholder": true
+  },
+  "SMALL_REST_ENERGY": {
+    "value": 25,
+    "unit": "points",
+    "source": "placeholder",
+    "_placeholder": true
+  },
+  "MEAL_MIN": {
+    "value": 30,
+    "unit": "minutes",
+    "source": "placeholder",
+    "_placeholder": true
+  },
+  "MEAL_ENERGY": {
+    "value": 20,
+    "unit": "points",
+    "source": "placeholder",
+    "_placeholder": true
+  },
+  "MEAL_WINDOWS": {
+    "value": {
+      "breakfast": [
+        6,
+        9
+      ],
+      "lunch": [
+        12,
+        15
+      ],
+      "dinner": [
+        18,
+        21
+      ]
+    },
+    "unit": "hours [from, to) per meal, once a day each",
+    "source": "placeholder",
     "_placeholder": true
   }
 }

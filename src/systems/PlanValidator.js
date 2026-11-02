@@ -12,10 +12,29 @@ export class PlanValidator {
 
   get #c() { return this.ctx.content; }
 
-  /** Length of a card in minutes. Craft uses the recipe time. @param {any} card */
+  /** Minutes per Plan slot (PLAN_SLOT_HOURS). */
+  slotMin() { return this.#c.num('PLAN_SLOT_HOURS') * 60; }
+
+  /** Start minutes of the Plan slots of one day: DAY_START_HOUR to NIGHT_END_HOUR in PLAN_SLOT_HOURS steps. */
+  slots() {
+    const out = [], step = this.slotMin();
+    for (let m = this.#c.num('DAY_START_HOUR') * 60; m + step <= this.#c.num('NIGHT_END_HOUR') * 60; m += step) out.push(m);
+    return out;
+  }
+
+  /** Length of a card in minutes: whole slots. Craft uses the recipe time, rounded up to whole slots. @param {any} card */
   duration(card) {
-    if (card.activityId === 'craft' && card.recipeId) return this.#c.get('recipes', card.recipeId).timeMin;
-    return card.durationMin;
+    const step = this.slotMin();
+    const raw = card.activityId === 'craft' && card.recipeId ? this.#c.get('recipes', card.recipeId).timeMin : card.durationMin;
+    return Math.max(1, Math.ceil(raw / step)) * step;
+  }
+
+  /** Why this card cannot start at this minute (slot edge, sleep hour), or null. @param {any} card @param {number} startMin */
+  timeProblem(card, startMin) {
+    if ((startMin - this.#c.num('DAY_START_HOUR') * 60) % this.slotMin()) return 'Start on a slot edge';
+    const a = this.#c.get('activities', card.activityId);
+    if (a.planEarliestHour && startMin < a.planEarliestHour * 60) return `${a.name} only from ${hm(a.planEarliestHour * 60)}`;
+    return null;
   }
 
   /** @param {any} card */
@@ -42,15 +61,20 @@ export class PlanValidator {
     const hit = plan.cards.find((c) => c.uid !== card.uid && c.day === day && c.startMin < end && c.startMin + this.duration(c) > startMin);
     if (hit) return { lvl: 'bad', msg: `Overlaps ${this.#c.get('activities', hit.activityId).name} (${hm(hit.startMin)}–${hm(hit.startMin + this.duration(hit))})` };
     if (end > this.#c.num('NIGHT_END_HOUR') * 60) return { lvl: 'bad', msg: `Ends after ${hm(this.#c.num('NIGHT_END_HOUR') * 60)}` };
+    const why = this.timeProblem(card, startMin);
+    if (why) return { lvl: 'bad', msg: why };
     const hours = this.#hours(card, day);
-    if (hours && (startMin < hours[0] * 60 || end > hours[1] * 60)) return { lvl: 'warn', msg: `Open ${hm(hours[0] * 60)}–${hm(hours[1] * 60)}` };
-    if (end > this.#c.num('DAY_END_HOUR') * 60) return { lvl: 'warn', msg: 'Night work: fatigue risk' };
+    if (hours && (end <= hours[0] * 60 || startMin >= hours[1] * 60)) return { lvl: 'bad', msg: `Closed then (open ${hm(hours[0] * 60)}–${hm(hours[1] * 60)})` };
+    if (hours && (startMin < hours[0] * 60 || end > hours[1] * 60)) return { lvl: 'warn', msg: `Open only ${hm(hours[0] * 60)}–${hm(hours[1] * 60)}` };
+    if (end > this.#c.num('DAY_END_HOUR') * 60) return { lvl: 'warn', msg: 'Midnight: fatigue and late wake risk' };
     return { lvl: 'ok', msg: '' };
   }
 
+  /** Open hours of the card location on a day. Open all day ([0, 24]) = null: no limit, also after midnight. */
   #hours(card, day) {
     const loc = this.location(card);
-    return loc ? this.#c.get('locations', loc).openHours[day] : null;
+    const h = loc ? this.#c.get('locations', loc).openHours[day] : null;
+    return h && h[0] === 0 && h[1] >= 24 ? null : h;
   }
 
   /** Full check of the current plan. */
@@ -76,11 +100,14 @@ export class PlanValidator {
         const hours = this.#hours(card, d);
         const loc = this.location(card);
         if (end > nightEnd) add(card.uid, 'bad', `Does not fit in the day (ends after ${hm(nightEnd)}).`);
-        if (loc && !hours) add(card.uid, 'bad', `${c.get('locations', loc).name} is closed on ${DAYS[d]}.`);
-        else if (hours && (start < hours[0] * 60 || end > hours[1] * 60)) add(card.uid, 'bad', `${c.get('locations', loc).name} is open ${hm(hours[0] * 60)}–${hm(hours[1] * 60)}. This card runs ${hm(start)}–${hm(end)}.`);
+        if (loc && !c.get('locations', loc).openHours[d]) add(card.uid, 'bad', `${c.get('locations', loc).name} is closed on ${DAYS[d]}.`);
+        else if (hours && (end <= hours[0] * 60 || start >= hours[1] * 60)) add(card.uid, 'bad', `${c.get('locations', loc).name} is open ${hm(hours[0] * 60)}–${hm(hours[1] * 60)}. It is closed for all of this slot.`);
+        else if (hours && (start < hours[0] * 60 || end > hours[1] * 60)) add(card.uid, 'warn', `${c.get('locations', loc).name} is open only ${hm(hours[0] * 60)}–${hm(hours[1] * 60)} in this slot.`);
+        const why = this.timeProblem(card, start);
+        if (why) add(card.uid, 'bad', `${why}.`);
         const hit = cards.find((o) => o !== card && o.startMin < end && o.startMin + this.duration(o) > start);
         if (hit) add(card.uid, 'bad', `Overlaps ${c.get('activities', hit.activityId).name}.`);
-        if (end > dayEndMin && end <= nightEnd && a.id !== 'rest') add(card.uid, 'warn', 'Night work. Fatigue: chance to wake up late tomorrow.');
+        if (end > dayEndMin && end <= nightEnd) add(card.uid, 'warn', a.id === 'rest' ? 'Sleep after midnight. Fatigue: chance to wake up 3 h late tomorrow.' : 'Midnight work. Fatigue: chance to wake up 3 h late tomorrow.');
         if (a.needsAppointment && !state.appointments.some((x) => x.entityId === c.get('locations', loc).entityId && x.absDay === this.#absDay(d))) {
           add(card.uid, 'bad', 'Needs an appointment on this day. Book it in Act.');
         }
@@ -114,7 +141,10 @@ export class PlanValidator {
     if (buyCards && !(budget.buy > 0)) plan.push({ lvl: 'warn', tab: 'ledger', msg: 'You plan to buy, but the Purchases slot is 0 G.' });
     const unassigned = Math.floor(state.wallet.gold) - (budget.exp ?? 0) - (budget.buy ?? 0) - (budget.buf ?? 0);
     if (unassigned > 0) plan.push({ lvl: 'warn', tab: 'ledger', msg: `${unassigned} G has no job. Put it in a slot.` });
-    for (let d = 0; d < 6; d++) if (dayEnd[d] > dayEndMin && dayEnd[d + 1] > 0) plan.push({ lvl: 'warn', tab: 'week', msg: `Night work on ${DAYS[d]}: ${DAYS[d + 1]} can start late.` });
+    for (let d = 0; d < 6; d++) if (dayEnd[d] > dayEndMin && dayEnd[d + 1] > 0) plan.push({ lvl: 'warn', tab: 'week', msg: `Midnight on ${DAYS[d]}: ${DAYS[d + 1]} can start 3 h late.` });
+    const noSleep = [];
+    for (let d = 0; d < c.num('DAYS_PER_WEEK'); d++) if (!state.plan.cards.some((x) => x.day === d && x.activityId === 'rest')) noSleep.push(DAYS[d]);
+    if (noSleep.length) plan.push({ lvl: 'warn', tab: 'week', msg: `No Sleep card on ${noSleep.join(', ')}. Sleep ends the day.` });
     const gold = state.wallet.gold;
     return {
       issues, plan, dayEnd, unassigned,
@@ -135,5 +165,5 @@ export const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 /** @param {number} min minutes after midnight */
 export function hm(min) {
-  return `${String(Math.floor(min / 60)).padStart(2, '0')}:${String(Math.round(min % 60)).padStart(2, '0')}`;
+  return `${String(Math.floor(min / 60) % 24).padStart(2, '0')}:${String(Math.round(min % 60)).padStart(2, '0')}`;
 }

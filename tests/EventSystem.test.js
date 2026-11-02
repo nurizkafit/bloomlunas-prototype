@@ -19,7 +19,7 @@ describe('EventSystem', () => {
   it('fires when the clock passes the event time, blocks actions, and the answer applies effects', () => {
     const gm = gameInDo();
     const s = gm.state;
-    s.eventQueue = [{ eventId: 'tool_breaks', absDay: 0, minute: 8 * 60 }];
+    s.eventQueue = [{ eventId: 'tool_breaks', absDay: 0, minute: 7 * 60 }];
     let fired = null;
     gm.bus.on(MSG.EVENT_FIRED, (e) => { fired = e; });
     gm.ctx.sys.actions.startActivity('explore');

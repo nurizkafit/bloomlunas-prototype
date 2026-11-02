@@ -150,3 +150,41 @@ describe('DoPhase plan changes', () => {
     expect(gm.state.plan.cards[0].day).toBe(4);
   });
 });
+
+describe('Small rest, meals and sleep (Prototype Iteration rules)', () => {
+  it('small rest: any time, no activity needed, 30 min, +energy up to max', () => {
+    const gm = gameInDo(), s = gm.state, c = gm.content;
+    s.player.energy = 50;
+    const r = run(gm, 'small-rest');
+    expect(r).toMatchObject({ ok: true, minutes: c.num('SMALL_REST_MIN') });
+    expect(s.player.energy).toBe(50 + c.num('SMALL_REST_ENERGY'));
+    expect(s.calendar.minute).toBe(c.num('DAY_START_HOUR') * 60 + c.num('SMALL_REST_MIN'));
+    run(gm, 'small-rest');
+    expect(s.player.energy).toBe(c.num('ENERGY_MAX'));
+  });
+
+  it('meals: only in their window, once a day each; free', () => {
+    const gm = gameInDo(), s = gm.state, c = gm.content;
+    s.player.energy = 40;
+    const gold = s.wallet.gold;
+    expect(run(gm, 'eat')).toMatchObject({ ok: true, meal: 'breakfast' });
+    expect(s.player.energy).toBe(40 + c.num('MEAL_ENERGY'));
+    expect(run(gm, 'eat').reason).toMatch(/already ate breakfast/);
+    s.calendar.minute = 10 * 60;
+    expect(run(gm, 'eat').reason).toMatch(/no meal now/);
+    s.calendar.minute = 12 * 60;
+    expect(run(gm, 'eat')).toMatchObject({ ok: true, meal: 'lunch' });
+    expect(s.wallet.gold).toBe(gold);
+  });
+
+  it('sleep: refused before SLEEP_EARLIEST_HOUR; after midnight gives fatigue', () => {
+    const gm = gameInDo(), s = gm.state, c = gm.content;
+    gm.ctx.sys.actions.startActivity('rest');
+    expect(run(gm, 'sleep').reason).toMatch(/sleep starts at 18:00/);
+    s.calendar.minute = 24 * 60 + 30;
+    s.player.energy = 100;
+    expect(run(gm, 'sleep').ok).toBe(true);
+    expect(s.player.fatigued).toBe(true);
+    expect(c.num('LATE_WAKE_DELAY_MIN')).toBe(180);
+  });
+});

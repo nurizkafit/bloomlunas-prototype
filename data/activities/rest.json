@@ -1,7 +1,7 @@
 {
   "id": "rest",
-  "name": "Rest",
-  "category": "personal",
+  "name": "Sleep",
+  "category": "rest",
   "locationIds": [
     "loc_home"
   ],
@@ -17,11 +17,10 @@
   "build": "Jam",
   "source": "docs:pages/activities/rest.md",
   "plannable": true,
-  "planDurationMin": 60,
+  "planDurationMin": 180,
   "planDurationOptions": [
-    60,
-    120,
-    180,
-    240
-  ]
+    180
+  ],
+  "planEarliestHour": 18,
+  "_planNote": "Sleep card: ends the day. Only in night slots (from SLEEP_EARLIEST_HOUR). Slot 00-03 = midnight: fatigue risk."
 }

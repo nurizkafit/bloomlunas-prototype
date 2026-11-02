@@ -20,8 +20,8 @@
   "build": "Jam",
   "source": "docs:pages/activities/organization-visit.md",
   "plannable": true,
-  "planDurationMin": 60,
+  "planDurationMin": 180,
   "planDurationOptions": [
-    60
+    180
   ]
 }

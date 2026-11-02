@@ -18,6 +18,15 @@ const SP = process.argv[2];
   await answer();
   out.startInside = await inside();
   out.exitBar = await p.locator('#intExit').isVisible();
+  // HUD: Eat (breakfast window at 06:00) and Small rest; no "End the day" button.
+  await p.evaluate(() => { window.__gm.state.player.energy = 50; });
+  out.eatLabel = await p.locator('#hEat').textContent();
+  await p.click('#hEat'); await p.waitForTimeout(100);
+  out.eatLog = await p.locator('#hLog p').first().textContent();
+  out.eatAgain = await p.locator('#hEat').isDisabled();
+  await p.click('#hNap'); await p.waitForTimeout(100);
+  out.napLog = await p.locator('#hLog p').first().textContent();
+  out.endDayBtn = await p.locator('#hSleep').count();
   await p.screenshot({ path: `${SP}/m3-interior.png` });
   await station('st_cauldron'); out.cauldronMenu = await p.locator('.amenu:not(.stock) h3').textContent();
   await station('st_counter'); out.counterMenu = await p.locator('.amenu:not(.stock) h3').textContent();
@@ -47,7 +56,8 @@ const SP = process.argv[2];
   console.log('interior', JSON.stringify(out));
   console.log('errors', JSON.stringify(errs));
   const ok = out.startInside === 'int_home_shop' && out.exitBar && /atelier/i.test(out.cauldronMenu) && /shop/i.test(out.counterMenu) && out.bedMenu === 'Home'
-    && out.shelf && out.walkInsideMin === 0 && out.stillInside && out.afterExit === null && out.walkedIn === 'int_home_shop' && out.customer;
+    && out.shelf && out.walkInsideMin === 0 && out.stillInside && out.afterExit === null && out.walkedIn === 'int_home_shop' && out.customer
+    && /Eat breakfast/.test(out.eatLabel) && /Ate breakfast: \+20 energy/.test(out.eatLog) && out.eatAgain && /Small rest: \+25 energy/.test(out.napLog) && out.endDayBtn === 0;
   await b.close();
   process.exit(ok && !errs.length ? 0 : 1);
 })();

@@ -5,8 +5,11 @@ import './planner.css';
 
 /**
  * PlannerBookView: the Plan phase screen, ported from the Planner Book v2 (prototypes/plan-phase-book).
- * Same look and interactions: ribbon, two-page book, divider tabs (Week, Ledger, Market, Town, Journal),
- * card deck, drag to a time (30 min snap), card settings, problems and warnings, review, "Start the week".
+ * Same look: ribbon, two-page book, divider tabs (Week, Ledger, Market, Town, Journal), review, "Start the week".
+ * Prototype Iteration (2 Nov 2026): the week has 3-hour slots (06:00 to 03:00). The deck shows category tiles first,
+ * then the cards of one category, then one card's details (settings, issues) in the same side panel (no popup).
+ * Drag a card to a slot, or click an empty slot and then pick a card. The ribbon is the Plan top bar
+ * (gold, debt, next payment, weekly living cost, gold after the plan, energy).
  * Reads GameState and PlanValidator results. Changes go out as intents only.
  * Unity: UI screen (UI Toolkit or uGUI) + drag handler.
  */
@@ -27,9 +30,15 @@ export class PlannerBookView {
     this.draft = {};
     this.deck = this.c.all('activities').filter((a) => a.plannable);
     for (const a of this.deck) this.draft[a.id] = this.#defaults(a);
+    /** Deck side panel: 'cats' (category tiles), 'cards' (one category), 'detail' (one card). */
+    this.deckView = { mode: 'cats', cat: null, uid: null, type: null };
+    /** Empty slot picked by a click: the next card picked goes there. @type {{d:number, start:number}|null} */
+    this.target = null;
+    this.SLOT = this.c.num('PLAN_SLOT_HOURS');
     this.DS = this.c.num('DAY_START_HOUR');
     this.DE = this.c.num('DAY_END_HOUR');
     this.NE = this.c.num('NIGHT_END_HOUR');
+    this.SLEEP = this.c.num('SLEEP_EARLIEST_HOUR');
 
     root.insertAdjacentHTML('beforeend', `<div class="pb-fit" id="pbFit" hidden><div id="stage">
       <header id="ribbon">
@@ -37,17 +46,19 @@ export class PlannerBookView {
         <div class="steps"><span class="step on">Plan</span><span class="step">Do</span><span class="step">Check</span></div>
         <div class="rs"><span class="k" id="rWeek">–</span><span class="v" style="font-family:var(--f-display)" id="rDays">–</span></div>
         <div class="sep"></div>
-        <div class="rs"><span class="k">Gold now</span><span class="v num" style="color:var(--gold)" id="rGold">–</span></div>
-        <div class="rs"><span class="k">End of week</span><span class="v num" id="rEnd">–</span></div>
-        <div class="rs"><span class="k" id="rDebtK">Debt</span><span class="v num" style="color:#f0947f" id="rDebt">–</span></div>
-        <div class="sep"></div>
-        <div id="rIssues" style="display:flex;gap:6px"></div>
+        <div class="stat gold"><span class="k">Gold</span><span class="v num" id="rGold">–</span></div>
+        <div class="stat debt"><span class="k">Debt</span><span class="v num" id="rDebt">–</span></div>
+        <div class="stat"><span class="k">Next payment</span><span class="v num" id="rPay">–</span><small id="rPayD"></small></div>
+        <div class="stat"><span class="k">Weekly living cost</span><span class="v num" id="rLive">–</span><small>paid in Check</small></div>
+        <div class="stat"><span class="k">Gold after plan</span><span class="v num" id="rEnd">–</span><small>end of week, forecast</small></div>
+        <div class="stat"><span class="k">Energy</span><span class="ebar"><i id="rEn"></i></span><small class="num" id="rEnN"></small></div>
         <div class="spacer"></div>
+        <div id="rIssues" style="display:flex;flex-direction:column;gap:4px;align-items:flex-end"></div>
         <button class="go" id="confirmBtn">Review plan</button>
       </header>
       <div id="bookWrap"><div id="book"><div class="spine"></div>
         <div class="spread" data-tab="week">
-          <section class="page l"><div class="ph"><h2>This week · Mon – Thu</h2><span class="tag">Drag cards to a time · snaps to 30 min · card height = hours</span></div><div class="wk l" id="wkL"></div><span class="folio" id="fL">left</span></section>
+          <section class="page l"><div class="ph"><h2>This week · Mon – Thu</h2><span class="tag">3-hour slots · drag a card, or click a free slot</span></div><div class="wk l" id="wkL"></div><span class="folio" id="fL">left</span></section>
           <section class="page r"><div class="ph"><h2>Fri – Sun</h2><span class="tag" id="dayTag"></span></div><div class="wk r" id="wkR"></div><span class="folio" id="fR">right</span></section>
         </div>
         <div class="spread" data-tab="ledger" hidden><section class="page l" id="ledL"></section><section class="page r" id="ledR"></section></div>
@@ -64,7 +75,7 @@ export class PlannerBookView {
       this.fit.hidden = phase !== 'Plan';
       this.mode = 'plan';
       this.$('#confirmBtn').textContent = 'Review plan';
-      if (phase === 'Plan') { this.tab = 'week'; this.#fitScale(); this.render(); }
+      if (phase === 'Plan') { this.tab = 'week'; this.target = null; this.deckView = { mode: 'cats', cat: null, uid: null, type: null }; this.#fitScale(); this.render(); }
     });
     this.bus.on(MSG.PLAN_VALIDATED, (r) => { this.R = r; if (!this.fit.hidden) this.render(); });
     addEventListener('resize', () => this.#fitScale());
@@ -99,7 +110,11 @@ export class PlannerBookView {
   }
 
   #scale() { return this.stage.getBoundingClientRect().width / 1600; }
-  #hpx() { return parseFloat(getComputedStyle(this.stage).getPropertyValue('--hour')) || 36; }
+  /** Pixels per hour in the week columns (unscaled). */
+  #hpx() {
+    const col = this.stage.querySelector('.col');
+    return col ? col.getBoundingClientRect().height / this.#scale() / (this.NE - this.DS) : 29;
+  }
   #name(id) { return this.c.get('activities', id).name; }
   #loc(card) { const l = this.v.location(card); return l ? this.c.get('locations', l).name : 'Anywhere'; }
   #dur(card) { return this.v.duration(card); }
@@ -116,10 +131,16 @@ export class PlannerBookView {
     this.$('#rWeek').textContent = `Month ${cal.month} · Week ${cal.week}`;
     this.$('#rDays').textContent = `Day ${first} – ${first + 6}`;
     this.$('#rGold').textContent = `${Math.floor(this.s.wallet.gold)} G`;
-    this.$('#rEnd').innerHTML = `<span style="color:var(--gold)">${R.endLo}–${R.endHi} G</span>`;
-    const daysLeft = cal.weeksPerMonth * 7 - (cal.week - 1) * 7;
-    this.$('#rDebtK').textContent = `Debt · ${this.c.num('DEBT_MIN_PAYMENT')} G due in ${daysLeft} days`;
+    this.$('#rEnd').textContent = `${R.endLo}–${R.endHi} G`;
+    this.$('#rEnd').style.color = R.endLo < 0 ? '#f0947f' : 'var(--text)';
+    const monthDays = cal.weeksPerMonth * 7, daysLeft = monthDays - (cal.week - 1) * 7 - cal.day;
     this.$('#rDebt').textContent = `${Math.round(this.s.debt.balance).toLocaleString('en')} G`;
+    this.$('#rPay').textContent = `${this.c.num('DEBT_MIN_PAYMENT') + this.c.num('MONTHLY_UTILITIES')} G`;
+    this.$('#rPayD').textContent = `Month end (day ${monthDays}) · in ${daysLeft} days`;
+    this.$('#rLive').textContent = `${this.c.num('WEEKLY_EXPENSES')} G`;
+    const max = this.c.num('ENERGY_MAX'), en = this.s.player.energy;
+    this.$('#rEn').style.width = `${(en / max) * 100}%`;
+    this.$('#rEnN').textContent = `${en}/${max}`;
     const TI = this.#tabIssues(R);
     this.$('#rIssues').innerHTML = (R.bad ? `<button class="pill bad" data-goto="${TI.week.bad ? 'week' : 'ledger'}">✕ ${R.bad} problem${R.bad > 1 ? 's' : ''}</button>` : '')
       + (R.warn ? `<button class="pill warn" data-goto="${TI.week.warn ? 'week' : 'ledger'}">! ${R.warn} warning${R.warn > 1 ? 's' : ''}</button>` : '')
@@ -154,38 +175,43 @@ export class PlannerBookView {
     if (!TABS.some((t) => t.id === tab)) return;
     if (tab !== this.tab) {
       this.tab = tab;
-      this.#closePop();
       const b = this.$('#book');
       b.classList.remove('turn'); void b.offsetWidth; b.classList.add('turn');
     }
     this.render();
   }
 
-  // ---- week
+  // ---- week (3-hour slots)
   #hoursCol() {
     let h = '<div class="hours">';
-    for (let x = this.DS; x <= this.NE; x += 2) h += `<span class="num" style="top:calc(var(--hour) * ${x - this.DS})">${hm(x * 60)}</span>`;
-    return h + '</div>';
+    for (const m of this.v.slots()) h += `<span class="num" style="top:calc(var(--hour) * ${m / 60 - this.DS})">${hm(m)}</span>`;
+    return h + `<span class="num" style="top:calc(var(--hour) * ${this.NE - this.DS})">${hm(this.NE * 60)}</span></div>`;
   }
 
   #dayCol(d, R) {
     const cards = this.s.plan.cards.filter((c) => c.day === d).sort((a, b) => a.startMin - b.startMin);
     const late = d > 0 && R.dayEnd[d - 1] > this.DE * 60;
-    const work = cards.reduce((n, c) => n + this.#dur(c), 0) / 60;
-    const night = cards.reduce((n, c) => n + Math.max(0, c.startMin + this.#dur(c) - Math.max(c.startMin, this.DE * 60)), 0) / 60;
+    const work = cards.filter((c) => c.activityId !== 'rest').reduce((n, c) => n + this.#dur(c), 0) / (this.SLOT * 60);
     const chips = this.#chips(d) + (late ? '<span class="chip late">Late wake?</span>' : '');
     let html = '';
+    const busy = (m) => cards.some((c) => m >= c.startMin && m < c.startMin + this.#dur(c));
+    for (const m of this.v.slots()) {
+      if (busy(m)) continue;
+      const on = this.target && this.target.d === d && this.target.start === m;
+      html += `<button class="slotbtn${on ? ' on' : ''}" data-slot="${d}:${m}" style="top:calc(var(--hour) * ${m / 60 - this.DS} + 2px);height:calc(var(--hour) * ${this.SLOT} - 4px)" aria-label="${DAYS[d]} ${hm(m)}–${hm(m + this.SLOT * 60)}: pick a card">${on ? 'Pick a card →' : '+'}</button>`;
+    }
     for (const c of cards) {
       const a = this.c.get('activities', c.activityId);
       const iss = R.issues[c.uid] ?? [], b = iss.find((i) => i.lvl === 'bad'), w = iss.find((i) => i.lvl === 'warn');
       const h = this.#dur(c) / 60, s = c.startMin / 60, e = s + h;
-      html += `<div class="bc${e > this.DE ? ' ot' : ''}" data-uid="${c.uid}" tabindex="0" style="--k:${colorFor(a)};top:calc(var(--hour) * ${s - this.DS} + 1px);height:calc(var(--hour) * ${h} - 2px)">
-        <div class="t">${ic(iconFor(a))}${a.name}</div>${h >= 1.5 ? `<div class="m num"><span>${hm(c.startMin)}–${hm(c.startMin + this.#dur(c))}</span></div>` : ''}${h >= 2 ? `<div class="m">${this.#sum(c)}</div>` : ''}
-        ${h >= 1 ? `<span class="gear" title="Settings">${ic('gear')}</span>` : ''}${b ? '<span class="flag">✕</span>' : w ? '<span class="flag w">!</span>' : ''}</div>`;
+      const sel = this.deckView.mode === 'detail' && this.deckView.uid === c.uid;
+      html += `<div class="bc${e > this.DE ? ' ot' : ''}${sel ? ' sel' : ''}" data-uid="${c.uid}" tabindex="0" style="--k:${colorFor(a)};top:calc(var(--hour) * ${s - this.DS} + 1px);height:calc(var(--hour) * ${h} - 2px)">
+        <div class="t">${ic(iconFor(a))}${a.name}</div><div class="m num"><span>${hm(c.startMin)}–${hm(c.startMin + this.#dur(c))}</span></div><div class="m">${this.#sum(c)}</div>
+        ${b ? '<span class="flag">✕</span>' : w ? '<span class="flag w">!</span>' : ''}</div>`;
     }
     const first = (this.s.calendar.week - 1) * 7 + 1;
-    return `<div class="day"><div class="dh"><div class="dn"><b>${DAYS[d]}</b><span class="num">Day ${first + d}</span></div><div class="chips">${chips}</div><div class="capl num">${work} h planned${night ? ` · ${night} h night` : ''}</div></div>
-      <div class="col" data-d="${d}"><span class="moonlbl">${ic('moon')}Night</span>${html}</div></div>`;
+    return `<div class="day"><div class="dh"><div class="dn"><b>${DAYS[d]}</b><span class="num">Day ${first + d}</span></div><div class="chips">${chips}</div><div class="capl num">${work} slot${work === 1 ? '' : 's'} of work</div></div>
+      <div class="col" data-d="${d}"><span class="moonlbl n1">${ic('moon')}Night</span><span class="moonlbl n2">${ic('moon')}Midnight</span>${html}</div></div>`;
   }
 
   #chips(d) {
@@ -200,21 +226,38 @@ export class PlannerBookView {
   }
 
   render_week(R) {
-    this.$('#dayTag').textContent = `${hm(this.DS * 60)}–${hm(this.DE * 60)} day · ${hm(this.DE * 60)}–${hm(this.NE * 60)} night work`;
+    this.$('#dayTag').textContent = `${hm(this.DS * 60)}–${hm(this.SLEEP * 60)} day · ${hm(this.SLEEP * 60)}–${hm(this.DE * 60)} night · ${hm(this.DE * 60)}–${hm(this.NE * 60)} midnight`;
     this.$('#fL').textContent = this.$('#fR').textContent = `Week ${this.s.calendar.week}`;
     this.$('#wkL').innerHTML = this.#hoursCol() + [0, 1, 2, 3].map((d) => this.#dayCol(d, R)).join('');
-    const deck = this.deck.map((a) => {
-      const card = { activityId: a.id, ...this.draft[a.id] };
-      const used = this.s.plan.cards.filter((p) => p.activityId === a.id).length;
-      const open = this.#openTxt(card);
-      return `<div class="dc" data-type="${a.id}" tabindex="0" style="--k:${colorFor(a)}">${used ? `<span class="used">×${used}</span>` : ''}
-        <div class="t">${ic(iconFor(a))}${a.name}</div>
-        <span class="m set">${a.id === 'craft' ? this.c.get('recipes', card.recipeId).name : this.#loc(card)}</span>
-        <span class="m num">${this.#dur(card) / 60} h · ${open}</span>
-        <span class="cfg">${ic('gear')}Settings</span></div>`;
+    this.$('#wkR').innerHTML = this.#hoursCol() + [4, 5, 6].map((d) => this.#dayCol(d, R)).join('') + `<div class="deck" id="deck">${this.#deckHtml(R)}</div>`;
+  }
+
+  /** Category of an activity for the deck tiles. */
+  #catOf(a) { return CATS.find((k) => k.cats.includes(a.category))?.id ?? 'other'; }
+
+  #deckHtml(R) {
+    const v = this.deckView;
+    const tgt = this.target ? `<div class="tgt">${ic('flag')}<span>Slot: <b>${DAYS[this.target.d]} ${hm(this.target.start)}–${hm(this.target.start + this.SLOT * 60)}</b></span><button class="lnk" data-untarget>Clear</button></div>` : '';
+    if (v.mode === 'detail') return this.#detailHtml(R);
+    if (v.mode === 'cards') {
+      const cat = CATS.find((k) => k.id === v.cat);
+      const list = this.deck.filter((a) => this.#catOf(a) === v.cat).map((a) => {
+        const card = { activityId: a.id, ...this.draft[a.id] };
+        const used = this.s.plan.cards.filter((p) => p.activityId === a.id).length;
+        return `<div class="dc" data-type="${a.id}" tabindex="0" style="--k:${colorFor(a)}">${used ? `<span class="used">×${used}</span>` : ''}
+          <div class="t">${ic(iconFor(a))}${a.name}</div>
+          <span class="m set">${a.id === 'craft' ? this.c.get('recipes', card.recipeId).name : this.#loc(card)}</span>
+          <span class="m num">${this.#dur(card) / (this.SLOT * 60)} slot${this.#dur(card) > this.SLOT * 60 ? 's' : ''} · ${this.#openTxt(card)}</span></div>`;
+      }).join('');
+      return `<button class="back" data-back="cats">‹ All categories</button><h3 style="--k:${cat.c}">${ic(cat.i)}${cat.n}</h3>${tgt}
+        <div class="hint">${this.target ? 'Click a card to put it in the slot.' : 'Drag a card onto a slot. Click a card to see its details.'}</div><div class="list">${list}</div>`;
+    }
+    const tiles = CATS.map((k) => {
+      const n = this.deck.filter((a) => this.#catOf(a) === k.id).length;
+      const used = this.s.plan.cards.filter((p) => this.#catOf(this.c.get('activities', p.activityId)) === k.id).length;
+      return n ? `<button class="cat" data-cat="${k.id}" style="--k:${k.c}">${ic(k.i)}<b>${k.n}</b><small>${k.sub}</small><span class="cnt">${n} card${n > 1 ? 's' : ''}${used ? ` · ${used} planned` : ''}</span></button>` : '';
     }).join('');
-    this.$('#wkR').innerHTML = this.#hoursCol() + [4, 5, 6].map((d) => this.#dayCol(d, R)).join('')
-      + `<div class="deck" id="deck"><h3>Card deck</h3><div class="hint">Click a card to change its settings, then drag it onto a day. It snaps to 30 minutes. Drag a planned card back here to remove it.</div><div class="list">${deck}</div></div>`;
+    return `<h3>Card deck</h3>${tgt}<div class="hint">${this.target ? 'Pick a category, then a card for the slot.' : 'Pick a category. Then drag a card onto a slot, or click a free slot first.'} Meals and small rests happen in Do.</div><div class="cats">${tiles}</div>`;
   }
 
   #openTxt(card) {
@@ -352,66 +395,80 @@ export class PlannerBookView {
       <span class="folio">Journal · recap</span>`;
   }
 
-  // ---------------------------------------------------------------- popover, toast, review
-  #closePop() { this.pop?.remove(); this.pop = null; }
+  // ---------------------------------------------------------------- deck detail panel, toast, review
+  #closePop() {}
 
-  #showPop(html, anchor) {
-    this.#closePop();
-    const pop = document.createElement('div');
-    pop.className = 'pop';
-    pop.innerHTML = html;
-    this.stage.appendChild(pop);
-    const sc = this.#scale(), sr = this.stage.getBoundingClientRect(), ar = anchor.getBoundingClientRect();
-    let x = (ar.right - sr.left) / sc + 10, y = (ar.top - sr.top) / sc;
-    if (x + pop.offsetWidth > 1590) x = (ar.left - sr.left) / sc - pop.offsetWidth - 10;
-    if (y + pop.offsetHeight > 890) y = 890 - pop.offsetHeight;
-    pop.style.left = `${Math.max(10, x)}px`;
-    pop.style.top = `${Math.max(10, y)}px`;
-    pop.querySelector('.x')?.addEventListener('click', () => this.#closePop());
-    this.pop = pop;
+  /** The card the detail panel shows: a placed card (uid) or a deck draft (type). */
+  #detailCard() {
+    const v = this.deckView;
+    if (v.uid) return this.s.plan.cards.find((x) => x.uid === v.uid) ?? null;
+    return v.type ? { activityId: v.type, ...this.draft[v.type] } : null;
   }
 
-  /** @param {any} card placed card (has uid) or deck draft */
-  #cardPop(card, anchor) {
+  /** Show one card in the side panel. @param {any} card placed card (uid) or deck draft */
+  #showDetail(card) {
     const a = this.c.get('activities', card.activityId);
-    const R = this.R ?? this.v.validate();
+    this.deckView = { mode: 'detail', cat: this.#catOf(a), uid: card.uid ?? null, type: card.uid ? null : a.id };
+    this.render();
+  }
+
+  #detailHtml(R) {
+    const card = this.#detailCard();
+    if (!card) { this.deckView = { mode: 'cats', cat: null, uid: null, type: null }; return this.#deckHtml(R); }
+    const a = this.c.get('activities', card.activityId);
     const iss = card.uid ? R.issues[card.uid] ?? [] : [];
     const sets = [];
-    if (a.locationIds.length > 1) sets.push({ key: 'locationId', label: 'Where', opt: a.locationIds.map((id) => [id, this.c.get('locations', id).name]) });
-    if (a.id === 'craft') sets.push({ key: 'recipeId', label: 'Recipe', opt: this.c.all('recipes').map((r) => [r.id, r.name]) });
-    else if (a.planDurationOptions?.length > 1) sets.push({ key: 'durationMin', label: 'Hours', opt: a.planDurationOptions.map((m) => [m, `${m / 60} h`]) });
-    const settings = sets.length ? `<div class="sets">${sets.map((s) => `<div class="setrow"><span>${s.label}</span><div class="seg" role="radiogroup" aria-label="${s.label}">${s.opt.map(([v, l]) => `<button role="radio" aria-checked="${card[s.key] === v}" data-set="${s.key}" data-val="${v}">${l}</button>`).join('')}</div></div>`).join('')}</div>` : '';
+    if (a.locationIds.length > 1) sets.push({ key: 'locationId', label: 'Where', opt: a.locationIds.map((id) => [id, this.c.get('locations', id).name.replace(/ guild$/i, '')]) });
+    if (a.id === 'craft') sets.push({ key: 'recipeId', label: 'Recipe', opt: this.c.all('recipes').map((r) => [r.id, `${r.name} (${Math.ceil(r.timeMin / (this.SLOT * 60))} slot${r.timeMin > this.SLOT * 60 ? 's' : ''})`]) });
+    else if (a.planDurationOptions?.length > 1) sets.push({ key: 'durationMin', label: 'Length', opt: a.planDurationOptions.map((m) => [m, `${m / (this.SLOT * 60)} slot${m > this.SLOT * 60 ? 's' : ''}`]) });
+    const settings = sets.length ? `<div class="sets">${sets.map((x) => `<div class="setrow"><span>${x.label}</span><div class="seg" role="radiogroup" aria-label="${x.label}">${x.opt.map(([val, l]) => `<button role="radio" aria-checked="${card[x.key] === val}" data-set="${x.key}" data-val="${val}">${l}</button>`).join('')}</div></div>`).join('')}</div>` : '';
     const actions = a.actionIds.filter((x) => x !== 'travel').map((x) => this.c.get('actions', x).name).join(', ');
-    this.#showPop(`<button class="x" aria-label="Close">×</button><div class="kind">${a.category} card${card.uid ? ' · planned' : ' · deck'}</div><h3>${ic(iconFor(a))}${a.name}</h3>
-      <div class="sub">Actions: ${actions}.</div>${settings}<table>
-      <tr><td>Location</td><td>${this.#loc(card)}</td></tr><tr><td>Duration</td><td class="num">${this.#dur(card) / 60} h</td></tr>
-      <tr><td>Importance</td><td><span class="pips">${'●'.repeat(a.importance)}${'○'.repeat(3 - a.importance)}</span></td></tr>
-      <tr><td>Can be missed</td><td>${a.canMiss ? 'Yes, no penalty' : '<b>No</b>, penalty'}</td></tr>
+    let place = '';
+    if (!card.uid && this.target) {
+      const chk = this.v.slotCheck(card, this.target.d, this.target.start), why = this.#dayProblem(card, this.target.d);
+      place = `<button class="go wide" data-place ${why || chk.lvl === 'bad' ? 'disabled' : ''}>Put in ${DAYS[this.target.d]} ${hm(this.target.start)}</button>${why || chk.msg ? `<div class="issue ${chk.lvl === 'warn' && !why ? 'w' : ''}">${why ?? chk.msg}</div>` : ''}`;
+    }
+    return `<button class="back" data-back="${card.uid ? 'cats' : 'cards'}">‹ ${card.uid ? 'Card deck' : CATS.find((k) => k.id === this.#catOf(a)).n}</button>
+      <div class="kind">${card.uid ? 'Planned card' : 'Deck card'}</div><h3 style="--k:${colorFor(a)}">${ic(iconFor(a))}${a.name}</h3>
+      <div class="sub">Actions: ${actions}.</div>${settings}
+      <table class="dt"><tr><td>Location</td><td>${this.#loc(card)}</td></tr><tr><td>Length</td><td class="num">${this.#dur(card) / 60} h</td></tr>
       <tr><td>Open</td><td>${this.#openTxt(card)}</td></tr>
-      ${a.skillPath ? `<tr><td>Skill path</td><td>${a.skillPath} (plan match bonus XP)</td></tr>` : ''}
+      <tr><td>Importance</td><td><span class="pips">${'●'.repeat(a.importance)}${'○'.repeat(3 - a.importance)}</span>${a.canMiss ? '' : ' · must not miss'}</td></tr>
+      ${a.skillPath ? `<tr><td>Skill path</td><td>${a.skillPath}</td></tr>` : ''}
       ${card.uid ? `<tr><td>Planned</td><td class="num">${DAYS[card.day]} ${hm(card.startMin)}–${hm(card.startMin + this.#dur(card))}</td></tr>` : ''}</table>
       ${iss.map((i) => `<div class="issue ${i.lvl === 'warn' ? 'w' : ''}">${i.lvl === 'bad' ? '✕' : '!'} ${i.msg}</div>`).join('')}
-      ${card.uid ? '<button class="rm" id="rmBtn">Remove from plan</button>' : ''}`, anchor);
-    this.pop.querySelector('#rmBtn')?.addEventListener('click', () => { this.bus.emit(MSG.INTENT_REMOVE_CARD, { uid: card.uid }); this.#closePop(); this.#toast('Card removed. It is back in the deck.'); });
-    this.pop.querySelectorAll('[data-set]').forEach((bt) => bt.addEventListener('click', () => {
-      const key = bt.dataset.set, val = key === 'durationMin' ? Number(bt.dataset.val) : bt.dataset.val;
-      if (card.uid) {
-        const next = { ...card, [key]: val };
-        if (this.mode === 'do' && card.day <= this.s.calendar.day) { this.#toast('This day has started.', 'bad'); return; }
-        if (key === 'locationId') { const why = this.v.dayProblem(next, card.day); if (why) { this.#toast(`${why}. Move the card first.`, 'bad'); return; } }
-        const chk = this.v.slotCheck(next, card.day, card.startMin);
-        if (chk.lvl === 'bad') { this.#toast(`${chk.msg}. The new setting does not fit here.`, 'bad'); return; }
-        this.bus.emit(MSG.INTENT_MOVE_CARD, { uid: card.uid, [key]: val });
-        const p = this.s.plan.cards.find((x) => x.uid === card.uid);
-        const el = this.stage.querySelector(`.bc[data-uid="${card.uid}"]`);
-        if (el) this.#cardPop(p, el);
-      } else {
-        this.draft[a.id] = { ...this.draft[a.id], [key]: val };
-        this.render();
-        const el = this.stage.querySelector(`.dc[data-type="${a.id}"]`);
-        if (el) this.#cardPop({ activityId: a.id, ...this.draft[a.id] }, el);
-      }
-    }));
+      ${place}${card.uid ? '<button class="rm" id="rmBtn">Remove from plan</button>' : !this.target ? '<div class="hint">Drag the card from the list onto a slot, or click a free slot.</div>' : ''}`;
+  }
+
+  /** A setting changed in the detail panel. */
+  #setDetail(key, raw) {
+    const card = this.#detailCard();
+    if (!card) return;
+    const val = key === 'durationMin' ? Number(raw) : raw;
+    const a = this.c.get('activities', card.activityId);
+    if (card.uid) {
+      const next = { ...card, [key]: val };
+      if (this.mode === 'do' && card.day <= this.s.calendar.day) { this.#toast('This day has started.', 'bad'); return; }
+      if (key === 'locationId') { const why = this.v.dayProblem(next, card.day); if (why) { this.#toast(`${why}. Move the card first.`, 'bad'); return; } }
+      const chk = this.v.slotCheck(next, card.day, card.startMin);
+      if (chk.lvl === 'bad') { this.#toast(`${chk.msg}. The new setting does not fit here.`, 'bad'); return; }
+      this.bus.emit(MSG.INTENT_MOVE_CARD, { uid: card.uid, [key]: val });
+    } else {
+      this.draft[a.id] = { ...this.draft[a.id], [key]: val };
+    }
+    this.render();
+  }
+
+  /** Put a deck card into the picked slot. @param {any} card */
+  #placeAtTarget(card) {
+    const { d, start } = this.target;
+    const why = this.#dayProblem(card, d), chk = this.v.slotCheck(card, d, start);
+    if (why || chk.lvl === 'bad') { this.#toast(`${why ?? chk.msg}. Pick another card or slot.`, 'bad'); this.#showDetail(card); return; }
+    this.bus.emit(MSG.INTENT_PLACE_CARD, { ...card, day: d, startMin: start });
+    const placed = this.s.plan.cards.at(-1);
+    this.target = null;
+    this.#toast(`${this.#name(placed.activityId)} planned on ${DAYS[d]}, ${hm(start)}–${hm(start + this.#dur(placed))}.`, 'ok');
+    this.#showDetail(placed);
   }
 
   #toast(msg, cls = '') {
@@ -470,7 +527,7 @@ export class PlannerBookView {
       if (!src || e.button > 0 || e.target.closest('.pop')) return;
       const isB = src.classList.contains('bc');
       if (isB && this.mode === 'do' && Number(src.closest('.col').dataset.d) <= this.s.calendar.day) { this.#toast('This day has started. You cannot move this card.', 'bad'); return; }
-      const grab = isB ? (e.clientY - src.getBoundingClientRect().top) / this.#scale() / this.#hpx() : 0.25;
+      const grab = isB ? (e.clientY - src.getBoundingClientRect().top) / this.#scale() / this.#hpx() : this.SLOT / 2;
       drag = { src, c: cardOf(src), uid: isB ? Number(src.dataset.uid) : null, grab, x0: e.clientX, y0: e.clientY, moving: false };
       src.setPointerCapture?.(e.pointerId);
     });
@@ -487,7 +544,8 @@ export class PlannerBookView {
     };
     const snapStart = (col, y, durH) => {
       const raw = (y - col.getBoundingClientRect().top) / this.#scale() / this.#hpx() - drag.grab;
-      return Math.min(this.NE - durH, Math.max(this.DS, this.DS + Math.round(raw * 2) / 2)) * 60;
+      const k = Math.round(raw / this.SLOT);
+      return Math.min(this.NE - durH, Math.max(this.DS, this.DS + k * this.SLOT)) * 60;
     };
     const hover = (e) => {
       st.querySelectorAll('.snap').forEach((n) => n.remove());
@@ -519,6 +577,7 @@ export class PlannerBookView {
         g.className = 'ghost';
         g.style.setProperty('--k', colorFor(a));
         g.innerHTML = `<b>${a.name}</b><span class="num">${this.#dur(drag.c) / 60} h</span> · ${this.#loc(drag.c)}`;
+        this.target = null;
         st.appendChild(g);
         drag.ghost = g;
         drag.src.classList.add('dragging');
@@ -534,18 +593,23 @@ export class PlannerBookView {
       if (!drag) return;
       const d0 = drag;
       drag = null;
-      if (!d0.moving) { this.#cardPop(d0.c, d0.src); return; }
+      if (!d0.moving) {
+        if (!d0.uid && this.target) this.#placeAtTarget(d0.c);
+        else this.#showDetail(d0.c);
+        return;
+      }
       d0.ghost.remove();
       d0.src.classList.remove('dragging');
       const el = document.elementFromPoint(e.clientX, e.clientY);
       clearCols();
-      if (d0.uid && el?.closest('#deck')) { this.bus.emit(MSG.INTENT_REMOVE_CARD, { uid: d0.uid }); this.#toast('Card removed from the plan.'); return; }
+      if (d0.uid && el?.closest('#deck')) { this.bus.emit(MSG.INTENT_REMOVE_CARD, { uid: d0.uid }); if (this.deckView.uid === d0.uid) this.deckView = { mode: 'cats', cat: null, uid: null, type: null }; this.#toast('Card removed from the plan.'); this.render(); return; }
       if (!d0.target) { if (el?.closest('.col')) this.#toast(this.#dayProblem(d0.c, Number(el.closest('.col').dataset.d)) ?? 'You cannot drop it here.', 'bad'); this.render(); return; }
       const { d, start, chk } = d0.target;
       if (chk.lvl === 'bad') { this.#toast(`${chk.msg}. Drop it in a free slot.`, 'bad'); this.render(); return; }
       if (d0.uid) this.bus.emit(MSG.INTENT_MOVE_CARD, { uid: d0.uid, day: d, startMin: start });
       else this.bus.emit(MSG.INTENT_PLACE_CARD, { ...d0.c, day: d, startMin: start });
       const placed = d0.uid ? this.s.plan.cards.find((x) => x.uid === d0.uid) : this.s.plan.cards.at(-1);
+      this.render();
       const iss = (this.R?.issues[placed.uid] ?? []);
       const b = iss.find((i) => i.lvl === 'bad'), w = iss.find((i) => i.lvl === 'warn');
       this.#toast(b ? b.msg : w ? w.msg : `${this.#name(placed.activityId)} planned on ${DAYS[d]}, ${hm(start)}–${hm(start + this.#dur(placed))}.`, b ? 'bad' : w ? '' : 'ok');
@@ -569,15 +633,39 @@ export class PlannerBookView {
         this.bus.emit(MSG.INTENT_SET_BUDGET, { slot: k, amount: Math.max(0, cur + Math.min(v, v > 0 ? R.unassigned : v)) });
         return;
       }
+      const sl = e.target.closest('[data-slot]');
+      if (sl) {
+        const [d, m] = sl.dataset.slot.split(':').map(Number);
+        if (this.mode === 'do' && d <= this.s.calendar.day) { this.#toast('This day has started.', 'bad'); return; }
+        this.target = this.target && this.target.d === d && this.target.start === m ? null : { d, start: m };
+        if (this.deckView.mode === 'detail' && this.deckView.uid) this.deckView = { mode: 'cats', cat: null, uid: null, type: null };
+        this.render();
+        return;
+      }
+      if (e.target.closest('[data-untarget]')) { this.target = null; this.render(); return; }
+      const cat = e.target.closest('[data-cat]');
+      if (cat) { this.deckView = { mode: 'cards', cat: cat.dataset.cat, uid: null, type: null }; this.render(); return; }
+      const back = e.target.closest('[data-back]');
+      if (back) { this.deckView = { mode: back.dataset.back, cat: back.dataset.back === 'cards' ? this.deckView.cat : null, uid: null, type: null }; this.render(); return; }
+      const set = e.target.closest('#deck [data-set]');
+      if (set) { this.#setDetail(set.dataset.set, set.dataset.val); return; }
+      if (e.target.closest('[data-place]')) { const c = this.#detailCard(); if (c && this.target) this.#placeAtTarget(c); return; }
+      if (e.target.closest('#rmBtn')) {
+        const uid = this.deckView.uid;
+        this.bus.emit(MSG.INTENT_REMOVE_CARD, { uid });
+        this.deckView = { mode: 'cats', cat: null, uid: null, type: null };
+        this.#toast('Card removed. It is back in the deck.');
+        this.render();
+        return;
+      }
       const mk = e.target.closest('[data-mk]');
       if (mk) { this.mkSel = mk.dataset.mk; this.render(); return; }
       if (e.target.closest('#confirmBtn')) { if (this.mode === 'do') { this.fit.hidden = true; this.#closePop(); } else this.#openReview(); return; }
-      if (!e.target.closest('.pop,.dc,.bc')) this.#closePop();
     });
 
     document.addEventListener('keydown', (e) => {
       if (this.fit.hidden) return;
-      if (e.key === 'Escape') { this.#closePop(); this.#closeModal(); return; }
+      if (e.key === 'Escape') { this.#closeModal(); if (this.target) { this.target = null; this.render(); } return; }
       if (this.scrim || e.target.matches?.('input,textarea')) return;
       const i = Number(e.key);
       if (i >= 1 && i <= 5) { this.#go(TABS[i - 1].id); return; }
@@ -585,7 +673,7 @@ export class PlannerBookView {
       if (fc && /^Arrow/.test(e.key)) {
         e.preventDefault();
         const p = this.s.plan.cards.find((x) => x.uid === Number(fc.dataset.uid));
-        const dd = e.key === 'ArrowLeft' ? -1 : e.key === 'ArrowRight' ? 1 : 0, dm = e.key === 'ArrowUp' ? -30 : e.key === 'ArrowDown' ? 30 : 0;
+        const dd = e.key === 'ArrowLeft' ? -1 : e.key === 'ArrowRight' ? 1 : 0, dm = (e.key === 'ArrowUp' ? -1 : e.key === 'ArrowDown' ? 1 : 0) * this.SLOT * 60;
         const d = p.day + dd, s = p.startMin + dm;
         if (d < 0 || d > 6 || s < this.DS * 60 || s + this.#dur(p) > this.NE * 60) return;
         const why = this.#dayProblem(p, d) ?? (this.mode === 'do' && p.day <= this.s.calendar.day ? 'This day has started' : null);
@@ -598,11 +686,20 @@ export class PlannerBookView {
       }
       if (e.key === 'Enter') {
         const c = e.target.closest?.('.dc,.bc');
-        if (c) this.#cardPop(cardOf(c), c);
+        if (c) this.#showDetail(cardOf(c));
       }
     });
   }
 }
+
+/** Deck categories (activity.category -> tile). */
+const CATS = [
+  { id: 'production', n: 'Production', sub: 'Craft, dry, grind', cats: ['production'], i: 'bowl', c: '#c98a3c' },
+  { id: 'trade', n: 'Trade', sub: 'Shop, buy, sell', cats: ['trade'], i: 'coin', c: '#e9b44c' },
+  { id: 'explore', n: 'Explore', sub: 'Gather in the wild', cats: ['fieldwork'], i: 'leaf', c: '#5cc29b' },
+  { id: 'guilds', n: 'Guilds', sub: 'Quests, services', cats: ['organization'], i: 'scroll', c: '#b7adff' },
+  { id: 'rest', n: 'Rest', sub: 'Sleep ends the day', cats: ['rest', 'personal'], i: 'moon', c: '#9ba4c4' }
+];
 
 const TABS = [
   { id: 'week', n: 'Week', sub: 'Plan days', c: '#e9b44c' },

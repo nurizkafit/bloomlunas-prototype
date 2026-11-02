@@ -2,7 +2,7 @@ import { MSG } from '../core/EventBus.js';
 
 /**
  * TimeSystem: the clock moves only when an action runs (SPECS §5).
- * Energy, fatigue (low energy at sleep or work after DAY_END_HOUR), late wake-up, day end, week end.
+ * Energy, fatigue (low energy at sleep, or work or sleep after DAY_END_HOUR = midnight), late wake-up, day end, week end.
  * Unity: plain C# service owned by GameManager.
  */
 export class TimeSystem {
@@ -42,7 +42,7 @@ export class TimeSystem {
   sleep() {
     const { state } = this.ctx;
     const p = state.player;
-    p.fatigued = p.energy < this.#c.num('FATIGUE_THRESHOLD') || p.workedLate;
+    p.fatigued = p.energy < this.#c.num('FATIGUE_THRESHOLD') || p.workedLate || state.calendar.minute > this.#c.num('DAY_END_HOUR') * 60;
     p.energy = Math.min(this.#c.num('ENERGY_MAX'), p.energy + this.#c.num('ENERGY_REST_RECOVERY'));
     p.dayOver = true;
     if (state.calendar.day >= this.#c.num('DAYS_PER_WEEK') - 1) p.weekOver = true;
@@ -58,6 +58,7 @@ export class TimeSystem {
     p.lateWake = p.fatigued && rng.chance(this.#c.num('LATE_WAKE_CHANCE'));
     if (p.lateWake) state.calendar.minute += this.#c.num('LATE_WAKE_DELAY_MIN');
     p.workedLate = false;
+    p.meals = [];
     p.dayOver = false;
     p.weekOver = false;
     p.activityId = null;

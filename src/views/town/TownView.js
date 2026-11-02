@@ -291,8 +291,9 @@ export class TownView {
     const t = THREE.MathUtils.clamp((h - 6) / 14, 0, 1);
     const ang = Math.PI * t;
     this.sun.position.set(Math.cos(ang) * 50, Math.max(5, Math.sin(ang) * 60), 25);
-    const night = h >= this.c.num('DAY_END_HOUR') + 1 || h < 6;
-    const evening = h >= this.c.num('DAY_END_HOUR') - 2 && !night;
+    // Picture only: dusk from 17:00, dark from SLEEP_EARLIEST_HOUR + 2 (the clock can pass 24:00 up to NIGHT_END_HOUR).
+    const night = h >= this.c.num('SLEEP_EARLIEST_HOUR') + 2 || h < 6;
+    const evening = h >= this.c.num('SLEEP_EARLIEST_HOUR') - 1 && !night;
     this.sun.color.setHex(night ? 0x6070c0 : evening ? 0xffa060 : h < 9 ? 0xffd9a0 : 0xffffff);
     this.sun.intensity = night ? 0.35 : evening ? 1.1 : 1.6;
     this.hemi.intensity = night ? 0.35 : 0.9;

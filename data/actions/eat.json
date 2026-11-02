@@ -1,0 +1,15 @@
+{
+  "id": "eat",
+  "name": "Eat",
+  "kind": "meal",
+  "timeMin": 30,
+  "timeKey": "MEAL_MIN",
+  "energyKey": null,
+  "anyActivity": true,
+  "xp": {
+    "amount": 0
+  },
+  "_doc": "Breakfast, lunch or dinner: the meal comes from the clock (MEAL_WINDOWS). Free: WEEKLY_EXPENSES pays for food.",
+  "source": "user decision 2 Nov 2026 (Prototype Iteration)",
+  "_placeholder": true
+}

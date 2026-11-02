@@ -74,9 +74,14 @@ Two levels (docs:pages/activities, docs:pages/actions):
 ## 5. Do rules (docs:pages/loop/do.md, docs:pages/systems/time-and-energy.md, docs:pages/systems/activity-cards.md)
 
 - The player starts each activity on purpose. The avatar walks there on its own. The avatar never runs planned cards on its own.
-- Every action is a turn. Idle time does not move the clock. Day runs `DAY_START_HOUR` to `DAY_END_HOUR`.
-- Energy: start each day with up to `ENERGY_MAX`. Every action except Rest uses `ENERGY_COST_<ACTION>`. At 0 energy the player can only rest. Rest restores `ENERGY_REST_RECOVERY` and ends the day.
-- Fatigue: energy below `FATIGUE_THRESHOLD` or work after `DAY_END_HOUR` gives fatigue: `LATE_WAKE_CHANCE` and `FATIGUE_EFFICIENCY_PENALTY`.
+- Every action is a turn. Idle time does not move the clock.
+- Day (user decision, 2 Nov 2026): 06:00 (`DAY_START_HOUR`) to 03:00 (`NIGHT_END_HOUR` 27 = 03:00 next morning). The clock counts past 24:00. Night is 18:00–24:00 (`SLEEP_EARLIEST_HOUR` to `DAY_END_HOUR`); safe for sleep. Midnight is 00:00–03:00: work or sleep after `DAY_END_HOUR` gives fatigue. No action may end after `NIGHT_END_HOUR`.
+- Sleep is the Sleep card (activity `rest`, action `sleep`) at the bed (loc_home). It ends the day. It is allowed only from `SLEEP_EARLIEST_HOUR`. There is no "End the day" button.
+- Energy: start each day with up to `ENERGY_MAX`. Every work action uses `ENERGY_COST_<ACTION>`. Sleep restores `ENERGY_REST_RECOVERY`.
+- Small rest (action `small-rest`): any time, any place, no activity needed. `SMALL_REST_MIN`, + `SMALL_REST_ENERGY` (up to `ENERGY_MAX`).
+- Meals (action `eat`): breakfast, lunch, dinner, once a day each, only in their window (`MEAL_WINDOWS`). `MEAL_MIN`, + `MEAL_ENERGY`. Free: `WEEKLY_EXPENSES` pays for food. Any place, no activity needed.
+- Small rest and meals are `anyActivity` actions: they do not change the current activity and do not count as activity time.
+- Fatigue: energy below `FATIGUE_THRESHOLD` at sleep, or work or sleep after `DAY_END_HOUR`, gives fatigue: `LATE_WAKE_CHANCE` and `FATIGUE_EFFICIENCY_PENALTY`. A late wake starts the day `LATE_WAKE_DELAY_MIN` (3 h) late, at 09:00.
 - Plan match bonus: same activity (`PLAN_MATCH_XP_BONUS_ACTIVITY`), + same day (`_DAY`), + same time slot (`_TIME`).
 - An event that uses the time of a planned card removes that card.
 - Change the plan only for days that have not started.
@@ -144,8 +149,8 @@ Shelf life lengths in days: TBD in the docs (placeholder §9).
 | Type | Main fields | Prototype files |
 | --- | --- | --- |
 | BalanceConfig | all variables (§9), names as in docs:gdd/08-economy-and-variables.md | 1 |
-| ActivityData | id, category, locationIds, actionIds[], skillPath, canMiss, importance, needsAppointment, needsPermit, build | 11 |
-| ActionData | id, timeCost, energyCost, inputs, outputs, effects[] | about 20 |
+| ActivityData | id, category, locationIds, actionIds[], skillPath, canMiss, importance, needsAppointment, needsPermit, build, plannable, planDurationMin, planDurationOptions (whole slots), planEarliestHour? | 11 |
+| ActionData | id, timeCost, energyCost, inputs, outputs, effects[], anyActivity? (small rest, eat) | about 20 |
 | LocationData | id, entityId, openHours per weekday, view (exterior, interior), assetSlotId, door point, walkTimes, polyforkAssetId?, building? (station inside that building: no town position) | 9 |
 | InteriorData | id, name, buildingId, size, wallHeight, door, stations[] (id, label, assetSlotId, greybox, position, stand, locationId or panel) | 1 (home and shop) |
 | EntityData | id, type (organization, people), services[], buys[], sells[], questBoard, relationshipStart | 6 |
@@ -169,7 +174,10 @@ The docs list these variables as TBD. Use these values in `BalanceConfig.json` w
 | --- | --- | --- |
 | `WEEKS_PER_MONTH` | 4 | Core Loop doc |
 | `JAM_MONTHS` | 1 (default months for `npm run sim`; the game goes on until an ending) | Scope |
-| `DAY_START_HOUR` / `DAY_END_HOUR` | 7 / 19 | Planner Book |
+| `DAY_START_HOUR` / `DAY_END_HOUR` / `NIGHT_END_HOUR` | 6 / 24 / 27 (03:00) | User decision (2 Nov 2026) |
+| `PLAN_SLOT_HOURS` / `SLEEP_EARLIEST_HOUR` | 3 / 18 | User decision (2 Nov 2026) |
+| `SMALL_REST_MIN` / `SMALL_REST_ENERGY` | 30 min / 25 | placeholder (user asked for the action) |
+| `MEAL_MIN` / `MEAL_ENERGY` / `MEAL_WINDOWS` | 30 min / 20 / breakfast 6–9, lunch 12–15, dinner 18–21 | placeholder (user: meals have windows, food is in the weekly cost) |
 | `GOLD_START` | 240 | Planner Book |
 | `WEEKLY_EXPENSES` | 40 | Planner Book |
 | `MONTHLY_UTILITIES` | 120 | Planner Book (shop rent) |
@@ -191,7 +199,7 @@ The docs list these variables as TBD. Use these values in `BalanceConfig.json` w
 | `QUEST_DEADLINE_DAYS` | 7 | placeholder |
 | `EVENTS_PER_WEEK_MIN` / `_MAX` | 1 / 2 random events, plus the scheduled ones | Docs (early levels) |
 | `DEADLINE_MONTHS` | 12 | placeholder (docs: TBD) |
-| `NIGHT_END_HOUR` / `LATE_WAKE_DELAY_MIN` | 23 / 120 min | placeholder (M1) |
+| `LATE_WAKE_DELAY_MIN` | 180 min (start at 09:00) | User decision (2 Nov 2026) |
 | `CUSTOMERS_PER_HOUR` / `SHOP_BUY_CHANCE` | 2 / 0.7 | placeholder (M1) |
 | `SHOP_PRICE_RATIO` / `MARKET_SELL_RATIO` / `GUILD_BUY_RATIO` / `GUILD_SELL_RATIO` | 1.0 / 1.0 / 0.8 / 0.9 x real price | placeholder (M1) |
 | `RELATIONSHIP_POINTS_PER_LEVEL` | 10 | placeholder (M1) |
@@ -212,6 +220,14 @@ Price rule (M1): each Plan phase rolls a hidden real price per item inside its f
 | Tabs: Week, Ledger, Market, Town, Journal | PlannerBookView tabs |
 | Review modal, "Start the week" | PlanPhase.exit() → DoPhase |
 | Spec and Sheet overlays | DevOverlay |
+
+Plan rules (user decision, 2 Nov 2026):
+- The week board has 3-hour slots (`PLAN_SLOT_HOURS`): 06–09, 09–12, 12–15, 15–18, 18–21, 21–24, 00–03. A card starts on a slot edge and fills whole slots (`planDurationOptions` are multiples of 180 min). Craft fills the recipe time rounded up to whole slots. The Do phase still counts minutes. Plan match "same time" = the action starts inside the card slots.
+- A location that is closed for all of a slot is a problem. Open for part of the slot is a warning. A location open all day (0–24) stays open after midnight.
+- Sleep card: only from `planEarliestHour` (18). 00–03 is a warning (midnight). A day with no Sleep card is a warning.
+- Deck: category tiles first (Production, Trade, Explore, Guilds, Rest). A tile shows its cards. A card shows its details (settings, issues, remove) in the same side panel; no popup. Drag a card onto a slot, or click a free slot and then pick a card.
+- Top bar: Gold, Debt, next payment (`DEBT_MIN_PAYMENT` + `MONTHLY_UTILITIES`, month end), weekly living cost, gold after the plan (end of week forecast), energy.
+- Meals and small rests are not cards. They happen in Do (HUD buttons).
 
 Card renames: Sell → Open shop; Craft → Craft (recipe picks Brew or Concoct); Gather → Explore (City zone); Errand (clinic order) → Organization visit (service); Errand (quest board) → Commission. Add Sell to organization, Sun drying, Grinding. Jamu → Fresh jamu. Recipes and materials from §6, not from the Planner Book.
 

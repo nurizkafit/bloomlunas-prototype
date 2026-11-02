@@ -18,9 +18,8 @@
   "build": "Jam",
   "source": "docs:pages/activities/sun-drying.md",
   "plannable": true,
-  "planDurationMin": 60,
+  "planDurationMin": 180,
   "planDurationOptions": [
-    30,
-    60
+    180
   ]
 }

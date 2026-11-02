@@ -14,48 +14,60 @@ function inPlan() {
 describe('PlanValidator', () => {
   it('a shop card in opening hours has no problem', () => {
     const { gm, place, last } = inPlan();
-    place({ activityId: 'open_shop', day: 0, startMin: 8 * 60, durationMin: 240 });
+    place({ activityId: 'open_shop', day: 0, startMin: 9 * 60, durationMin: 180 });
     const card = gm.state.plan.cards[0];
     expect(last().issues[card.uid]).toBeUndefined();
   });
 
   it('closed day and outside hours are problems', () => {
     const { gm, place, last } = inPlan();
-    place({ activityId: 'open_shop', day: 6, startMin: 8 * 60 });
-    place({ activityId: 'buy', day: 0, startMin: 13 * 60, locationId: 'loc_market' });
+    place({ activityId: 'open_shop', day: 6, startMin: 9 * 60 });
+    place({ activityId: 'buy', day: 0, startMin: 15 * 60, locationId: 'loc_market' });
     const [a, b] = gm.state.plan.cards;
     expect(last().issues[a.uid][0].msg).toMatch(/closed on Sun/);
-    expect(last().issues[b.uid][0].msg).toMatch(/open 06:00–12:00/);
+    expect(last().issues[b.uid][0].msg).toMatch(/closed for all of this slot/);
+  });
+
+  it('3-hour slots: 7 slots from 06:00 to 03:00; cards start on a slot edge', () => {
+    const { v } = inPlan();
+    expect(v.slots().map((m) => m / 60)).toEqual([6, 9, 12, 15, 18, 21, 24]);
+    expect(v.slotCheck({ activityId: 'explore', durationMin: 180 }, 1, 7 * 60).msg).toMatch(/slot edge/);
+    expect(v.duration({ activityId: 'buy', durationMin: 60 })).toBe(180);
   });
 
   it('overlap is refused in slotCheck and reported in validate', () => {
     const { gm, v, place, last } = inPlan();
-    place({ activityId: 'explore', day: 1, startMin: 7 * 60 });
-    expect(v.slotCheck({ activityId: 'rest', durationMin: 60 }, 1, 8 * 60).lvl).toBe('bad');
-    expect(v.slotCheck({ activityId: 'rest', durationMin: 60 }, 1, 10 * 60).lvl).toBe('ok');
-    place({ activityId: 'rest', day: 1, startMin: 8 * 60 });
+    place({ activityId: 'explore', day: 1, startMin: 9 * 60, durationMin: 360 });
+    expect(v.slotCheck({ activityId: 'explore', durationMin: 180 }, 1, 12 * 60).lvl).toBe('bad');
+    expect(v.slotCheck({ activityId: 'explore', durationMin: 180 }, 1, 6 * 60).lvl).toBe('ok');
+    place({ activityId: 'explore', day: 1, startMin: 12 * 60 });
     expect(last().bad).toBeGreaterThan(0);
   });
 
-  it('night work is a warning; past the night limit is a problem', () => {
+  it('sleep: only night slots; 18-24 safe; 00-03 midnight is a warning; past 03:00 is a problem', () => {
     const { v } = inPlan();
-    expect(v.slotCheck({ activityId: 'rest', durationMin: 120 }, 2, 20 * 60).lvl).toBe('warn');
-    expect(v.slotCheck({ activityId: 'rest', durationMin: 120 }, 2, 22 * 60).lvl).toBe('bad');
+    const sleep = { activityId: 'rest', durationMin: 180 };
+    expect(v.slotCheck(sleep, 2, 15 * 60).lvl).toBe('bad');
+    expect(v.slotCheck(sleep, 2, 18 * 60).lvl).toBe('ok');
+    expect(v.slotCheck(sleep, 2, 21 * 60).lvl).toBe('ok');
+    expect(v.slotCheck(sleep, 2, 24 * 60).lvl).toBe('warn');
+    expect(v.slotCheck({ activityId: 'rest', durationMin: 360 }, 2, 24 * 60).lvl).toBe('bad');
   });
 
   it('craft without materials: problem; with a buy card before it: warning', () => {
     const { gm, place, last } = inPlan();
-    place({ activityId: 'craft', day: 0, startMin: 8 * 60, recipeId: 'beras_kencur' });
+    place({ activityId: 'craft', day: 0, startMin: 9 * 60, recipeId: 'beras_kencur' });
     const craft = gm.state.plan.cards[0];
     expect(last().issues[craft.uid][0].lvl).toBe('bad');
-    gm.bus.emit(MSG.INTENT_MOVE_CARD, { uid: craft.uid, day: 2, startMin: 13 * 60 });
-    place({ activityId: 'buy', day: 2, startMin: 7 * 60, locationId: 'loc_market' });
+    gm.bus.emit(MSG.INTENT_MOVE_CARD, { uid: craft.uid, day: 2, startMin: 12 * 60 });
+    place({ activityId: 'buy', day: 2, startMin: 6 * 60, locationId: 'loc_market' });
     expect(last().issues[craft.uid][0].lvl).toBe('warn');
   });
 
-  it('craft length comes from the recipe', () => {
+  it('craft length comes from the recipe, rounded up to whole slots', () => {
     const { v } = inPlan();
-    expect(v.duration({ activityId: 'craft', recipeId: 'turmeric_salep', durationMin: 60 })).toBe(240);
+    expect(v.duration({ activityId: 'craft', recipeId: 'turmeric_salep', durationMin: 60 })).toBe(360);
+    expect(v.duration({ activityId: 'craft', recipeId: 'kunyit_asam', durationMin: 60 })).toBe(180);
   });
 
   it('budget: expenses slot below living cost is a problem; free gold is a warning', () => {

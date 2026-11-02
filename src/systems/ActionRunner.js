@@ -47,10 +47,11 @@ export class ActionRunner {
     const s = this.#s, p = s.player;
     if (p.dayOver || p.weekOver) return this.#refuse(actionId, 'the day is over');
     if (s.pendingEvent) return this.#refuse(actionId, 'answer the event first');
+    const action = this.#c.get('actions', actionId);
+    if (action.anyActivity) return this.#runAnywhere(action, params);
     if (!p.activityId) return this.#refuse(actionId, 'start an activity first');
     const activity = this.#c.get('activities', p.activityId);
     if (!activity.actionIds.includes(actionId)) return this.#refuse(actionId, `${actionId} is not part of ${activity.id}`);
-    const action = this.#c.get('actions', actionId);
     const isTravel = action.kind === 'travel', isSleep = action.kind === 'sleep';
     if (!isTravel && activity.locationIds.length && !activity.locationIds.includes(p.location)) {
       return this.#refuse(actionId, `go to ${activity.locationIds.join(' or ')} first`);
@@ -83,11 +84,54 @@ export class ActionRunner {
     return out;
   }
 
+  /**
+   * Small rest and meals: any time, any place, with or without an activity (anyActivity in ActionData).
+   * They use time and give energy. They do not count as activity time.
+   */
+  #runAnywhere(action, params) {
+    const handler = this[`kind_${action.kind}`];
+    if (!handler) throw new Error(`ActionRunner: no handler for kind ${action.kind}`);
+    const prep = handler.call(this, action, params);
+    if (prep.error) return this.#refuse(action.id, prep.error);
+    const minutes = this.ctx.sys.time.effectiveMinutes(prep.minutes);
+    if (!this.ctx.sys.time.fits(minutes)) return this.#refuse(action.id, 'too late: the night limit is near');
+    const result = prep.apply();
+    this.ctx.sys.time.advance(minutes);
+    const out = { ok: true, actionId: action.id, minutes, energy: 0, ...result };
+    this.ctx.bus.emit(MSG.ACTION_COMPLETED, out);
+    this.ctx.sys.events?.tick();
+    return out;
+  }
+
+  #gainEnergy(amount) {
+    const p = this.#s.player, before = p.energy;
+    p.energy = Math.min(this.#c.num('ENERGY_MAX'), p.energy + amount);
+    return p.energy - before;
+  }
+
+  /** The meal for this minute (MEAL_WINDOWS), or null. */
+  mealNow() {
+    const w = this.#c.num('MEAL_WINDOWS'), m = this.#s.calendar.minute;
+    return Object.keys(w).find((k) => m >= w[k][0] * 60 && m < w[k][1] * 60) ?? null;
+  }
+
+  kind_smallRest() {
+    return { minutes: this.#c.num('SMALL_REST_MIN'), apply: () => ({ gained: this.#gainEnergy(this.#c.num('SMALL_REST_ENERGY')) }) };
+  }
+
+  kind_meal() {
+    const meal = this.mealNow(), p = this.#s.player;
+    if (!meal) return { error: 'no meal now: breakfast, lunch and dinner have set times' };
+    if ((p.meals ?? []).includes(meal)) return { error: `you already ate ${meal} today` };
+    return { minutes: this.#c.num('MEAL_MIN'), apply: () => { p.meals = [...(p.meals ?? []), meal]; return { meal, gained: this.#gainEnergy(this.#c.num('MEAL_ENERGY')) }; } };
+  }
+
   /** True if the location is open from now until now + minutes. */
   #isOpen(locationId, minutes) {
     const loc = this.#c.get('locations', locationId);
     const hours = loc.openHours?.[this.#s.calendar.day];
     if (!hours) return false;
+    if (hours[0] === 0 && hours[1] >= 24) return true;
     const now = this.#s.calendar.minute;
     return now >= hours[0] * 60 && now + minutes <= hours[1] * 60;
   }
@@ -278,6 +322,8 @@ export class ActionRunner {
   }
 
   kind_sleep() {
+    const from = this.#c.num('SLEEP_EARLIEST_HOUR') * 60;
+    if (this.#s.calendar.minute < from) return { error: `sleep starts at ${String(from / 60).padStart(2, '0')}:00 (night). Take a small rest or eat instead` };
     return { minutes: 0, apply: () => { this.ctx.sys.time.sleep(); return {}; } };
   }
 

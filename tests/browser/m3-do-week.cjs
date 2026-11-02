@@ -15,6 +15,9 @@ const SP = process.argv[2];
   p.setDefaultTimeout(8000);
   // Events (M4) can interrupt: answer with the last option the player can pick.
   const answer = async () => { while (await p.locator('.evscrim').isVisible()) { await p.locator('.evopt:not([disabled])').last().click(); await p.waitForTimeout(80); } };
+  // Sleep at the bed (Prototype Iteration: sleep from 18:00). Test only: move the clock to 18:00 if it is earlier.
+  const sleepNow = async () => { await answer(); await p.evaluate(() => { const g = window.__gm, m = g.content.num('SLEEP_EARLIEST_HOUR') * 60; if (g.state.calendar.minute < m) g.state.calendar.minute = m; });
+    await p.evaluate(() => window.__ui.menu.open('loc_home')); await p.click('[data-act="rest"]'); await p.waitForTimeout(60); await answer(); await p.locator('[data-run="sleep"]').first().click(); await p.waitForTimeout(80); await answer(); };
   const act = async (loc, activity) => { await answer(); await ev(`window.__ui.menu.open('${loc}')`); await p.click(`[data-act="${activity}"]`); used.add(activity); await p.waitForTimeout(80); };
   const run = async (action, sel = {}) => { await answer(); for (const [n, v] of Object.entries(sel)) await p.locator(`.aform:has([data-run="${action}"]) [name="${n}"]`).first().selectOption?.(v).catch(async () => p.locator(`.aform:has([data-run="${action}"]) [name="${n}"]`).first().fill(String(v)));
     await p.locator(`[data-run="${action}"]`).first().click(); await p.waitForTimeout(80); await answer(); };
@@ -35,14 +38,14 @@ const SP = process.argv[2];
   await act('loc_home_shop', 'open_shop'); await run('serve-customer'); await run('serve-customer'); console.log('Mon', await log());
   await act('loc_home_drying_yard', 'sun_drying'); await run('start-batch', { qty: 2 }); console.log('Mon', await log());
   await p.screenshot({ path: SP + '/m3-town.png' });
-  await answer(); await p.click('#hSleep'); await p.waitForTimeout(100); await answer();
+  await sleepNow();
   // Tue
   await act('loc_gather_area', 'explore'); await run('gather-harvest'); console.log('Tue', await log());
   await ev(() => { const g = window.__gm; g.state.appointments.push({ entityId: 'apothecary_guild', serviceId: 'appraisal', absDay: g.state.calendar.absDay(), minute: 13 * 60, done: false }); });
   await act('loc_apothecary_guild', 'commission'); await run('take-quest'); console.log('Tue', await log());
   await act('loc_apothecary_guild', 'sell_to_organization'); await run('sell-item'); console.log('Tue', await log());
   await act('loc_apothecary_guild', 'organization_visit'); await run('service'); console.log('Tue', await log());
-  await answer(); await p.click('#hSleep'); await p.waitForTimeout(100); await answer();
+  await sleepNow();
   // Wed: collect, grind
   await act('loc_home_drying_yard', 'sun_drying'); await run('collect-batch'); console.log('Wed', await log());
   await act('loc_home_atelier', 'grinding'); await run('grind', { qty: 2 }); console.log('Wed', await log());
@@ -51,7 +54,7 @@ const SP = process.argv[2];
   await answer(); await p.click('#hPlan'); await p.waitForTimeout(200);
   await p.screenshot({ path: SP + '/m3-plan-in-do.png' });
   await p.click('#confirmBtn');
-  for (let i = 0; i < 8 && !(await p.locator('#hCheck').isVisible()); i++) { await answer(); await p.click('#hSleep'); await p.waitForTimeout(60); }
+  for (let i = 0; i < 8 && !(await p.locator('#hCheck').isVisible()); i++) { await sleepNow(); }
   const done = await p.locator('#hCheck').isVisible();
   await answer();
   console.log('week over button:', done, 'activities used:', [...used].join(','));

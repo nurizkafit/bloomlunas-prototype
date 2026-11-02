@@ -21,9 +21,8 @@
   "build": "Jam",
   "source": "docs:pages/activities/buy.md",
   "plannable": true,
-  "planDurationMin": 60,
+  "planDurationMin": 180,
   "planDurationOptions": [
-    60,
-    120
+    180
   ]
 }

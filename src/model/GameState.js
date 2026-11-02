@@ -31,6 +31,7 @@ export class GameState {
       energy: content.num('ENERGY_MAX'),
       fatigued: false,
       workedLate: false,
+      meals: [],
       location: 'loc_home',
       activityId: null,
       dayOver: false,

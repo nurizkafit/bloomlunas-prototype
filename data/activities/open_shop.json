@@ -18,12 +18,9 @@
   "build": "Jam",
   "source": "docs:pages/activities/open-shop.md",
   "plannable": true,
-  "planDurationMin": 240,
+  "planDurationMin": 180,
   "planDurationOptions": [
-    120,
     180,
-    240,
-    300,
     360
   ]
 }

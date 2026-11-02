@@ -20,9 +20,8 @@
   "build": "Jam",
   "source": "docs:pages/activities/sell-to-organization.md",
   "plannable": true,
-  "planDurationMin": 60,
+  "planDurationMin": 180,
   "planDurationOptions": [
-    60,
-    120
+    180
   ]
 }

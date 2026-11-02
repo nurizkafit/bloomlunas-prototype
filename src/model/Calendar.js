@@ -31,7 +31,7 @@ export class Calendar {
   }
 
   clock() {
-    const h = Math.floor(this.minute / 60), m = Math.round(this.minute % 60);
+    const h = Math.floor(this.minute / 60) % 24, m = Math.round(this.minute % 60);
     return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
   }
 
