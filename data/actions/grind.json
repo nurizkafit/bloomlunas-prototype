@@ -1,0 +1,15 @@
+{
+  "id": "grind",
+  "name": "Grind",
+  "kind": "grind",
+  "timeMin": 15,
+  "energyKey": "ENERGY_COST_DEFAULT",
+  "xp": {
+    "path": "moon",
+    "sub": "crafting",
+    "amount": 1
+  },
+  "source": "docs:pages/actions/grind.md",
+  "_placeholder": true,
+  "_note": "timeMin is per unit."
+}

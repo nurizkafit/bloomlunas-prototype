@@ -1,0 +1,21 @@
+{
+  "id": "_walk",
+  "_doc": "Walk minutes between location groups. Home group = shop, atelier, drying yard, home.",
+  "homeGroup": [
+    "loc_home_shop",
+    "loc_home_atelier",
+    "loc_home_drying_yard",
+    "loc_home"
+  ],
+  "withinHome": 5,
+  "fromHome": {
+    "loc_market": 20,
+    "loc_merchant_guild": 25,
+    "loc_apothecary_guild": 25,
+    "loc_artisan_guild": 30,
+    "loc_adventurer_guild": 30,
+    "loc_gather_area": 40
+  },
+  "betweenTown": 20,
+  "_placeholder": true
+}

@@ -1,0 +1,14 @@
+{
+  "id": "serve-customer",
+  "name": "Serve customers",
+  "kind": "serveCustomers",
+  "timeMin": 60,
+  "energyKey": "ENERGY_COST_DEFAULT",
+  "xp": {
+    "path": "sun",
+    "sub": "marketing",
+    "amount": 2
+  },
+  "source": "docs:pages/actions/serve-customer.md",
+  "_placeholder": true
+}

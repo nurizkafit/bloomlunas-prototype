@@ -1,0 +1,23 @@
+{
+  "id": "rice",
+  "kind": "material",
+  "name": "Rice",
+  "tier": "Common",
+  "role": "carrier",
+  "plantPart": "fruit",
+  "variants": [
+    {
+      "id": "grain",
+      "shelfLifeDays": 56,
+      "priceMult": 1.0
+    }
+  ],
+  "costKey": "COST_RICE",
+  "forecast": {
+    "lo": 1,
+    "hi": 3
+  },
+  "build": "Jam",
+  "source": "docs:pages/materials/rice.md",
+  "_placeholder": true
+}

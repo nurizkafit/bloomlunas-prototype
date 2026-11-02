@@ -1,0 +1,14 @@
+{
+  "id": "start-batch",
+  "name": "Start drying batch",
+  "kind": "startBatch",
+  "timeMin": 30,
+  "energyKey": "ENERGY_COST_DEFAULT",
+  "xp": {
+    "path": "moon",
+    "sub": "cooking",
+    "amount": 1
+  },
+  "source": "docs:pages/actions/start-batch.md",
+  "_placeholder": true
+}

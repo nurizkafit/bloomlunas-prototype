@@ -1,0 +1,6 @@
+{
+  "id": "customers",
+  "type": "people",
+  "relationshipStart": 0,
+  "source": "docs:pages/people/customers.md"
+}

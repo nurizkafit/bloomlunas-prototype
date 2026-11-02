@@ -1,0 +1,39 @@
+{
+  "id": "loc_home_drying_yard",
+  "name": "Home drying yard",
+  "entityId": "main_character",
+  "openHours": [
+    [
+      6,
+      18
+    ],
+    [
+      6,
+      18
+    ],
+    [
+      6,
+      18
+    ],
+    [
+      6,
+      18
+    ],
+    [
+      6,
+      18
+    ],
+    [
+      6,
+      18
+    ],
+    [
+      6,
+      18
+    ]
+  ],
+  "view": "exterior",
+  "assetSlotId": "loc_home_drying_yard",
+  "_placeholder": true,
+  "source": "docs:gdd/17-world-map-and-locations.md"
+}

@@ -1,0 +1,12 @@
+{
+  "id": "sleep",
+  "name": "Sleep",
+  "kind": "sleep",
+  "timeMin": 0,
+  "energyKey": null,
+  "xp": {
+    "amount": 0
+  },
+  "source": "docs:pages/actions/sleep.md",
+  "_placeholder": true
+}

@@ -1,0 +1,13 @@
+{
+  "id": "service",
+  "name": "Use a service",
+  "kind": "service",
+  "timeMin": 60,
+  "energyKey": "ENERGY_COST_DEFAULT",
+  "xp": {
+    "amount": 0
+  },
+  "source": "docs:pages/actions/service.md",
+  "_placeholder": true,
+  "_note": "Needs an appointment booked in Act (M5)."
+}

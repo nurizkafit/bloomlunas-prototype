@@ -1,0 +1,36 @@
+{
+  "id": "kunyit_asam",
+  "name": "Kunyit asam",
+  "product": "fresh_jamu",
+  "action": "brew",
+  "slots": {
+    "main": [
+      {
+        "item": "turmeric",
+        "variant": "fresh",
+        "qty": 2
+      }
+    ],
+    "aroma": [
+      {
+        "item": "tamarind",
+        "variant": "paste",
+        "qty": 1
+      }
+    ],
+    "sweetener": [
+      {
+        "item": "palm_sugar",
+        "variant": "block",
+        "qty": 1
+      }
+    ],
+    "carrier": []
+  },
+  "output": 6,
+  "timeMin": 180,
+  "build": "Jam",
+  "source": "docs:pages/products/fresh-jamu.md",
+  "_placeholder": true,
+  "_note": "Slot materials from the docs. Amounts, output and time are TBD in the docs; placeholders."
+}

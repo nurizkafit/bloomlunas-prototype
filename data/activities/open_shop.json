@@ -1,0 +1,20 @@
+{
+  "id": "open_shop",
+  "name": "Open shop",
+  "category": "trade",
+  "locationIds": [
+    "loc_home_shop"
+  ],
+  "actionIds": [
+    "travel",
+    "serve-customer",
+    "restock-shelf"
+  ],
+  "skillPath": "sun",
+  "canMiss": true,
+  "importance": 2,
+  "needsAppointment": false,
+  "needsPermit": false,
+  "build": "Jam",
+  "source": "docs:pages/activities/open-shop.md"
+}

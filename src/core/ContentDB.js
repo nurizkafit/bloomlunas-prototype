@@ -31,6 +31,11 @@ export class ContentDB {
     return typeof v === 'object' && v !== null && 'value' in v ? v.value : v;
   }
 
+  /** A config file at the data root, for example config('QualityConfig'). @param {string} name */
+  config(name) {
+    return this.get(name, name);
+  }
+
   /** @param {string} type @param {string} id */
   get(type, id) {
     const r = this.tables.get(type)?.get(id);

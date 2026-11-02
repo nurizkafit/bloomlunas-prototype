@@ -1,0 +1,35 @@
+{
+  "id": "turmeric_salep",
+  "name": "Turmeric salep",
+  "product": "salep",
+  "action": "concoct",
+  "slots": {
+    "main": [
+      {
+        "item": "turmeric",
+        "variant": "fresh",
+        "qty": 2
+      }
+    ],
+    "aroma": [],
+    "sweetener": [],
+    "carrier": [
+      {
+        "item": "coconut_oil",
+        "variant": "oil",
+        "qty": 1
+      },
+      {
+        "item": "beeswax",
+        "variant": "block",
+        "qty": 1
+      }
+    ]
+  },
+  "output": 4,
+  "timeMin": 240,
+  "build": "Jam",
+  "source": "docs:pages/products/salep.md",
+  "_placeholder": true,
+  "_note": "Slot materials from the docs. Amounts, output and time are TBD in the docs; placeholders."
+}

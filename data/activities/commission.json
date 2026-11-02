@@ -1,0 +1,23 @@
+{
+  "id": "commission",
+  "name": "Commission",
+  "category": "organization",
+  "locationIds": [
+    "loc_merchant_guild",
+    "loc_apothecary_guild",
+    "loc_artisan_guild",
+    "loc_adventurer_guild"
+  ],
+  "actionIds": [
+    "travel",
+    "take-quest",
+    "hand-in-quest"
+  ],
+  "skillPath": "sun",
+  "canMiss": true,
+  "importance": 2,
+  "needsAppointment": false,
+  "needsPermit": false,
+  "build": "Jam",
+  "source": "docs:pages/activities/commission.md"
+}

@@ -1,0 +1,36 @@
+{
+  "id": "loc_artisan_guild",
+  "name": "Artisan/Smith Guild",
+  "entityId": "artisan_guild",
+  "openHours": [
+    [
+      8,
+      17
+    ],
+    [
+      8,
+      17
+    ],
+    [
+      8,
+      17
+    ],
+    [
+      8,
+      17
+    ],
+    [
+      8,
+      17
+    ],
+    [
+      8,
+      17
+    ],
+    null
+  ],
+  "view": "exterior",
+  "assetSlotId": "loc_artisan_guild",
+  "_placeholder": true,
+  "source": "docs:gdd/17-world-map-and-locations.md"
+}

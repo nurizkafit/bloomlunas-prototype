@@ -1,0 +1,22 @@
+{
+  "id": "craft",
+  "name": "Craft",
+  "category": "production",
+  "locationIds": [
+    "loc_home_atelier"
+  ],
+  "actionIds": [
+    "travel",
+    "prepare",
+    "brew",
+    "concoct",
+    "package"
+  ],
+  "skillPath": "moon",
+  "canMiss": true,
+  "importance": 2,
+  "needsAppointment": false,
+  "needsPermit": false,
+  "build": "Jam",
+  "source": "docs:pages/activities/craft.md"
+}

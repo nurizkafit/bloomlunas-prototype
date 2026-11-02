@@ -1,0 +1,16 @@
+{
+  "id": "salep",
+  "kind": "product",
+  "name": "Salep",
+  "line": "Concoct",
+  "moonSkill": "alchemy",
+  "shelfLifeDays": 28,
+  "priceKey": "PRICE_SALEP",
+  "forecast": {
+    "lo": 9,
+    "hi": 14
+  },
+  "build": "Jam",
+  "source": "docs:pages/products/salep.md",
+  "_placeholder": true
+}

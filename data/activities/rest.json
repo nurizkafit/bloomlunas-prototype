@@ -1,0 +1,19 @@
+{
+  "id": "rest",
+  "name": "Rest",
+  "category": "personal",
+  "locationIds": [
+    "loc_home"
+  ],
+  "actionIds": [
+    "travel",
+    "sleep"
+  ],
+  "skillPath": null,
+  "canMiss": true,
+  "importance": 1,
+  "needsAppointment": false,
+  "needsPermit": false,
+  "build": "Jam",
+  "source": "docs:pages/activities/rest.md"
+}

@@ -1,0 +1,60 @@
+{
+  "_doc": "docs:pages/systems/production.md#quality (decided 2 Nov 2026, placeholder numbers).",
+  "materialPoints": {
+    "Common": 50,
+    "Rare": 70,
+    "Epic": 90,
+    "Legendary": 100,
+    "Spoiled": 20
+  },
+  "slotWeights": {
+    "main": 3,
+    "aroma": 1,
+    "sweetener": 1,
+    "carrier": 1
+  },
+  "skillMultiplierByLevel": [
+    0.5,
+    0.75,
+    1.0,
+    1.2,
+    1.4,
+    1.6,
+    1.8,
+    1.95,
+    2.1,
+    2.25
+  ],
+  "tiers": [
+    {
+      "tier": "Failed",
+      "from": 0,
+      "priceMult": 0
+    },
+    {
+      "tier": "Amateur",
+      "from": 25,
+      "priceMult": 0.75
+    },
+    {
+      "tier": "Standard",
+      "from": 50,
+      "priceMult": 1.0
+    },
+    {
+      "tier": "Fine",
+      "from": 100,
+      "priceMult": 1.25
+    },
+    {
+      "tier": "Premium",
+      "from": 150,
+      "priceMult": 1.5
+    },
+    {
+      "tier": "Masterwork",
+      "from": 200,
+      "priceMult": 2.0
+    }
+  ]
+}

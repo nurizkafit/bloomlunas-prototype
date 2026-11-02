@@ -1,0 +1,23 @@
+{
+  "id": "buy",
+  "name": "Buy",
+  "category": "trade",
+  "locationIds": [
+    "loc_market",
+    "loc_merchant_guild",
+    "loc_apothecary_guild",
+    "loc_artisan_guild",
+    "loc_adventurer_guild"
+  ],
+  "actionIds": [
+    "travel",
+    "buy-item"
+  ],
+  "skillPath": "sun",
+  "canMiss": true,
+  "importance": 2,
+  "needsAppointment": false,
+  "needsPermit": false,
+  "build": "Jam",
+  "source": "docs:pages/activities/buy.md"
+}

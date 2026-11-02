@@ -1,0 +1,27 @@
+{
+  "id": "adventurer_guild",
+  "type": "organization",
+  "relationshipStart": 0,
+  "buys": [
+    "fresh_jamu",
+    "lemongrass"
+  ],
+  "sells": [
+    "rice"
+  ],
+  "questBoard": [
+    {
+      "id": "ad_q1",
+      "ask": {
+        "item": "fresh_jamu",
+        "qty": 4
+      },
+      "rewardGold": 35,
+      "relationship": 5,
+      "deadlineDays": 3
+    }
+  ],
+  "services": [],
+  "source": "docs:pages/org/adventurer-guild.md",
+  "_placeholder": true
+}

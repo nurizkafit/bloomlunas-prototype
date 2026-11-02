@@ -1,0 +1,20 @@
+{
+  "id": "sun_drying",
+  "name": "Sun drying",
+  "category": "production",
+  "locationIds": [
+    "loc_home_drying_yard"
+  ],
+  "actionIds": [
+    "travel",
+    "start-batch",
+    "collect-batch"
+  ],
+  "skillPath": "moon",
+  "canMiss": true,
+  "importance": 1,
+  "needsAppointment": false,
+  "needsPermit": false,
+  "build": "Jam",
+  "source": "docs:pages/activities/sun-drying.md"
+}

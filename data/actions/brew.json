@@ -1,0 +1,15 @@
+{
+  "id": "brew",
+  "name": "Brew",
+  "kind": "craft",
+  "timeMin": 0,
+  "energyKey": "ENERGY_COST_DEFAULT",
+  "xp": {
+    "path": "moon",
+    "sub": "cooking",
+    "amount": 5
+  },
+  "source": "docs:pages/actions/brew.md",
+  "_placeholder": true,
+  "_note": "Time comes from the recipe."
+}

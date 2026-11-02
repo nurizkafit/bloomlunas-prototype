@@ -2,7 +2,7 @@ import { MSG } from './EventBus.js';
 
 /**
  * PhaseMachine: holds the current phase and runs enter, update and exit.
- * The current phase picks the next phase name with next(). Unity: plain C# State pattern.
+ * Order on advance: finish() (end rules), next() (picks the next phase name), exit() (clean up). Unity: plain C# State pattern.
  */
 export class PhaseMachine {
   /**
@@ -27,6 +27,7 @@ export class PhaseMachine {
   advance() {
     const cur = this.current;
     if (!cur) throw new Error('PhaseMachine has not started');
+    cur.finish(this.ctx);
     const nextName = cur.next(this.ctx);
     cur.exit(this.ctx);
     this.bus.emit(MSG.PHASE_EXITED, { phase: cur.name, calendar: this.ctx.state.calendar.snapshot() });

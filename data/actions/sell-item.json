@@ -1,0 +1,14 @@
+{
+  "id": "sell-item",
+  "name": "Sell item",
+  "kind": "sellItem",
+  "timeMin": 30,
+  "energyKey": "ENERGY_COST_DEFAULT",
+  "xp": {
+    "path": "sun",
+    "sub": "trading",
+    "amount": 2
+  },
+  "source": "docs:pages/actions/sell-item.md",
+  "_placeholder": true
+}

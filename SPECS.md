@@ -189,6 +189,13 @@ The docs list these variables as TBD. Use these values in `BalanceConfig.json` w
 | `RELATIONSHIP_PRICE_MODIFIER` | 2 % per level | placeholder |
 | `QUEST_DEADLINE_DAYS` | 7 | placeholder |
 | `EVENTS_PER_WEEK_MIN` / `_MAX` | 1 / 2 | Docs (early levels) |
+| `NIGHT_END_HOUR` / `LATE_WAKE_DELAY_MIN` | 23 / 120 min | placeholder (M1) |
+| `CUSTOMERS_PER_HOUR` / `SHOP_BUY_CHANCE` | 2 / 0.7 | placeholder (M1) |
+| `SHOP_PRICE_RATIO` / `MARKET_SELL_RATIO` / `GUILD_BUY_RATIO` / `GUILD_SELL_RATIO` | 1.0 / 1.0 / 0.8 / 0.9 x real price | placeholder (M1) |
+| `RELATIONSHIP_POINTS_PER_LEVEL` | 10 | placeholder (M1) |
+| `SUN_DRYING_DAYS` / `SUN_DRYING_RACK_CAPACITY` | 2 / 10 | placeholder (M1) |
+
+Price rule (M1): each Plan phase rolls a hidden real price per item inside its forecast range. Material price = real price x variant `priceMult`. Product price = real price x quality tier `priceMult`. The `COST_<MATERIAL>` keys are not used yet (the forecast range replaces them).
 
 ## 10. Planner Book port
 
@@ -231,7 +238,8 @@ Card renames: Sell → Open shop; Craft → Craft (recipe picks Brew or Concoct)
 | Class | Layer | Unity form |
 | --- | --- | --- |
 | GameManager | Logic | MonoBehaviour singleton |
-| PhaseMachine, Phase + 5 subclasses | Logic | C# State pattern |
+| PhaseMachine, Phase + 5 subclasses (enter, finish, next, exit) | Logic | C# State pattern |
+| Rng (seeded, mulberry32) | Logic | System.Random with a seed |
 | GameState, Calendar, Wallet, Inventory (with variants and age), DebtAccount, SkillBook, Relationships, WeekPlan, Ledger | Model | [Serializable] classes → JSON |
 | TimeSystem (energy, fatigue), ActionRunner, EconomySystem, ProductionSystem (recipes, quality, spoilage), DebtSystem (riba interest, fees), EventSystem, EndingChecker | Logic | C# services |
 | EffectApplier, PlanValidator, QualityCalculator | Logic | C# static classes |

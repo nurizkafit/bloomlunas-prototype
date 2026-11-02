@@ -1,0 +1,19 @@
+{
+  "id": "grinding",
+  "name": "Grinding",
+  "category": "production",
+  "locationIds": [
+    "loc_home_atelier"
+  ],
+  "actionIds": [
+    "travel",
+    "grind"
+  ],
+  "skillPath": "moon",
+  "canMiss": true,
+  "importance": 1,
+  "needsAppointment": false,
+  "needsPermit": false,
+  "build": "Jam",
+  "source": "docs:pages/activities/grinding.md"
+}

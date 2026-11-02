@@ -1,0 +1,13 @@
+{
+  "id": "pick-response",
+  "name": "Pick a response",
+  "kind": "eventResponse",
+  "timeMin": 0,
+  "energyKey": null,
+  "xp": {
+    "amount": 0
+  },
+  "source": "docs:pages/actions/pick-response.md",
+  "_placeholder": true,
+  "_note": "Events come in M4."
+}

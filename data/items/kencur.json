@@ -1,0 +1,33 @@
+{
+  "id": "kencur",
+  "kind": "material",
+  "name": "Kencur",
+  "tier": "Common",
+  "role": "main",
+  "plantPart": "rhizome",
+  "variants": [
+    {
+      "id": "fresh",
+      "shelfLifeDays": 3,
+      "priceMult": 1.0
+    },
+    {
+      "id": "dried",
+      "shelfLifeDays": 28,
+      "priceMult": 1.5
+    },
+    {
+      "id": "powder",
+      "shelfLifeDays": 28,
+      "priceMult": 2.0
+    }
+  ],
+  "costKey": "COST_KENCUR",
+  "forecast": {
+    "lo": 3,
+    "hi": 5
+  },
+  "build": "Jam",
+  "source": "docs:pages/materials/kencur.md",
+  "_placeholder": true
+}

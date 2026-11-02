@@ -1,0 +1,47 @@
+{
+  "id": "apothecary_guild",
+  "type": "organization",
+  "relationshipStart": 0,
+  "buys": [
+    "salep",
+    "turmeric",
+    "kencur",
+    "ginger",
+    "lemongrass"
+  ],
+  "sells": [
+    "beeswax",
+    "tamarind",
+    "coconut_oil"
+  ],
+  "questBoard": [
+    {
+      "id": "ap_q1",
+      "ask": {
+        "item": "salep",
+        "qty": 4
+      },
+      "rewardGold": 60,
+      "relationship": 5,
+      "deadlineDays": 7
+    }
+  ],
+  "services": [
+    {
+      "id": "appraisal",
+      "name": "Appraisal",
+      "cost": 15,
+      "effects": [
+        {
+          "type": "relation",
+          "target": "apothecary_guild",
+          "amount": 2
+        }
+      ],
+      "_placeholder": true,
+      "_note": "Service effect is TBD in the docs."
+    }
+  ],
+  "source": "docs:pages/org/apothecary-guild.md",
+  "_placeholder": true
+}

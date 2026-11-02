@@ -1,0 +1,33 @@
+{
+  "id": "ginger",
+  "kind": "material",
+  "name": "Ginger",
+  "tier": "Common",
+  "role": "main",
+  "plantPart": "rhizome",
+  "variants": [
+    {
+      "id": "fresh",
+      "shelfLifeDays": 3,
+      "priceMult": 1.0
+    },
+    {
+      "id": "dried",
+      "shelfLifeDays": 28,
+      "priceMult": 1.5
+    },
+    {
+      "id": "powder",
+      "shelfLifeDays": 28,
+      "priceMult": 2.0
+    }
+  ],
+  "costKey": "COST_GINGER",
+  "forecast": {
+    "lo": 4,
+    "hi": 7
+  },
+  "build": "Jam",
+  "source": "docs:pages/materials/ginger.md",
+  "_placeholder": true
+}

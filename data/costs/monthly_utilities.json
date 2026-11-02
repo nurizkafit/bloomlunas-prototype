@@ -1,0 +1,7 @@
+{
+  "id": "monthly_utilities",
+  "period": "monthly",
+  "amountKey": "MONTHLY_UTILITIES",
+  "paidIn": "Act",
+  "source": "docs:pages/systems/shop-economy.md"
+}

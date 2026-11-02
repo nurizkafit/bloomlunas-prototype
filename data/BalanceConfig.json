@@ -153,5 +153,198 @@
     "value": 2,
     "unit": "events",
     "source": "docs (early levels)"
+  },
+  "NIGHT_END_HOUR": {
+    "value": 23,
+    "unit": "hour",
+    "source": "Planner Book",
+    "_placeholder": true
+  },
+  "LATE_WAKE_DELAY_MIN": {
+    "value": 120,
+    "unit": "minutes",
+    "source": "placeholder",
+    "_placeholder": true
+  },
+  "DAYS_PER_WEEK": {
+    "value": 7,
+    "unit": "days",
+    "source": "calendar"
+  },
+  "CUSTOMERS_PER_HOUR": {
+    "value": 2,
+    "unit": "customers",
+    "source": "placeholder",
+    "_placeholder": true
+  },
+  "SHOP_BUY_CHANCE": {
+    "value": 0.7,
+    "unit": "chance",
+    "source": "placeholder",
+    "_placeholder": true
+  },
+  "GUILD_BUY_RATIO": {
+    "value": 0.8,
+    "unit": "x real price, guild buys from player",
+    "source": "placeholder",
+    "_placeholder": true
+  },
+  "GUILD_SELL_RATIO": {
+    "value": 0.9,
+    "unit": "x real price, guild sells to player",
+    "source": "placeholder",
+    "_placeholder": true
+  },
+  "RELATIONSHIP_POINTS_PER_LEVEL": {
+    "value": 10,
+    "unit": "points",
+    "source": "placeholder",
+    "_placeholder": true
+  },
+  "APPOINTMENT_MISS_RELATIONSHIP_PENALTY": {
+    "value": 5,
+    "unit": "points",
+    "source": "placeholder",
+    "_placeholder": true
+  },
+  "QUEST_MISS_RELATIONSHIP_PENALTY": {
+    "value": 3,
+    "unit": "points",
+    "source": "docs [Proposal]",
+    "_placeholder": true
+  },
+  "SUN_DRYING_DAYS": {
+    "value": 2,
+    "unit": "days",
+    "source": "placeholder",
+    "_placeholder": true
+  },
+  "SUN_DRYING_RACK_CAPACITY": {
+    "value": 10,
+    "unit": "units",
+    "source": "placeholder",
+    "_placeholder": true
+  },
+  "START_INVENTORY": {
+    "value": [
+      {
+        "item": "turmeric",
+        "variant": "fresh",
+        "qty": 4
+      },
+      {
+        "item": "ginger",
+        "variant": "fresh",
+        "qty": 2
+      },
+      {
+        "item": "beeswax",
+        "variant": "block",
+        "qty": 1
+      },
+      {
+        "item": "coconut_oil",
+        "variant": "oil",
+        "qty": 1
+      },
+      {
+        "item": "fresh_jamu",
+        "variant": "product",
+        "qty": 3,
+        "tier": "Standard"
+      },
+      {
+        "item": "salep",
+        "variant": "product",
+        "qty": 1,
+        "tier": "Standard"
+      }
+    ],
+    "unit": "items",
+    "source": "Planner Book (materials renamed to docs ids)",
+    "_placeholder": true
+  },
+  "SEED": {
+    "value": 1,
+    "unit": "rng seed",
+    "source": "sim"
+  },
+  "COST_TURMERIC": {
+    "value": 4.0,
+    "unit": "G per unit (base)",
+    "source": "placeholder",
+    "_placeholder": true
+  },
+  "COST_KENCUR": {
+    "value": 4.0,
+    "unit": "G per unit (base)",
+    "source": "placeholder",
+    "_placeholder": true
+  },
+  "COST_GINGER": {
+    "value": 5.5,
+    "unit": "G per unit (base)",
+    "source": "placeholder",
+    "_placeholder": true
+  },
+  "COST_LEMONGRASS": {
+    "value": 3.0,
+    "unit": "G per unit (base)",
+    "source": "placeholder",
+    "_placeholder": true
+  },
+  "COST_TAMARIND": {
+    "value": 4.0,
+    "unit": "G per unit (base)",
+    "source": "placeholder",
+    "_placeholder": true
+  },
+  "COST_PALM_SUGAR": {
+    "value": 4.0,
+    "unit": "G per unit (base)",
+    "source": "placeholder",
+    "_placeholder": true
+  },
+  "COST_RICE": {
+    "value": 2.0,
+    "unit": "G per unit (base)",
+    "source": "placeholder",
+    "_placeholder": true
+  },
+  "COST_COCONUT_OIL": {
+    "value": 6.5,
+    "unit": "G per unit (base)",
+    "source": "placeholder",
+    "_placeholder": true
+  },
+  "COST_BEESWAX": {
+    "value": 10.0,
+    "unit": "G per unit (base)",
+    "source": "placeholder",
+    "_placeholder": true
+  },
+  "PRICE_FRESH_JAMU": {
+    "value": 6,
+    "unit": "G per bottle (base)",
+    "source": "Planner Book",
+    "_placeholder": true
+  },
+  "PRICE_SALEP": {
+    "value": 12,
+    "unit": "G per jar (base)",
+    "source": "Planner Book",
+    "_placeholder": true
+  },
+  "SHOP_PRICE_RATIO": {
+    "value": 1.0,
+    "unit": "x real price, customers buy at the shop",
+    "source": "placeholder",
+    "_placeholder": true
+  },
+  "MARKET_SELL_RATIO": {
+    "value": 1.0,
+    "unit": "x real price, market sells to player",
+    "source": "placeholder",
+    "_placeholder": true
   }
 }

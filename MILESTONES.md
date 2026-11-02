@@ -7,7 +7,7 @@ Rule: Claude works only on the milestone that is `Approved` or `In progress`. Af
 | # | Milestone | Status |
 | --- | --- | --- |
 | M0 | Project skeleton | Done |
-| M1 | Logic core, headless month | In progress |
+| M1 | Logic core, headless month | Review |
 | M2 | Plan phase (Planner Book port) | Not started |
 | M3 | Do phase (town, avatar, actions) | Not started |
 | M4 | Events and Check | Not started |
@@ -50,22 +50,28 @@ Result:
 Goal: one month plays in Node with a bot, with no view.
 
 Tasks:
-- [ ] Model classes: `GameState`, `Calendar`, `Wallet`, `Inventory` (variants, age), `DebtAccount`, `SkillBook`, `Relationships`, `WeekPlan`, `Ledger`.
-- [ ] `TimeSystem`: clock moves only when an action runs; `ENERGY_MAX`, energy cost per action, fatigue, late wake-up, day end (`SPECS.md` §5).
-- [ ] `EffectApplier` for every effect type in `SPECS.md` §8.
-- [ ] `ActionRunner`: runs one action inside an activity (`SPECS.md` §4): rule checks (opening hours, materials, energy, gold), time and energy cost, effects, ledger lines, XP, plan match bonus.
-- [ ] `ProductionSystem` + `QualityCalculator`: 4 jam recipes, quality tiers, shelf life and spoilage, Sun drying and Grinding (`SPECS.md` §6).
-- [ ] `DebtSystem`: riba loan with monthly compound interest and hidden fee; unpaid amount becomes debt up to `DEBT_LIMIT`.
-- [ ] `EconomySystem`: hidden real price inside the forecast range; quality price multiplier; relationship price modifier; shop customers; buy and sell.
-- [ ] Data files for the prototype activities, actions, locations, products, recipes, materials, debt and quality config (`SPECS.md` §8).
-- [ ] `Bot` that follows a simple fixed plan. `runMonths.js` prints the ledger.
+- [x] Model classes: `GameState`, `Calendar`, `Wallet`, `Inventory` (variants, age), `DebtAccount`, `SkillBook`, `Relationships`, `WeekPlan`, `Ledger`.
+- [x] `TimeSystem`: clock moves only when an action runs; `ENERGY_MAX`, energy cost per action, fatigue, late wake-up, day end (`SPECS.md` §5).
+- [x] `EffectApplier` for every effect type in `SPECS.md` §8.
+- [x] `ActionRunner`: runs one action inside an activity (`SPECS.md` §4): rule checks (opening hours, materials, energy, gold), time and energy cost, effects, ledger lines, XP, plan match bonus.
+- [x] `ProductionSystem` + `QualityCalculator`: 4 jam recipes, quality tiers, shelf life and spoilage, Sun drying and Grinding (`SPECS.md` §6).
+- [x] `DebtSystem`: riba loan with monthly compound interest and hidden fee; unpaid amount becomes debt up to `DEBT_LIMIT`.
+- [x] `EconomySystem`: hidden real price inside the forecast range; quality price multiplier; relationship price modifier; shop customers; buy and sell.
+- [x] Data files for the prototype activities, actions, locations, products, recipes, materials, debt and quality config (`SPECS.md` §8).
+- [x] `Bot` that follows a simple fixed plan. `runMonths.js` prints the ledger.
 
 Exit criteria:
-- [ ] `npm run sim -- --months 1 --runs 1` prints a week-by-week ledger and the end gold and debt.
-- [ ] Unit tests for `ActionRunner`, `EffectApplier`, `TimeSystem`, `QualityCalculator` (match the examples in docs `systems/production.md`), `DebtSystem`.
-- [ ] No three.js or DOM import under `src/model`, `src/systems`, `src/phases`, `src/core`.
+- [x] `npm run sim -- --months 1 --runs 1` prints a week-by-week ledger and the end gold and debt.
+- [x] Unit tests for `ActionRunner`, `EffectApplier`, `TimeSystem`, `QualityCalculator` (match the examples in docs `systems/production.md`), `DebtSystem`.
+- [x] No three.js or DOM import under `src/model`, `src/systems`, `src/phases`, `src/core`.
 
 Result:
+- `npm run check` passes: 32 tests (6 files), 1 headless month, build.
+- `npm run sim -- --months 1 --runs 1` prints the week ledger (income, expenses, net, gold, debt, sold, waste, tiers made), the Act line (paid, interest, fee, unpaid utilities, debt), XP and relations. `--runs N` prints one line per run. `--months N` sets the month count.
+- Bot run, seed 1: about +27 to +65 G net per week; end debt 2787.57 after paying 291.60. Products are mostly Amateur; Standard comes in week 3 or 4 (cooking level 3).
+- New: `Rng` (seeded), `Phase.finish()` (end rules before `next()`), `ContentDB.config()`, `loc_market.sells`, 7 balance keys (see `SPECS.md` §9).
+- Rules I had to choose (not in the docs, please confirm): (1) Weekly expenses that gold cannot pay become debt. (2) Act order: interest, then late fee, then unpaid utilities. (3) Spoiled materials can still go in a recipe at 20 points; spoiled products are waste. (4) Travel has no night limit, so the player can always walk home. (5) Late for an appointment = same penalty as missed.
+- Not done: graphify graph (not installed here). EndingChecker, events, CSV come in later milestones.
 
 ---
 

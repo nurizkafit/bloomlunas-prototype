@@ -5,7 +5,17 @@ export class Phase {
   /** @param {string} name */
   constructor(name) {
     this.name = name;
+    /** @type {(()=>void)[]} */
+    this.subs = [];
   }
+
+  /** Listen to a message only while this phase is active. @param {any} ctx @param {string} msg @param {(p:any)=>void} fn */
+  listen(ctx, msg, fn) {
+    this.subs.push(ctx.bus.on(msg, fn));
+  }
+
+  /** End-of-phase rules (payments, month close). Runs before next() and exit(). @param {any} ctx */
+  finish(ctx) {}
 
   /** @param {any} ctx */
   enter(ctx) {
@@ -17,6 +27,8 @@ export class Phase {
 
   /** @param {any} ctx */
   exit(ctx) {
+    for (const off of this.subs) off();
+    this.subs = [];
     ctx.log(`exit  ${this.name}`);
   }
 

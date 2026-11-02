@@ -1,0 +1,23 @@
+{
+  "id": "palm_sugar",
+  "kind": "material",
+  "name": "Palm sugar",
+  "tier": "Common",
+  "role": "sweetener",
+  "plantPart": "processed",
+  "variants": [
+    {
+      "id": "block",
+      "shelfLifeDays": 56,
+      "priceMult": 1.0
+    }
+  ],
+  "costKey": "COST_PALM_SUGAR",
+  "forecast": {
+    "lo": 3,
+    "hi": 5
+  },
+  "build": "Jam",
+  "source": "docs:pages/materials/palm-sugar.md",
+  "_placeholder": true
+}

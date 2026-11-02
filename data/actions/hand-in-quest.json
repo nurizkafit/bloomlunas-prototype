@@ -1,0 +1,14 @@
+{
+  "id": "hand-in-quest",
+  "name": "Hand in quest",
+  "kind": "handInQuest",
+  "timeMin": 15,
+  "energyKey": "ENERGY_COST_DEFAULT",
+  "xp": {
+    "path": "sun",
+    "sub": "trading",
+    "amount": 3
+  },
+  "source": "docs:pages/actions/hand-in-quest.md",
+  "_placeholder": true
+}

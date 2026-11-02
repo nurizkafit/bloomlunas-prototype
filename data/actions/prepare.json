@@ -1,0 +1,14 @@
+{
+  "id": "prepare",
+  "name": "Prepare",
+  "kind": "timeOnly",
+  "timeMin": 15,
+  "energyKey": "ENERGY_COST_DEFAULT",
+  "xp": {
+    "path": "moon",
+    "sub": "cooking",
+    "amount": 1
+  },
+  "source": "docs:pages/actions/prepare.md",
+  "_placeholder": true
+}

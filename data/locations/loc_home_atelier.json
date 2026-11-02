@@ -1,0 +1,39 @@
+{
+  "id": "loc_home_atelier",
+  "name": "Home atelier",
+  "entityId": "main_character",
+  "openHours": [
+    [
+      0,
+      24
+    ],
+    [
+      0,
+      24
+    ],
+    [
+      0,
+      24
+    ],
+    [
+      0,
+      24
+    ],
+    [
+      0,
+      24
+    ],
+    [
+      0,
+      24
+    ],
+    [
+      0,
+      24
+    ]
+  ],
+  "view": "interior",
+  "assetSlotId": "loc_home_atelier",
+  "_placeholder": true,
+  "source": "docs:gdd/17-world-map-and-locations.md"
+}
