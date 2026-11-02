@@ -37,6 +37,7 @@ export class CheckPhase extends Phase {
       doNet: round2(w.lines.filter((l) => l.kind !== 'expenses').reduce((n, l) => n + l.amount, 0)),
       living: paid,
       xp: Object.fromEntries(Object.entries(state.skills.pathXp).map(([k, v]) => [k, v - (state.weekStart?.pathXp?.[k] ?? 0)]).filter(([, v]) => v)),
+      subXp: Object.fromEntries(Object.entries(state.skills.subXp).map(([k, v]) => [k, v - (state.weekStart?.subXp?.[k] ?? 0)]).filter(([, v]) => v)),
       planned: { ...(state.weekPlanned ?? {}) },
       actual: { ...(state.weekActual ?? {}) },
       events: [...(state.weekEvents ?? [])],

@@ -9,7 +9,7 @@ export class DoPhase extends Phase {
 
   enter(ctx) {
     super.enter(ctx);
-    ctx.state.weekStart = { waste: ctx.state.stats.waste, made: { ...ctx.state.stats.made }, sold: ctx.state.stats.sold, pathXp: { ...ctx.state.skills.pathXp } };
+    ctx.state.weekStart = { waste: ctx.state.stats.waste, made: { ...ctx.state.stats.made }, sold: ctx.state.stats.sold, pathXp: { ...ctx.state.skills.pathXp }, subXp: { ...ctx.state.skills.subXp } };
     ctx.state.weekActual = {};
     ctx.state.weekPlanned = ctx.state.plan.cards.reduce((m, c) => { m[c.activityId] = (m[c.activityId] ?? 0) + ctx.sys.plan.duration(c); return m; }, {});
     ctx.sys.events.buildWeekQueue();

@@ -27,4 +27,18 @@ export class SkillBook {
     }
     return level;
   }
+
+  /**
+   * Level and progress inside the level. Max level: need is 0.
+   * @param {number} xp @param {number[]} table
+   * @returns {{level:number, into:number, need:number}}
+   */
+  static progress(xp, table) {
+    let level = 1, start = 0;
+    for (const step of table) {
+      if (xp < start + step) return { level, into: xp - start, need: step };
+      start += step; level += 1;
+    }
+    return { level, into: xp - start, need: 0 };
+  }
 }

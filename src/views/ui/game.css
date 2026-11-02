@@ -94,3 +94,11 @@
 .ending { max-width: 640px; text-align: left; border-top: 8px solid var(--jade); }
 .ending.bad { border-top-color: var(--coral); }
 .endtext { font: 400 20px/1.45 var(--f-display); }
+
+/* Check: skill XP bars per path */
+.xp2 { display: flex; flex-direction: column; gap: 8px; margin: 6px 0 10px; font-size: 13px; }
+.xprow { display: grid; grid-template-columns: 90px 1fr 170px; gap: 4px 10px; align-items: center; }
+.xpname small, .xprow small { color: var(--ink-2); }
+.xpbar { display: flex; height: 9px; border-radius: 3px; background: #2b241818; overflow: hidden; }
+.xpbar i { display: block; height: 100%; } .xpbar i.old { background: #2b241860; } .xpbar i.new { background: var(--sky); }
+.xpsub { grid-column: 2 / 4; }

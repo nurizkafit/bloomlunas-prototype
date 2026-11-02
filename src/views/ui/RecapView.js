@@ -1,4 +1,5 @@
 import { MSG } from '../../core/EventBus.js';
+import { SkillBook } from '../../model/SkillBook.js';
 
 /**
  * RecapView: the Check screen. Income and expenses, weekly living cost paid, XP per path,
@@ -47,7 +48,9 @@ export class RecapView {
             <span>Gold now</span><b class="num">${w.gold.toFixed(2)} G</b><span>Debt</span><b class="num">${w.debt.toFixed(2)} G</b>
             <span>Sold · waste</span><b class="num">${w.sold} · ${w.waste}</b>
             <span>Made</span><b>${Object.entries(w.made).map(([t, n]) => `${n} ${t}`).join(', ') || '–'}</b>
-            <span>XP per path</span><b>${Object.entries(w.xp).map(([k, v]) => `${k} +${v}`).join(' · ') || '–'}</b></div>
+          </div>
+          <h3 class="h3">Skill XP this week</h3>
+          ${this.xpBars(w)}
         </div>
         <div>
           <h3 class="h3">Plan versus actual (hours)</h3>
@@ -61,5 +64,23 @@ export class RecapView {
       </div>
       <div class="acts"><button class="go" id="rcNext">${last ? 'Go to month end' : `Plan week ${w.week + 1}`}</button></div>
     </div>`;
+  }
+
+  /** One bar per path (Sun, Moon, Earth): level, progress in the level, the part gained this week, sub-skill gains. */
+  xpBars(w) {
+    const names = { sun: 'Sun', moon: 'Moon', earth: 'Earth' };
+    const order = Object.keys(names);
+    const rows = this.c.all('skills').sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id)).map((p) => {
+      const now = this.s.skills.pathXp[p.id] ?? 0, gain = w.xp[p.id] ?? 0;
+      const pr = SkillBook.progress(now, p.xpToNextLevel), before = Math.max(0, pr.into - gain);
+      const pct = (v) => (pr.need ? Math.min(100, (v / pr.need) * 100) : 100);
+      const subs = p.subSkills.filter((k) => w.subXp?.[k]).map((k) => `${k} +${w.subXp[k]}`).join(' · ');
+      const lvUp = gain > pr.into ? ' <span class="ok">level up</span>' : '';
+      return `<div class="xprow"><span class="xpname">${names[p.id] ?? p.id} <small>Lv ${pr.level}</small></span>
+        <div class="xpbar"><i class="old" style="width:${pct(before)}%"></i><i class="new" style="width:${pct(pr.into) - pct(before)}%"></i></div>
+        <span class="num">${gain ? `+${gain}` : '+0'}${lvUp}<small> · ${pr.need ? `${pr.into}/${pr.need}` : 'max'}</small></span>
+        ${subs ? `<small class="xpsub">${subs}</small>` : ''}</div>`;
+    }).join('');
+    return `<div class="xp2">${rows}</div>`;
   }
 }
