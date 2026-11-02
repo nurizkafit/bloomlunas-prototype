@@ -15,6 +15,16 @@ describe('ActionRunner', () => {
     expect(run(gm, 'gather-harvest').ok).toBe(true);
   });
 
+  it('walks 0 min between stations in the same building (interior)', () => {
+    const gm = gameInDo(), w = (a, b) => gm.ctx.sys.actions.walkMinutes(a, b);
+    expect(w('loc_home', 'loc_home_atelier')).toBe(0);
+    expect(w('loc_home_atelier', 'loc_home_shop')).toBe(0);
+    expect(w('loc_home_shop', 'loc_home_drying_yard')).toBe(5);
+    expect(w('loc_home', 'loc_market')).toBe(20);
+    gm.ctx.sys.actions.startActivity('craft');
+    expect(run(gm, 'travel', { to: 'loc_home_atelier' })).toMatchObject({ ok: true, minutes: 0 });
+  });
+
   it('spends time and energy, gives XP', () => {
     const gm = gameInDo();
     const s = gm.state;

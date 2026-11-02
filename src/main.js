@@ -10,6 +10,7 @@ import { EventCardView } from './views/ui/EventCardView.js';
 import { RecapView } from './views/ui/RecapView.js';
 import { MonthEndView } from './views/ui/MonthEndView.js';
 import { EndingView } from './views/ui/EndingView.js';
+import { StockView } from './views/ui/StockView.js';
 import { SaveSystem } from './core/SaveSystem.js';
 import './style.css';
 
@@ -30,7 +31,9 @@ const craft = new CraftView(app, gm);
 const menu = new ActionMenuView(app, gm, craft);
 const planner = new PlannerBookView(app, gm);
 new HudView(app, gm, { openPlan: () => planner.openInDo(), openLocation: (id) => menu.open(id) });
-town.onPick = (id) => menu.open(id);
+const stock = new StockView(app, gm);
+town.onPick = (id) => { stock.close(); menu.open(id); };
+town.onPanel = (panel) => { if (panel === 'stock') { menu.close(); stock.open(); } };
 new EventCardView(app, gm);
 new RecapView(app, gm);
 new MonthEndView(app, gm);
@@ -38,4 +41,4 @@ new EndingView(app, gm, newGame);
 new DevOverlay(app, gm.bus, newGame);
 gm.start();
 window.__gm = gm; // dev only: inspect state in the console
-window.__ui = { town, menu, craft, planner, save }; // dev only: used by browser tests
+window.__ui = { town, menu, craft, planner, save, stock }; // dev only: used by browser tests

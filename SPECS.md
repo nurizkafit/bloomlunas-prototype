@@ -146,7 +146,8 @@ Shelf life lengths in days: TBD in the docs (placeholder §9).
 | BalanceConfig | all variables (§9), names as in docs:gdd/08-economy-and-variables.md | 1 |
 | ActivityData | id, category, locationIds, actionIds[], skillPath, canMiss, importance, needsAppointment, needsPermit, build | 11 |
 | ActionData | id, timeCost, energyCost, inputs, outputs, effects[] | about 20 |
-| LocationData | id, entityId, openHours per weekday, view (exterior, interior), assetSlotId, door point, walkTimes, polyforkAssetId? | 9 |
+| LocationData | id, entityId, openHours per weekday, view (exterior, interior), assetSlotId, door point, walkTimes, polyforkAssetId?, building? (station inside that building: no town position) | 9 |
+| InteriorData | id, name, buildingId, size, wallHeight, door, stations[] (id, label, assetSlotId, greybox, position, stand, locationId or panel) | 1 (home and shop) |
 | EntityData | id, type (organization, people), services[], buys[], sells[], questBoard, relationshipStart | 6 |
 | ProductData | id, line, moonSkill, shelfLifeDays, basePrice, forecast lo/hi, recipes[] | 2 |
 | RecipeData | id, productId, slots {main, aroma, sweetener, carrier[]} (materialId + variant), output count, craft time | 4 |
@@ -219,19 +220,28 @@ Card renames: Sell → Open shop; Craft → Craft (recipe picks Brew or Concoct)
 - Isometric orthographic camera; pan and zoom limits; click-only input.
 - 1 unit = 1 m; Y up; model pivot at ground centre, facing +Z.
 - Avatar walks on a path graph between door points (no navmesh).
+- Interior view (user decision, 2 Nov 2026): only the home and shop has an interior. Other buildings open a menu only.
+  - The town shows one "Home and shop" building. Home (bed) and atelier (cauldron) are stations inside it (`building: loc_home_shop`). The drying yard stays outside.
+  - The view goes inside when the avatar walks through the door. "Exit to town" goes back. Exit is view only: no game time, the player location stays.
+  - Do starts inside (the player wakes at home). After "End the day", the view goes inside again.
+  - Camera: cutaway isometric room. Back walls stay, front walls are hidden (low rim). Warm lamp; the window follows the time of day.
+  - Stations: cauldron (craft, grinding: loc_home_atelier), shop counter (open shop: loc_home_shop; customers walk in when you serve), shelf (stock panel, view only), bed (rest: loc_home).
+  - Moving between stations costs 0 min (`_walk.withinBuilding`). Inside the building, only actions use time.
 - `AssetSlot` shows a greybox; if `assets/models/<slot id>.glb` exists, it loads that model. States = named child nodes or material swap.
 
 | Slot id | Greybox | States |
 | --- | --- | --- |
-| loc_home_shop | box + roof | open, closed, busy |
-| loc_home | small house | day, night |
-| int_home_atelier | room box | idle, crafting |
+| loc_home_shop | box + roof ("Home and shop"; has the interior) | open, closed, busy |
 | loc_home_drying_yard | flat racks | empty, drying, ready |
 | loc_market | low wide box | day, night |
 | loc_merchant_guild, loc_apothecary_guild, loc_artisan_guild, loc_adventurer_guild | tall box | open, closed |
 | loc_gather_area | green plane + cones | full, gathered |
 | chr_avatar | capsule | idle, walk, work, tired |
 | chr_customer | small capsule | walk, buy |
+| int_cauldron | pot on a stone patch | idle, crafting |
+| int_counter | long box | open, closed, busy |
+| int_shelf | tall box with jars | idle |
+| int_bed | low box with a blanket | idle, sleeping |
 | prop_event_marker | floating diamond | idle, alert |
 | env_ground, env_paths, env_sky | planes | day, evening, night |
 
@@ -247,8 +257,8 @@ Card renames: Sell → Open shop; Craft → Craft (recipe picks Brew or Concoct)
 | EffectApplier, PlanValidator, QualityCalculator | Logic | C# static classes |
 | EventBus | Glue | C# events or ScriptableObject event channels |
 | ContentDB | Data | Resources or Addressables lookup |
-| TownView, AssetSlot, Avatar | View | Town scene, prefabs, Cinemachine |
-| PlannerBookView, ActionMenuView, CraftView, HudView, EventCardView, RecapView, MonthEndView, EndingView | View | UI screens |
+| TownView, InteriorView, AssetSlot, Avatar | View | Town scene, interior scene, prefabs, Cinemachine |
+| PlannerBookView, ActionMenuView, CraftView, StockView, HudView, EventCardView, RecapView, MonthEndView, EndingView | View | UI screens |
 
 ## 13. Extension points for full scope
 

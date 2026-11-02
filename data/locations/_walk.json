@@ -1,6 +1,6 @@
 {
   "id": "_walk",
-  "_doc": "Walk minutes between location groups. Home group = shop, atelier, drying yard, home.",
+  "_doc": "Walk minutes between location groups. Home group = shop, atelier, drying yard, home. Same building (location.building) = withinBuilding.",
   "homeGroup": [
     "loc_home_shop",
     "loc_home_atelier",
@@ -17,5 +17,6 @@
     "loc_gather_area": 40
   },
   "betweenTown": 20,
-  "_placeholder": true
+  "_placeholder": true,
+  "withinBuilding": 0
 }

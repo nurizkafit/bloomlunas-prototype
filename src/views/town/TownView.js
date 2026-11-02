@@ -3,11 +3,14 @@ import { MSG } from '../../core/EventBus.js';
 import { AssetSlot } from './AssetSlot.js';
 import { Avatar } from './Avatar.js';
 import { PathGraph } from './PathGraph.js';
+import { InteriorView } from './InteriorView.js';
 
 /**
  * TownView: the Do phase town (SPECS §11). Isometric orthographic camera with pan and zoom limits,
  * ground and paths, one AssetSlot per location, the avatar, light by time of day. Click-only input.
  * Click a location -> onPick(locationId) (ActionMenuView opens). Reads GameState; sends no state changes.
+ * Buildings with an interior (data/interiors/): the view goes inside when the avatar walks through the door,
+ * and an Exit button goes back to the town. Inside, a station click -> onPick(locationId) or onPanel(panel).
  * Unity: town scene, Cinemachine ortho camera, prefabs in slots.
  */
 export class TownView {
@@ -17,6 +20,9 @@ export class TownView {
     this.c = gm.content;
     this.s = gm.state;
     this.onPick = (_id) => {};
+    this.onPanel = (_panel) => {};
+    /** @type {InteriorView|null} the interior shown now (view state only, not GameState) */
+    this.inside = null;
     this.el = document.createElement('div');
     this.el.className = 'town';
     this.el.hidden = true;
@@ -31,15 +37,17 @@ export class TownView {
     this.pan = new THREE.Vector3(0, 0, -2);
     this.camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 400);
     this.#buildWorld();
+    this.#buildInteriors();
     this.#input();
     this.clock = new THREE.Clock();
 
     gm.bus.on(MSG.PHASE_ENTERED, ({ phase }) => {
       this.el.hidden = phase !== 'Do';
-      if (phase === 'Do') { this.#placeAvatarAt(this.s.player.location); this.#light(); this.resize(); }
+      if (phase === 'Do') { this.#placeAvatarAt(this.s.player.location); this.#syncInside(); this.#light(); this.resize(); }
     });
     gm.bus.on(MSG.CLOCK_CHANGED, () => this.#light());
     gm.bus.on(MSG.ACTION_STARTED, () => this.#slotStates());
+    gm.bus.on(MSG.ACTION_COMPLETED, (r) => { if (r.actionId === 'serve-customer' && this.inside) this.inside.customerVisit(); });
     gm.bus.on(MSG.ACTION_COMPLETED, (r) => this.#onAction(r));
     gm.bus.on(MSG.EVENT_FIRED, () => { this.marker.root.visible = true; this.marker.setState('alert'); });
     gm.bus.on(MSG.EVENT_RESOLVED, () => { this.marker.root.visible = false; });
@@ -66,7 +74,7 @@ export class TownView {
     sc.add(ground);
 
     const paths = this.c.get('locations', '_paths');
-    this.graph = new PathGraph(paths, (id) => this.c.get('locations', id));
+    this.graph = new PathGraph(paths, (id) => this.c.get('locations', this.#outer(id)));
     const pathMat = new THREE.MeshStandardMaterial({ color: 0xd9c79d, roughness: 1 });
     const seg = (a, b) => {
       const dx = b[0] - a[0], dz = b[1] - a[1], len = Math.hypot(dx, dz);
@@ -106,12 +114,59 @@ export class TownView {
     g.fillStyle = 'rgba(20,26,43,.82)';
     g.beginPath(); g.roundRect(4, 8, 248, 48, 12); g.fill();
     g.fillStyle = '#ede6d3'; g.font = '600 24px Figtree, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
-    g.fillText(loc.name.replace(/ \(.*\)/, ''), 128, 33);
+    const int = this.c.all('interiors').find((i) => i.buildingId === loc.id);
+    g.fillText((int?.name ?? loc.name).replace(/ \(.*\)/, ''), 128, 33);
     const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(cv), depthTest: false }));
     sp.scale.set(6, 1.5, 1);
     sp.position.set(loc.position[0], loc.greybox === 'guild' ? 8 : 6, loc.position[1]);
     sp.renderOrder = 10;
     this.scene.add(sp);
+  }
+
+  /** The town building of a location: itself, or location.building for a station inside. @param {string} id */
+  #outer(id) {
+    return this.c.get('locations', id).building ?? id;
+  }
+
+  #buildInteriors() {
+    /** @type {Map<string, InteriorView>} building id -> interior */
+    this.interiors = new Map();
+    for (const d of this.c.all('interiors')) this.interiors.set(d.buildingId, new InteriorView(d));
+    this.exitBar = document.createElement('div');
+    this.exitBar.className = 'intbar';
+    this.exitBar.hidden = true;
+    this.exitBar.innerHTML = '<span id="intName"></span><button class="tbtn" id="intExit" title="Back to the town">Exit to town</button>';
+    this.el.appendChild(this.exitBar);
+    this.exitBar.querySelector('#intExit').onclick = () => this.exit();
+  }
+
+  /** The interior of the building where the player is, or null. */
+  #interiorHere() {
+    return this.interiors.get(this.#outer(this.s.player.location)) ?? null;
+  }
+
+  /** Show the interior (view only). @param {InteriorView} int */
+  #enter(int) {
+    this.inside = int;
+    this.exitBar.hidden = false;
+    this.exitBar.querySelector('#intName').textContent = int.data.name;
+    this.#light();
+    this.resize();
+  }
+
+  /** Back to the town view. The player stays at the same location (no game time). */
+  exit() {
+    if (!this.inside) return;
+    this.inside = null;
+    this.exitBar.hidden = true;
+    this.#placeAvatarAt(this.s.player.location);
+    this.resize();
+  }
+
+  /** Inside if the player is in a building with an interior (start of Do, after sleep). */
+  #syncInside() {
+    const int = this.#interiorHere();
+    if (int) { int.placeAt(this.s.player.location); this.#enter(int); } else if (this.inside) this.exit();
   }
 
   resize() {
@@ -121,6 +176,7 @@ export class TownView {
     Object.assign(this.camera, { left: -half * aspect, right: half * aspect, top: half, bottom: -half });
     this.camera.updateProjectionMatrix();
     this.#aim();
+    for (const int of this.interiors?.values() ?? []) int.resize(aspect);
   }
 
   #aim() {
@@ -161,6 +217,15 @@ export class TownView {
     const r = this.renderer.domElement.getBoundingClientRect();
     const ndc = new THREE.Vector2(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
     const ray = new THREE.Raycaster();
+    if (this.inside) {
+      ray.setFromCamera(ndc, this.inside.camera);
+      let o = ray.intersectObjects(this.inside.pickables, true)[0]?.object;
+      while (o && !o.userData.stationId) o = o.parent;
+      const st = o && this.inside.data.stations.find((x) => x.id === o.userData.stationId);
+      if (st?.locationId) this.onPick(st.locationId);
+      else if (st?.panel) this.onPanel(st.panel);
+      return;
+    }
     ray.setFromCamera(ndc, this.camera);
     const hit = ray.intersectObjects(this.pickables, true)[0];
     if (!hit) return;
@@ -170,16 +235,28 @@ export class TownView {
   }
 
   #placeAvatarAt(locId) {
-    this.avatar.place(this.c.get('locations', locId).door);
+    this.avatar.points = [];
+    this.avatar.place(this.c.get('locations', this.#outer(locId)).door);
   }
 
   /** @param {any} r action result */
   #onAction(r) {
     if (r.actionId === 'travel') {
       const from = this.lastLoc ?? 'loc_home';
-      this.avatar.walk(this.graph.route(from, r.to));
+      const target = this.interiors.get(this.#outer(r.to));
+      if (this.inside && this.#outer(from) === this.#outer(r.to)) this.inside.walkTo(r.to);
+      else {
+        if (this.inside) this.exit();
+        this.#placeAvatarAt(from);
+        // Walk in the town; at the door, go inside if the building has an interior.
+        this.avatar.walk(this.graph.route(this.#outer(from), this.#outer(r.to)), target ? () => {
+          if (this.#outer(this.s.player.location) !== target.data.buildingId) return;
+          target.enterTo(this.s.player.location);
+          this.#enter(target);
+        } : undefined);
+      }
     }
-    if (r.actionId === 'sleep') this.#placeAvatarAt('loc_home');
+    if (r.actionId === 'sleep') { this.#placeAvatarAt('loc_home'); this.#syncInside(); }
     this.lastLoc = this.s.player.location;
     this.#slotStates(r);
   }
@@ -193,6 +270,16 @@ export class TownView {
       if (r && this.s.player.location === id && ['serve-customer'].includes(r.actionId)) st = 'busy';
       if (r && this.s.player.location === id && ['brew', 'concoct'].includes(r.actionId)) st = 'crafting';
       slot.setState(st);
+    }
+    for (const int of this.interiors?.values() ?? []) {
+      for (const st of int.data.stations) {
+        const here = this.s.player.location === st.locationId;
+        let state = 'idle';
+        if (st.greybox === 'cauldron' && here && r && ['brew', 'concoct'].includes(r.actionId)) state = 'crafting';
+        if (st.greybox === 'counter') state = this.slots.get(st.locationId)?.state ?? 'idle';
+        if (st.greybox === 'bed' && this.s.player.dayOver) state = 'sleeping';
+        int.setState(st.id, state);
+      }
     }
     const tired = this.s.player.energy < this.c.num('FATIGUE_THRESHOLD') || this.s.player.fatigued;
     if (!this.avatar.walking) this.avatar.slot.setState(tired ? 'tired' : 'idle');
@@ -210,6 +297,7 @@ export class TownView {
     this.sun.intensity = night ? 0.35 : evening ? 1.1 : 1.6;
     this.hemi.intensity = night ? 0.35 : 0.9;
     this.scene.background.setHex(night ? 0x1c2440 : evening ? 0xe0a070 : 0x9fc3e0);
+    for (const int of this.interiors?.values() ?? []) int.light(night ? 'night' : evening ? 'evening' : 'day');
     this.#slotStates();
   }
 
@@ -217,6 +305,11 @@ export class TownView {
     const dt = Math.min(this.clock.getDelta(), 0.05);
     if (this.el.hidden) return;
     this.avatar.update(dt);
+    if (this.inside) {
+      this.inside.update(dt);
+      this.renderer.render(this.inside.scene, this.inside.camera);
+      return;
+    }
     if (this.marker.root.visible) {
       this.marker.root.position.copy(this.avatar.root.position);
       this.marker.root.position.y = 3 + Math.sin(performance.now() / 300) * 0.25;

@@ -122,6 +122,7 @@ Result:
 - Town layout data: `position`, `door`, `greybox` in `data/locations/*.json`; path graph in `data/locations/_paths.json`. Vite serves `assets/` as the public folder (`./models/<slot id>.glb`).
 - "Change plan" in the HUD opens the Planner Book. Days that started are locked (view and `DoPhase` both check).
 - Open: customers are not drawn as figures yet (the shop slot shows state "busy"). The bundle is 745 kB (three.js); fine for a prototype.
+- Review fix (2 Nov 2026, user feedback): interior view of the home and shop (`InteriorView`, `data/interiors/int_home_shop.json`). Do starts inside; walk through the door to go in; "Exit to town" goes out. Stations: cauldron, shop counter, shelf (stock panel), bed. 0 min between stations. Customers walk to the counter when you serve. Town now has one "Home and shop" building. Browser test `m3-interior`. See SPECS §11.
 
 ---
 
@@ -145,6 +146,7 @@ Result:
 - 5 events in `data/events` (all `_placeholder`; the docs list costs as TBD): festival and guild auction (scheduled), tool breaks, family request, caravan (random). Random events per week: `EVENTS_PER_WEEK_MIN`–`_MAX`, on top of the scheduled ones (my reading of the docs).
 - While an event card waits, actions are refused. The time an answer uses removes planned cards that overlap it (the recap lists them). The town shows `prop_event_marker` over the avatar.
 - Recap: money lines, weekly living cost, gold, debt, sold and waste, tiers made, XP per path, plan versus actual hours per activity, events, note.
+- Review fix (2 Nov 2026, user feedback): skill XP bars per path (Sun, Moon, Earth) in the recap: level, gain this week, level up, sub-skill gains (docs loop/check step 3b). Browser test `m4-xp-bars`.
 
 ---
 

@@ -92,10 +92,12 @@ export class ActionRunner {
     return now >= hours[0] * 60 && now + minutes <= hours[1] * 60;
   }
 
-  /** Walk minutes between two locations (data/locations/_walk.json). */
+  /** Walk minutes between two locations (data/locations/_walk.json). Same building (location.building): withinBuilding. */
   walkMinutes(from, to) {
     if (from === to) return 0;
     const w = this.#c.get('locations', '_walk');
+    const building = (id) => this.#c.get('locations', id).building ?? id;
+    if (building(from) === building(to)) return w.withinBuilding;
     const home = (id) => w.homeGroup.includes(id);
     if (home(from) && home(to)) return w.withinHome;
     if (home(from)) return w.fromHome[to];

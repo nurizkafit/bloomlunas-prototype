@@ -36,14 +36,14 @@ Read these first:
 ```
 CLAUDE.md  SPECS.md  MILESTONES.md
 index.html  package.json  vite.config.js
-data/          BalanceConfig.json, QualityConfig.json, activities/, actions/, recipes/, debt/, locations/, entities/, items/, events/, costs/, investments/, skills/, endings/
+data/          BalanceConfig.json, QualityConfig.json, activities/, actions/, recipes/, debt/, locations/, interiors/, entities/, items/, events/, costs/, investments/, skills/, endings/
 src/main.js    browser entry: builds GameManager + views
 src/core/      GameManager, PhaseMachine, EventBus, ContentDB, SaveSystem
 src/model/     GameState, Calendar, Wallet, Inventory, DebtAccount, SkillBook, Relationships, WeekPlan, Ledger
 src/systems/   TimeSystem, ActionRunner, EffectApplier, EconomySystem, ProductionSystem, QualityCalculator, DebtSystem, EventSystem, PlanValidator, EndingChecker
 src/phases/    Phase, PlanPhase, DoPhase, CheckPhase, ActPhase, EndingPhase
-src/views/town/  TownView, AssetSlot, Avatar, PathGraph
-src/views/ui/    PlannerBookView, ActionMenuView, CraftView, HudView, EventCardView, RecapView, MonthEndView, EndingView, DevOverlay
+src/views/town/  TownView, InteriorView, AssetSlot, Avatar, PathGraph
+src/views/ui/    PlannerBookView, ActionMenuView, CraftView, StockView, HudView, EventCardView, RecapView, MonthEndView, EndingView, DevOverlay
 src/sim/       Bot, runMonths.js (headless CLI), Testbed (browser panel), csv.js
 assets/models/ <slot id>.glb (optional; greybox shows when missing)
 tests/         *.test.js (Vitest, logic only)

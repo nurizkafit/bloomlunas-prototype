@@ -19,6 +19,8 @@ const SP = process.argv[2];
   const run = async (action, sel = {}) => { await answer(); for (const [n, v] of Object.entries(sel)) await p.locator(`.aform:has([data-run="${action}"]) [name="${n}"]`).first().selectOption?.(v).catch(async () => p.locator(`.aform:has([data-run="${action}"]) [name="${n}"]`).first().fill(String(v)));
     await p.locator(`[data-run="${action}"]`).first().click(); await p.waitForTimeout(80); await answer(); };
   const log = async () => (await p.locator('#hLog p').first().textContent());
+  // Do starts inside the home and shop: go out to the town first.
+  if (await p.locator('#intExit').isVisible()) { await p.click('#intExit'); await p.waitForTimeout(100); }
   // canvas pick: click on the market building
   const xy = await ev(() => { const t = window.__ui.town, THREE_V = t.slots.get('loc_market').root.position.clone(); THREE_V.y = 1; THREE_V.project(t.camera); const r = t.renderer.domElement.getBoundingClientRect(); return [r.left + (THREE_V.x + 1) / 2 * r.width, r.top + (1 - THREE_V.y) / 2 * r.height]; });
   await p.mouse.click(xy[0], xy[1]); await p.waitForTimeout(150);

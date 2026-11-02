@@ -87,8 +87,6 @@
   ],
   "doors": {
     "loc_home_shop": "home_lane",
-    "loc_home": "home_west",
-    "loc_home_atelier": "home_east",
     "loc_home_drying_yard": "home_east",
     "loc_market": "square",
     "loc_merchant_guild": "west_road",
