@@ -2,7 +2,7 @@
 /**
  * Headless run with no view: a Bot plays N months, then the ledger prints.
  * Usage: npm run sim -- --months 1 --runs 1 [--quiet]
- * --months sets JAM_MONTHS for this run. One run prints the week-by-week ledger; more runs print one line each.
+ * --months N: play N months (default JAM_MONTHS), or less if an ending comes first. One run prints the week-by-week ledger; more runs print one line each.
  */
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
@@ -16,18 +16,18 @@ const args = process.argv.slice(2);
 const opt = (k, d) => { const i = args.indexOf(`--${k}`); return i >= 0 ? args[i + 1] : d; };
 const quiet = args.includes('--quiet');
 const runs = Number(opt('runs', 1));
-const months = opt('months');
 
 const content = new ContentDB(loadDataNode(root));
-if (months) content.balance.JAM_MONTHS = { value: Number(months) };
+const months = Number(opt('months', content.num('JAM_MONTHS')));
 const g = (n) => n.toFixed(2).padStart(9);
 
 const results = [];
 for (let r = 1; r <= runs; r++) {
   const gm = new GameManager(content, { seed: content.num('SEED') + r - 1 });
   const bot = new Bot(gm);
-  bot.playToEnd();
-  if (gm.machine.current?.name !== 'Ending') { console.error(`run ${r}: did not reach Ending`); process.exit(1); }
+  bot.playToEnd(months);
+  const closed = gm.state.monthReports?.length ?? 0;
+  if (gm.machine.current?.name !== 'Ending' && closed < months) { console.error(`run ${r}: stopped after ${closed} of ${months} months`); process.exit(1); }
   const s = gm.state;
   results.push(s);
   if (quiet) continue;
@@ -44,7 +44,7 @@ for (let r = 1; r <= runs; r++) {
     const skills = Object.entries(s.skills.subXp).map(([k, v]) => `${k} ${v}`).join(', ');
     console.log(`XP: ${skills} · relations: ${JSON.stringify(s.relations.points)} · quests done: ${s.questsDone.length} · refused actions: ${bot.refusals.length}`);
   }
-  console.log(`run ${r}: end gold ${s.wallet.gold.toFixed(2)} · end debt ${s.debt.balance.toFixed(2)}${s.debt.bankrupt ? ' · bankrupt' : ''}`);
+  console.log(`run ${r}: ${closed} month(s) · end gold ${s.wallet.gold.toFixed(2)} · end debt ${s.debt.balance.toFixed(2)}${s.endingId ? ` · ending: ${s.endingId}` : ''}`);
 }
 if (quiet) {
   const bad = results.filter((s) => !Number.isFinite(s.wallet.gold) || !Number.isFinite(s.debt.balance));

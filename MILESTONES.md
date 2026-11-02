@@ -11,7 +11,7 @@ Rule: Claude works only on the milestone that is `Approved` or `In progress`. Af
 | M2 | Plan phase (Planner Book port) | Review |
 | M3 | Do phase (town, avatar, actions) | Review |
 | M4 | Events and Check | Review |
-| M5 | Act, endings, save | In progress |
+| M5 | Act, endings, save | Review |
 | M6 | Balance testbed and CSV export | Not started |
 | M7 | Full-month playtest and handoff | Not started |
 
@@ -153,16 +153,23 @@ Result:
 Goal: the month closes; the game can end; progress saves.
 
 Tasks:
-- [ ] `ActPhase` + `MonthEndView`: month summary, riba interest and fees applied, pay debt (minimum or more), pay utilities, 1 investment (Upgrade), book 1 service appointment for next month.
-- [ ] Unpaid amount becomes new debt up to `DEBT_LIMIT`.
-- [ ] `EndingChecker` + `EndingView`: Good and Bad endings from `EndingData`.
-- [ ] `SaveSystem`: auto-save `GameState` as JSON at each phase end; load on start.
+- [x] `ActPhase` + `MonthEndView`: month summary, riba interest and fees applied, pay debt (minimum or more), pay utilities, 1 investment (Upgrade), book 1 service appointment for next month.
+- [x] Unpaid amount becomes new debt up to `DEBT_LIMIT`.
+- [x] `EndingChecker` + `EndingView`: Good and Bad endings from `EndingData`.
+- [x] `SaveSystem`: auto-save `GameState` as JSON at each phase end; load on start.
 
 Exit criteria:
-- [ ] A full month plays from Plan week 1 to Act and then to the next month or an ending.
-- [ ] Reload the page in any phase and continue from the last phase end.
+- [x] A full month plays from Plan week 1 to Act and then to the next month or an ending.
+- [x] Reload the page in any phase and continue from the last phase end.
 
 Result:
+- `npm run check` passes (52 tests: Act, EndingChecker, SaveSystem added). `npm run test:browser` passes (5 scripts).
+- Browser test: a full month plays from Plan week 1 to Act (pay utilities, book an appointment), then to Plan of month 2 (the appointment chip shows). A forced debt past the limit gives the Bad Ending screen. Reload works in Do, in Check and in Ending (continues from the last phase end).
+- Act screen: month summary, pay (minimum, any amount, utilities), close preview (interest, hidden late fee, unpaid utilities to debt, debt after close), 1 investment, 1 appointment for next month.
+- Endings from `data/endings` (Good: debt 0 on or before `DEADLINE_MONTHS`; Bad: past `DEBT_LIMIT`, or debt > 0 at `DEADLINE_MONTHS`). The game goes on month after month until an ending. `JAM_MONTHS` is now only the default month count for `npm run sim`.
+- New placeholders, please confirm: `DEADLINE_MONTHS` = 12 (docs: TBD). Investment "Shop display shelf", 150 G, +1 customer per hour (docs: Upgrade, no item or numbers yet). New EffectData type `stat` (lasting change to a BalanceConfig value) for investments.
+- Balance signal: the M1 bot ends 12 months with about 2000–2350 G debt (Bad Ending). The bot is simple (M6 adds better profiles), but the placeholder income is low against the 3000 G loan.
+- Save: `localStorage` key `bloomlunas.save`. DEV panel "New game" clears it; `?new` in the URL also starts a new game.
 
 ---
 

@@ -91,3 +91,6 @@
 .legend2 span { display: flex; gap: 4px; align-items: center; } .legend2 i { width: 14px; }
 .evlist { margin: 0 0 10px; padding-left: 18px; font-size: 13px; }
 .sheet textarea { width: 100%; box-sizing: border-box; font: 500 20px/1.3 var(--f-hand); color: #26324f; background: #fff9e6; border: 1px solid var(--ink-3); border-radius: 6px; padding: 8px; }
+.ending { max-width: 640px; text-align: left; border-top: 8px solid var(--jade); }
+.ending.bad { border-top-color: var(--coral); }
+.endtext { font: 400 20px/1.45 var(--f-display); }

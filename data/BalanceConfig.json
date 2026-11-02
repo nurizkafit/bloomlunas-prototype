@@ -8,7 +8,7 @@
   },
   "JAM_MONTHS": {
     "value": 1,
-    "unit": "months",
+    "unit": "months (default for npm run sim; the game goes on until an ending)",
     "source": "Scope",
     "_placeholder": true
   },
@@ -345,6 +345,12 @@
     "value": 1.0,
     "unit": "x real price, market sells to player",
     "source": "placeholder",
+    "_placeholder": true
+  },
+  "DEADLINE_MONTHS": {
+    "value": 12,
+    "unit": "months",
+    "source": "placeholder (docs: TBD)",
     "_placeholder": true
   }
 }

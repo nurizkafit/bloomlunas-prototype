@@ -152,7 +152,7 @@ Shelf life lengths in days: TBD in the docs (placeholder §9).
 | RecipeData | id, productId, slots {main, aroma, sweetener, carrier[]} (materialId + variant), output count, craft time | 4 |
 | MaterialData | id, tier, role, plantPart, variants[] (id, shelfLifeDays), baseCost, forecast lo/hi | 9 |
 | EventData | id, type (scheduled, random), source, trigger (day, chance, level), text, responses[] (label, cost, effects) | about 6 |
-| EffectData | type (gold, item, xp, relation, energy, debt, time), target, amount | inside other types |
+| EffectData | type (gold, item, xp, relation, energy, debt, time, stat), target, amount | inside other types (stat = lasting change to a BalanceConfig key, for investments) |
 | CostData | id, period (weekly, monthly), amount, paidIn (Check, Act) | 2 |
 | DebtData | id, kind (riba, flat), principal, monthlyRate, hiddenFees[], minPayment, limit | 1 (riba) |
 | InvestmentData | id, branch (permit, upgrade, training), price, requirement, effects[] | 1 (Upgrade) |
@@ -167,7 +167,7 @@ The docs list these variables as TBD. Use these values in `BalanceConfig.json` w
 | Variable | Placeholder | Source |
 | --- | --- | --- |
 | `WEEKS_PER_MONTH` | 4 | Core Loop doc |
-| `JAM_MONTHS` | 1 | Scope |
+| `JAM_MONTHS` | 1 (default months for `npm run sim`; the game goes on until an ending) | Scope |
 | `DAY_START_HOUR` / `DAY_END_HOUR` | 7 / 19 | Planner Book |
 | `GOLD_START` | 240 | Planner Book |
 | `WEEKLY_EXPENSES` | 40 | Planner Book |
@@ -188,7 +188,8 @@ The docs list these variables as TBD. Use these values in `BalanceConfig.json` w
 | `PLAN_MATCH_XP_BONUS_ACTIVITY` / `_DAY` / `_TIME` | 1 / 2 / 3 | placeholder |
 | `RELATIONSHIP_PRICE_MODIFIER` | 2 % per level | placeholder |
 | `QUEST_DEADLINE_DAYS` | 7 | placeholder |
-| `EVENTS_PER_WEEK_MIN` / `_MAX` | 1 / 2 | Docs (early levels) |
+| `EVENTS_PER_WEEK_MIN` / `_MAX` | 1 / 2 random events, plus the scheduled ones | Docs (early levels) |
+| `DEADLINE_MONTHS` | 12 | placeholder (docs: TBD) |
 | `NIGHT_END_HOUR` / `LATE_WAKE_DELAY_MIN` | 23 / 120 min | placeholder (M1) |
 | `CUSTOMERS_PER_HOUR` / `SHOP_BUY_CHANCE` | 2 / 0.7 | placeholder (M1) |
 | `SHOP_PRICE_RATIO` / `MARKET_SELL_RATIO` / `GUILD_BUY_RATIO` / `GUILD_SELL_RATIO` | 1.0 / 1.0 / 0.8 / 0.9 x real price | placeholder (M1) |

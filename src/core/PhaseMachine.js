@@ -30,7 +30,7 @@ export class PhaseMachine {
     cur.finish(this.ctx);
     const nextName = cur.next(this.ctx);
     cur.exit(this.ctx);
-    this.bus.emit(MSG.PHASE_EXITED, { phase: cur.name, calendar: this.ctx.state.calendar.snapshot() });
+    this.bus.emit(MSG.PHASE_EXITED, { phase: cur.name, next: nextName, calendar: this.ctx.state.calendar.snapshot() });
     if (!nextName) { this.current = null; return null; }
     this.#enter(nextName);
     return nextName;

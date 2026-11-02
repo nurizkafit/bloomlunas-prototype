@@ -11,6 +11,8 @@ import { DebtSystem } from '../systems/DebtSystem.js';
 import { ActionRunner } from '../systems/ActionRunner.js';
 import { PlanValidator } from '../systems/PlanValidator.js';
 import { EventSystem } from '../systems/EventSystem.js';
+import { EndingChecker } from '../systems/EndingChecker.js';
+import { SaveSystem } from './SaveSystem.js';
 import { PlanPhase } from '../phases/PlanPhase.js';
 import { DoPhase } from '../phases/DoPhase.js';
 import { CheckPhase } from '../phases/CheckPhase.js';
@@ -19,18 +21,25 @@ import { EndingPhase } from '../phases/EndingPhase.js';
 
 /**
  * GameManager: boots the game. Owns the EventBus, GameState, Rng, systems and PhaseMachine.
- * ctx = { state, content, bus, rng, sys, log } is passed to every phase and system.
+ * ctx = { state, content, bus, rng, sys, log, stat } is passed to every phase and system.
  * Unity: MonoBehaviour singleton in a boot scene.
  */
 export class GameManager {
-  /** @param {import('./ContentDB.js').ContentDB} content @param {{log?: (line:string)=>void, seed?: number}} [opts] */
+  /**
+   * @param {import('./ContentDB.js').ContentDB} content
+   * @param {{log?: (line:string)=>void, seed?: number, save?: {nextPhase:string, rng:number, state:any}}} [opts] save = data from SaveSystem.read()
+   */
   constructor(content, opts = {}) {
     this.content = content;
     this.bus = new EventBus();
-    this.state = GameState.create(content);
+    this.state = opts.save ? SaveSystem.restore(content, opts.save.state) : GameState.create(content);
     this.rng = new Rng(opts.seed ?? content.num('SEED'));
+    if (opts.save) this.rng.state = opts.save.rng;
+    this.startPhase = opts.save?.nextPhase ?? 'Plan';
     this.log = opts.log ?? (() => {});
     this.ctx = { state: this.state, content, bus: this.bus, rng: this.rng, log: this.log, sys: {} };
+    /** BalanceConfig value plus lasting changes from investments (EffectData type stat). */
+    this.ctx.stat = (key) => content.num(key) + (this.state.modifiers?.[key] ?? 0);
     const sys = this.ctx.sys;
     sys.time = new TimeSystem(this.ctx);
     sys.effects = new EffectApplier(this.ctx);
@@ -41,6 +50,7 @@ export class GameManager {
     sys.actions = new ActionRunner(this.ctx);
     sys.plan = new PlanValidator(this.ctx);
     sys.events = new EventSystem(this.ctx);
+    sys.endings = new EndingChecker(this.ctx);
     const phases = {
       Plan: new PlanPhase(),
       Do: new DoPhase(),
@@ -52,7 +62,8 @@ export class GameManager {
     this.bus.on(MSG.INTENT_NEXT_PHASE, () => this.machine.advance());
   }
 
+  /** Start at Plan (new game) or at the phase after the last save. */
   start() {
-    this.machine.start('Plan');
+    this.machine.start(this.startPhase);
   }
 }

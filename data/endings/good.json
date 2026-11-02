@@ -1,0 +1,8 @@
+{
+  "id": "good",
+  "rule": "debt_paid",
+  "title": "Good Ending",
+  "text": "You paid the last coin of the loan. The shop is yours, free and clear. Unlimited mode opens.",
+  "source": "docs:pages/endings/good.md",
+  "build": "Jam"
+}

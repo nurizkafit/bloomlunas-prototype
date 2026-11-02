@@ -5,6 +5,7 @@ import { MSG } from '../core/EventBus.js';
  * EffectData = { type, target, amount, variant?, tier?, label? }
  *   gold: wallet +/- amount (ledger line) · item: target item, variant, +/- amount · xp: target "path.sub" or "path"
  *   relation: target entity · energy: +/- amount (0..ENERGY_MAX) · debt: +/- debt balance · time: minutes on the clock
+ *   stat: lasting change to a BalanceConfig value (target = key), read with ctx.stat(key) (investments)
  * Unity: static class or ScriptableObject-driven command list.
  */
 export class EffectApplier {
@@ -49,6 +50,10 @@ export class EffectApplier {
       case 'debt':
         state.debt.balance += e.amount;
         bus.emit(MSG.DEBT_CHANGED, { balance: state.debt.balance });
+        break;
+      case 'stat':
+        state.modifiers = state.modifiers ?? {};
+        state.modifiers[e.target] = (state.modifiers[e.target] ?? 0) + e.amount;
         break;
       case 'time':
         this.ctx.sys.time.advance(e.amount);

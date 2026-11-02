@@ -10,15 +10,19 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const content = new ContentDB(loadDataNode(root));
 
 describe('phase loop', () => {
-  it('runs Plan > Do > Check for each week, then Act, then Ending', () => {
+  it('runs Plan > Do > Check for each week, then Act, then Plan of month 2 (no ending yet)', () => {
     const gm = new GameManager(content);
     const seen = [];
     gm.bus.on(MSG.PHASE_ENTERED, (e) => seen.push(e.phase));
     gm.start();
-    while (gm.machine.current.name !== 'Ending') gm.bus.emit(MSG.INTENT_NEXT_PHASE);
     const weeks = content.num('WEEKS_PER_MONTH');
+    for (let i = 0; i < weeks * 3 + 1; i++) {
+      if (gm.state.pendingEvent) gm.state.pendingEvent = null;
+      gm.bus.emit(MSG.INTENT_NEXT_PHASE);
+    }
     const week = ['Plan', 'Do', 'Check'];
-    expect(seen).toEqual([...Array(weeks).fill(week).flat(), 'Act', 'Ending']);
+    expect(seen).toEqual([...Array(weeks).fill(week).flat(), 'Act', 'Plan']);
+    expect(gm.state.calendar.month).toBe(2);
   });
 });
 

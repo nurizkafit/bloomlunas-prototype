@@ -58,7 +58,7 @@ export class EconomySystem {
   /** One hour of shop: customers come, some buy one product each. */
   serveCustomers() {
     const { state, rng } = this.ctx;
-    const n = this.#c.num('CUSTOMERS_PER_HOUR');
+    const n = this.ctx.stat('CUSTOMERS_PER_HOUR');
     let sold = 0, gold = 0;
     for (let i = 0; i < n; i++) {
       if (!rng.chance(this.#c.num('SHOP_BUY_CHANCE'))) continue;

@@ -25,11 +25,12 @@ export class Bot {
     });
   }
 
-  /** Play from Plan week 1 until the Ending phase. */
-  playToEnd() {
+  /** Play from Plan week 1 until an ending, or until `months` months are closed. @param {number} [months] */
+  playToEnd(months = Infinity) {
     this.gm.start();
     let guard = 0;
-    while (this.gm.machine.current && this.gm.machine.current.name !== 'Ending' && guard++ < 1000) {
+    while (this.gm.machine.current && this.gm.machine.current.name !== 'Ending' && guard++ < 5000) {
+      if (this.gm.machine.current.name === 'Plan' && this.state.calendar.month > months) break;
       const phase = this.gm.machine.current.name;
       if (phase === 'Plan') this.plan();
       if (phase === 'Do') this.playWeek();

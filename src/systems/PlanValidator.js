@@ -97,7 +97,7 @@ export class PlanValidator {
           }
         }
         if (a.id === 'open_shop') {
-          const cap = Math.floor((this.duration(card) / 60) * c.num('CUSTOMERS_PER_HOUR') * c.num('SHOP_BUY_CHANCE'));
+          const cap = Math.floor((this.duration(card) / 60) * this.ctx.stat('CUSTOMERS_PER_HOUR') * c.num('SHOP_BUY_CHANCE'));
           const sold = Math.min(cap, stockProducts);
           stockProducts -= sold;
           const [lo, hi] = avg('fresh_jamu');
