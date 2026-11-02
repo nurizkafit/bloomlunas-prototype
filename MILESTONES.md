@@ -6,7 +6,7 @@ Rule: Claude works only on the milestone that is `Approved` or `In progress`. Af
 
 | # | Milestone | Status |
 | --- | --- | --- |
-| M0 | Project skeleton | Approved |
+| M0 | Project skeleton | Review |
 | M1 | Logic core, headless month | Not started |
 | M2 | Plan phase (Planner Book port) | Not started |
 | M3 | Do phase (town, avatar, actions) | Not started |
@@ -22,20 +22,26 @@ Rule: Claude works only on the milestone that is `Approved` or `In progress`. Af
 Goal: the folder layout from `CLAUDE.md` exists and runs.
 
 Tasks:
-- [ ] `package.json` with exact versions: `three`, `vite`, `vitest`. Scripts: `dev`, `build`, `test`, `sim`, `check`.
-- [ ] Folder layout from `CLAUDE.md`, with empty class files and JSDoc headers.
-- [ ] `EventBus` (on, off, emit; typed message names from `SPECS.md` §7).
-- [ ] `PhaseMachine` + `Phase` base with empty `PlanPhase`, `DoPhase`, `CheckPhase`, `ActPhase`, `EndingPhase` that only log enter and exit.
-- [ ] `ContentDB` loads `data/` in Node and in the browser.
-- [ ] `data/BalanceConfig.json` with the placeholder values from `SPECS.md` §9.
-- [ ] npm scripts `graph:update` and `graph:query`; first graph build with `/graphify .` (see `CLAUDE.md`).
+- [x] `package.json` with exact versions: `three`, `vite`, `vitest`. Scripts: `dev`, `build`, `test`, `sim`, `check`.
+- [x] Folder layout from `CLAUDE.md`, with empty class files and JSDoc headers.
+- [x] `EventBus` (on, off, emit; typed message names from `SPECS.md` §7).
+- [x] `PhaseMachine` + `Phase` base with empty `PlanPhase`, `DoPhase`, `CheckPhase`, `ActPhase`, `EndingPhase` that only log enter and exit.
+- [x] `ContentDB` loads `data/` in Node and in the browser.
+- [x] `data/BalanceConfig.json` with the placeholder values from `SPECS.md` §9.
+- [x] npm scripts `graph:update` and `graph:query`. First graph build with `/graphify .`: NOT DONE (graphify could not be installed in the build environment; run it once on your machine).
 
 Exit criteria:
-- [ ] `npm run sim` steps through Plan → Do → Check × `WEEKS_PER_MONTH` → Act → ending check, and prints each phase.
-- [ ] `npm run dev` shows an empty page with the phase name, and a "Next phase" button that sends `intent.nextPhase`.
-- [ ] `npm run check` passes.
+- [x] `npm run sim` steps through Plan → Do → Check × `WEEKS_PER_MONTH` → Act → ending check, and prints each phase.
+- [x] `npm run dev` shows an empty page with the phase name, and a "Next phase" button that sends `intent.nextPhase`.
+- [x] `npm run check` passes.
 
-Result: _(Claude fills this in at Review)_
+Result:
+- `npm run sim` runs Plan > Do > Check x 4 weeks > Act > Ending (14 phases) and prints each phase.
+- `npm run dev` shows the phase name and calendar, with a "Next phase" button that sends `intent.nextPhase`. Tested in headless Chromium: Plan to Ending in 13 clicks, button off at Ending, no console errors.
+- `npm run check` passes: 3 tests, 1 headless month, build.
+- `EventBus` refuses unknown message names. `ContentDB.num()` refuses missing BalanceConfig keys, so no number can hide in code.
+- All classes from the folder layout exist as stubs with a JSDoc line and their milestone.
+- Open: the first graphify build (see the task above). `ActPhase` ends the game after `JAM_MONTHS`; the real `EndingChecker` comes in M5.
 
 ---
 

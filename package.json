@@ -1,0 +1,22 @@
+{
+  "name": "bloomlunas-prototype",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "test": "vitest run",
+    "sim": "node src/sim/runMonths.js",
+    "check": "vitest run && node src/sim/runMonths.js --months 1 --runs 1 --quiet && vite build",
+    "graph:update": "graphify update .",
+    "graph:query": "graphify query"
+  },
+  "dependencies": {
+    "three": "0.187.0"
+  },
+  "devDependencies": {
+    "vite": "8.3.5",
+    "vitest": "5.0.5"
+  }
+}
