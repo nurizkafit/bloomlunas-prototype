@@ -16,11 +16,10 @@
   "needsPermit": false,
   "build": "Jam",
   "source": "docs:pages/activities/rest.md",
-  "plannable": true,
+  "plannable": false,
   "planDurationMin": 180,
   "planDurationOptions": [
     180
   ],
-  "planEarliestHour": 18,
-  "_planNote": "Sleep card: ends the day. Only in night slots (from SLEEP_EARLIEST_HOUR). Slot 00-03 = midnight: fatigue risk."
+  "_planNote": "Not a plan card (user decision 2 Nov 2026): sleep happens in Do at the bed, from SLEEP_EARLIEST_HOUR. It ends the day."
 }

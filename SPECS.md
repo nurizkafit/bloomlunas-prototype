@@ -76,7 +76,7 @@ Two levels (docs:pages/activities, docs:pages/actions):
 - The player starts each activity on purpose. The avatar walks there on its own. The avatar never runs planned cards on its own.
 - Every action is a turn. Idle time does not move the clock.
 - Day (user decision, 2 Nov 2026): 06:00 (`DAY_START_HOUR`) to 03:00 (`NIGHT_END_HOUR` 27 = 03:00 next morning). The clock counts past 24:00. Night is 18:00–24:00 (`SLEEP_EARLIEST_HOUR` to `DAY_END_HOUR`); safe for sleep. Midnight is 00:00–03:00: work or sleep after `DAY_END_HOUR` gives fatigue. No action may end after `NIGHT_END_HOUR`.
-- Sleep is the Sleep card (activity `rest`, action `sleep`) at the bed (loc_home). It ends the day. It is allowed only from `SLEEP_EARLIEST_HOUR`. There is no "End the day" button.
+- Sleep (activity `rest`, action `sleep`) is at the bed (loc_home). It ends the day. It is allowed only from `SLEEP_EARLIEST_HOUR`. It is not a plan card (user decision, 2 Nov 2026). There is no "End the day" button.
 - Energy: start each day with up to `ENERGY_MAX`. Every work action uses `ENERGY_COST_<ACTION>`. Sleep restores `ENERGY_REST_RECOVERY`.
 - Small rest (action `small-rest`): any time, any place, no activity needed. `SMALL_REST_MIN`, + `SMALL_REST_ENERGY` (up to `ENERGY_MAX`).
 - Meals (action `eat`): breakfast, lunch, dinner, once a day each, only in their window (`MEAL_WINDOWS`). `MEAL_MIN`, + `MEAL_ENERGY`. Free: `WEEKLY_EXPENSES` pays for food. Any place, no activity needed.
@@ -224,10 +224,10 @@ Price rule (M1): each Plan phase rolls a hidden real price per item inside its f
 Plan rules (user decision, 2 Nov 2026):
 - The week board has 3-hour slots (`PLAN_SLOT_HOURS`): 06–09, 09–12, 12–15, 15–18, 18–21, 21–24, 00–03. A card starts on a slot edge and fills whole slots (`planDurationOptions` are multiples of 180 min). Craft fills the recipe time rounded up to whole slots. The Do phase still counts minutes. Plan match "same time" = the action starts inside the card slots.
 - A location that is closed for all of a slot is a problem. Open for part of the slot is a warning. A location open all day (0–24) stays open after midnight.
-- Sleep card: only from `planEarliestHour` (18). 00–03 is a warning (midnight). A day with no Sleep card is a warning.
-- Deck: category tiles first (Production, Trade, Explore, Guilds, Rest). A tile shows its cards. A card shows its details (settings, issues, remove) in the same side panel; no popup. Drag a card onto a slot, or click a free slot and then pick a card.
+- Work in 00–03 is a warning (midnight). Sleep is not a card.
+- Deck: category tiles first (Production, Trade, Explore, Guilds). A tile shows its cards. A card shows its details (settings, issues, remove) in the same side panel; no popup. Drag a card onto a slot, or click a free slot and then pick a card.
 - Top bar: Gold, Debt, next payment (`DEBT_MIN_PAYMENT` + `MONTHLY_UTILITIES`, month end), weekly living cost, gold after the plan (end of week forecast), energy.
-- Meals and small rests are not cards. They happen in Do (HUD buttons).
+- Sleep, meals and small rests are not cards. They happen in Do (the bed; HUD buttons).
 
 Card renames: Sell → Open shop; Craft → Craft (recipe picks Brew or Concoct); Gather → Explore (City zone); Errand (clinic order) → Organization visit (service); Errand (quest board) → Commission. Add Sell to organization, Sun drying, Grinding. Jamu → Fresh jamu. Recipes and materials from §6, not from the Planner Book.
 

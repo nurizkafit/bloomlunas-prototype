@@ -107,7 +107,7 @@ export class PlanValidator {
         if (why) add(card.uid, 'bad', `${why}.`);
         const hit = cards.find((o) => o !== card && o.startMin < end && o.startMin + this.duration(o) > start);
         if (hit) add(card.uid, 'bad', `Overlaps ${c.get('activities', hit.activityId).name}.`);
-        if (end > dayEndMin && end <= nightEnd) add(card.uid, 'warn', a.id === 'rest' ? 'Sleep after midnight. Fatigue: chance to wake up 3 h late tomorrow.' : 'Midnight work. Fatigue: chance to wake up 3 h late tomorrow.');
+        if (end > dayEndMin && end <= nightEnd) add(card.uid, 'warn', 'Midnight work. Fatigue: chance to wake up 3 h late tomorrow.');
         if (a.needsAppointment && !state.appointments.some((x) => x.entityId === c.get('locations', loc).entityId && x.absDay === this.#absDay(d))) {
           add(card.uid, 'bad', 'Needs an appointment on this day. Book it in Act.');
         }
@@ -142,9 +142,6 @@ export class PlanValidator {
     const unassigned = Math.floor(state.wallet.gold) - (budget.exp ?? 0) - (budget.buy ?? 0) - (budget.buf ?? 0);
     if (unassigned > 0) plan.push({ lvl: 'warn', tab: 'ledger', msg: `${unassigned} G has no job. Put it in a slot.` });
     for (let d = 0; d < 6; d++) if (dayEnd[d] > dayEndMin && dayEnd[d + 1] > 0) plan.push({ lvl: 'warn', tab: 'week', msg: `Midnight on ${DAYS[d]}: ${DAYS[d + 1]} can start 3 h late.` });
-    const noSleep = [];
-    for (let d = 0; d < c.num('DAYS_PER_WEEK'); d++) if (!state.plan.cards.some((x) => x.day === d && x.activityId === 'rest')) noSleep.push(DAYS[d]);
-    if (noSleep.length) plan.push({ lvl: 'warn', tab: 'week', msg: `No Sleep card on ${noSleep.join(', ')}. Sleep ends the day.` });
     const gold = state.wallet.gold;
     return {
       issues, plan, dayEnd, unassigned,

@@ -48,7 +48,6 @@ export class Bot {
       if (first) this.bus.emit(MSG.INTENT_PLACE_CARD, { activityId: first, day, startMin: start, durationMin: slot });
       this.bus.emit(MSG.INTENT_PLACE_CARD, { activityId: 'craft', day, startMin: start + slot, durationMin: slot, recipeId: 'kunyit_asam' });
       this.bus.emit(MSG.INTENT_PLACE_CARD, { activityId: 'open_shop', day, startMin: start + 3 * slot, durationMin: 2 * slot });
-      this.bus.emit(MSG.INTENT_PLACE_CARD, { activityId: 'rest', day, startMin: start + 5 * slot, durationMin: slot });
     }
     this.bus.emit(MSG.INTENT_LOCK_PLAN);
   }

@@ -257,7 +257,7 @@ export class PlannerBookView {
       const used = this.s.plan.cards.filter((p) => this.#catOf(this.c.get('activities', p.activityId)) === k.id).length;
       return n ? `<button class="cat" data-cat="${k.id}" style="--k:${k.c}">${ic(k.i)}<b>${k.n}</b><small>${k.sub}</small><span class="cnt">${n} card${n > 1 ? 's' : ''}${used ? ` · ${used} planned` : ''}</span></button>` : '';
     }).join('');
-    return `<h3>Card deck</h3>${tgt}<div class="hint">${this.target ? 'Pick a category, then a card for the slot.' : 'Pick a category. Then drag a card onto a slot, or click a free slot first.'} Meals and small rests happen in Do.</div><div class="cats">${tiles}</div>`;
+    return `<h3>Card deck</h3>${tgt}<div class="hint">${this.target ? 'Pick a category, then a card for the slot.' : 'Pick a category. Then drag a card onto a slot, or click a free slot first.'} Sleep, meals and small rests happen in Do.</div><div class="cats">${tiles}</div>`;
   }
 
   #openTxt(card) {
@@ -697,8 +697,7 @@ const CATS = [
   { id: 'production', n: 'Production', sub: 'Craft, dry, grind', cats: ['production'], i: 'bowl', c: '#c98a3c' },
   { id: 'trade', n: 'Trade', sub: 'Shop, buy, sell', cats: ['trade'], i: 'coin', c: '#e9b44c' },
   { id: 'explore', n: 'Explore', sub: 'Gather in the wild', cats: ['fieldwork'], i: 'leaf', c: '#5cc29b' },
-  { id: 'guilds', n: 'Guilds', sub: 'Quests, services', cats: ['organization'], i: 'scroll', c: '#b7adff' },
-  { id: 'rest', n: 'Rest', sub: 'Sleep ends the day', cats: ['rest', 'personal'], i: 'moon', c: '#9ba4c4' }
+  { id: 'guilds', n: 'Guilds', sub: 'Quests, services', cats: ['organization'], i: 'scroll', c: '#b7adff' }
 ];
 
 const TABS = [

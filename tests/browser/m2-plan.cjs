@@ -33,11 +33,9 @@ const { chromium } = require('playwright');
   await cat('production');
   await p.click('.dc[data-type="craft"]'); await p.waitForTimeout(150);
   out.afterPick = await p.locator('.deck .kind').textContent();
-  // Sleep: only night slots.
-  await cat('rest');
-  await drag('.dc[data-type="rest"]', 3, 15); // 15:00: refused
-  out.sleepEarly = await p.locator('.toast').textContent().catch(() => '-');
-  await drag('.dc[data-type="rest"]', 3, 21);
+  // Night slot 18-21 is fine for work (sleep is not a card).
+  out.sleepCard = await p.locator('.dc[data-type="rest"]').count();
+  await drag('.dc[data-type="grinding"]', 3, 18);
   await p.screenshot({ path: `${SP}/m2-week.png` });
   out.cards = await p.evaluate(() => window.__gm.state.plan.cards.map((c) => `${c.activityId}@${c.day}:${c.startMin / 60}`));
   // Click a planned card: details show in the side panel (no popup).
@@ -53,9 +51,9 @@ const { chromium } = require('playwright');
   out.locked = await p.evaluate(() => window.__gm.state.plan.locked);
   console.log('plan', JSON.stringify(out));
   console.log('errors', JSON.stringify(errs)); await b.close();
-  const want = ['open_shop@0:9', 'explore@1:6', 'craft@2:12', 'rest@3:21'];
-  const ok = out.topBar.every(Boolean) && out.tiles === 5 && /06:00.*03:00/.test(out.slotLabels) && /closed/i.test(out.sundayToast)
-    && /Wed 12:00/.test(out.target) && out.afterPick === 'Planned card' && /18:00/.test(out.sleepEarly)
+  const want = ['open_shop@0:9', 'explore@1:6', 'craft@2:12', 'grinding@3:18'];
+  const ok = out.topBar.every(Boolean) && out.tiles === 4 && /06:00.*03:00/.test(out.slotLabels) && /closed/i.test(out.sundayToast)
+    && /Wed 12:00/.test(out.target) && out.afterPick === 'Planned card' && out.sleepCard === 0
     && want.every((w) => out.cards.includes(w)) && out.cards.length === 4 && out.detail === 'Planned card' && out.popups === 0 && out.phase === 'Do' && out.locked;
   if (errs.length || !ok) process.exit(1);
 })();

@@ -97,7 +97,7 @@ Result:
 - `intent.moveCard` carries `{ uid, ...changes }` (day, startMin, durationMin, locationId, recipeId). `PlanPhase` runs `PlanValidator` after each change and sends `plan.validated`.
 - Not ported: Spec and Sheet overlays (M7), "Test this idea" note checks (notes come in M4), festival and wholesale cards (not in the jam scope).
 
-- Review fix (2 Nov 2026, user feedback, Prototype Iteration): 3-hour slots (06:00–03:00), category deck (tiles, then cards, then details in a side panel), click a free slot to pick a card, Sleep card (night slots only), Plan top bar (gold, debt, next payment, living cost, gold after plan, energy). Browser test `m2-plan` rewritten.
+- Review fix (2 Nov 2026, user feedback, Prototype Iteration): 3-hour slots (06:00–03:00), category deck (tiles, then cards, then details in a side panel), click a free slot to pick a card, Plan top bar (sleep, meals and small rest are Do only, not cards), (gold, debt, next payment, living cost, gold after plan, energy). Browser test `m2-plan` rewritten.
 ---
 
 ## M3 Do phase (town, avatar, actions)
