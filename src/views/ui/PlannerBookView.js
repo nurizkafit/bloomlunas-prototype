@@ -9,7 +9,7 @@ import './planner.css';
  * Prototype Iteration (2 Nov 2026): the week has 3-hour slots (06:00 to 03:00). The side panel is the card stock:
  * category tiles first, then the cards of one category. Drag a card to a slot, or click an empty slot and then pick a card.
  * A placed card opens a popup beside it (settings, info, issues, Remove). Click a placed card to open it again.
- * Activities with the same planGroup (sun_drying, grinding = "processing") share one deck card; the popup picks one.
+ * Processing is one activity (Start drying, Collect drying at the yard; Grind at the atelier); the popup picks the place.
  * The ribbon is the Plan top bar
  * (gold, debt, next payment, weekly living cost, gold after the plan, energy).
  * Reads GameState and PlanValidator results. Changes go out as intents only.
@@ -28,14 +28,8 @@ export class PlannerBookView {
     this.mode = 'plan';
     this.mkSel = 'fresh_jamu';
     this.R = null;
-    /** Deck entries: one per plannable activity, or one per planGroup (the popup picks the activity). */
-    this.deck = [];
-    for (const a of this.c.all('activities').filter((x) => x.plannable)) {
-      const g = a.planGroup && this.deck.find((e) => e.key === a.planGroup);
-      if (g) { g.activityIds.push(a.id); continue; }
-      const G = a.planGroup ? GROUPS[a.planGroup] : null;
-      this.deck.push({ key: a.planGroup ?? a.id, activityIds: [a.id], category: a.category, name: G?.n ?? a.name, a });
-    }
+    /** Deck entries: one per plannable activity. */
+    this.deck = this.c.all('activities').filter((x) => x.plannable).map((a) => ({ key: a.id, activityIds: [a.id], category: a.category, name: a.name, a }));
     /** Default settings of each deck card (activity, length, location, recipe). */
     this.draft = {};
     for (const e of this.deck) this.draft[e.key] = this.#defaults(e.a);
@@ -247,8 +241,6 @@ export class PlannerBookView {
 
   /** Deck tile id of a category. */
   #catOf(category) { return CATS.find((k) => k.cats.includes(category))?.id ?? 'other'; }
-  /** Deck entry of a placed card. */
-  #entryOf(activityId) { return this.deck.find((e) => e.activityIds.includes(activityId)); }
 
   #deckHtml() {
     const v = this.deckView;
@@ -258,8 +250,8 @@ export class PlannerBookView {
       const list = this.deck.filter((e) => this.#catOf(e.category) === v.cat).map((e) => {
         const card = this.draft[e.key], a = e.a;
         const used = this.s.plan.cards.filter((p) => e.activityIds.includes(p.activityId)).length;
-        const set = e.activityIds.length > 1 ? e.activityIds.map((id) => this.#name(id)).join(' or ') : a.id === 'craft' ? 'Pick a recipe' : a.locationIds.length > 1 ? 'Pick a place' : this.#loc(card);
-        const icon = GROUPS[e.key]?.i ?? iconFor(a);
+        const set = a.id === 'craft' ? 'Pick a recipe' : a.locationIds.length > 1 ? 'Pick a place' : this.#loc(card);
+        const icon = iconFor(a);
         return `<div class="dc" data-type="${e.key}" tabindex="0" style="--k:${colorFor(a)}">${used ? `<span class="used">×${used}</span>` : ''}
           <div class="t">${ic(icon)}${e.name}</div>
           <span class="m set">${set}</span>
@@ -435,12 +427,11 @@ export class PlannerBookView {
     const card = this.popUid != null && this.s.plan.cards.find((x) => x.uid === this.popUid);
     const el = card && this.tab === 'week' && this.stage.querySelector(`.bc[data-uid="${card.uid}"]`);
     if (!el) { this.popUid = null; return; }
-    const a = this.c.get('activities', card.activityId), e = this.#entryOf(a.id);
+    const a = this.c.get('activities', card.activityId);
     const iss = R.issues[card.uid] ?? [];
     const slots = (m) => `${m / (this.SLOT * 60)} slot${m > this.SLOT * 60 ? 's' : ''}`;
     const sets = [];
-    if (e.activityIds.length > 1) sets.push({ key: 'activityId', label: GROUPS[e.key]?.ask ?? 'Kind', opt: e.activityIds.map((id) => [id, this.#name(id)]) });
-    if (a.locationIds.length > 1) sets.push({ key: 'locationId', label: a.category === 'organization' ? 'Organization' : 'Where', opt: a.locationIds.map((id) => [id, this.c.get('locations', id).name.replace(/ guild$/i, '')]) });
+    if (a.locationIds.length > 1) sets.push({ key: 'locationId', label: a.category === 'organization' ? 'Organization' : 'Station', opt: a.locationIds.map((id) => [id, this.c.get('locations', id).name.replace(/ guild$/i, '')]) });
     if (a.id === 'craft') sets.push({ key: 'recipeId', label: 'Recipe', opt: this.c.all('recipes').map((r) => [r.id, `${r.name} (${slots(Math.ceil(r.timeMin / (this.SLOT * 60)) * this.SLOT * 60)})`]) });
     else if (a.planDurationOptions?.length > 1) sets.push({ key: 'durationMin', label: 'Length', opt: a.planDurationOptions.map((m) => [m, slots(m)]) });
     const cur = (k) => (k === 'locationId' ? this.v.location(card) : card[k]);
@@ -452,7 +443,7 @@ export class PlannerBookView {
     pop.setAttribute('role', 'dialog');
     pop.setAttribute('aria-label', `${a.name} settings`);
     pop.innerHTML = `<button class="x" data-popx aria-label="Close">×</button>
-      <div class="kind">${e.activityIds.length > 1 ? e.name : 'Planned card'} · ${DAYS[card.day]} ${hm(card.startMin)}–${hm(card.startMin + this.#dur(card))}</div>
+      <div class="kind">Planned card · ${DAYS[card.day]} ${hm(card.startMin)}–${hm(card.startMin + this.#dur(card))}</div>
       <h3 style="--k:${colorFor(a)}">${ic(iconFor(a))}${a.name}</h3>
       <div class="sub">Actions: ${actions}.</div>${settings}
       <table><tr><td>Location</td><td>${this.#loc(card)}</td></tr><tr><td>Length</td><td class="num">${this.#dur(card) / 60} h</td></tr>
@@ -476,8 +467,7 @@ export class PlannerBookView {
   #setPop(key, raw) {
     const card = this.s.plan.cards.find((x) => x.uid === this.popUid);
     if (!card) return;
-    let ch = { [key]: key === 'durationMin' ? Number(raw) : raw };
-    if (key === 'activityId') { const a = this.c.get('activities', raw); ch = { activityId: raw, durationMin: a.planDurationMin, locationId: undefined, recipeId: raw === 'craft' ? card.recipeId : undefined }; }
+    const ch = { [key]: key === 'durationMin' ? Number(raw) : raw };
     const next = { ...card, ...ch };
     if (this.mode === 'do' && card.day <= this.s.calendar.day) { this.#toast('This day has started.', 'bad'); return; }
     const why = this.v.dayProblem(next, card.day);
@@ -728,9 +718,6 @@ const CATS = [
   { id: 'fieldwork', n: 'Fieldwork', cats: ['fieldwork'], i: 'leaf', c: '#5cc29b' },
   { id: 'organization', n: 'Guild / Organization', cats: ['organization'], i: 'scroll', c: '#b7adff' }
 ];
-
-/** Deck cards that hold several activities (activity.planGroup). The popup picks one. */
-const GROUPS = { processing: { n: 'Processing', ask: 'Process', i: 'mill' } };
 
 const TABS = [
   { id: 'week', n: 'Week', sub: 'Plan days', c: '#e9b44c' },

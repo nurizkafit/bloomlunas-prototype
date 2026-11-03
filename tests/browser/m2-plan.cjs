@@ -1,5 +1,5 @@
 // Plan (Prototype Iteration, 2 Nov 2026): top bar, 3-hour slots, category deck, click-a-slot picker, popup beside the card,
-// one Processing card (popup picks the process), budget coin, opening-hours blocks.
+// one Processing activity (popup picks the station), budget coin, opening-hours blocks.
 const { chromium } = require('playwright');
 (async () => {
   const SP = process.argv[2];
@@ -45,9 +45,11 @@ const { chromium } = require('playwright');
   out.procCards = await p.locator('.dc[data-type="processing"]').count();
   out.oldProc = await p.locator('.dc[data-type="grinding"], .dc[data-type="sun_drying"]').count();
   await drag('.dc[data-type="processing"]', 3, 18);
-  // The popup picks the process: Grinding.
-  await p.click('#cardPop [data-set="activityId"][data-val="grinding"]'); await p.waitForTimeout(300);
+  // The popup picks the station; its actions are Start drying, Collect drying, Grind.
   out.procPop = await p.locator('#cardPop h3').textContent();
+  out.procActs = await p.locator('#cardPop .sub').textContent();
+  out.procStations = await p.locator('#cardPop [data-set="locationId"]').allTextContents();
+  await p.waitForTimeout(250);
   await p.screenshot({ path: `${SP}/m2-pop-process.png` });
   await p.keyboard.press('Escape'); await p.waitForTimeout(80);
   await cat('organization');
@@ -68,11 +70,11 @@ const { chromium } = require('playwright');
   out.locked = await p.evaluate(() => window.__gm.state.plan.locked);
   console.log('plan', JSON.stringify(out));
   console.log('errors', JSON.stringify(errs)); await b.close();
-  const want = ['open_shop@0:9', 'explore@1:6', 'craft@2:12', 'grinding@3:18'];
+  const want = ['open_shop@0:9', 'explore@1:6', 'craft@2:12', 'processing@3:18'];
   const ok = out.topBar.every(Boolean) && out.tiles === 4 && out.tileNames.join('|') === 'Production|Shop|Fieldwork|Guild / Organization'
     && /06:00.*03:00/.test(out.slotLabels) && /closed/i.test(out.sundayToast) && out.popAfterDrop === 1
     && /Wed 12:00/.test(out.target) && /Craft/.test(out.afterPick) && out.sleepCard === 0
-    && out.procCards === 1 && out.oldProc === 0 && /Grinding/.test(out.procPop) && out.orgCards.join() === 'appointment,commission,visit'
+    && out.procCards === 1 && out.oldProc === 0 && /Processing/.test(out.procPop) && /Start drying.*Collect drying.*Grind/.test(out.procActs) && out.procStations.length === 2 && out.orgCards.join() === 'appointment,commission,visit'
     && want.every((w) => out.cards.includes(w)) && out.cards.length === 4 && out.popups === 1 && out.beside && out.deckStill === 1
     && out.coin === 1 && out.shopBlock.some((n) => n < 7) && out.phase === 'Do' && out.locked;
   if (errs.length || !ok) process.exit(1);

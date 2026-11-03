@@ -153,14 +153,14 @@ export class Bot {
   #dryAndGrind() {
     const today = this.state.calendar.absDay();
     if (this.state.batches.some((b) => b.readyDay <= today) || this.#have('turmeric', 'fresh') >= 2) {
-      this.#go('sun_drying', 'loc_home_drying_yard');
+      this.#go('processing', 'loc_home_drying_yard');
       if (this.state.batches.some((b) => b.readyDay <= today)) this.#run('collect-batch');
       const spare = this.#have('turmeric', 'fresh');
       if (spare >= 2) this.#run('start-batch', { item: 'turmeric', qty: spare });
     }
     const dried = this.#have('turmeric', 'dried');
     if (dried) {
-      this.#go('grinding', 'loc_home_atelier');
+      this.#go('processing', 'loc_home_atelier');
       this.#run('grind', { item: 'turmeric', qty: dried });
     }
   }

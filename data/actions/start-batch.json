@@ -1,7 +1,10 @@
 {
   "id": "start-batch",
-  "name": "Start drying batch",
+  "name": "Start drying",
   "kind": "startBatch",
+  "locationIds": [
+    "loc_home_drying_yard"
+  ],
   "timeMin": 30,
   "energyKey": "ENERGY_COST_DEFAULT",
   "xp": {

@@ -1,12 +1,14 @@
 {
   "id": "rest",
-  "name": "Sleep",
+  "name": "Rest",
   "category": "rest",
   "locationIds": [
     "loc_home"
   ],
   "actionIds": [
     "travel",
+    "small-rest",
+    "eat",
     "sleep"
   ],
   "skillPath": null,
@@ -21,5 +23,6 @@
   "planDurationOptions": [
     180
   ],
-  "_planNote": "Not a plan card (user decision 2 Nov 2026): sleep happens in Do at the bed, from SLEEP_EARLIEST_HOUR. It ends the day."
+  "_planNote": "Not a plan card (user decision 2 Nov 2026): sleep happens in Do at the bed, from SLEEP_EARLIEST_HOUR. It ends the day.",
+  "_actionsNote": "docs activities/rest.md: Small rest, Eat meal, Sleep at the bed. Small rest and Eat also work anywhere (HUD buttons)."
 }

@@ -1,14 +1,16 @@
 {
-  "id": "sun_drying",
-  "name": "Sun drying",
+  "id": "processing",
+  "name": "Processing",
   "category": "production",
   "locationIds": [
+    "loc_home_atelier",
     "loc_home_drying_yard"
   ],
   "actionIds": [
     "travel",
     "start-batch",
-    "collect-batch"
+    "collect-batch",
+    "grind"
   ],
   "skillPath": "moon",
   "canMiss": true,
@@ -16,12 +18,10 @@
   "needsAppointment": false,
   "needsPermit": false,
   "build": "Jam",
-  "source": "docs:pages/activities/sun-drying.md",
+  "source": "docs:pages/do/production.md (Processing); user decision 2 Nov 2026: Grinding and Sun drying are actions of one Processing activity",
   "plannable": true,
   "planDurationMin": 180,
   "planDurationOptions": [
     180
-  ],
-  "planGroup": "processing",
-  "_planGroupNote": "Plan deck shows one Processing card; the popup picks Sun drying or Grinding (user, 2 Nov 2026)."
+  ]
 }

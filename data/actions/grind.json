@@ -2,6 +2,9 @@
   "id": "grind",
   "name": "Grind",
   "kind": "grind",
+  "locationIds": [
+    "loc_home_atelier"
+  ],
   "timeMin": 15,
   "energyKey": "ENERGY_COST_DEFAULT",
   "xp": {
