@@ -128,6 +128,7 @@ Result:
 
 - Review fix (2 Nov 2026, Prototype Iteration): day 06:00–03:00, midnight 00–03 gives fatigue, late wake +3 h. Sleep at the bed from 18:00 (no "End the day" button). HUD Eat (meal windows) and Small rest. Bot eats, rests until 18:00, then sleeps.
 - Review fix (2 Nov 2026, Prototype Iteration, batch 2): a click on the Home and shop building in the town opens one menu with Enter and the activities of the shop counter, cauldron and bed. Browser test `m3-interior` checks it.
+- Review fix (3 Nov 2026, Prototype Iteration, batch 3): one Processing activity (Start drying and Collect drying at the yard, Grind at the atelier; `actions/*.locationIds`). Rest at the bed has Small rest, Eat meal, Sleep. Home and shop menu: category first (Production, Shop, Personal), station tag. Browser tests `m2-plan`, `m3-interior`, `m3-do-week` updated.
 ---
 
 ## M4 Events and Check

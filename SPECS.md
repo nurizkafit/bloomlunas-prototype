@@ -14,7 +14,7 @@ Last aligned with the docs: 2 Nov 2026.
 
 | Feature | Prototype | Full scope (extension point only) |
 | --- | --- | --- |
-| Activities (doc:core-gameplay/core-loop/do) | Open shop, Sell to organization, Buy, Craft (Brew, Concoct), Sun drying, Grinding, Explore (City zone only), Commission, Organization visit (1 service), Rest, Respond to event | Explore outside the City zone (permit), Farm, Run machine, Oil pressing, Distilling, Infusing, Fermenting, Family time, Blend line |
+| Activities (doc:core-gameplay/core-loop/do) | Open shop, Visit (buy, sell), Craft (Brew, Concoct), Processing (Start drying, Collect drying, Grind), Exploration (City zone only), Commission, Appointment (1 service), Rest (Small rest, Eat meal, Sleep), Respond to event | Explore outside the City zone (permit), Farm, Run machine, Oil pressing, Distilling, Infusing, Fermenting, Family time, Blend line |
 | Products (doc:core-gameplay/content-lists/products-list) | Fresh jamu, Salep; 2 jam recipes each | 9 types, 2 to 4 recipes each |
 | Materials (doc:core-gameplay/content-lists/materials-list) | 9 Common: turmeric, kencur, ginger, lemongrass, tamarind, palm sugar, rice, coconut oil, beeswax | 32 materials, 4 rarity tiers |
 | Entities | Home (shop, atelier, drying yard), Market, 4 guilds (Merchant, Apothecary, Artisan/Smith, Adventurer) for buy, sell, quest board; gathering area | City Hall, Eagle Brigade, extended family, community, full guild services |
@@ -54,6 +54,7 @@ PlanPhase -> DoPhase (<-> event card) -> CheckPhase -> [last week of month?]
 ## 4. Activities and actions
 
 Two levels (doc:core-gameplay/core-loop/do: activities are pages, actions are sections of those pages; doc:core-gameplay/system-and-mechanics/activity-and-action):
+- User decision (2 Nov 2026): Sun drying and Grinding are actions, not activities. The activity is Processing. An action can be tied to one location of a multi-location activity (`actions/*.locationIds`); the runner refuses it elsewhere.
 - An **activity** is a card on the Plan calendar. It has a location, a category, a skill path and a list of actions.
 - An **action** is one turn inside an activity. It uses time (`ACTION_TIME_<ACTION>`) and energy (`ENERGY_COST_<ACTION>`). The player picks each action.
 
@@ -62,12 +63,11 @@ Two levels (doc:core-gameplay/core-loop/do: activities are pages, actions are se
 | Open shop | Home shop | travel, serve-customer, restock-shelf | Sun |
 | Visit | Market or a guild | travel, buy-item, sell-item | Sun |
 | Craft | Home atelier | travel, prepare, brew, concoct, package | Moon (Cooking, Alchemy) |
-| Sun drying | Home drying yard | travel, start-batch, collect-batch (passive, days, needs sun) | Moon (Cooking) [Proposal] |
-| Grinding | Home atelier | travel, grind | Moon (Crafting) [Proposal] |
+| Processing | Home drying yard and Home atelier | travel, start-batch "Start drying" and collect-batch "Collect drying" (yard only; passive, days, needs sun), grind (atelier only) | Moon (Cooking for drying, Crafting for grind) [Proposal] |
 | Explore (City zone) | Gathering area | travel, gather-harvest, pick-response | Earth |
 | Commission | Guild quest board, then job location | travel, take-quest, hand-in-quest | Path of the job |
 | Appointment | Guild (1 service visit) | travel, service | Depends |
-| Rest | Home | travel, sleep (ends the day) | None |
+| Rest | Home (bed) | travel, small-rest, eat ("Eat meal"), sleep (ends the day). Small rest and Eat also work anywhere (HUD). | None |
 | Respond to event | Where the event is | pick-response | Depends |
 
 ## 5. Do rules (doc:core-gameplay/core-loop/do, doc:core-gameplay/system-and-mechanics/time-and-energy, doc:core-gameplay/system-and-mechanics/activity-and-action/activity-card)
@@ -226,14 +226,14 @@ Plan rules (user decision, 2 Nov 2026):
 - Work in 00–03 is a warning (midnight). Sleep is not a card.
 - Deck (user decision, 2 Nov 2026): the side panel is only the card stock. Category tiles first, then the cards of one tile. Drag a card onto a slot, or click a free slot and then pick a card.
   - Tiles: Production (Craft, Processing), Shop (Open shop), Fieldwork (Exploration), Guild / Organization (Visit, Appointment, Commission). No Personal tile: sleep, meals and small rests are only in Do.
-  - Processing is one deck card for the activities with `planGroup: "processing"` (Sun drying, Grinding). The popup picks the process.
+  - Processing is one activity and one card. Its popup picks the station (Home atelier for Grind, Home drying yard for drying).
   - Popup: when a card is dropped (or placed in a picked slot), a popup opens beside it. It holds the settings (process, organization or place, recipe, length), info, issues, Remove and Done. Click a placed card to open it again. Esc or a click outside closes it.
 - Ledger: "Gold with no job" uses the same big coin look as the Assets page.
 - Town tab: opening hours show as blocks per location. Days next to each other with the same hours merge into one block (example: Mon–Sat 8:00–15:00). Closed days are hatched.
 - Top bar: Gold, Debt, next payment (`DEBT_MIN_PAYMENT` + `MONTHLY_UTILITIES`, month end), weekly living cost, gold after the plan (end of week forecast), energy.
 - Sleep, meals and small rests are not cards. They happen in Do (the bed; HUD buttons).
 
-Card renames: Buy + Sell to organization → Visit (Guild / Organization); Organization visit → Appointment; Explore → Exploration (category Fieldwork); Open shop category → Shop. Earlier: Sell → Open shop; Craft → Craft (recipe picks Brew or Concoct); Gather → Explore (City zone); Errand (clinic order) → Organization visit (service); Errand (quest board) → Commission. Add Sell to organization, Sun drying, Grinding. Jamu → Fresh jamu. Recipes and materials from §6, not from the Planner Book.
+Card renames: Buy + Sell to organization → Visit (Guild / Organization); Organization visit → Appointment; Explore → Exploration (category Fieldwork); Open shop category → Shop. Earlier: Sell → Open shop; Craft → Craft (recipe picks Brew or Concoct); Gather → Explore (City zone); Errand (clinic order) → Organization visit (service); Errand (quest board) → Commission. Add Sell to organization, Sun drying, Grinding (now Processing actions). Jamu → Fresh jamu. Recipes and materials from §6, not from the Planner Book.
 
 ## 11. Town scene and asset slots
 
@@ -243,10 +243,10 @@ Card renames: Buy + Sell to organization → Visit (Guild / Organization); Organ
 - Interior view (user decision, 2 Nov 2026): only the home and shop has an interior. Other buildings open a menu only.
   - The town shows one "Home and shop" building. Home (bed) and atelier (cauldron) are stations inside it (`building: loc_home_shop`). The drying yard stays outside.
   - The view goes inside when the avatar walks through the door. "Exit to town" goes back. Exit is view only: no game time, the player location stays.
-  - Building menu (user decision, 2 Nov 2026): a click on the "Home and shop" building in the town opens one menu. It has an Enter button (only when the player is in the building; view only, 0 min) and the activities of each station (Shop counter, Cauldron, Bed). Picking an activity there walks to that station.
+  - Building menu (user decision, 2 Nov 2026): a click on the "Home and shop" building in the town opens one menu. It has an Enter button (only when the player is in the building; view only, 0 min) and the activities. Update (user decision, 3 Nov 2026): category first, station tag. Groups: Production (Craft · Cauldron; Processing · Cauldron + Drying yard), Shop (Open shop · Shop counter), Personal (Rest · Bed). Picking an activity there walks to its first station in the building.
   - Do starts inside (the player wakes at home). After "End the day", the view goes inside again.
   - Camera: cutaway isometric room. Back walls stay, front walls are hidden (low rim). Warm lamp; the window follows the time of day.
-  - Stations: cauldron (craft, grinding: loc_home_atelier), shop counter (open shop: loc_home_shop; customers walk in when you serve), shelf (stock panel, view only), bed (rest: loc_home).
+  - Stations: cauldron (craft, processing grind: loc_home_atelier), shop counter (open shop: loc_home_shop; customers walk in when you serve), shelf (stock panel, view only), bed (rest: loc_home).
   - Moving between stations costs 0 min (`_walk.withinBuilding`). Inside the building, only actions use time.
 - `AssetSlot` shows a greybox; if `assets/models/<slot id>.glb` exists, it loads that model. States = named child nodes or material swap.
 
