@@ -56,6 +56,10 @@ export class ActionRunner {
     if (!isTravel && activity.locationIds.length && !activity.locationIds.includes(p.location)) {
       return this.#refuse(actionId, `go to ${activity.locationIds.join(' or ')} first`);
     }
+    // An action can be tied to one station of a multi-location activity (Processing: grind at the atelier, drying at the yard).
+    if (!isTravel && action.locationIds?.length && !action.locationIds.includes(p.location)) {
+      return this.#refuse(actionId, `go to ${action.locationIds.join(' or ')} first`);
+    }
     const energy = action.energyKey ? this.#c.num(action.energyKey) : 0;
     if (p.energy < energy) return this.#refuse(actionId, 'not enough energy: rest');
 

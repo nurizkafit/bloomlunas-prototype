@@ -49,6 +49,8 @@ const SP = process.argv[2];
   out.bMenu = await p.locator('.amenu:not(.stock) h3').textContent();
   out.bEnter = await p.locator('[data-enter]').count();
   out.bActs = await p.locator('.amenu [data-act]').evaluateAll((l) => l.map((x) => x.dataset.act));
+  out.bSecs = await p.locator('.amenu:not(.stock) .sec').allTextContents();
+  out.bTags = await p.locator('.amenu .stag').allTextContents();
   await p.screenshot({ path: `${SP}/m3-building-menu.png` });
   await p.click('[data-enter]'); await p.waitForTimeout(400);
   out.entered = await inside();
@@ -65,7 +67,8 @@ const SP = process.argv[2];
   await p.screenshot({ path: `${SP}/m3-interior-customer.png` });
   console.log('interior', JSON.stringify(out));
   console.log('errors', JSON.stringify(errs));
-  const ok = out.bMenu === 'Home and shop' && out.bEnter === 1 && ['open_shop', 'craft', 'grinding', 'rest'].every((x) => out.bActs.includes(x)) && out.entered === 'int_home_shop'
+  const ok = out.bMenu === 'Home and shop' && out.bEnter === 1 && out.bActs.join() === 'craft,processing,open_shop,rest' && out.bSecs.join() === 'Production,Shop,Personal'
+    && /Cauldron/.test(out.bTags[0]) && /Cauldron.*\+.*Drying yard/.test(out.bTags[1]) && /Shop counter/.test(out.bTags[2]) && /Bed/.test(out.bTags[3]) && out.entered === 'int_home_shop'
     && out.startInside === 'int_home_shop' && out.exitBar && /atelier/i.test(out.cauldronMenu) && /shop/i.test(out.counterMenu) && out.bedMenu === 'Home'
     && out.shelf && out.walkInsideMin === 0 && out.stillInside && out.afterExit === null && out.walkedIn === 'int_home_shop' && out.customer
     && /Eat breakfast/.test(out.eatLabel) && /Ate breakfast: \+20 energy/.test(out.eatLog) && out.eatAgain && /Small rest: \+25 energy/.test(out.napLog) && out.endDayBtn === 0;

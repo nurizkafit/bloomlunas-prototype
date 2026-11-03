@@ -38,6 +38,7 @@
   background: var(--paper-3); color: var(--ink); font: inherit; cursor: pointer; box-shadow: 0 1px 0 #0003; }
 .arow:hover { background: #fffdf6; }
 .arow span { display: flex; flex-direction: column; } .arow small { font-size: 11px; color: var(--ink-2); }
+.arow small.stag { display: flex; gap: 4px; align-items: center; color: var(--ink-3); font-size: 10.5px; letter-spacing: .02em; } .arow small.stag svg { width: 11px; height: 11px; }
 .aform { padding: 8px; border-radius: 6px; background: var(--paper-2); margin-bottom: 6px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 .aform .ah { width: 100%; display: flex; justify-content: space-between; align-items: baseline; }
 .aform .ah small { font-size: 11px; color: var(--ink-3); }

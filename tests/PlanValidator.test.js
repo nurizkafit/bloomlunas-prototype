@@ -46,10 +46,10 @@ describe('PlanValidator', () => {
 
   it('night slots 18-24 are fine; 00-03 midnight is a warning; past 03:00 is a problem; sleep is not a card', () => {
     const { gm, v } = inPlan();
-    const craft = { activityId: 'grinding', durationMin: 180 };
+    const craft = { activityId: 'processing', durationMin: 180 };
     expect(v.slotCheck(craft, 2, 21 * 60).lvl).toBe('ok');
     expect(v.slotCheck(craft, 2, 24 * 60).lvl).toBe('warn');
-    expect(v.slotCheck({ activityId: 'grinding', durationMin: 360 }, 2, 24 * 60).lvl).toBe('bad');
+    expect(v.slotCheck({ activityId: 'processing', durationMin: 360 }, 2, 24 * 60).lvl).toBe('bad');
     expect(gm.content.get('activities', 'rest').plannable).toBe(false);
   });
 
@@ -78,11 +78,11 @@ describe('PlanValidator', () => {
 
   it('remove and lock', () => {
     const { gm, place } = inPlan();
-    place({ activityId: 'grinding', day: 0, startMin: 18 * 60 });
+    place({ activityId: 'processing', day: 0, startMin: 18 * 60 });
     gm.bus.emit(MSG.INTENT_REMOVE_CARD, { uid: gm.state.plan.cards[0].uid });
     expect(gm.state.plan.cards.length).toBe(0);
     gm.bus.emit(MSG.INTENT_LOCK_PLAN);
-    place({ activityId: 'grinding', day: 0, startMin: 18 * 60 });
+    place({ activityId: 'processing', day: 0, startMin: 18 * 60 });
     expect(gm.state.plan.cards.length).toBe(0);
   });
 });

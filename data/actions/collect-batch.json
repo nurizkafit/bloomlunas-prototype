@@ -1,7 +1,10 @@
 {
   "id": "collect-batch",
-  "name": "Collect drying batch",
+  "name": "Collect drying",
   "kind": "collectBatch",
+  "locationIds": [
+    "loc_home_drying_yard"
+  ],
   "timeMin": 15,
   "energyKey": "ENERGY_COST_DEFAULT",
   "xp": {

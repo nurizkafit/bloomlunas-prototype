@@ -36,7 +36,7 @@ const SP = process.argv[2];
   await p.screenshot({ path: SP + '/m3-craft.png' });
   await p.click('[data-make]'); console.log('Mon', await log());
   await act('loc_home_shop', 'open_shop'); await run('serve-customer'); await run('serve-customer'); console.log('Mon', await log());
-  await act('loc_home_drying_yard', 'sun_drying'); await run('start-batch', { qty: 2 }); console.log('Mon', await log());
+  await act('loc_home_drying_yard', 'processing'); await run('start-batch', { qty: 2 }); console.log('Mon', await log());
   await p.screenshot({ path: SP + '/m3-town.png' });
   await sleepNow();
   // Tue
@@ -47,8 +47,8 @@ const SP = process.argv[2];
   await act('loc_apothecary_guild', 'appointment'); await run('service'); console.log('Tue', await log());
   await sleepNow();
   // Wed: collect, grind
-  await act('loc_home_drying_yard', 'sun_drying'); await run('collect-batch'); console.log('Wed', await log());
-  await act('loc_home_atelier', 'grinding'); await run('grind', { qty: 2 }); console.log('Wed', await log());
+  await act('loc_home_drying_yard', 'processing'); await run('collect-batch'); console.log('Wed', await log());
+  await act('loc_home_atelier', 'processing'); await run('grind', { qty: 2 }); console.log('Wed', await log());
   await act('loc_home', 'rest'); used.add('rest'); await run('sleep');
   // Change plan in Do: open book, check started day is locked
   await answer(); await p.click('#hPlan'); await p.waitForTimeout(200);
@@ -61,5 +61,5 @@ const SP = process.argv[2];
   await p.click('#hCheck'); await p.waitForTimeout(150);
   console.log('phase after:', await p.textContent('#dev-phase'));
   console.log('errors', errs); await b.close();
-  if (errs.length || used.size < 9) process.exit(1); // visit = buy + sell (one activity)
+  if (errs.length || used.size < 8) process.exit(1); // visit = buy + sell; processing = drying + grinding
 })();

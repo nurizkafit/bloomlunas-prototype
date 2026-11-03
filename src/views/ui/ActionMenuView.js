@@ -45,21 +45,27 @@ export class ActionMenuView {
   /** The town building of a location. @param {string} id */
   #outer(id) { return this.c.get('locations', id).building ?? id; }
 
-  /** One menu for a whole building: Enter, then the activities per station. */
+  /** One menu for a whole building: Enter, then the activities by docs category, each with its station tag. */
   #renderBuilding() {
     const int = this.#interior(this.building), p = this.s.player, day = this.s.calendar.day;
     const inside = this.#outer(p.location) === this.building;
     const locs = [...new Set(int.stations.map((st) => st.locationId).filter(Boolean))];
-    const label = (id) => int.stations.find((st) => st.locationId === id)?.label ?? this.c.get('locations', id).name;
+    // Station tag: the station label inside, else the location name (the drying yard is outside).
+    const station = (id) => int.stations.find((st) => st.locationId === id)?.label ?? this.c.get('locations', id).name.replace(/^Home /, '').replace(/^./, (ch) => ch.toUpperCase());
     const hours = (id) => {
       const h = this.c.get('locations', id).openHours?.[day];
-      if (h === undefined) return '';
-      return h ? (h[0] === 0 && h[1] === 24 ? '' : ` · open ${h[0]}:00–${h[1]}:00`) : ` · closed on ${DAYS[day]}`;
+      if (h === undefined || (h && h[0] === 0 && h[1] === 24)) return '';
+      return h ? ` · open ${h[0]}:00–${h[1]}:00` : ` · closed on ${DAYS[day]}`;
     };
-    const groups = locs.map((id) => {
-      const acts = this.c.all('activities').filter((a) => a.locationIds.includes(id));
-      if (!acts.length) return '';
-      return `<div class="sec">${label(id)}${hours(id)}</div>${acts.map((a) => `<button class="arow" data-act="${a.id}" data-loc="${id}" style="--k:${colorFor(a)}">${ic(iconFor(a))}<span><b>${a.name}</b><small>${a.actionIds.filter((x) => x !== 'travel').map((x) => this.c.get('actions', x).name).join(' · ')}</small></span></button>`).join('')}`;
+    const acts = this.c.all('activities').filter((a) => a.locationIds.some((l) => locs.includes(l)));
+    const groups = BUILDING_CATS.map((k) => {
+      const list = acts.filter((a) => k.cats.includes(a.category));
+      if (!list.length) return '';
+      return `<div class="sec">${k.n}</div>${list.map((a) => {
+        const tag = a.locationIds.map((l) => station(l) + hours(l)).join(' + ');
+        const loc = a.locationIds.find((l) => locs.includes(l));
+        return `<button class="arow" data-act="${a.id}" data-loc="${loc}" style="--k:${colorFor(a)}">${ic(iconFor(a))}<span><b>${a.name}</b><small class="stag">${ic('flag')}${tag}</small><small>${a.actionIds.filter((x) => x !== 'travel').map((x) => this.c.get('actions', x).name).join(' · ')}</small></span></button>`;
+      }).join('')}`;
     }).join('');
     const walk = inside ? 0 : this.gm.ctx.sys.actions.walkMinutes(p.location, this.building);
     this.el.innerHTML = `<button class="x" data-close aria-label="Close">×</button>
@@ -84,7 +90,9 @@ export class ActionMenuView {
     const list = acts.map((a) => `<button class="arow${active?.id === a.id ? ' on' : ''}" data-act="${a.id}" style="--k:${colorFor(a)}">${ic(iconFor(a))}<span><b>${a.name}</b><small>${a.actionIds.filter((x) => x !== 'travel').map((x) => this.c.get('actions', x).name).join(' · ')}</small></span></button>`).join('');
     let body = `<div class="sec">Activities here</div>${list}`;
     if (!here) body += `<p class="hint">Walk time from ${this.c.get('locations', p.location).name}: ${this.gm.ctx.sys.actions.walkMinutes(p.location, this.locId)} min.</p>`;
-    if (active) body += `<div class="sec">${active.name} · actions</div>${active.actionIds.filter((x) => x !== 'travel').map((x) => this.#actionForm(this.c.get('actions', x))).join('')}`;
+    // Actions of the active activity at this place (an action can be tied to one station: actions/*.locationIds).
+    const here2 = (x) => { const ac = this.c.get('actions', x); return x !== 'travel' && (!ac.locationIds?.length || ac.locationIds.includes(this.locId)); };
+    if (active) body += `<div class="sec">${active.name} · actions</div>${active.actionIds.filter(here2).map((x) => this.#actionForm(this.c.get('actions', x))).join('')}`;
     this.el.innerHTML = `<button class="x" data-close aria-label="Close">×</button>
       <h3>${loc.name}</h3>
       <p class="sub">${h ? (h[0] === 0 && h[1] === 24 ? 'Open all day' : `Open ${DAYS[day]} ${h[0]}:00–${h[1]}:00`) : `Closed on ${DAYS[day]}`}${here ? ' · You are here' : ''}</p>
@@ -176,3 +184,10 @@ export class ActionMenuView {
     bus.emit(MSG.INTENT_RUN_ACTION, { actionId: run.dataset.run, params });
   }
 }
+
+/** Building menu groups (docs categories, user decision 3 Nov 2026: category first, station tag). */
+const BUILDING_CATS = [
+  { n: 'Production', cats: ['production'] },
+  { n: 'Shop', cats: ['shop'] },
+  { n: 'Personal', cats: ['rest'] }
+];

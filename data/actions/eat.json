@@ -1,6 +1,6 @@
 {
   "id": "eat",
-  "name": "Eat",
+  "name": "Eat meal",
   "kind": "meal",
   "timeMin": 30,
   "timeKey": "MEAL_MIN",

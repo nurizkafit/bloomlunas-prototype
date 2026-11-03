@@ -94,18 +94,19 @@ describe('ActionRunner', () => {
     expect(gm.ctx.sys.actions.startActivity('explore').bonus).toBe(0);
   });
 
-  it('sun drying then grinding makes dried, then powder', () => {
+  it('processing: start and collect drying at the yard, then grind at the atelier', () => {
     const gm = gameInDo();
     const inv = gm.state.inventory;
-    gm.ctx.sys.actions.startActivity('sun_drying');
+    gm.ctx.sys.actions.startActivity('processing');
     run(gm, 'travel', { to: 'loc_home_drying_yard' });
+    expect(run(gm, 'grind', { item: 'turmeric', qty: 1 }).ok).toBe(false); // grind is only at the atelier
     expect(run(gm, 'start-batch', { item: 'turmeric', qty: 4 }).ok).toBe(true);
     expect(run(gm, 'collect-batch').ok).toBe(false);
     gm.state.calendar.day += gm.content.num('SUN_DRYING_DAYS');
     gm.state.calendar.minute = 9 * 60;
     expect(run(gm, 'collect-batch').collected).toBe(4);
-    gm.ctx.sys.actions.startActivity('grinding');
     run(gm, 'travel', { to: 'loc_home_atelier' });
+    expect(run(gm, 'collect-batch').ok).toBe(false); // drying is only at the yard
     expect(run(gm, 'grind', { item: 'turmeric', qty: 4 }).minutes).toBe(60);
     expect(inv.count('turmeric', 'powder')).toBe(4);
   });
@@ -139,9 +140,9 @@ describe('DoPhase plan changes', () => {
     const { MSG } = await import('../src/core/EventBus.js');
     const gm = gameInDo();
     gm.state.calendar.day = 2;
-    gm.bus.emit(MSG.INTENT_PLACE_CARD, { activityId: 'grinding', day: 1, startMin: 18 * 60 });
+    gm.bus.emit(MSG.INTENT_PLACE_CARD, { activityId: 'processing', day: 1, startMin: 18 * 60 });
     expect(gm.state.plan.cards.length).toBe(0);
-    gm.bus.emit(MSG.INTENT_PLACE_CARD, { activityId: 'grinding', day: 3, startMin: 18 * 60 });
+    gm.bus.emit(MSG.INTENT_PLACE_CARD, { activityId: 'processing', day: 3, startMin: 18 * 60 });
     expect(gm.state.plan.cards.length).toBe(1);
     const uid = gm.state.plan.cards[0].uid;
     gm.bus.emit(MSG.INTENT_MOVE_CARD, { uid, day: 2 });
