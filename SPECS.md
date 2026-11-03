@@ -1,7 +1,7 @@
 # BloomLunas prototype specs
 
-Source of truth for game rules: the BloomLunas Docs repo `nurizkafit/bloomlunas-docs` (site: https://bloomlunas-docs.nurizka.workers.dev/, team password).
-Paths below like `docs:pages/products/salep.md` mean `content/pages/products/salep.md` in that repo.
+Source of truth for game rules: the BloomLunas Docs repo `nurizkafit/bloomlunas-docs` (site: https://bloomlunas-docs.nurizka.workers.dev/).
+Paths below like `doc:core-gameplay/core-loop/do` mean the GDD page https://bloomlunas-docs.nurizka.workers.dev/doc/core-gameplay/core-loop/do. The file is under `content/gdd/` in that repo, with number prefixes on the folder names (for example `content/gdd/03-core-gameplay/01-core-loop/02-do/index.md`). The Jam or Full build of each item is on its page (tag) and on the Mapping page (https://bloomlunas-docs.nurizka.workers.dev/map/, "Jam only").
 If this file and the docs differ, the docs win. Ask the user, then update this file.
 Last aligned with the docs: 2 Nov 2026.
 
@@ -10,16 +10,16 @@ Last aligned with the docs: 2 Nov 2026.
 - Plays one full PDCA month (`JAM_MONTHS` = 1). Plan, Do, Check each week; Act at month-end.
 - Readers: the Unity dev (logic structure) and the technical artist (scene, asset slots, states).
 - Balance testbed: logic runs headless with a bot; results export to CSV for the balancing sheet.
-- Scope follows the Jam column of `docs:gdd/19-scope-and-plans.md` and the pages tagged `Jam`.
+- Scope follows the Jam column of `doc:development-and-future-plans/scope-and-plans` and the pages tagged `Jam`.
 
 | Feature | Prototype | Full scope (extension point only) |
 | --- | --- | --- |
-| Activities (docs:pages/activities) | Open shop, Sell to organization, Buy, Craft (Brew, Concoct), Sun drying, Grinding, Explore (City zone only), Commission, Organization visit (1 service), Rest, Respond to event | Explore outside the City zone (permit), Farm, Run machine, Oil pressing, Distilling, Infusing, Fermenting, Family time, Blend line |
-| Products (docs:gdd/09a) | Fresh jamu, Salep; 2 jam recipes each | 9 types, 2 to 4 recipes each |
-| Materials (docs:gdd/09b) | 9 Common: turmeric, kencur, ginger, lemongrass, tamarind, palm sugar, rice, coconut oil, beeswax | 32 materials, 4 rarity tiers |
+| Activities (doc:core-gameplay/core-loop/do) | Open shop, Sell to organization, Buy, Craft (Brew, Concoct), Sun drying, Grinding, Explore (City zone only), Commission, Organization visit (1 service), Rest, Respond to event | Explore outside the City zone (permit), Farm, Run machine, Oil pressing, Distilling, Infusing, Fermenting, Family time, Blend line |
+| Products (doc:core-gameplay/content-lists/products-list) | Fresh jamu, Salep; 2 jam recipes each | 9 types, 2 to 4 recipes each |
+| Materials (doc:core-gameplay/content-lists/materials-list) | 9 Common: turmeric, kencur, ginger, lemongrass, tamarind, palm sugar, rice, coconut oil, beeswax | 32 materials, 4 rarity tiers |
 | Entities | Home (shop, atelier, drying yard), Market, 4 guilds (Merchant, Apothecary, Artisan/Smith, Adventurer) for buy, sell, quest board; gathering area | City Hall, Eagle Brigade, extended family, community, full guild services |
 | Events | Scheduled + random, small set | Predicted, unexpected, level scaling |
-| Debt | Riba loan: compound interest + hidden fees (docs:pages/debt/riba-loan.md) | Flat-rate Sharia financing, refinancing, new loans |
+| Debt | Riba loan: compound interest + hidden fees (doc:core-gameplay/system-and-mechanics/debt/riba-loan) | Flat-rate Sharia financing, refinancing, new loans |
 | Act | Pay debt, pay utilities, 1 investment (Upgrade), book 1 service appointment | Permit, Training |
 | Costs | `WEEKLY_EXPENSES` (Check), `MONTHLY_UTILITIES` (Act) | All costs |
 | Skills | XP through use; Moon skill level drives craft quality | Sun, Moon, Earth paths; training |
@@ -35,7 +35,7 @@ Logic --reads/writes--> Model (GameState)        Logic --reads--> Data (ContentD
 View --reads only--> Model
 ```
 
-## 3. Phase machine (docs:gdd/06-core-loop.md, docs:pages/loop/)
+## 3. Phase machine (doc:core-gameplay/core-loop and its pages Plan, Do, Check, Act)
 
 ```
 PlanPhase -> DoPhase (<-> event card) -> CheckPhase -> [last week of month?]
@@ -53,7 +53,7 @@ PlanPhase -> DoPhase (<-> event card) -> CheckPhase -> [last week of month?]
 
 ## 4. Activities and actions
 
-Two levels (docs:pages/activities, docs:pages/actions):
+Two levels (doc:core-gameplay/core-loop/do: activities are pages, actions are sections of those pages; doc:core-gameplay/system-and-mechanics/activity-and-action):
 - An **activity** is a card on the Plan calendar. It has a location, a category, a skill path and a list of actions.
 - An **action** is one turn inside an activity. It uses time (`ACTION_TIME_<ACTION>`) and energy (`ENERGY_COST_<ACTION>`). The player picks each action.
 
@@ -70,7 +70,7 @@ Two levels (docs:pages/activities, docs:pages/actions):
 | Rest | Home | travel, sleep (ends the day) | None |
 | Respond to event | Where the event is | pick-response | Depends |
 
-## 5. Do rules (docs:pages/loop/do.md, docs:pages/systems/time-and-energy.md, docs:pages/systems/activity-cards.md)
+## 5. Do rules (doc:core-gameplay/core-loop/do, doc:core-gameplay/system-and-mechanics/time-and-energy, doc:core-gameplay/system-and-mechanics/activity-and-action/activity-card)
 
 - The player starts each activity on purpose. The avatar walks there on its own. The avatar never runs planned cards on its own.
 - Every action is a turn. Idle time does not move the clock.
@@ -90,7 +90,7 @@ Two levels (docs:pages/activities, docs:pages/actions):
 - Buy and sell at a guild only in its opening hours (`<ENTITY>_OPEN_HOURS`). Market and shop need no appointment.
 - Commission has a deadline (`QUEST_DEADLINE_DAYS`).
 
-## 6. Production, quality and shelf life (docs:pages/systems/production.md, docs:pages/systems/materials.md)
+## 6. Production, quality and shelf life (doc:core-gameplay/system-and-mechanics/production, doc:core-gameplay/system-and-mechanics/materials)
 
 Recipe slots: main herb (weight x3), aroma (x1), sweetener (x1), carrier (x1). "-" = empty slot. Water is free.
 
@@ -147,7 +147,7 @@ Shelf life lengths in days: TBD in the docs (placeholder §9).
 
 | Type | Main fields | Prototype files |
 | --- | --- | --- |
-| BalanceConfig | all variables (§9), names as in docs:gdd/08-economy-and-variables.md | 1 |
+| BalanceConfig | all variables (§9), names as in doc:core-gameplay/economy-and-variables | 1 |
 | ActivityData | id, category, locationIds, actionIds[], skillPath, canMiss, importance, needsAppointment, needsPermit, build, plannable, planDurationMin, planDurationOptions (whole slots), planEarliestHour? | 11 |
 | ActionData | id, timeCost, energyCost, inputs, outputs, effects[], anyActivity? (small rest, eat) | about 20 |
 | LocationData | id, entityId, openHours per weekday, view (exterior, interior), assetSlotId, door point, walkTimes, polyforkAssetId?, building? (station inside that building: no town position) | 9 |
@@ -288,7 +288,7 @@ New activities, actions, products, recipes, materials, events, investments, skil
 
 ## 14. Open questions
 
-- Real values for all TBD variables (docs:gdd/08-economy-and-variables.md). The prototype uses §9 until then.
+- Real values for all TBD variables (doc:core-gameplay/economy-and-variables). The prototype uses §9 until then.
 - Recipe amounts and craft times (docs say TBD).
 - Flat-rate Sharia financing in the jam build: TBD in the docs.
 - Balancing sheet link (for the CSV import).
