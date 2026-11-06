@@ -16,7 +16,7 @@ Read these first:
   2. Set the milestone status to `Review` in `MILESTONES.md`. Fill its "Result" lines.
   3. Commit. Then stop and give the user a short report: what works, how to see it, open issues.
 - Only the user sets a milestone to `Done` and the next one to `Approved`.
-- User override (2 Nov 2026): run M2 to M5 in one go, with no stop for approval between them. Each milestone still runs its test loop (`npm run check` + its exit criteria). After each milestone passes: commit, merge to `main`, and push both the milestone branch and `main` (revert points). Stop after M5 and report.
+- User override (2 Nov 2026): run M2 to M5 in one go, with no stop for approval between them. Each milestone still runs its test loop (`npm run check` + its exit criteria). After each milestone passes: commit and push to `main`. Stop after M5 and report.
 - If a task needs a design decision that `SPECS.md` does not answer, check the BloomLunas Docs repo (`nurizkafit/bloomlunas-docs`, the source of truth). If the docs do not answer it either, stop and ask. Do not invent game rules.
 
 ## Architecture rules
@@ -65,6 +65,7 @@ tests/         *.test.js (Vitest, logic only)
 - Placeholder numbers come from `SPECS.md` section 9. Mark a new placeholder with `"_placeholder": true` in its JSON.
 - Docs and UI text: short sentences, simple words (ASD-STE100 style).
 - Commit after each completed task, with a clear message. Push after each completed milestone (user rule, 2 Nov 2026).
+- One branch only (user rule, 6 Nov 2026): work, commit and push on `main`. Do not create milestone or feature branches. Revert to an old state with the commit history (`git log`), not with branches.
 
 ## Skills, plugins and tools
 
