@@ -11,5 +11,7 @@
   },
   "source": "docs:pages/actions/restock-shelf.md",
   "_placeholder": true,
-  "_flow": "Scene & Flow (7 Nov 2026) [Proposal]"
+  "_flow": "Scene & Flow (7 Nov 2026) [Proposal]",
+  "ignoreHours": true,
+  "_hours": "Shelf stocking works when the store is closed (prepare before opening). User bug report 7 Nov 2026."
 }

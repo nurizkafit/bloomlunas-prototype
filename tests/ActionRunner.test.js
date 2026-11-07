@@ -197,6 +197,10 @@ describe('Shelf slots, Open store and one-menu Crafting (Scene & Flow, [Proposal
     const a = gm.ctx.sys.actions, eco = gm.ctx.sys.economy, s = gm.state;
     a.startActivity('open_shop');
     a.runAction('travel', { to: 'loc_home_shop' });
+    s.calendar.minute = 6 * 60 + 30; // before the store opens: stocking works, opening does not
+    expect(a.runAction('restock-shelf', { slot: 0, item: 'fresh_jamu', qty: 1, ratio: 1 }).ok).toBe(true);
+    expect(a.runAction('open-store').ok).toBe(false);
+    a.runAction('restock-shelf', { slot: 0, item: 'fresh_jamu', qty: 0, ratio: 1 });
     s.calendar.minute = 9 * 60;
     expect(eco.slots().length).toBe(gm.content.num('SHELF_SLOTS'));
     expect(a.runAction('serve-customer').ok).toBe(false); // open the store first

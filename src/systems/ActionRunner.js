@@ -70,7 +70,7 @@ export class ActionRunner {
 
     const minutes = isSleep ? 0 : this.ctx.sys.time.effectiveMinutes(prep.minutes);
     if (!isTravel && !isSleep && !this.ctx.sys.time.fits(minutes)) return this.#refuse(actionId, 'too late: the night limit is near');
-    if (!isTravel && !isSleep && !this.#isOpen(p.location, minutes)) return this.#refuse(actionId, `${p.location} is closed`);
+    if (!isTravel && !isSleep && !action.ignoreHours && !this.#isOpen(p.location, minutes)) return this.#refuse(actionId, `${p.location} is closed`);
 
     const result = prep.apply();
     if (!isSleep) {

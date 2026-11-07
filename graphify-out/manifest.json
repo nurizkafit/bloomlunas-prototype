@@ -6,9 +6,9 @@
     "semantic_hash": ""
   },
   "data/BalanceConfig.json": {
-    "mtime": 1794043122.7349093,
-    "seen": 1794044320.1248624,
-    "ast_hash": "f7dc6cfd4443ccf91c105be20fb4a8e6",
+    "mtime": 1794049291.6124377,
+    "seen": 1794057829.4274063,
+    "ast_hash": "3f088bf649f3d3608317da08b9950501",
     "semantic_hash": ""
   },
   "data/QualityConfig.json": {
@@ -30,9 +30,9 @@
     "semantic_hash": ""
   },
   "data/actions/collect-batch.json": {
-    "mtime": 1793697857.787712,
-    "seen": 1793697888.662339,
-    "ast_hash": "fc2b669ed1eb022f90a7de2dfb9d9a72",
+    "mtime": 1794049146.0762548,
+    "seen": 1794057829.427421,
+    "ast_hash": "3163ebf83ac84490f6c6b4fbc2d86e5e",
     "semantic_hash": ""
   },
   "data/actions/concoct.json": {
@@ -54,9 +54,9 @@
     "semantic_hash": ""
   },
   "data/actions/grind.json": {
-    "mtime": 1793697857.787712,
-    "seen": 1793697888.6623452,
-    "ast_hash": "3d02c5f7cc7289a787abe69c159204e3",
+    "mtime": 1794049146.15772,
+    "seen": 1794057829.4274292,
+    "ast_hash": "2573345a744596a41bb8afcba00d3c46",
     "semantic_hash": ""
   },
   "data/actions/hand-in-quest.json": {
@@ -84,9 +84,9 @@
     "semantic_hash": ""
   },
   "data/actions/restock-shelf.json": {
-    "mtime": 1794043122.7352328,
-    "seen": 1794044320.1248877,
-    "ast_hash": "72adede4f7bbd5b993c9584d22c1cbf3",
+    "mtime": 1794057814.2641199,
+    "seen": 1794057829.427438,
+    "ast_hash": "896186eb0cd5955784e9b90575430a8b",
     "semantic_hash": ""
   },
   "data/actions/sell-item.json": {
@@ -96,9 +96,9 @@
     "semantic_hash": ""
   },
   "data/actions/serve-customer.json": {
-    "mtime": 1793612904.1017323,
-    "seen": 1793634402.0065632,
-    "ast_hash": "7aa0754219ca2831acf9e2be253f7b9e",
+    "mtime": 1794049238.7921247,
+    "seen": 1794057829.427441,
+    "ast_hash": "cb19614cf4ba7853c7249335de954ea4",
     "semantic_hash": ""
   },
   "data/actions/service.json": {
@@ -120,9 +120,9 @@
     "semantic_hash": ""
   },
   "data/actions/start-batch.json": {
-    "mtime": 1793697857.787712,
-    "seen": 1793697888.6623573,
-    "ast_hash": "7ad550685d6375da6b242645580af9a9",
+    "mtime": 1794049146.076839,
+    "seen": 1794057829.4274464,
+    "ast_hash": "75af4cfa4f0ab8e6c364955bb4e143aa",
     "semantic_hash": ""
   },
   "data/actions/take-quest.json": {
@@ -162,9 +162,9 @@
     "semantic_hash": ""
   },
   "data/activities/open_shop.json": {
-    "mtime": 1793634355.0257442,
-    "seen": 1793634402.0066679,
-    "ast_hash": "41bd2a7c0af8b7630a2331d023e1c0f8",
+    "mtime": 1794049238.7927382,
+    "seen": 1794057829.427457,
+    "ast_hash": "ec4f926dfa5c02011f8b20b0e0963ccc",
     "semantic_hash": ""
   },
   "data/activities/respond_to_event.json": {
@@ -282,9 +282,9 @@
     "semantic_hash": ""
   },
   "data/interiors/int_home_shop.json": {
-    "mtime": 1793621308.664606,
-    "seen": 1793634402.0067415,
-    "ast_hash": "74612daa59c57b6071f242efa987d709",
+    "mtime": 1794049146.158054,
+    "seen": 1794057829.4274871,
+    "ast_hash": "adfe800ee8d7bb412bf1c8b52d7e28da",
     "semantic_hash": ""
   },
   "data/investments/shop_shelf.json": {
@@ -360,15 +360,15 @@
     "semantic_hash": ""
   },
   "data/locations/_paths.json": {
-    "mtime": 1793621308.6650376,
-    "seen": 1793634402.006778,
-    "ast_hash": "0f0f21bd5692806a7455bdf9238c3329",
+    "mtime": 1794049146.157563,
+    "seen": 1794057829.427503,
+    "ast_hash": "4099b835ea3f0fcf4b1c7802e38eb5d5",
     "semantic_hash": ""
   },
   "data/locations/_walk.json": {
-    "mtime": 1793621308.6650376,
-    "seen": 1793634402.0067804,
-    "ast_hash": "c65eaca3c9010ac95cc714517771f048",
+    "mtime": 1794049146.1573396,
+    "seen": 1794057829.4275043,
+    "ast_hash": "c6cc0ccfaa98ae7f5e368b4892c14d51",
     "semantic_hash": ""
   },
   "data/locations/loc_adventurer_guild.json": {
@@ -405,12 +405,6 @@
     "mtime": 1793621308.6650376,
     "seen": 1793634402.0067983,
     "ast_hash": "70caf98eaafb7a01885b6b7aa348e6ca",
-    "semantic_hash": ""
-  },
-  "data/locations/loc_home_drying_yard.json": {
-    "mtime": 1793613866.8155527,
-    "seen": 1793634402.0068011,
-    "ast_hash": "7151eb1e253eb23da5b22b4e82adfee8",
     "semantic_hash": ""
   },
   "data/locations/loc_home_shop.json": {
@@ -522,9 +516,9 @@
     "semantic_hash": ""
   },
   "src/main.js": {
-    "mtime": 1794043512.6779985,
-    "seen": 1794044320.125021,
-    "ast_hash": "aac1cb52acbc85ae892ffff5099f0aed",
+    "mtime": 1794049486.1587703,
+    "seen": 1794057829.427541,
+    "ast_hash": "d3715403965cecfc5978d4f47b1a4adf",
     "semantic_hash": ""
   },
   "src/model/Calendar.js": {
@@ -546,9 +540,9 @@
     "semantic_hash": ""
   },
   "src/model/Inventory.js": {
-    "mtime": 1794043122.7532008,
-    "seen": 1794044320.1250265,
-    "ast_hash": "791e4f11e0e8c8b92c6eb4dcc219df6a",
+    "mtime": 1794049291.6130326,
+    "seen": 1794057829.4275463,
+    "ast_hash": "c50d33fd65f84aa5284c62fd9007e1fe",
     "semantic_hash": ""
   },
   "src/model/Ledger.js": {
@@ -618,9 +612,9 @@
     "semantic_hash": ""
   },
   "src/sim/Bot.js": {
-    "mtime": 1794043168.7416084,
-    "seen": 1794044320.1250424,
-    "ast_hash": "0815486b9e5fe3864cac8ee34963b44c",
+    "mtime": 1794049324.6617088,
+    "seen": 1794057829.4275613,
+    "ast_hash": "33244441b6d3e1a3b6d1d1ea3ad5b8ec",
     "semantic_hash": ""
   },
   "src/sim/Testbed.js": {
@@ -648,9 +642,9 @@
     "semantic_hash": ""
   },
   "src/systems/ActionRunner.js": {
-    "mtime": 1794043157.5229886,
-    "seen": 1794044320.1250494,
-    "ast_hash": "7a8a98a0d4a923b0cc7701eead8eace0",
+    "mtime": 1794057814.265339,
+    "seen": 1794057829.427567,
+    "ast_hash": "2281efa154fbbff0b7ed9595d47f07c9",
     "semantic_hash": ""
   },
   "src/systems/DebtSystem.js": {
@@ -660,9 +654,9 @@
     "semantic_hash": ""
   },
   "src/systems/EconomySystem.js": {
-    "mtime": 1794043150.8708305,
-    "seen": 1794044320.1250522,
-    "ast_hash": "649c98d32a870f066c91272875ec59c6",
+    "mtime": 1794049272.9689066,
+    "seen": 1794057829.4275699,
+    "ast_hash": "99825703b7601b63adfd3cb08def762a",
     "semantic_hash": ""
   },
   "src/systems/EffectApplier.js": {
@@ -690,9 +684,9 @@
     "semantic_hash": ""
   },
   "src/systems/ProductionSystem.js": {
-    "mtime": 1793612904.10759,
-    "seen": 1793634402.0069282,
-    "ast_hash": "f7b8f76e7f2ff414244736d1f6a1bc3c",
+    "mtime": 1794049291.613279,
+    "seen": 1794057829.4275758,
+    "ast_hash": "1e407f2c3332f2c9727ef6c61f09a3d6",
     "semantic_hash": ""
   },
   "src/systems/QualityCalculator.js": {
@@ -708,9 +702,9 @@
     "semantic_hash": ""
   },
   "src/views/town/AssetSlot.js": {
-    "mtime": 1793621308.6650376,
-    "seen": 1793634402.006936,
-    "ast_hash": "a2b6f893e2b978e3c4bb56aa0dbab3e1",
+    "mtime": 1794049161.0175457,
+    "seen": 1794057829.4275796,
+    "ast_hash": "d36a2152676fdd2cc9a4e4bf67af7220",
     "semantic_hash": ""
   },
   "src/views/town/Avatar.js": {
@@ -732,9 +726,9 @@
     "semantic_hash": ""
   },
   "src/views/town/TownView.js": {
-    "mtime": 1793634355.0281177,
-    "seen": 1793634402.006947,
-    "ast_hash": "49df3b7b7acbab6afc3f72726ec85a91",
+    "mtime": 1794049157.4355893,
+    "seen": 1794057829.4275854,
+    "ast_hash": "eb8442fb4c72d99bb4a995a6a627d9f6",
     "semantic_hash": ""
   },
   "src/views/ui/ActionMenuView.js": {
@@ -798,9 +792,9 @@
     "semantic_hash": ""
   },
   "src/views/ui/icons.js": {
-    "mtime": 1793697857.792123,
-    "seen": 1793697888.6624992,
-    "ast_hash": "c0182da05c5f8273e3e806f6cea89200",
+    "mtime": 1794049354.531804,
+    "seen": 1794057829.427605,
+    "ast_hash": "2739320547d778d20e3a7a88a7d93c9a",
     "semantic_hash": ""
   },
   "tests/ActEndingSave.test.js": {
@@ -810,9 +804,9 @@
     "semantic_hash": ""
   },
   "tests/ActionRunner.test.js": {
-    "mtime": 1794043168.7433982,
-    "seen": 1794044320.125091,
-    "ast_hash": "95358925baed445a5436237f1238b849",
+    "mtime": 1794057814.2659101,
+    "seen": 1794057829.4276075,
+    "ast_hash": "ca861c7d78aa183c41950ee22671c7d9",
     "semantic_hash": ""
   },
   "tests/DebtSystem.test.js": {
@@ -828,9 +822,9 @@
     "semantic_hash": ""
   },
   "tests/EventSystem.test.js": {
-    "mtime": 1794043168.741963,
-    "seen": 1794044320.125095,
-    "ast_hash": "c86c466e819aa555bc5963fb6d8e525d",
+    "mtime": 1794049318.8329983,
+    "seen": 1794057829.427611,
+    "ast_hash": "4691ea4d49edfd0c20ac4f8424fbf95e",
     "semantic_hash": ""
   },
   "tests/PlanValidator.test.js": {
@@ -864,9 +858,9 @@
     "semantic_hash": ""
   },
   "tests/browser/m3-do-week.cjs": {
-    "mtime": 1794043579.5573988,
-    "seen": 1794044320.1251035,
-    "ast_hash": "b876875091e6ee98f30791e030c21226",
+    "mtime": 1794049515.0906215,
+    "seen": 1794057829.4276183,
+    "ast_hash": "684c366177938ec7e2b82fc6a3277a50",
     "semantic_hash": ""
   },
   "tests/browser/m3-glb.cjs": {
@@ -876,9 +870,9 @@
     "semantic_hash": ""
   },
   "tests/browser/m3-interior.cjs": {
-    "mtime": 1794043563.270009,
-    "seen": 1794044320.1251063,
-    "ast_hash": "5b33f1af2a09259974ab5de4772224d9",
+    "mtime": 1794050358.6626701,
+    "seen": 1794057829.427621,
+    "ast_hash": "564a7dfd42a25274de49a825a1eea2b9",
     "semantic_hash": ""
   },
   "tests/browser/m4-events-check.cjs": {
@@ -924,15 +918,15 @@
     "semantic_hash": ""
   },
   "MILESTONES.md": {
-    "mtime": 1794043959.3447227,
-    "seen": 1794044320.1251197,
-    "ast_hash": "f0eb139fb8cd04f5ee6b7b9866661c6b",
+    "mtime": 1794050464.8577223,
+    "seen": 1794057829.4276326,
+    "ast_hash": "efc969fa3a089f7871f1a8ce3e6e8edd",
     "semantic_hash": ""
   },
   "SPECS.md": {
-    "mtime": 1794043959.3442028,
-    "seen": 1794044320.125121,
-    "ast_hash": "c71c2ade0e2409faa254aec7a732366b",
+    "mtime": 1794050464.8569355,
+    "seen": 1794057829.4276338,
+    "ast_hash": "17013529bc5a932ca357a7755699679f",
     "semantic_hash": ""
   },
   "index.html": {
@@ -942,9 +936,9 @@
     "semantic_hash": ""
   },
   "data/activities/processing.json": {
-    "mtime": 1793697857.792123,
-    "seen": 1793697888.662366,
-    "ast_hash": "02d8c84fb316835439bee4ae0fe42529",
+    "mtime": 1794049318.8320274,
+    "seen": 1794057829.4274592,
+    "ast_hash": "82d7dab1b2d96d1cca8e755b5f3b64ef",
     "semantic_hash": ""
   },
   "data/story/premise.json": {
@@ -960,9 +954,9 @@
     "semantic_hash": ""
   },
   "src/views/ui/StationView.js": {
-    "mtime": 1794043740.0146556,
-    "seen": 1794044320.1250842,
-    "ast_hash": "6b21e7af66be83c564c71ed15364a1f6",
+    "mtime": 1794050445.3365614,
+    "seen": 1794057829.427601,
+    "ast_hash": "4347b4dfa81483dcf386bd1d24ed6720",
     "semantic_hash": ""
   },
   "src/views/ui/TownMapView.js": {
@@ -975,6 +969,30 @@
     "mtime": 1794043591.9904618,
     "seen": 1794044320.125113,
     "ast_hash": "67024755014d2659076757f75153ee45",
+    "semantic_hash": ""
+  },
+  "data/actions/close-store.json": {
+    "mtime": 1794049238.7922845,
+    "seen": 1794057829.4274187,
+    "ast_hash": "556f7c81df1d7859fa3868e562eeab00",
+    "semantic_hash": ""
+  },
+  "data/actions/open-store.json": {
+    "mtime": 1794049238.7922354,
+    "seen": 1794057829.4274313,
+    "ast_hash": "771d38f5b734b7513bd3f5f7a8ad46af",
+    "semantic_hash": ""
+  },
+  "data/locations/loc_home_drying_rack.json": {
+    "mtime": 1794049146.1557918,
+    "seen": 1794057829.427514,
+    "ast_hash": "421041124a5365e6b6a23658100be48d",
+    "semantic_hash": ""
+  },
+  "data/locations/loc_home_grinder.json": {
+    "mtime": 1794049146.1571896,
+    "seen": 1794057829.4275155,
+    "ast_hash": "bf1e24eba6fd13b1cf2d5b4290cc0fdf",
     "semantic_hash": ""
   },
   "package-lock.json": {
