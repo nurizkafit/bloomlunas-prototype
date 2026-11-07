@@ -124,13 +124,11 @@ export class JournalView {
         return h(`span.qchip${m.have >= m.need ? '.ok' : m.process ? '' : '.miss'}`, { title: `${it.name} (${m.variant}): need ${m.need}, have ${m.have}` },
           Dom.icon(Icons.forItem(it, m.variant), 18), `${m.have}/${m.need}`);
       }) : h('span.small.muted', '—')),
-      h('h4', Dom.icon('jar', 18), 'Budget jars', h('span.aside', Dom.icon('gold', 14), `${Math.round(st.gold)}`)),
+      h('h4', Dom.icon('jar', 18), 'Budget jars', h('span.aside', Dom.icon('gold', 14), `${Math.round(st.gold)}`,
+        h('span.qchip', { title: 'Gold after this plan (estimate)' }, Dom.icon('trend_flat', 14), `≈ ${f.goldAfter}`),
+        f.monthEnd ? h('span.qchip.miss', { title: 'Bills due at month end' }, Dom.icon('debt', 14), `${f.due}`) : null,
+        f.warnings.length ? h('span.qchip.miss', { title: f.warnings.map((w) => w.text).join('\n') }, Dom.icon('warn', 14), String(f.warnings.length)) : h('span.qchip.ok', Dom.icon('check', 14)))),
       h('div.jars', jar('store', 'cart', '#5FA39A', 'Store'), jar('personal', 'meal', '#D9A326', 'Personal'), jar('buffer', 'buffer', '#9C87C0', 'Buffer')),
-      h('div.row', { style: { marginTop: '16px', gap: '16px' } },
-        h('span.qchip', { title: 'Gold after this plan (estimate)' }, Dom.icon('gold', 18), `≈ ${f.goldAfter}`),
-        f.monthEnd ? h('span.qchip.miss', { title: 'Bills due at month end' }, Dom.icon('debt', 18), `${f.due}`) : null,
-        h('span.spacer'),
-        f.warnings.length ? h('span.qchip.miss', { title: f.warnings.map((w) => w.text).join('\n') }, Dom.icon('warn', 18), String(f.warnings.length)) : h('span.qchip.ok', Dom.icon('check', 18), 'OK'))
     ];
   }
 

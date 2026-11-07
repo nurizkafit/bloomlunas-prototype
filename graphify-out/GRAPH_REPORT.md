@@ -1,7 +1,7 @@
 # Graph Report - bloomlunas-prototype  (2026-11-07)
 
 ## Corpus Check
-- 134 files · ~34,896 words
+- 134 files · ~34,884 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 5 file(s) not represented in the graph (top: (none) 2, .css 1, .glb 1)
 
@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `0380f31b`
+- Built from commit: `35118b9c`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -51,19 +51,19 @@
 7. `GameManager` - 19 edges
 8. `PlaceView` - 18 edges
 9. `Bot` - 17 edges
-10. `SceneView` - 15 edges
+10. `JournalView` - 15 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `9. Class catalog (JS -> Unity)` --references--> `ContentDB`  [INFERRED]
-  SPECS.md → src/core/ContentDB.js
-- `9. Class catalog (JS -> Unity)` --references--> `EventBus`  [INFERRED]
-  SPECS.md → src/core/EventBus.js
+- `7. Views (DOM, `src/views/ui/`)` --references--> `JournalView`  [INFERRED]
+  SPECS.md → src/views/ui/JournalView.js
 - `9. Class catalog (JS -> Unity)` --references--> `GameManager`  [INFERRED]
   SPECS.md → src/core/GameManager.js
-- `9. Class catalog (JS -> Unity)` --references--> `SaveSystem`  [INFERRED]
-  SPECS.md → src/core/SaveSystem.js
-- `2. Architecture` --references--> `GameState`  [INFERRED]
-  SPECS.md → src/model/GameState.js
+- `9. Class catalog (JS -> Unity)` --references--> `EventBus`  [INFERRED]
+  SPECS.md → src/core/EventBus.js
+- `9. Class catalog (JS -> Unity)` --references--> `ContentDB`  [INFERRED]
+  SPECS.md → src/core/ContentDB.js
+- `9. Class catalog (JS -> Unity)` --references--> `EconomySystem`  [INFERRED]
+  SPECS.md → src/systems/EconomySystem.js
 
 ## Import Cycles
 - 2-file cycle: `src/views/ui/GrindView.js -> src/views/ui/PlaceView.js -> src/views/ui/GrindView.js`
