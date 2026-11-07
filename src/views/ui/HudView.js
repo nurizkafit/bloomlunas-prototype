@@ -2,6 +2,7 @@ import { MSG } from '../../core/EventBus.js';
 import { DAYS, hm } from '../../systems/PlanValidator.js';
 import { ic, iconFor, colorFor } from './icons.js';
 import './game.css';
+import './screens.css';
 
 /**
  * HudView: Do phase heads-up display. Day, clock, gold, energy, fatigue, current activity,
@@ -9,7 +10,7 @@ import './game.css';
  * Reads GameState; sends intents only. Unity: HUD canvas.
  */
 export class HudView {
-  /** @param {HTMLElement} root @param {import('../../core/GameManager.js').GameManager} gm @param {{openPlan:()=>void, openLocation:(id:string)=>void}} hooks */
+  /** @param {HTMLElement} root @param {import('../../core/GameManager.js').GameManager} gm @param {{openPlan:()=>void, openMap:()=>void, openLocation:(id:string)=>void}} hooks */
   constructor(root, gm, hooks) {
     this.gm = gm; this.s = gm.state; this.c = gm.content; this.hooks = hooks;
     this.el = document.createElement('div');
@@ -27,17 +28,19 @@ export class HudView {
         <div id="hFat"></div>
         <div class="rs"><span class="k">Activity</span><span class="v" id="hAct">–</span></div>
         <div class="spacer"></div>
-        <button class="tbtn" id="hPlan">${ic('scroll')}Change plan</button>
+        <button class="tbtn" id="hMap">${ic('flag')}Town map</button>
+        <button class="tbtn" id="hPlan" title="The Journal: plan, ledger, market, town, notes, skills, settings">${ic('scroll')}Journal</button>
         <button class="tbtn" id="hEat" title="Breakfast, lunch and dinner have set times. Food is paid by the weekly living cost.">${ic('bowl')}<span>Eat</span></button>
         <button class="tbtn" id="hNap" title="Rest a short time for energy. Sleep is at the bed, from the night.">${ic('leaf')}Small rest</button>
         <button class="go" id="hCheck" hidden>Week done · Go to Check</button>
       </header>
-      <aside class="hud-today"><h3>Today's plan</h3><div id="hCards"></div><p class="hint">Click a place in the town, or a card here, to act. Matching the plan gives bonus XP. Sleep at the bed from 18:00 to end the day.</p></aside>
+      <aside class="hud-today"><div id="hGoals"></div><h3>Today's plan</h3><div id="hCards"></div><p class="hint">Click a place in the town, or a card here, to act. Matching the plan gives bonus XP. Sleep at the bed from 18:00 to end the day.</p></aside>
       <div class="hud-log" id="hLog" role="log" aria-live="polite"></div>`;
     root.appendChild(this.el);
     const $ = (s) => this.el.querySelector(s);
     this.$ = $;
     $('#hPlan').onclick = () => hooks.openPlan();
+    $('#hMap').onclick = () => hooks.openMap();
     $('#hEat').onclick = () => gm.bus.emit(MSG.INTENT_RUN_ACTION, { actionId: 'eat', params: {} });
     $('#hNap').onclick = () => gm.bus.emit(MSG.INTENT_RUN_ACTION, { actionId: 'small-rest', params: {} });
     $('#hCheck').onclick = () => gm.bus.emit(MSG.INTENT_NEXT_PHASE);
@@ -63,6 +66,23 @@ export class HudView {
     while (box.children.length > 6) box.lastChild.remove();
   }
 
+  /** Today's goal and the Store's goal (Scene & Flow: HUD shows the goals). */
+  #goals() {
+    const s = this.s, cal = s.calendar;
+    const mins = {};
+    for (const c of s.plan.cards.filter((x) => x.day === cal.day)) {
+      const g = GOALS.find((x) => x.cats.includes(this.c.get('activities', c.activityId).category));
+      if (g) mins[g.n] = (mins[g.n] ?? 0) + this.gm.ctx.sys.plan.duration(c);
+    }
+    const top = Object.entries(mins).sort((a, b) => b[1] - a[1])[0]?.[0];
+    const goal = GOALS.find((g) => g.n === top);
+    const done = goal && (s.activityLog ?? []).some((l) => l.week === cal.week && l.month === cal.month && l.day === cal.day && l.activityId
+      && goal.cats.includes(this.c.get('activities', l.activityId).category));
+    return `<div class="goal"><span class="st-kind">Today's goal</span><b>${goal ? goal.n : 'Free time'}</b>
+        <small>${goal ? (done ? '✓ Done today' : 'From your plan for today') : 'No goal set for today'}</small></div>
+      <div class="goal"><span class="st-kind">Store's goal</span><b>Not set</b><small>Set in Plan · Store planning (next stage)</small></div>`;
+  }
+
   render() {
     if (this.el.hidden) return;
     const s = this.s, cal = s.calendar, p = s.player, $ = this.$;
@@ -83,7 +103,8 @@ export class HudView {
     $('#hEat').disabled = !meal || eaten;
     $('#hEat').querySelector('span').textContent = meal ? (eaten ? `${cap(meal)} eaten` : `Eat ${meal}`) : 'Eat (no meal now)';
     $('#hNap').hidden = p.weekOver;
-    $('#hPlan').hidden = p.weekOver;
+    $('#hMap').hidden = p.weekOver;
+    $('#hGoals').innerHTML = this.#goals();
     const cards = s.plan.cards.filter((c) => c.day === cal.day).sort((a, b) => a.startMin - b.startMin);
     $('#hCards').innerHTML = cards.length ? cards.map((c) => {
       const a = this.c.get('activities', c.activityId);
@@ -94,6 +115,14 @@ export class HudView {
     }).join('') : '<p class="hint">No cards for today.</p>';
   }
 }
+
+/** Day goal types (Scene & Flow chart). Stage 1: the goal comes from the activity category of today's plan cards. */
+const GOALS = [
+  { n: 'Exploration', cats: ['fieldwork'] },
+  { n: 'Crafting & processing', cats: ['production'] },
+  { n: 'Open the store', cats: ['shop'] },
+  { n: 'Market & guild', cats: ['organization'] }
+];
 
 /** Short text for an action result. */
 function describe(r, c) {

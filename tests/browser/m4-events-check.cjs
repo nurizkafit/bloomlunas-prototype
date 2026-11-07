@@ -3,7 +3,7 @@ const SP = process.argv[2];
 (async () => {
   const b = await chromium.launch(); const p = await b.newPage({ viewport: { width: 1440, height: 900 } }); const errs = [];
   p.on('pageerror', e => errs.push(e.message)); p.on('console', m => m.type() === 'error' && errs.push(m.text()));
-  await p.goto('http://localhost:5173'); await p.waitForTimeout(1000);
+  await p.goto('http://localhost:5173/?play'); await p.waitForTimeout(1000);
   const seen = [];
   // Sleep at the bed (Prototype Iteration: sleep from 18:00). Test only: move the clock to 18:00 if it is earlier.
   const sleepNow = async () => { if (await p.locator('.evscrim').isVisible()) return; await p.evaluate(() => { const g = window.__gm, m = g.content.num('SLEEP_EARLIEST_HOUR') * 60; if (g.state.calendar.minute < m) g.state.calendar.minute = m; });

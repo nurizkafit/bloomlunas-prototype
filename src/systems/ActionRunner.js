@@ -83,6 +83,7 @@ export class ActionRunner {
       s.weekActual[activity.id] = (s.weekActual[activity.id] ?? 0) + minutes;
     }
     const out = { ok: true, actionId, minutes, energy: isSleep ? 0 : energy, ...result };
+    this.#logActivity(out, activity.id, action.xp);
     this.ctx.bus.emit(MSG.ACTION_COMPLETED, out);
     this.ctx.sys.events?.tick();
     return out;
@@ -102,6 +103,7 @@ export class ActionRunner {
     const result = prep.apply();
     this.ctx.sys.time.advance(minutes);
     const out = { ok: true, actionId: action.id, minutes, energy: 0, ...result };
+    this.#logActivity(out, this.#s.player.activityId, action.xp);
     this.ctx.bus.emit(MSG.ACTION_COMPLETED, out);
     this.ctx.sys.events?.tick();
     return out;
@@ -153,6 +155,14 @@ export class ActionRunner {
     return w.betweenTown;
   }
 
+  /** Log activity (Journal book, Check recap): one line per action done. */
+  #logActivity(out, activityId, xp) {
+    const s = this.#s;
+    s.activityLog = s.activityLog ?? [];
+    s.activityLog.push({ week: s.calendar.week, month: s.calendar.month, day: s.calendar.day, minute: s.calendar.minute, actionId: out.actionId, activityId, minutes: out.minutes, xp: xp?.amount ? { path: xp.path, sub: xp.sub ?? null, amount: xp.amount } : null });
+    if (s.activityLog.length > 500) s.activityLog.splice(0, s.activityLog.length - 500);
+  }
+
   #gold(amount, label) {
     this.ctx.sys.effects.apply([{ type: 'gold', amount, label }], 'action');
   }
@@ -180,7 +190,47 @@ export class ActionRunner {
     return { minutes: action.timeMin, apply: () => ({}) };
   }
 
+  /** Shelf stocking ([Proposal]): put up to qty units of a product on the shelf at a price ratio. */
+  kind_stockShelf(action, { item, qty, ratio = 1 }) {
+    const opts = this.#c.num('SHELF_PRICE_OPTIONS');
+    if (!item) return { error: 'pick a product to stock' };
+    if (!opts.includes(ratio)) return { error: `price must be one of ${opts.join(', ')}` };
+    const have = this.#s.inventory.count(item, 'product');
+    const n = Math.max(0, Math.min(Math.floor(qty ?? have), have));
+    return {
+      minutes: action.timeMin,
+      apply: () => {
+        this.#s.shelf = this.#s.shelf ?? {};
+        this.#s.shelf[item] = { qty: n, ratio };
+        return { item, qty: n, ratio };
+      }
+    };
+  }
+
+  /** Packing ([Proposal]): put unpacked products in a container, with or without a label. Pays the cost per unit. */
+  kind_pack(action, { item, tier, container, label = false, qty }) {
+    const boxes = this.#c.num('PACK_CONTAINERS'), lab = this.#c.num('PACK_LABEL');
+    if (!boxes[container]) return { error: 'pick a container' };
+    const have = this.#s.inventory.find((l) => l.item === item && l.variant === 'product' && !l.spoiled && (!tier || l.tier === tier) && !l.pack).reduce((n, l) => n + l.qty, 0);
+    const n = Math.min(qty ?? have, have);
+    if (!n) return { error: `no unpacked ${item} to pack` };
+    const cost = Math.round(n * (boxes[container].cost + (label ? lab.cost : 0)) * 100) / 100;
+    if (this.#s.wallet.gold < cost) return { error: 'not enough gold for the containers' };
+    return {
+      minutes: action.timeMin,
+      apply: () => {
+        const parts = this.#s.inventory.take(item, 'product', n, { tier, pack: null });
+        const pack = container + (label ? '+label' : '');
+        for (const p of parts) this.#s.inventory.add(p.item, 'product', p.qty, { tier: p.tier, born: p.born, pack });
+        if (cost) this.#gold(-cost, `Packing (${n} ${item})`);
+        this.ctx.bus.emit(MSG.INVENTORY_CHANGED, {});
+        return { item, qty: n, pack, cost };
+      }
+    };
+  }
+
   kind_serveCustomers(action) {
+    if (!this.ctx.sys.economy.shelfQty()) return { error: 'the shelf is empty: stock the shelf first' };
     return {
       minutes: action.timeMin,
       apply: () => {

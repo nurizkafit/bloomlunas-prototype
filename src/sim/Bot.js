@@ -169,6 +169,8 @@ export class Bot {
     const products = () => this.state.inventory.find((l) => l.variant === 'product').length;
     if (!products() || !this.content.get('locations', 'loc_home_shop').openHours[this.state.calendar.day]) return;
     this.#go('open_shop', 'loc_home_shop');
+    // Shelf stocking: every product on the shelf at the fair price (ratio 1).
+    for (const item of [...new Set(this.state.inventory.find((l) => l.variant === 'product' && !l.spoiled).map((l) => l.item))]) this.#run('restock-shelf', { item, ratio: 1 });
     let guard = 0;
     while (products() && this.#energyFor('ENERGY_COST_DEFAULT') && guard++ < 24) {
       if (!this.#run('serve-customer')) break;

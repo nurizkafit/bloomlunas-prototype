@@ -23,6 +23,8 @@ export class ActionMenuView {
     this.building = null;
     /** Set by main.js: show the interior of a building (view only). @param {string} _id */
     this.onEnter = (_id) => {};
+    /** Set by main.js: open the 2D station screen of a location; returns false if it has none. @param {string} _loc @param {string} _act */
+    this.onStation = (_loc, _act) => false;
     this.el.addEventListener('click', (e) => this.#click(e));
     const rerender = () => { if (!this.el.hidden) this.render(); };
     for (const m of [MSG.ACTION_COMPLETED, MSG.ACTION_REFUSED, MSG.ACTION_STARTED, MSG.INVENTORY_CHANGED]) gm.bus.on(m, rerender);
@@ -163,6 +165,7 @@ export class ActionMenuView {
     if (e.target.closest('[data-enter]')) { const b = this.building; this.close(); this.onEnter(b); return; }
     const act = e.target.closest('[data-act]');
     if (act) {
+      if (act.dataset.loc && this.onStation(act.dataset.loc, act.dataset.act)) { this.close(); return; }
       if (act.dataset.loc) { this.locId = act.dataset.loc; this.building = null; }
       bus.emit(MSG.INTENT_START_ACTIVITY, { activityId: act.dataset.act });
       if (this.s.player.location !== this.locId) bus.emit(MSG.INTENT_RUN_ACTION, { actionId: 'travel', params: { to: this.locId } });

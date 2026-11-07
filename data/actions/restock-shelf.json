@@ -1,7 +1,7 @@
 {
   "id": "restock-shelf",
-  "name": "Restock shelf",
-  "kind": "timeOnly",
+  "name": "Shelf stocking",
+  "kind": "stockShelf",
   "timeMin": 15,
   "energyKey": "ENERGY_COST_DEFAULT",
   "xp": {
@@ -10,5 +10,6 @@
     "amount": 1
   },
   "source": "docs:pages/actions/restock-shelf.md",
-  "_placeholder": true
+  "_placeholder": true,
+  "_flow": "Scene & Flow (7 Nov 2026) [Proposal]"
 }

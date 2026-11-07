@@ -1,0 +1,14 @@
+{
+  "id": "premise",
+  "title": "A letter at the shop door",
+  "from": "Merchant Guild",
+  "paragraphs": [
+    "Your parent ran this herb shop for many years. The shop sells jamu, salep and other herbal goods.",
+    "Your parent left on an expedition and did not come back. The shop is now yours.",
+    "The shop also has a large riba debt. The interest grows every month, and there are hidden fees.",
+    "Plan each week. Make good products. Keep a buffer. Pay the bills at the end of each month.",
+    "The debt is heavy, but the shop can bloom again."
+  ],
+  "sign": "With hope, the Merchant Guild",
+  "source": "docs:gdd/02-game-overview/02-story-and-setting (backstory, tone: do not shame the player for debt)"
+}

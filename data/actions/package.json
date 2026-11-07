@@ -1,7 +1,7 @@
 {
   "id": "package",
-  "name": "Package",
-  "kind": "timeOnly",
+  "name": "Packing",
+  "kind": "pack",
   "timeMin": 15,
   "energyKey": "ENERGY_COST_DEFAULT",
   "xp": {
@@ -10,5 +10,6 @@
     "amount": 1
   },
   "source": "docs:pages/actions/package.md",
-  "_placeholder": true
+  "_placeholder": true,
+  "_flow": "Scene & Flow (7 Nov 2026) [Proposal]"
 }

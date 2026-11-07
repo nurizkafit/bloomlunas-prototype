@@ -401,5 +401,62 @@
     "unit": "hours [from, to) per meal, once a day each",
     "source": "placeholder",
     "_placeholder": true
+  },
+  "SHELF_PRICE_OPTIONS": {
+    "value": [
+      0.8,
+      1.0,
+      1.2,
+      1.4
+    ],
+    "unit": "x fair shop price the player can set per product (Shelf stocking)",
+    "source": "Scene & Flow chart (user, 7 Nov 2026) [Proposal]",
+    "_placeholder": true
+  },
+  "SHOP_PRICE_ELASTICITY": {
+    "value": 1.5,
+    "unit": "buy chance x (1 - (price ratio - 1) x this), clamped to SHOP_BUY_CHANCE_CLAMP",
+    "source": "Scene & Flow chart (user, 7 Nov 2026) [Proposal]",
+    "_placeholder": true
+  },
+  "SHOP_BUY_CHANCE_CLAMP": {
+    "value": [
+      0.1,
+      1.0
+    ],
+    "unit": "min and max buy chance after price",
+    "source": "Scene & Flow chart (user, 7 Nov 2026) [Proposal]",
+    "_placeholder": true
+  },
+  "PACK_CONTAINERS": {
+    "value": {
+      "leaf": {
+        "name": "Banana-leaf wrap",
+        "cost": 0,
+        "priceMult": 1.0
+      },
+      "jar": {
+        "name": "Clay jar",
+        "cost": 1,
+        "priceMult": 1.1
+      },
+      "bottle": {
+        "name": "Glass bottle",
+        "cost": 2,
+        "priceMult": 1.2
+      }
+    },
+    "unit": "Packing: cost in G per unit, price multiplier",
+    "source": "Scene & Flow chart (user, 7 Nov 2026) [Proposal]",
+    "_placeholder": true
+  },
+  "PACK_LABEL": {
+    "value": {
+      "cost": 0.5,
+      "priceMult": 1.05
+    },
+    "unit": "Packing: label cost in G per unit, price multiplier",
+    "source": "Scene & Flow chart (user, 7 Nov 2026) [Proposal]",
+    "_placeholder": true
   }
 }

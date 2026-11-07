@@ -18,9 +18,12 @@ export class MonthEndView {
     const bus = gm.bus;
     bus.on(MSG.PHASE_ENTERED, ({ phase }) => { this.el.hidden = phase !== 'Act'; if (phase === 'Act') { this.msg = ''; this.render(); } });
     for (const m of [MSG.LEDGER_CHANGED, MSG.DEBT_CHANGED]) bus.on(m, () => { if (!this.el.hidden) this.render(); });
+    /** Set by main.js: open the Journal (read only). */
+    this.onJournal = () => {};
     this.el.addEventListener('click', (e) => {
       const t = e.target.closest('button');
       if (!t) return;
+      if (t.dataset.journal !== undefined) { this.onJournal(); return; }
       const val = (n) => this.el.querySelector(`[name="${n}"]`)?.value;
       if (t.id === 'payMin') bus.emit(MSG.INTENT_PAY_DEBT, { amount: Math.max(0, this.c.num('DEBT_MIN_PAYMENT') - this.s.debt.paidThisMonth) });
       if (t.id === 'payAmt') bus.emit(MSG.INTENT_PAY_DEBT, { amount: Number(val('amt')) || 0 });
@@ -89,7 +92,7 @@ export class MonthEndView {
           ${after > c.num(loan.limitKey) ? '<p class="bad">✕ The debt will pass the limit: bankruptcy.</p>' : ''}
         </div>
       </div>
-      <div class="acts"><button class="go" id="closeMonth">Close month ${month}</button></div>
+      <div class="acts"><button class="lnk2" data-journal>Open the Journal</button><button class="go" id="closeMonth">Close month ${month}</button></div>
     </div>`;
     void costText;
   }

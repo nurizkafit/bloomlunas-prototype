@@ -55,18 +55,41 @@ export class EconomySystem {
     return e?.sells ?? [];
   }
 
-  /** One hour of shop: customers come, some buy one product each. */
+  /** Price multiplier of a packed lot (container x label; [Proposal], Scene & Flow 7 Nov 2026). @param {string|null|undefined} pack */
+  packMult(pack) {
+    if (!pack) return 1;
+    const [container, label] = pack.split('+');
+    const c = this.#c.num('PACK_CONTAINERS')[container];
+    return (c?.priceMult ?? 1) * (label ? this.#c.num('PACK_LABEL').priceMult : 1);
+  }
+
+  /** Buy chance for a shelf price ratio ([Proposal]): a higher price means fewer buyers. @param {number} ratio */
+  buyChance(ratio) {
+    const [lo, hi] = this.#c.num('SHOP_BUY_CHANCE_CLAMP');
+    const k = 1 - (ratio - 1) * this.#c.num('SHOP_PRICE_ELASTICITY');
+    return Math.min(hi, Math.max(lo, this.#c.num('SHOP_BUY_CHANCE') * k));
+  }
+
+  /** Units on the shelf (state.shelf: item -> {qty, ratio}). @param {string} [item] */
+  shelfQty(item) {
+    const sh = this.ctx.state.shelf ?? {};
+    return item ? sh[item]?.qty ?? 0 : Object.values(sh).reduce((n, x) => n + x.qty, 0);
+  }
+
+  /** One hour of shop: customers come, some buy one product each from the shelf, at the shelf price. */
   serveCustomers() {
     const { state, rng } = this.ctx;
     const n = this.ctx.stat('CUSTOMERS_PER_HOUR');
+    const shelf = state.shelf ?? {};
     let sold = 0, gold = 0;
     for (let i = 0; i < n; i++) {
-      if (!rng.chance(this.#c.num('SHOP_BUY_CHANCE'))) continue;
-      const lots = state.inventory.find((l) => l.variant === 'product' && !l.spoiled && l.tier !== 'Failed');
+      const lots = state.inventory.find((l) => l.variant === 'product' && !l.spoiled && l.tier !== 'Failed' && (shelf[l.item]?.qty ?? 0) > 0);
       if (!lots.length) break;
-      const lot = rng.pick(lots);
-      const price = round2(this.realPrice(lot.item, 'product') * this.ctx.sys.quality.priceMult(lot.tier) * this.#c.num('SHOP_PRICE_RATIO'));
-      state.inventory.take(lot.item, 'product', 1, { tier: lot.tier });
+      const lot = rng.pick(lots), sh = shelf[lot.item];
+      if (!rng.chance(this.buyChance(sh.ratio))) continue;
+      const price = round2(this.realPrice(lot.item, 'product') * this.ctx.sys.quality.priceMult(lot.tier) * this.#c.num('SHOP_PRICE_RATIO') * sh.ratio * this.packMult(lot.pack));
+      state.inventory.take(lot.item, 'product', 1, { tier: lot.tier, pack: lot.pack ?? null });
+      sh.qty -= 1;
       sold += 1;
       gold += price;
     }

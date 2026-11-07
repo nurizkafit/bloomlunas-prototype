@@ -15,7 +15,10 @@ export class RecapView {
     this.el.hidden = true;
     root.appendChild(this.el);
     gm.bus.on(MSG.PHASE_ENTERED, ({ phase }) => { this.el.hidden = phase !== 'Check'; if (phase === 'Check') this.render(); });
+    /** Set by main.js: open the Journal (read only). */
+    this.onJournal = () => {};
     this.el.addEventListener('click', (e) => {
+      if (e.target.closest('[data-journal]')) { this.onJournal(); return; }
       if (!e.target.closest('#rcNext')) return;
       const t = this.el.querySelector('#rcNote').value;
       if (t.trim()) gm.bus.emit(MSG.INTENT_WRITE_NOTE, { text: t });
@@ -62,7 +65,7 @@ export class RecapView {
           <textarea id="rcNote" rows="3" placeholder="What will you do differently? For example: craft jamu before the festival."></textarea>
         </div>
       </div>
-      <div class="acts"><button class="go" id="rcNext">${last ? 'Go to month end' : `Plan week ${w.week + 1}`}</button></div>
+      <div class="acts"><button class="lnk2" data-journal>Open the Journal</button><button class="go" id="rcNext">${last ? 'Go to month end' : `Plan week ${w.week + 1}`}</button></div>
     </div>`;
   }
 

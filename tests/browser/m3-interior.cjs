@@ -28,13 +28,15 @@ const SP = process.argv[2];
   out.napLog = await p.locator('#hLog p').first().textContent();
   out.endDayBtn = await p.locator('#hSleep').count();
   await p.screenshot({ path: `${SP}/m3-interior.png` });
-  await station('st_cauldron'); out.cauldronMenu = await p.locator('.amenu:not(.stock) h3').textContent();
-  await station('st_counter'); out.counterMenu = await p.locator('.amenu:not(.stock) h3').textContent();
-  await station('st_bed'); out.bedMenu = await p.locator('.amenu:not(.stock) h3').textContent();
-  await station('st_shelf'); out.shelf = await p.locator('.stock h3').isVisible();
+  // Scene & Flow: a station click opens its 2D station screen.
+  const scr = async (id) => { await station(id); const n = await p.locator('.station .st-side h2').textContent(); await p.screenshot({ path: `${SP}/st-${id}.png` }); await p.click('.station [data-close]'); await p.waitForTimeout(80); return n; };
+  out.cauldronMenu = await scr('st_cauldron');
+  out.counterMenu = await scr('st_counter');
+  out.bedMenu = await scr('st_bed');
+  await station('st_shelf'); out.shelf = (await p.locator('.station .fn.on').textContent()).includes('Shelf stocking');
   await p.screenshot({ path: `${SP}/m3-interior-shelf.png` });
   // Walk between stations costs 0 min.
-  await p.click('.stock [data-close]');
+  await p.click('.station [data-close]');
   const m0 = await p.evaluate(() => window.__gm.state.calendar.minute);
   await p.evaluate(() => window.__ui.menu.open('loc_home_atelier')); await p.click('[data-act="craft"]'); await p.waitForTimeout(100);
   out.walkInsideMin = (await p.evaluate(() => window.__gm.state.calendar.minute)) - m0;
@@ -61,7 +63,14 @@ const SP = process.argv[2];
   out.walkedIn = await inside();
   // Customer comes to the counter (needs stock; give some for the test).
   await p.evaluate(() => { const g = window.__gm; g.state.inventory.add('fresh_jamu', 'product', 3, { tier: 'Good', born: g.state.calendar.absDay() }); g.state.calendar.minute = Math.max(g.state.calendar.minute, 9 * 60); });
-  await p.locator('[data-run="serve-customer"]').first().click(); await p.waitForTimeout(300);
+  await p.evaluate(() => window.__ui.station.open('loc_home_shop', 'shelf')); await p.waitForTimeout(100);
+  await p.click('[data-stock="fresh_jamu"]'); await p.waitForTimeout(100);
+  out.shelfQty = await p.evaluate(() => window.__gm.state.shelf.fresh_jamu?.qty ?? 0);
+  await p.click('.station [data-fn="store"]'); await p.waitForTimeout(80);
+  await p.click('[data-run="open_shop|serve-customer"]'); await p.waitForTimeout(300);
+  out.storeResult = await p.locator('.station .result').count();
+  await p.screenshot({ path: `${SP}/st-store-result.png` });
+  await p.click('.station [data-close]');
   out.customerLog = await p.locator('#hLog p').first().textContent();
   out.customer = await p.evaluate(() => window.__ui.town.inside?.customer.root.visible ?? false);
   await p.screenshot({ path: `${SP}/m3-interior-customer.png` });
@@ -69,7 +78,7 @@ const SP = process.argv[2];
   console.log('errors', JSON.stringify(errs));
   const ok = out.bMenu === 'Home and shop' && out.bEnter === 1 && out.bActs.join() === 'craft,processing,open_shop,rest' && out.bSecs.join() === 'Production,Shop,Personal'
     && /Cauldron/.test(out.bTags[0]) && /Cauldron.*\+.*Drying yard/.test(out.bTags[1]) && /Shop counter/.test(out.bTags[2]) && /Bed/.test(out.bTags[3]) && out.entered === 'int_home_shop'
-    && out.startInside === 'int_home_shop' && out.exitBar && /atelier/i.test(out.cauldronMenu) && /shop/i.test(out.counterMenu) && out.bedMenu === 'Home'
+    && out.startInside === 'int_home_shop' && out.exitBar && out.cauldronMenu === 'Crafting' && out.counterMenu === 'Store' && out.bedMenu === 'Rest' && out.shelfQty >= 3 && out.storeResult >= 1
     && out.shelf && out.walkInsideMin === 0 && out.stillInside && out.afterExit === null && out.walkedIn === 'int_home_shop' && out.customer
     && /Eat breakfast/.test(out.eatLabel) && /Ate breakfast: \+20 energy/.test(out.eatLog) && out.eatAgain && /Small rest: \+25 energy/.test(out.napLog) && out.endDayBtn === 0;
   await b.close();

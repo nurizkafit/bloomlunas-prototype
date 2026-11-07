@@ -213,3 +213,22 @@ Exit criteria:
 - [ ] The Unity dev and the artist can read `SPECS.md` and map classes and slots.
 
 Result:
+
+---
+
+## Scene & Flow rollout (user request, 7 Nov 2026)
+
+Source: SPECS §15. Three stages, a user review after each.
+
+| Stage | Scope | Status |
+| --- | --- | --- |
+| S1 | Start menu, story, town map, 2D station screens, shelf and price, packing, HUD goals, Journal in every phase | Review |
+| S2 | Plan day goals, store planning, budget | Not started |
+| S3 | Market and Guild interiors, city outskirt exploration | Not started |
+
+S1 result:
+- Unit tests 61/61 (new: shelf stocking, price and packing). Browser tests: new `s1-opening` (start menu, story, Journal in Check, Load); `m3-interior` and `m3-do-week` use the station screens, the town map and the Journal tabs.
+- Bot stocks the shelf at ratio 1 before it serves.
+- [Proposal] rules (not in the docs): shelf price options, price elasticity, pack containers and label. Please confirm or give the docs values.
+- Open: Today's goal comes from the plan cards until Stage 2 adds day goals.
+

@@ -3,7 +3,7 @@ const SP = process.argv[2];
 (async () => {
   const b = await chromium.launch(); const p = await b.newPage({ viewport: { width: 1440, height: 900 } }); const errs = [];
   p.on('pageerror', e => errs.push(e.message)); p.on('console', m => m.type() === 'error' && errs.push(m.text()));
-  await p.goto('http://localhost:5173'); await p.waitForTimeout(1200);
+  await p.goto('http://localhost:5173/?play'); await p.waitForTimeout(1200);
   // Plan: a few cards via the bus, then Review > Start the week (UI)
   await p.evaluate(() => { const g = window.__gm, M = 'intent.placeCard';
     g.bus.emit(M, { activityId: 'visit', day: 0, startMin: 420, locationId: 'loc_market' });
@@ -35,7 +35,14 @@ const SP = process.argv[2];
   await act('loc_home_atelier', 'craft'); await answer(); await p.click('[data-craft="brew"]'); await p.waitForTimeout(100);
   await p.screenshot({ path: SP + '/m3-craft.png' });
   await p.click('[data-make]'); console.log('Mon', await log());
-  await act('loc_home_shop', 'open_shop'); await run('serve-customer'); await run('serve-customer'); console.log('Mon', await log());
+  await act('loc_home_shop', 'open_shop');
+  // Scene & Flow: stock the shelf at the Store station screen first, then serve.
+  await ev(() => window.__ui.menu.close()); await ev(() => window.__ui.station.open('loc_home_shop', 'shelf')); await p.waitForTimeout(80);
+  await p.screenshot({ path: SP + '/st-shelf.png' });
+  await p.locator('[data-stock]').first().click(); await p.waitForTimeout(80);
+  await p.click('.station [data-fn="store"]'); await p.click('[data-run="open_shop|serve-customer"]'); await answer(); await p.click('[data-run="open_shop|serve-customer"]').catch(() => {}); await answer();
+  await p.screenshot({ path: SP + '/st-store.png' });
+  await p.click('.station [data-close]').catch(() => {}); console.log('Mon', await log());
   await act('loc_home_drying_yard', 'processing'); await run('start-batch', { qty: 2 }); console.log('Mon', await log());
   await p.screenshot({ path: SP + '/m3-town.png' });
   await sleepNow();
@@ -50,6 +57,24 @@ const SP = process.argv[2];
   await act('loc_home_drying_yard', 'processing'); await run('collect-batch'); console.log('Wed', await log());
   await act('loc_home_atelier', 'processing'); await run('grind', { qty: 2 }); console.log('Wed', await log());
   await act('loc_home', 'rest'); used.add('rest'); await run('sleep');
+  // Town map (Scene & Flow): list of places with walk time.
+  await answer(); await p.click('#hMap'); await p.waitForTimeout(100);
+  const mapRows = await p.locator('.tmap [data-place]').count();
+  await p.screenshot({ path: SP + '/town-map.png' });
+  await p.locator('.tmap [data-place="loc_market"]').click(); await p.waitForTimeout(100);
+  const mapOpens = await p.locator('.amenu h3').textContent().catch(() => '');
+  await ev(() => window.__ui.menu.close());
+  const goals = await p.locator('#hGoals .goal b').allTextContents();
+  console.log('town map rows:', mapRows, 'opens:', mapOpens, 'goals:', goals.join(' | '));
+  // Journal in Do: Skills (log) and Settings tabs.
+  await p.click('#hPlan'); await p.waitForTimeout(150);
+  await p.click('.tab[data-tab="skills"]'); await p.waitForTimeout(100);
+  const logRows = await p.locator('#skR tr').count();
+  await p.screenshot({ path: SP + '/journal-skills.png' });
+  await p.click('.tab[data-tab="settings"]'); await p.waitForTimeout(100);
+  await p.screenshot({ path: SP + '/journal-settings.png' });
+  await p.click('.tab[data-tab="week"]'); await p.click('#confirmBtn');
+  console.log('journal log rows:', logRows);
   // Change plan in Do: open book, check started day is locked
   await answer(); await p.click('#hPlan'); await p.waitForTimeout(200);
   await p.screenshot({ path: SP + '/m3-plan-in-do.png' });
@@ -61,5 +86,5 @@ const SP = process.argv[2];
   await p.click('#hCheck'); await p.waitForTimeout(150);
   console.log('phase after:', await p.textContent('#dev-phase'));
   console.log('errors', errs); await b.close();
-  if (errs.length || used.size < 8) process.exit(1); // visit = buy + sell; processing = drying + grinding
+  if (errs.length || used.size < 8 || mapRows < 5 || !mapOpens || logRows < 5 || goals.length !== 2) process.exit(1); // visit = buy + sell; processing = drying + grinding
 })();

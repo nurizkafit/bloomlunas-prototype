@@ -1,6 +1,7 @@
 import { MSG } from '../../core/EventBus.js';
 import { DAYS, hm } from '../../systems/PlanValidator.js';
 import { ic, KC, iconFor, colorFor } from './icons.js';
+import { SkillBook } from '../../model/SkillBook.js';
 import './planner.css';
 
 /**
@@ -44,6 +45,8 @@ export class PlannerBookView {
     this.DE = this.c.num('DAY_END_HOUR');
     this.NE = this.c.num('NIGHT_END_HOUR');
     this.SLEEP = this.c.num('SLEEP_EARLIEST_HOUR');
+    /** Set by main.js (Settings tab). */
+    this.hooks = { saveInfo: () => null, onLoad: () => {}, onNewGame: () => {} };
 
     root.insertAdjacentHTML('beforeend', `<div class="pb-fit" id="pbFit" hidden><div id="stage">
       <header id="ribbon">
@@ -70,6 +73,8 @@ export class PlannerBookView {
         <div class="spread" data-tab="market" hidden><section class="page l" id="mkL"></section><section class="page r" id="mkR"></section></div>
         <div class="spread" data-tab="town" hidden><section class="page l" id="twL"></section><section class="page r" id="twR"></section></div>
         <div class="spread" data-tab="journal" hidden><section class="page l" id="jnL"></section><section class="page r" id="jnR"></section></div>
+        <div class="spread" data-tab="skills" hidden><section class="page l" id="skL"></section><section class="page r" id="skR"></section></div>
+        <div class="spread" data-tab="settings" hidden><section class="page l" id="seL"></section><section class="page r" id="seR"></section></div>
       </div><nav id="tabs" role="tablist" aria-label="Planner sections"></nav></div>
     </div></div>`);
     this.fit = root.querySelector('#pbFit');
@@ -78,6 +83,7 @@ export class PlannerBookView {
     this.#wire();
     this.bus.on(MSG.PHASE_ENTERED, ({ phase }) => {
       this.fit.hidden = phase !== 'Plan';
+      this.fit.classList.remove('read');
       this.mode = 'plan';
       this.$('#confirmBtn').textContent = 'Review plan';
       this.popUid = null;
@@ -97,8 +103,20 @@ export class PlannerBookView {
     this.render();
   }
 
+  /** Open the book as the Journal in Check and Act (Scene & Flow: the Journal is open in every phase). Read only. @param {string} [tab] */
+  openJournal(tab = 'skills') {
+    this.mode = 'read';
+    this.tab = TABS.some((t) => t.id === tab) ? tab : 'skills';
+    this.fit.hidden = false;
+    this.fit.classList.add('read');
+    this.$('#confirmBtn').textContent = 'Close journal';
+    this.#fitScale();
+    this.render();
+  }
+
   /** Why a day cannot change now (Do mode), or the location reason. */
   #dayProblem(card, d) {
+    if (this.mode === 'read') return 'The journal is read only now. Change the plan in the Plan phase';
     if (this.mode === 'do' && d <= this.s.calendar.day) return `${DAYS[d]} has started. Change only later days`;
     return this.v.dayProblem(card, d);
   }
@@ -174,7 +192,7 @@ export class PlannerBookView {
     return {
       week: { bad: n(card, 'bad') + n(wk, 'bad'), warn: n(card, 'warn') + n(wk, 'warn') },
       ledger: { bad: n(led, 'bad'), warn: n(led, 'warn') },
-      market: { bad: 0, warn: 0 }, town: { bad: 0, warn: 0 }, journal: { bad: 0, warn: 0 }
+      market: { bad: 0, warn: 0 }, town: { bad: 0, warn: 0 }, journal: { bad: 0, warn: 0 }, skills: { bad: 0, warn: 0 }, settings: { bad: 0, warn: 0 }
     };
   }
 
@@ -413,6 +431,42 @@ export class PlannerBookView {
         <tr><td>Products sold</td><td class="num">${w.sold}</td></tr><tr><td>Waste</td><td class="num">${w.waste}</td></tr>
         <tr class="tot"><td>Net</td><td class="num">${w.net} G</td></tr></table>` : '<p style="color:var(--ink-3)">This is the first week. No recap yet.</p>'}
       <span class="folio">Journal · recap</span>`;
+  }
+
+  // ---- skills (Scene & Flow: skill levels and the activity log)
+  render_skills() {
+    const order = ['sun', 'moon', 'earth'];
+    const paths = this.c.all('skills').sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
+    const sk = this.s.skills;
+    const subs = Object.entries(sk.subXp ?? {}).sort((a, b) => b[1] - a[1]);
+    this.$('#skL').innerHTML = `<div class="ph"><h2>Skill levels</h2><span class="tag">Sun · Moon · Earth</span></div>
+      <table class="led"><tr><th>Path</th><th>Level</th><th>XP in level</th></tr>
+      ${paths.map((p) => { const xp = sk.pathXp[p.id] ?? 0, pr = SkillBook.progress(xp, p.xpToNextLevel); return `<tr><td>${p.id[0].toUpperCase() + p.id.slice(1)}</td><td class="num">${pr.level}</td><td class="num">${pr.need ? `${pr.into} / ${pr.need}` : 'Max'}</td></tr>`; }).join('')}</table>
+      <div class="sec" style="margin-top:14px"><span>Sub-skills (XP)</span></div>
+      ${subs.length ? `<table class="led">${subs.map(([k, v]) => `<tr><td>${esc(k)}</td><td class="num">${v}</td></tr>`).join('')}</table>` : '<p style="color:var(--ink-3)">No XP yet.</p>'}
+      <span class="folio">Skills · levels</span>`;
+    const log = (this.s.activityLog ?? []).slice(-14).reverse();
+    this.$('#skR').innerHTML = `<div class="ph"><h2>Log activity</h2><span class="tag">Last ${log.length} actions</span></div>
+      ${log.length ? `<table class="led"><tr><th>When</th><th>Action</th><th>Time</th><th>XP</th></tr>
+        ${log.map((l) => `<tr><td class="num">W${l.week} ${DAYS[l.day]} ${hm(l.minute)}</td><td>${esc(this.c.get('actions', l.actionId).name)}${l.activityId ? `<small style="color:var(--ink-3)"> · ${esc(this.#name(l.activityId))}</small>` : ''}</td><td class="num">${l.minutes} min</td><td class="num">${l.xp ? `+${l.xp.amount} ${l.xp.path}` : ''}</td></tr>`).join('')}</table>` : '<p style="color:var(--ink-3)">No actions yet. Actions you do in the town show here.</p>'}
+      <span class="folio">Skills · log</span>`;
+  }
+
+  // ---- settings (Scene & Flow: save and load)
+  render_settings() {
+    const sv = this.hooks.saveInfo();
+    const when = sv?.savedAt ? new Date(sv.savedAt).toLocaleString() : null;
+    this.$('#seL').innerHTML = `<div class="ph"><h2>Save and load</h2><span class="tag">Auto-save at each phase change</span></div>
+      <p>The game saves itself when a phase ends (Plan, Do, Check, Act).</p>
+      <table class="led"><tr><td>Last save</td><td class="num">${when ?? 'No save yet'}</td></tr>
+      <tr><td>Next phase in the save</td><td>${sv?.nextPhase ?? '–'}</td></tr></table>
+      <p style="display:flex;gap:8px;margin-top:12px"><button class="go" data-se="load" ${sv ? '' : 'disabled'}>Load last save</button><button class="go" data-se="new">New game</button></p>
+      <p style="color:var(--ink-3);font-size:12px">Load and New game reload the page. Progress after the last save is lost.</p>
+      <span class="folio">Settings · save</span>`;
+    this.$('#seR').innerHTML = `<div class="ph"><h2>About this build</h2><span class="tag">Prototype</span></div>
+      <p>Core loop prototype: Plan, Do, Check every week. Act at the end of each month.</p>
+      <p style="color:var(--ink-3)">Manual save slots are not in this build.</p>
+      <span class="folio">Settings · about</span>`;
   }
 
   // ---------------------------------------------------------------- card popup, toast, review
@@ -678,7 +732,8 @@ export class PlannerBookView {
       if (e.target.closest('[data-back]')) { this.deckView = { mode: 'cats', cat: null }; this.render(); return; }
       const mk = e.target.closest('[data-mk]');
       if (mk) { this.mkSel = mk.dataset.mk; this.render(); return; }
-      if (e.target.closest('#confirmBtn')) { if (this.mode === 'do') { this.fit.hidden = true; this.#closePop(); } else this.#openReview(); return; }
+      if (e.target.closest('[data-se]')) { const k = e.target.closest('[data-se]').dataset.se; if (k === 'load') this.hooks.onLoad(); if (k === 'new') this.hooks.onNewGame(); return; }
+      if (e.target.closest('#confirmBtn')) { if (this.mode === 'do' || this.mode === 'read') { this.fit.hidden = true; this.fit.classList.remove('read'); this.#closePop(); } else this.#openReview(); return; }
     });
 
     document.addEventListener('keydown', (e) => {
@@ -686,7 +741,7 @@ export class PlannerBookView {
       if (e.key === 'Escape') { this.#closeModal(); this.#closePop(); if (this.target) { this.target = null; this.render(); } return; }
       if (this.scrim || e.target.matches?.('input,textarea')) return;
       const i = Number(e.key);
-      if (i >= 1 && i <= 5) { this.#go(TABS[i - 1].id); return; }
+      if (i >= 1 && i <= TABS.length) { this.#go(TABS[i - 1].id); return; }
       const fc = e.target.closest?.('.bc');
       if (fc && /^Arrow/.test(e.key)) {
         e.preventDefault();
@@ -724,7 +779,9 @@ const TABS = [
   { id: 'ledger', n: 'Ledger', sub: 'Assets · budget', c: '#8fcf9a' },
   { id: 'market', n: 'Market', sub: 'Forecast', c: '#8fbbe6' },
   { id: 'town', n: 'Town', sub: 'Schedule · hours', c: '#e3a07f' },
-  { id: 'journal', n: 'Journal', sub: 'Notes · recap', c: '#c4bbff' }
+  { id: 'journal', n: 'Journal', sub: 'Notes · recap', c: '#c4bbff' },
+  { id: 'skills', n: 'Skills', sub: 'Levels · log', c: '#9fd3c7' },
+  { id: 'settings', n: 'Settings', sub: 'Save · load', c: '#cfc6b4' }
 ];
 
 const SW = { turmeric: '#d99a2b', kencur: '#d8c08a', ginger: '#c7a46a', lemongrass: '#9fbf6a', tamarind: '#8a5a3a', palm_sugar: '#a8743a', rice: '#efe6cf', coconut_oil: '#d9d3c0', beeswax: '#e6c15a', fresh_jamu: '#b8732e', salep: '#8fb59d' };

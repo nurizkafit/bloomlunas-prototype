@@ -279,7 +279,7 @@ Card renames: Buy + Sell to organization → Visit (Guild / Organization); Organ
 | EventBus | Glue | C# events or ScriptableObject event channels |
 | ContentDB | Data | Resources or Addressables lookup |
 | TownView, InteriorView, AssetSlot, Avatar | View | Town scene, interior scene, prefabs, Cinemachine |
-| PlannerBookView, ActionMenuView, CraftView, StockView, HudView, EventCardView, RecapView, MonthEndView, EndingView | View | UI screens |
+| PlannerBookView, ActionMenuView, CraftView, StockView, HudView, EventCardView, RecapView, MonthEndView, EndingView, StartMenuView, TownMapView, StationView | View | UI screens |
 
 ## 13. Extension points for full scope
 
@@ -292,3 +292,28 @@ New activities, actions, products, recipes, materials, events, investments, skil
 - Recipe amounts and craft times (docs say TBD).
 - Flat-rate Sharia financing in the jam build: TBD in the docs.
 - Balancing sheet link (for the CSV import).
+
+## 15. Scene & Flow (user, 7 Nov 2026)
+
+Source: the Scene & Flow chart (BloomLunas_Scene_Flow.pdf). The user said: "The newest truth is the Scene & Flow chart." Layout and mood come from the interface reference (another game's screens). The prototype does not copy its art. Rules that the chart needs but the docs do not define are marked [Proposal] and use `_placeholder` BalanceConfig keys.
+
+Rollout (user decision): 3 stages, a review after each.
+
+Stage 1 (this build):
+- Opening. `StartMenuView`: New game and Load game (Load only when a save exists). New game shows the story premise (`data/story/premise.json`), then the first Plan.
+  - URL: no parameter = start menu; `?new` = new game; `?new&story` = new game with the premise; `?play` = skip the menu.
+- Town map. `TownMapView` (HUD button "Town map"): a list of the town places with today's hours, an open or closed dot and the walk time. A pick opens the building menu, the station screen or the action menu. The 3D town stays (user decision).
+- Station screens. `StationView`: a 2D panel over the 3D scene. A station click, a building-menu activity or a HUD card opens it. Each button starts the activity, walks to the station if needed, then runs the action.
+  - Store (`loc_home_shop`): Shelf stocking (quantity and price for each product), Open store (serve customers, result of the last hour and of today).
+  - Crafting (`loc_home_atelier`): Prepare (pick a recipe, see the materials), Methods (Brew, Concoct, Blend; the recipe sets the method; Blend has no recipe in this build), Packing (container and label), Processing (Grind).
+  - Processing (`loc_home_drying_yard`): Start batch, Collect batch.
+  - Rest (`loc_home`): Small rest, Eat, Sleep.
+- Shelf and price [Proposal]. Action `restock-shelf` (kind `stockShelf`) puts a quantity on the shelf at a price ratio from `SHELF_PRICE_OPTIONS`. Customers buy only from the shelf. Buy chance = clamp(1 / ratio^`SHOP_PRICE_ELASTICITY`, `SHOP_BUY_CHANCE_CLAMP`). Price = real price × quality × `SHOP_PRICE_RATIO` × ratio × pack multiplier. Serve with an empty shelf is refused.
+- Packing [Proposal]. Action `package` (kind `pack`) moves unpacked product lots to a packed lot (`pack` field in the lot key). Containers and label in `PACK_CONTAINERS` and `PACK_LABEL` (cost and price multiplier).
+- HUD goals. Today's goal (Stage 1: the activity category with the most planned minutes today: Exploration, Crafting & processing, Open the store, Market & guild, else Free time) and Store's goal (set in Stage 2).
+- Journal in every phase. The Planner Book is the Journal. HUD "Journal" opens it in Do. Check and Act have an "Open the Journal" link (read only, `openJournal()`). New tabs: Skills (levels, sub-skill XP, Log activity from `state.activityLog`, last 500 actions) and Settings (last auto-save, Load last save, New game). Manual save slots are not in this build.
+
+Stage 2 (next): Plan day goals replace the 3-hour board (one goal a day; Do checks goals, not times), store planning (Store's goal), budget (Store, Personal, Buffer).
+
+Stage 3: Market and Guild interiors and 2D screens (market stall, receptionist, quest board, skill academy), city outskirt 2D exploration.
+

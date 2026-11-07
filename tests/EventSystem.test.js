@@ -66,6 +66,7 @@ describe('CheckPhase recap', () => {
     a.startActivity('open_shop');
     a.runAction('travel', { to: 'loc_home_shop' });
     gm.state.calendar.minute = 9 * 60;
+    a.runAction('restock-shelf', { item: 'fresh_jamu', ratio: 1 });
     a.runAction('serve-customer');
     a.runAction('serve-customer');
     a.startActivity('visit');

@@ -189,3 +189,32 @@ describe('Small rest, meals and sleep (Prototype Iteration rules)', () => {
     expect(c.num('LATE_WAKE_DELAY_MIN')).toBe(180);
   });
 });
+
+describe('Shelf stocking, price and packing (Scene & Flow, [Proposal])', () => {
+  it('serving needs a stocked shelf; a high price lowers the buy chance; packing adds value and costs gold', () => {
+    const gm = gameInDo();
+    const a = gm.ctx.sys.actions, eco = gm.ctx.sys.economy, s = gm.state;
+    a.startActivity('open_shop');
+    a.runAction('travel', { to: 'loc_home_shop' });
+    s.calendar.minute = 9 * 60;
+    expect(a.runAction('serve-customer').ok).toBe(false);
+    expect(a.runAction('restock-shelf', { item: 'fresh_jamu', ratio: 0.5 }).ok).toBe(false);
+    const st = a.runAction('restock-shelf', { item: 'fresh_jamu', qty: 2, ratio: 1.4 });
+    expect(st.qty).toBe(2);
+    expect(eco.buyChance(1.4)).toBeLessThan(eco.buyChance(1));
+    const sold = a.runAction('serve-customer');
+    expect(sold.ok).toBe(true);
+    expect(eco.shelfQty('fresh_jamu')).toBe(2 - sold.sold);
+    // Packing at the atelier.
+    a.startActivity('craft');
+    a.runAction('travel', { to: 'loc_home_atelier' });
+    const gold = s.wallet.gold;
+    const left = s.inventory.count('fresh_jamu', 'product');
+    const pk = a.runAction('package', { item: 'fresh_jamu', container: 'bottle', label: true });
+    expect(pk.qty).toBe(left);
+    expect(s.wallet.gold).toBeCloseTo(gold - left * 2.5, 5);
+    expect(s.inventory.find((l) => l.item === 'fresh_jamu' && l.pack === 'bottle+label').length).toBe(1);
+    expect(eco.packMult('bottle+label')).toBeCloseTo(1.26, 5);
+    expect(s.activityLog.some((l) => l.actionId === 'package')).toBe(true);
+  });
+});
