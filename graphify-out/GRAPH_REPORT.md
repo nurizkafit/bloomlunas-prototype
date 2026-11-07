@@ -1,138 +1,123 @@
 # Graph Report - bloomlunas-prototype  (2026-11-07)
 
 ## Corpus Check
-- 165 files · ~54,866 words
+- 134 files · ~34,896 words
 - Verdict: corpus is large enough that graph structure adds value.
-- Unclassified: 8 file(s) not represented in the graph (top: .css 4, (none) 2, .glb 1)
+- Unclassified: 5 file(s) not represented in the graph (top: (none) 2, .css 1, .glb 1)
 
 ## Summary
-- 678 nodes · 1442 edges · 30 communities (15 shown, 15 thin omitted)
-- Extraction: 93% EXTRACTED · 7% INFERRED · 0% AMBIGUOUS · INFERRED: 100 edges (avg confidence: 0.92)
+- 501 nodes · 1255 edges · 25 communities (10 shown, 15 thin omitted)
+- Extraction: 95% EXTRACTED · 5% INFERRED · 0% AMBIGUOUS · INFERRED: 69 edges (avg confidence: 0.93)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `b17ab6ad`
+- Built from commit: `0380f31b`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
-- GameManager.js
-- TownView
-- PlannerBookView
-- M0 Project skeleton
-- ActionRunner
-- EventSystem
+- Dom
+- SceneView
+- PlanSystem
+- Phase
+- StoreSystem
+- 9. Class catalog (JS -> Unity)
 - runMonths.js
 - package.json
-- ref_playwright
-- Bot
+- flow.cjs
+- .count
 - EconomySystem
-- ProductionSystem
-- StationView
-- PlanValidator
-- ActionMenuView
-- actions/package.json
+- ExploreSystem
+- .h
+- Milestones (game jam overhaul)
+- QuestSystem
+- SkillSystem
 - DebtSystem
-- Wallet
-- main.js
-- Calendar
-- .constructor
+- DoPhase
+- UiRoot
+- GameState
 - TimeSystem
 - Rng
-- Inventory
-- WeekPlan
-- Ledger
-- EffectApplier
+- GameManager.js
 - .mcp.json
 
 ## God Nodes (most connected - your core abstractions)
-1. `PlannerBookView` - 41 edges
-2. `ActionRunner` - 40 edges
-3. `MSG` - 35 edges
-4. `StationView` - 28 edges
-5. `TownView` - 24 edges
-6. `Bot` - 23 edges
-7. `ic()` - 23 edges
-8. `EconomySystem` - 22 edges
-9. `Phase` - 20 edges
-10. `M1 Logic core, headless month` - 20 edges
+1. `Dom` - 36 edges
+2. `9. Class catalog (JS -> Unity)` - 25 edges
+3. `Inventory` - 24 edges
+4. `UiRoot` - 21 edges
+5. `EconomySystem` - 20 edges
+6. `7. Views (DOM, `src/views/ui/`)` - 20 edges
+7. `GameManager` - 19 edges
+8. `PlaceView` - 18 edges
+9. `Bot` - 17 edges
+10. `SceneView` - 15 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `11. Town scene and asset slots` --references--> `AssetSlot`  [INFERRED]
-  SPECS.md → src/views/town/AssetSlot.js
-- `M0 Project skeleton` --references--> `EventBus`  [INFERRED]
-  MILESTONES.md → src/core/EventBus.js
-- `13. Extension points for full scope` --references--> `EventBus`  [INFERRED]
+- `9. Class catalog (JS -> Unity)` --references--> `ContentDB`  [INFERRED]
+  SPECS.md → src/core/ContentDB.js
+- `9. Class catalog (JS -> Unity)` --references--> `EventBus`  [INFERRED]
   SPECS.md → src/core/EventBus.js
-- `M1 Logic core, headless month` --references--> `Rng`  [INFERRED]
-  MILESTONES.md → src/core/Rng.js
-- `M2 Plan phase (Planner Book port)` --references--> `GameState`  [INFERRED]
-  MILESTONES.md → src/model/GameState.js
+- `9. Class catalog (JS -> Unity)` --references--> `GameManager`  [INFERRED]
+  SPECS.md → src/core/GameManager.js
+- `9. Class catalog (JS -> Unity)` --references--> `SaveSystem`  [INFERRED]
+  SPECS.md → src/core/SaveSystem.js
+- `2. Architecture` --references--> `GameState`  [INFERRED]
+  SPECS.md → src/model/GameState.js
 
 ## Import Cycles
-- None detected.
+- 2-file cycle: `src/views/ui/GrindView.js -> src/views/ui/PlaceView.js -> src/views/ui/GrindView.js`
+- 2-file cycle: `src/views/ui/PlaceView.js -> src/views/ui/ReceptionView.js -> src/views/ui/PlaceView.js`
+- 2-file cycle: `src/views/ui/PlaceView.js -> src/views/ui/StallView.js -> src/views/ui/PlaceView.js`
+- 2-file cycle: `src/views/ui/ExploreView.js -> src/views/ui/PlaceView.js -> src/views/ui/ExploreView.js`
+- 2-file cycle: `src/views/ui/CraftView.js -> src/views/ui/PlaceView.js -> src/views/ui/CraftView.js`
+- 2-file cycle: `src/views/ui/DryingView.js -> src/views/ui/PlaceView.js -> src/views/ui/DryingView.js`
+- 2-file cycle: `src/views/ui/PlaceView.js -> src/views/ui/QuestBoardView.js -> src/views/ui/PlaceView.js`
+- 2-file cycle: `src/views/ui/PlaceView.js -> src/views/ui/RestView.js -> src/views/ui/PlaceView.js`
+- 2-file cycle: `src/views/ui/PlaceView.js -> src/views/ui/StoreView.js -> src/views/ui/PlaceView.js`
+- 3-file cycle: `src/views/ui/PlaceView.js -> src/views/ui/ReceptionView.js -> src/views/ui/StallView.js -> src/views/ui/PlaceView.js`
 
-## Communities (30 total, 15 thin omitted)
+## Communities (25 total, 15 thin omitted)
 
-### Community 0 - "GameManager.js"
-Cohesion: 0.07
-Nodes (19): KNOWN, MSG, SkillBook, DoPhase, EndingPhase, Phase, DAYS, BUILDING_CATS (+11 more)
+### Community 0 - "Dom"
+Cohesion: 0.06
+Nodes (29): 7. Views (DOM, `src/views/ui/`), KNOWN, MSG, Calendar, WEEKDAYS, ActView, CheckView, CraftView (+21 more)
 
-### Community 1 - "TownView"
-Cohesion: 0.08
-Nodes (12): M3 Do phase (town, avatar, actions), three, AssetSlot, buildGreybox(), mat(), mesh(), put(), STATE_TINT (+4 more)
-
-### Community 2 - "PlannerBookView"
+### Community 3 - "Phase"
 Cohesion: 0.13
-Nodes (4): hm(), colorFor(), esc(), PlannerBookView
+Nodes (6): 3. Phase flow (Scene & Flow), ActPhase, CheckPhase, Phase, PlanPhase, RetroPhase
 
-### Community 3 - "M0 Project skeleton"
-Cohesion: 0.08
-Nodes (7): M0 Project skeleton, ContentDB, PhaseMachine, hasInterior(), ActPhase, PlanPhase, EndingChecker
-
-### Community 5 - "EventSystem"
-Cohesion: 0.10
-Nodes (7): M4 Events and Check, CheckPhase, round2(), EventSystem, pickWeighted(), EventCardView, RecapView
+### Community 5 - "9. Class catalog (JS -> Unity)"
+Cohesion: 0.16
+Nodes (5): 9. Class catalog (JS -> Unity), ActivityLog, EffectApplier, EventSystem, Ledger
 
 ### Community 6 - "runMonths.js"
-Cohesion: 0.08
-Nodes (20): vitest, GameManager, loadDataNode(), args, content, months, quiet, results (+12 more)
+Cohesion: 0.07
+Nodes (18): 2. Architecture, ContentDB, EventBus, GameManager, toCsv(), loadDataNode(), args, content (+10 more)
 
 ### Community 7 - "package.json"
-Cohesion: 0.10
-Nodes (19): dependencies, three@0.187.0, devDependencies, vite@8.3.5, vitest@5.0.5, name, private, scripts (+11 more)
-
-### Community 8 - "ref_playwright"
 Cohesion: 0.09
-Nodes (10): { chromium }, { chromium }, { chromium }, fs, { chromium }, { chromium }, { chromium }, { chromium } (+2 more)
+Nodes (21): dependencies, three@0.187.0, devDependencies, vite@8.3.5, vitest@5.0.5, name, private, scripts (+13 more)
 
-### Community 10 - "EconomySystem"
+### Community 9 - ".count"
 Cohesion: 0.08
-Nodes (17): 10. Planner Book port, 11. Town scene and asset slots, 12. Class catalog (JS → Unity), 14. Open questions, 15. Scene & Flow (user, 7 Nov 2026), 1. Purpose and scope, 2. Architecture, 3. Phase machine (doc:core-gameplay/core-loop and its pages Plan, Do, Check, Act) (+9 more)
+Nodes (10): 10. Open questions, 1. Scope (jam vs full game), 4. Do rules, 5. Data files, 6. EventBus messages (`MSG` in `src/core/EventBus.js`), 8. 3D City View (`src/views/scene/SceneView.js`), BloomLunas jam build specs, Bot (+2 more)
 
-### Community 12 - "StationView"
-Cohesion: 0.14
-Nodes (8): cap(), describe(), HudView, ic(), itemIcon(), esc(), hm(), StationView
+### Community 12 - ".h"
+Cohesion: 0.11
+Nodes (4): HudView, JournalView, StallView, StoreView
 
-### Community 13 - "PlanValidator"
-Cohesion: 0.14
-Nodes (8): M2 Plan phase (Planner Book port), M6 Balance testbed and CSV export, M7 Full-month playtest and handoff, Milestones, Scene & Flow rollout (user request, 7 Nov 2026), Testbed, PlanValidator, DevOverlay
+### Community 13 - "Milestones (game jam overhaul)"
+Cohesion: 0.29
+Nodes (6): J1 Jam rules, logic and headless bot, J2 Jam screens (style board v3), J3 3D City View with Kenney placeholders, J4 Playtest, balance targets, polish, J5 Jam build and handoff, Milestones (game jam overhaul)
 
-### Community 14 - "ActionMenuView"
-Cohesion: 0.13
-Nodes (4): openPlace(), ActionMenuView, StockView, TownMapView
+### Community 16 - "DebtSystem"
+Cohesion: 0.22
+Nodes (4): DebtSystem, clamp(), round2(), tiersLowFirst()
 
-### Community 15 - "actions/package.json"
-Cohesion: 0.15
-Nodes (12): energyKey, _flow, id, kind, name, _placeholder, source, timeMin (+4 more)
-
-### Community 18 - "main.js"
-Cohesion: 0.05
-Nodes (27): M5 Act, endings, save, SaveSystem, app, content, craft, files, fresh, gm (+19 more)
-
-### Community 28 - "Ledger"
-Cohesion: 0.17
-Nodes (6): M1 Logic core, headless month, 13. Extension points for full scope, DebtAccount, GameState, Ledger, Relationships
+### Community 18 - "UiRoot"
+Cohesion: 0.08
+Nodes (11): SaveSystem, app, content, files, gm, q, save, scene (+3 more)
 
 ## Knowledge Gaps
 - **15 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
@@ -140,17 +125,17 @@ Nodes (6): M1 Logic core, headless month, 13. Extension points for full scope, D
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `ActionRunner` connect `ActionRunner` to `GameManager.js`, `Ledger`, `.constructor`?**
-  _High betweenness centrality (0.100) - this node is a cross-community bridge._
-- **Should `GameManager.js` be split into smaller, more focused modules?**
-  _Cohesion score 0.06846635367762129 - nodes in this community are weakly interconnected._
-- **Why does `PlannerBookView` connect `PlannerBookView` to `GameManager.js`, `main.js`, `StationView`?**
-  _High betweenness centrality (0.085) - this node is a cross-community bridge._
-- **Should `TownView` be split into smaller, more focused modules?**
-  _Cohesion score 0.07834101382488479 - nodes in this community are weakly interconnected._
-- **Why does `M1 Logic core, headless month` connect `Ledger` to `GameManager.js`, `M0 Project skeleton`, `ActionRunner`, `runMonths.js`, `Bot`, `EconomySystem`, `ProductionSystem`, `PlanValidator`, `DebtSystem`, `Wallet`, `TimeSystem`, `Rng`, `Inventory`, `WeekPlan`, `EffectApplier`?**
+- **Why does `Dom` connect `Dom` to `.h`?**
+  _High betweenness centrality (0.072) - this node is a cross-community bridge._
+- **Are the 24 inferred relationships involving `9. Class catalog (JS -> Unity)` (e.g. with `ContentDB` and `EventBus`) actually correct?**
+  _`9. Class catalog (JS -> Unity)` has 24 INFERRED edges - model-reasoned connections that need verification._
+- **Should `Dom` be split into smaller, more focused modules?**
+  _Cohesion score 0.06296296296296296 - nodes in this community are weakly interconnected._
+- **Why does `9. Class catalog (JS -> Unity)` connect `9. Class catalog (JS -> Unity)` to `PlanSystem`, `Phase`, `StoreSystem`, `runMonths.js`, `.count`, `EconomySystem`, `ExploreSystem`, `QuestSystem`, `SkillSystem`, `DebtSystem`, `DoPhase`, `UiRoot`, `GameState`, `TimeSystem`?**
   _High betweenness centrality (0.067) - this node is a cross-community bridge._
-- **Should `PlannerBookView` be split into smaller, more focused modules?**
-  _Cohesion score 0.13205128205128205 - nodes in this community are weakly interconnected._
-- **Should `M0 Project skeleton` be split into smaller, more focused modules?**
-  _Cohesion score 0.08172043010752689 - nodes in this community are weakly interconnected._
+- **Should `Phase` be split into smaller, more focused modules?**
+  _Cohesion score 0.13043478260869565 - nodes in this community are weakly interconnected._
+- **Why does `UiRoot` connect `UiRoot` to `Dom`?**
+  _High betweenness centrality (0.066) - this node is a cross-community bridge._
+- **Should `runMonths.js` be split into smaller, more focused modules?**
+  _Cohesion score 0.06636500754147813 - nodes in this community are weakly interconnected._

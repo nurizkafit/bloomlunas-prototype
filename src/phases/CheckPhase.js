@@ -23,7 +23,7 @@ export class CheckPhase extends Phase {
       storeGoal: sys.plan.storeGoal(), sold, soldBy: { ...w.sold },
       budget: { ...state.plan.budget }, spent: { ...w.spent }, income: { ...w.income }, incomeTotal: Math.round(income), spentTotal: Math.round(spent),
       startGold: w.startGold, endGold: state.gold, xp: { ...w.xp }, unpaidLiving: Math.max(0, living - paid),
-      bufferKept: state.gold >= state.plan.budget.buffer
+      bufferKept: state.gold >= state.plan.budget.buffer, debt: state.debt.balance
     };
   }
 }

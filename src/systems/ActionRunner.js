@@ -74,7 +74,14 @@ export class ActionRunner {
         return {
           min: Math.max(place?.travelMin ?? 0, from?.travelMin ?? 0), energy: n('TRAVEL_ENERGY'), work: false, icon: place?.icon,
           check: () => !place ? 'unknown' : place.id === state.place ? 'here' : (!sys.time.openOnArrival(place, Math.max(place.travelMin, from?.travelMin ?? 0)) ? 'closed' : null),
-          run: () => { if (state.store.open) sys.store.close(); state.place = place.id; state.explore.spot = null; },
+          run: () => {
+            if (state.store.open) sys.store.close();
+            state.place = place.id; state.explore.spot = null;
+            // Early arrival waits at the door until opening time.
+            const hrs = sys.time.hoursToday(place), min = Math.max(place.travelMin, from?.travelMin ?? 0);
+            const wait = hrs ? Math.max(0, hrs[0] * 60 - (state.cal.minute + min)) : 0;
+            return { min: min + wait, wait };
+          },
           log: `Went to ${place?.name}`
         };
       },

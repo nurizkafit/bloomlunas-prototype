@@ -53,7 +53,7 @@ describe('actions', () => {
     const gm = gameInDo();
     const e = gm.state.energy, m = gm.state.cal.minute;
     expect(gm.action('travel', { place: 'market' }).ok).toBe(true);
-    expect(gm.state.cal.minute).toBe(m + 30);
+    expect(gm.state.cal.minute).toBe(Math.max(m + 30, gm.content.get('places', 'market').hours[0][0] * 60)); // early arrival waits for opening
     expect(gm.state.energy).toBeLessThan(e);
     gm.state.cal.minute = 21 * 60;
     expect(gm.action('travel', { place: 'guild' }).reason).toBe('closed');

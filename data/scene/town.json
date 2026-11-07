@@ -1,0 +1,1156 @@
+{
+ "id": "town",
+ "_placeholder": true,
+ "source": "Kenney CC0 kits (assets/models/kenney/*/License.txt); layout by Claude for the jam build",
+ "base": "models/kenney/",
+ "places": {
+  "home": {
+   "x": -7,
+   "z": 2.5,
+   "dist": 16
+  },
+  "market": {
+   "x": 0,
+   "z": 0,
+   "dist": 17
+  },
+  "guild": {
+   "x": 7,
+   "z": -5.5,
+   "dist": 17
+  },
+  "outskirt": {
+   "x": 9.5,
+   "z": 5.5,
+   "dist": 16
+  },
+  "overview": {
+   "x": 0.5,
+   "z": 0,
+   "dist": 28
+  }
+ },
+ "houses": [
+  {
+   "id": "home",
+   "x": -7,
+   "z": 1.5,
+   "w": 3,
+   "d": 2,
+   "floors": 1,
+   "wall": "wood",
+   "roof": "roof-point",
+   "roofTint": "roof",
+   "front": "z+"
+  },
+  {
+   "id": "guild",
+   "x": 7,
+   "z": -6.5,
+   "w": 4,
+   "d": 3,
+   "floors": 2,
+   "wall": "stone",
+   "roof": "roof-high-point",
+   "roofTint": "roofGuild",
+   "front": "z+"
+  },
+  {
+   "id": "h1",
+   "x": -2.5,
+   "z": -5.5,
+   "w": 2,
+   "d": 2,
+   "floors": 1,
+   "wall": "stone",
+   "roof": "roof-point",
+   "roofTint": "roof",
+   "front": "z+"
+  },
+  {
+   "id": "h2",
+   "x": 2.5,
+   "z": -7,
+   "w": 2,
+   "d": 2,
+   "floors": 2,
+   "wall": "stone",
+   "roof": "roof-point",
+   "roofTint": "roof",
+   "front": "z+"
+  },
+  {
+   "id": "h3",
+   "x": -11,
+   "z": -3,
+   "w": 2,
+   "d": 2,
+   "floors": 1,
+   "wall": "wood",
+   "roof": "roof-point",
+   "roofTint": "roof",
+   "front": "z+"
+  },
+  {
+   "id": "h4",
+   "x": -5,
+   "z": -3.5,
+   "w": 2,
+   "d": 1,
+   "floors": 1,
+   "wall": "stone",
+   "roof": "roof-point",
+   "roofTint": "roof",
+   "front": "z+"
+  },
+  {
+   "id": "h5",
+   "x": 12,
+   "z": -4,
+   "w": 2,
+   "d": 2,
+   "floors": 1,
+   "wall": "wood",
+   "roof": "roof-point",
+   "roofTint": "roof",
+   "front": "z+"
+  }
+ ],
+ "props": [
+  {
+   "m": "fantasy-town-kit/stall-green",
+   "x": -7,
+   "z": 3.6
+  },
+  {
+   "m": "mini-shop/display-small",
+   "x": -8.2,
+   "z": 3.4,
+   "s": 0.9
+  },
+  {
+   "m": "survival-kit/workbench-grind",
+   "x": -4.9,
+   "z": 3.4,
+   "r": -30,
+   "s": 2.2
+  },
+  {
+   "m": "food-kit/mortar-pestle",
+   "x": -4.9,
+   "z": 3.4,
+   "s": 1.6,
+   "y": 0.48
+  },
+  {
+   "m": "fantasy-town-kit/poles-horizontal",
+   "x": -4.9,
+   "z": 1.2,
+   "r": 90
+  },
+  {
+   "m": "nature-kit/crops_leafsStageB",
+   "x": -4.7,
+   "z": 0.6,
+   "s": 1.3,
+   "y": 0.55
+  },
+  {
+   "m": "nature-kit/crops_leafsStageB",
+   "x": -4.7,
+   "z": 1.2,
+   "s": 1.3,
+   "y": 0.55
+  },
+  {
+   "m": "nature-kit/crops_leafsStageB",
+   "x": -4.7,
+   "z": 1.8,
+   "s": 1.3,
+   "y": 0.55
+  },
+  {
+   "m": "survival-kit/barrel",
+   "x": -5.6,
+   "z": 0.5,
+   "s": 2
+  },
+  {
+   "m": "survival-kit/barrel",
+   "x": -5.4,
+   "z": 0.0,
+   "r": 20,
+   "s": 2
+  },
+  {
+   "m": "survival-kit/box",
+   "x": -8.9,
+   "z": 0.3,
+   "r": 10,
+   "s": 2.2
+  },
+  {
+   "m": "nature-kit/crops_dirtRow",
+   "x": -10.2,
+   "z": 2.2,
+   "r": 90,
+   "s": 1.2
+  },
+  {
+   "m": "nature-kit/crops_dirtRow",
+   "x": -10.2,
+   "z": 2.2,
+   "r": 90,
+   "s": 1.2
+  },
+  {
+   "m": "nature-kit/crops_dirtRow",
+   "x": -10.2,
+   "z": 2.2,
+   "r": 90,
+   "s": 1.2
+  },
+  {
+   "m": "nature-kit/crops_dirtRow",
+   "x": -10.2,
+   "z": 2.2,
+   "r": 90,
+   "s": 1.2
+  },
+  {
+   "m": "nature-kit/crops_dirtRow",
+   "x": -10.2,
+   "z": 3.1,
+   "r": 90,
+   "s": 1.2
+  },
+  {
+   "m": "nature-kit/crops_dirtRow",
+   "x": -10.2,
+   "z": 3.1,
+   "r": 90,
+   "s": 1.2
+  },
+  {
+   "m": "nature-kit/crops_dirtRow",
+   "x": -10.2,
+   "z": 3.1,
+   "r": 90,
+   "s": 1.2
+  },
+  {
+   "m": "nature-kit/crops_dirtRow",
+   "x": -10.2,
+   "z": 3.1,
+   "r": 90,
+   "s": 1.2
+  },
+  {
+   "m": "nature-kit/crops_dirtRow",
+   "x": -10.2,
+   "z": 4.0,
+   "r": 90,
+   "s": 1.2
+  },
+  {
+   "m": "nature-kit/crops_dirtRow",
+   "x": -10.2,
+   "z": 4.0,
+   "r": 90,
+   "s": 1.2
+  },
+  {
+   "m": "nature-kit/crops_dirtRow",
+   "x": -10.2,
+   "z": 4.0,
+   "r": 90,
+   "s": 1.2
+  },
+  {
+   "m": "nature-kit/crops_dirtRow",
+   "x": -10.2,
+   "z": 4.0,
+   "r": 90,
+   "s": 1.2
+  },
+  {
+   "m": "nature-kit/crop_turnip",
+   "x": -10.3,
+   "z": 2.0,
+   "s": 1.1
+  },
+  {
+   "m": "nature-kit/crops_leafsStageB",
+   "x": -9.7,
+   "z": 2.2,
+   "s": 1.2
+  },
+  {
+   "m": "nature-kit/crop_turnip",
+   "x": -10.3,
+   "z": 2.7,
+   "s": 1.1
+  },
+  {
+   "m": "nature-kit/crops_leafsStageB",
+   "x": -9.7,
+   "z": 2.9,
+   "s": 1.2
+  },
+  {
+   "m": "nature-kit/crop_turnip",
+   "x": -10.3,
+   "z": 3.4,
+   "s": 1.1
+  },
+  {
+   "m": "nature-kit/crops_leafsStageB",
+   "x": -9.7,
+   "z": 3.6,
+   "s": 1.2
+  },
+  {
+   "m": "nature-kit/crop_turnip",
+   "x": -10.3,
+   "z": 4.1,
+   "s": 1.1
+  },
+  {
+   "m": "nature-kit/crops_leafsStageB",
+   "x": -9.7,
+   "z": 4.3,
+   "s": 1.2
+  },
+  {
+   "m": "fantasy-town-kit/fence",
+   "x": -11,
+   "z": 3.2,
+   "r": 90
+  },
+  {
+   "m": "fantasy-town-kit/fence",
+   "x": -11,
+   "z": 4.2,
+   "r": 90
+  },
+  {
+   "m": "nature-kit/tree_palmTall",
+   "x": -9.5,
+   "z": -0.2,
+   "s": 1.8
+  },
+  {
+   "m": "nature-kit/tree_palmShort",
+   "x": -4.2,
+   "z": -0.4,
+   "r": 40,
+   "s": 1.6
+  },
+  {
+   "m": "nature-kit/plant_bushLarge",
+   "x": -8.8,
+   "z": 4.6,
+   "s": 0.88
+  },
+  {
+   "m": "nature-kit/flower_yellowA",
+   "x": -6,
+   "z": 4.6,
+   "s": 1.8
+  },
+  {
+   "m": "nature-kit/flower_purpleA",
+   "x": -5.6,
+   "z": 4.8,
+   "s": 1.8
+  },
+  {
+   "m": "fantasy-town-kit/lantern",
+   "x": -5.6,
+   "z": 3.9,
+   "s": 0.9
+  },
+  {
+   "m": "fantasy-town-kit/fountain-round",
+   "x": 0,
+   "z": 0,
+   "s": 1.1
+  },
+  {
+   "m": "fantasy-town-kit/stall-red",
+   "x": -2.3,
+   "z": -2.1,
+   "r": 25
+  },
+  {
+   "m": "fantasy-town-kit/stall-green",
+   "x": 2.3,
+   "z": -2.1,
+   "r": -25
+  },
+  {
+   "m": "fantasy-town-kit/stall",
+   "x": -2.6,
+   "z": 1.8,
+   "r": 155
+  },
+  {
+   "m": "fantasy-town-kit/stall-red",
+   "x": 2.6,
+   "z": 1.9,
+   "r": -155
+  },
+  {
+   "m": "mini-shop/display-fruit",
+   "x": -3.4,
+   "z": -0.4,
+   "r": 70,
+   "s": 0.9
+  },
+  {
+   "m": "mini-shop/display-flowers",
+   "x": 3.4,
+   "z": -0.2,
+   "r": -70,
+   "s": 0.9
+  },
+  {
+   "m": "food-kit/barrel",
+   "x": -1.2,
+   "z": -3.0,
+   "s": 0.8
+  },
+  {
+   "m": "food-kit/bag",
+   "x": 1.3,
+   "z": -3.1,
+   "r": 30,
+   "s": 0.7
+  },
+  {
+   "m": "food-kit/cabbage",
+   "x": -3.2,
+   "z": 0.7,
+   "s": 1.2
+  },
+  {
+   "m": "food-kit/coconut",
+   "x": 3.2,
+   "z": 0.9,
+   "s": 1.4
+  },
+  {
+   "m": "food-kit/lemon",
+   "x": 3.0,
+   "z": 1.1,
+   "s": 1.4
+  },
+  {
+   "m": "food-kit/carrot",
+   "x": -3.0,
+   "z": 0.9,
+   "r": 40,
+   "s": 0.6
+  },
+  {
+   "m": "fantasy-town-kit/cart",
+   "x": 0.0,
+   "z": 3.0,
+   "r": 80
+  },
+  {
+   "m": "fantasy-town-kit/stall-bench",
+   "x": -1.2,
+   "z": 1.5
+  },
+  {
+   "m": "fantasy-town-kit/stall-bench",
+   "x": 1.2,
+   "z": 1.5
+  },
+  {
+   "m": "fantasy-town-kit/lantern",
+   "x": -1.5,
+   "z": -1.2
+  },
+  {
+   "m": "fantasy-town-kit/lantern",
+   "x": 1.5,
+   "z": -1.2
+  },
+  {
+   "m": "fantasy-town-kit/lantern",
+   "x": 1.5,
+   "z": 1.2
+  },
+  {
+   "m": "fantasy-town-kit/lantern",
+   "x": -1.5,
+   "z": 1.2
+  },
+  {
+   "m": "nature-kit/tree_palmTall",
+   "x": -4.4,
+   "z": -1.8,
+   "s": 1.6
+  },
+  {
+   "m": "nature-kit/tree_palmShort",
+   "x": 4.5,
+   "z": 2.8,
+   "s": 1.6
+  },
+  {
+   "m": "fantasy-town-kit/banner-green",
+   "x": 5.2,
+   "z": -4.95,
+   "r": -90,
+   "s": 1.2
+  },
+  {
+   "m": "fantasy-town-kit/banner-red",
+   "x": 8.8,
+   "z": -4.95,
+   "r": -90,
+   "s": 1.2
+  },
+  {
+   "m": "fantasy-town-kit/pillar-stone",
+   "x": 5.6,
+   "z": -4.4
+  },
+  {
+   "m": "fantasy-town-kit/pillar-stone",
+   "x": 8.4,
+   "z": -4.4
+  },
+  {
+   "m": "fantasy-town-kit/lantern",
+   "x": 6.2,
+   "z": -4.0
+  },
+  {
+   "m": "fantasy-town-kit/lantern",
+   "x": 7.8,
+   "z": -4.0
+  },
+  {
+   "m": "mini-forest/flag",
+   "x": 9.6,
+   "z": -5,
+   "s": 1.2
+  },
+  {
+   "m": "fantasy-town-kit/hedge",
+   "x": 4.6,
+   "z": -3.8
+  },
+  {
+   "m": "fantasy-town-kit/hedge",
+   "x": 9.4,
+   "z": -3.8,
+   "r": 180
+  },
+  {
+   "m": "survival-kit/signpost",
+   "x": 4.2,
+   "z": -2.6,
+   "r": 30,
+   "s": 2.4
+  },
+  {
+   "m": "survival-kit/chest",
+   "x": 8.9,
+   "z": -3.6,
+   "s": 2
+  },
+  {
+   "m": "fantasy-town-kit/tree-high-round",
+   "x": 10.5,
+   "z": -7.2
+  },
+  {
+   "m": "fantasy-town-kit/tree",
+   "x": 3.8,
+   "z": -8
+  },
+  {
+   "m": "nature-kit/tree_palmTall",
+   "x": 9.67,
+   "z": 7.04,
+   "r": 245,
+   "s": 1.52
+  },
+  {
+   "m": "nature-kit/tree_oak",
+   "x": 12.14,
+   "z": 6.44,
+   "r": 30,
+   "s": 1.56
+  },
+  {
+   "m": "mini-forest/tree",
+   "x": 7.08,
+   "z": 5.05,
+   "r": 54,
+   "s": 1.11
+  },
+  {
+   "m": "nature-kit/tree_oak",
+   "x": 11.07,
+   "z": 5.02,
+   "r": 139,
+   "s": 1.54
+  },
+  {
+   "m": "nature-kit/tree_oak",
+   "x": 8.18,
+   "z": 8.18,
+   "r": 44,
+   "s": 1.88
+  },
+  {
+   "m": "mini-forest/tree",
+   "x": 8.02,
+   "z": 7.44,
+   "r": 91,
+   "s": 1.11
+  },
+  {
+   "m": "fantasy-town-kit/tree",
+   "x": 8.64,
+   "z": 9.13,
+   "r": 153,
+   "s": 0.85
+  },
+  {
+   "m": "nature-kit/tree_oak",
+   "x": 8.5,
+   "z": 8.48,
+   "r": 260,
+   "s": 1.54
+  },
+  {
+   "m": "nature-kit/tree_palmTall",
+   "x": 7.26,
+   "z": 6.43,
+   "r": 82,
+   "s": 1.56
+  },
+  {
+   "m": "mini-forest/tree-high",
+   "x": 9.25,
+   "z": 8.82,
+   "r": 23,
+   "s": 1.19
+  },
+  {
+   "m": "nature-kit/tree_palmTall",
+   "x": 12.76,
+   "z": 5.45,
+   "r": 358,
+   "s": 1.62
+  },
+  {
+   "m": "nature-kit/tree_palmTall",
+   "x": 11.73,
+   "z": 5.46,
+   "r": 103,
+   "s": 1.77
+  },
+  {
+   "m": "nature-kit/tree_palmTall",
+   "x": 7.46,
+   "z": 6.13,
+   "r": 301,
+   "s": 1.61
+  },
+  {
+   "m": "mini-forest/tree-high",
+   "x": 5.3,
+   "z": 4.21,
+   "r": 31,
+   "s": 1.27
+  },
+  {
+   "m": "mini-forest/tree",
+   "x": 8.91,
+   "z": 8.23,
+   "r": 62,
+   "s": 1.14
+  },
+  {
+   "m": "mini-forest/tree-high",
+   "x": 10.85,
+   "z": 7.7,
+   "r": 182,
+   "s": 1.27
+  },
+  {
+   "m": "nature-kit/tree_oak",
+   "x": 13.19,
+   "z": 3.23,
+   "r": 9,
+   "s": 1.61
+  },
+  {
+   "m": "nature-kit/tree_palmTall",
+   "x": 8.59,
+   "z": 7.01,
+   "r": 317,
+   "s": 1.79
+  },
+  {
+   "m": "survival-kit/tent-canvas",
+   "x": 9.1,
+   "z": 5.3,
+   "r": 200,
+   "s": 2.4
+  },
+  {
+   "m": "survival-kit/campfire-pit",
+   "x": 10.1,
+   "z": 6.2,
+   "s": 2.4
+  },
+  {
+   "m": "survival-kit/resource-wood",
+   "x": 10.7,
+   "z": 5.7,
+   "r": 40,
+   "s": 2
+  },
+  {
+   "m": "mini-forest/rocks-low",
+   "x": 11.9,
+   "z": 6.7
+  },
+  {
+   "m": "nature-kit/rock_largeA",
+   "x": 7.5,
+   "z": 6.9,
+   "r": 30,
+   "s": 1.5
+  },
+  {
+   "m": "nature-kit/mushroom_tanGroup",
+   "x": 10.9,
+   "z": 7.1,
+   "s": 2
+  },
+  {
+   "m": "nature-kit/stump_round",
+   "x": 8.5,
+   "z": 6.7,
+   "s": 1.6
+  },
+  {
+   "m": "nature-kit/log_stack",
+   "x": 11.5,
+   "z": 4.3,
+   "r": 60,
+   "s": 1.4
+  },
+  {
+   "m": "nature-kit/plant_bush",
+   "x": 8.26,
+   "z": 4.27,
+   "s": 1.6
+  },
+  {
+   "m": "nature-kit/flower_yellowA",
+   "x": 8.25,
+   "z": 4.5,
+   "s": 1.6
+  },
+  {
+   "m": "nature-kit/grass_large",
+   "x": 8.49,
+   "z": 3.54,
+   "s": 1.6
+  },
+  {
+   "m": "nature-kit/plant_bush",
+   "x": 9.23,
+   "z": 4.96,
+   "s": 1.6
+  },
+  {
+   "m": "nature-kit/flower_redA",
+   "x": 12.48,
+   "z": 5.79,
+   "s": 1.6
+  },
+  {
+   "m": "nature-kit/flower_yellowA",
+   "x": 12.39,
+   "z": 5.2,
+   "s": 1.6
+  },
+  {
+   "m": "nature-kit/grass_large",
+   "x": 7.18,
+   "z": 3.75,
+   "s": 1.6
+  },
+  {
+   "m": "nature-kit/grass_large",
+   "x": 10.07,
+   "z": 7.38,
+   "s": 1.6
+  },
+  {
+   "m": "nature-kit/plant_bush",
+   "x": 9.78,
+   "z": 5.83,
+   "s": 1.6
+  },
+  {
+   "m": "nature-kit/flower_redA",
+   "x": 12.49,
+   "z": 3.99,
+   "s": 1.6
+  },
+  {
+   "m": "mini-forest/patch-grass",
+   "x": 9.5,
+   "z": 7.7,
+   "s": 2
+  },
+  {
+   "m": "fantasy-town-kit/tree-high-round",
+   "x": -12,
+   "z": 1,
+   "r": 149,
+   "s": 1.5
+  },
+  {
+   "m": "nature-kit/tree_oak",
+   "x": -12.5,
+   "z": -6,
+   "r": 333,
+   "s": 1.5
+  },
+  {
+   "m": "nature-kit/tree_palmTall",
+   "x": -1,
+   "z": -8.5,
+   "r": 244,
+   "s": 1.5
+  },
+  {
+   "m": "nature-kit/tree_palmTall",
+   "x": 5.5,
+   "z": -9.5,
+   "r": 123,
+   "s": 1.5
+  },
+  {
+   "m": "nature-kit/tree_oak",
+   "x": 13,
+   "z": -1,
+   "r": 210,
+   "s": 1.5
+  },
+  {
+   "m": "nature-kit/tree_oak",
+   "x": -8.5,
+   "z": -6.5,
+   "r": 18,
+   "s": 1.5
+  },
+  {
+   "m": "nature-kit/tree_palmTall",
+   "x": 4.5,
+   "z": 6.5,
+   "r": 215,
+   "s": 1.5
+  },
+  {
+   "m": "nature-kit/tree_oak",
+   "x": -3.5,
+   "z": 6.5,
+   "r": 127,
+   "s": 1.5
+  },
+  {
+   "m": "fantasy-town-kit/tree-high-round",
+   "x": -12,
+   "z": 6,
+   "r": 219,
+   "s": 1.5
+  },
+  {
+   "m": "nature-kit/plant_bushLarge",
+   "x": -3,
+   "z": 4,
+   "s": 0.77
+  },
+  {
+   "m": "nature-kit/plant_bushLarge",
+   "x": 3.5,
+   "z": 4.5,
+   "s": 0.77
+  },
+  {
+   "m": "nature-kit/plant_bushLarge",
+   "x": -1,
+   "z": 6,
+   "s": 0.77
+  },
+  {
+   "m": "nature-kit/plant_bushLarge",
+   "x": 1.5,
+   "z": -4.5,
+   "s": 0.77
+  },
+  {
+   "m": "nature-kit/plant_bushLarge",
+   "x": -6,
+   "z": -1.5,
+   "s": 0.77
+  },
+  {
+   "m": "nature-kit/plant_bushLarge",
+   "x": 5,
+   "z": 0.5,
+   "s": 0.77
+  },
+  {
+   "m": "nature-kit/plant_bushLarge",
+   "x": 10.5,
+   "z": 0,
+   "s": 0.77
+  }
+ ],
+ "roads": [
+  [
+   [
+    -7,
+    4.6
+   ],
+   [
+    -4.5,
+    4.4
+   ],
+   [
+    -2,
+    2.6
+   ],
+   [
+    0,
+    1.2
+   ]
+  ],
+  [
+   [
+    0,
+    -1.2
+   ],
+   [
+    2.5,
+    -2.8
+   ],
+   [
+    5.5,
+    -3.5
+   ],
+   [
+    7,
+    -4.2
+   ]
+  ],
+  [
+   [
+    1.2,
+    0.6
+   ],
+   [
+    4,
+    2.5
+   ],
+   [
+    6.5,
+    4
+   ],
+   [
+    8.2,
+    5
+   ]
+  ],
+  [
+   [
+    -1.2,
+    -0.4
+   ],
+   [
+    -4,
+    -1.6
+   ],
+   [
+    -8,
+    -2
+   ],
+   [
+    -10.5,
+    -1.8
+   ]
+  ]
+ ],
+ "walkers": [
+  {
+   "m": "mini-characters/character-female-a",
+   "path": [
+    [
+     -7,
+     4.6
+    ],
+    [
+     -4.5,
+     4.4
+    ],
+    [
+     -2,
+     2.6
+    ],
+    [
+     0,
+     1.2
+    ],
+    [
+     2.5,
+     -2.8
+    ],
+    [
+     5.5,
+     -3.5
+    ],
+    [
+     7,
+     -4.2
+    ]
+   ],
+   "speed": 0.55
+  },
+  {
+   "m": "mini-characters/character-male-c",
+   "path": [
+    [
+     1.2,
+     0.6
+    ],
+    [
+     4,
+     2.5
+    ],
+    [
+     6.5,
+     4
+    ],
+    [
+     8.2,
+     5
+    ]
+   ],
+   "speed": 0.5
+  },
+  {
+   "m": "mini-characters/character-male-e",
+   "path": [
+    [
+     -1.2,
+     -0.4
+    ],
+    [
+     -4,
+     -1.6
+    ],
+    [
+     -8,
+     -2
+    ],
+    [
+     -10.5,
+     -1.8
+    ]
+   ],
+   "speed": 0.45
+  },
+  {
+   "m": "mini-characters/character-female-a",
+   "path": [
+    [
+     0,
+     -1.6
+    ],
+    [
+     1.6,
+     -0.4
+    ],
+    [
+     0,
+     1.6
+    ],
+    [
+     -1.6,
+     0.4
+    ],
+    [
+     0,
+     -1.6
+    ]
+   ],
+   "speed": 0.35
+  }
+ ],
+ "player": {
+  "m": "mini-characters/character-female-b",
+  "spots": {
+   "home": [
+    -6.2,
+    4.2
+   ],
+   "market": [
+    -0.8,
+    2.2
+   ],
+   "guild": [
+    7,
+    -3.6
+   ],
+   "outskirt": [
+    9.0,
+    6.4
+   ]
+  }
+ },
+ "tints": {
+  "roof": "#3F6A66",
+  "roofGuild": "#5FA39A",
+  "stone": "#E8DFCB",
+  "wood": "#C8A57A",
+  "ground": "#A9B886",
+  "plaza": "#DCCFAF",
+  "path": "#B8A887",
+  "herb": "#6E9A6A",
+  "water": "#7FB5C9"
+ },
+ "light": {
+  "day": "#F6E7B8",
+  "moon": "#A9B8E8",
+  "sky": "#D8E3D0",
+  "skyNight": "#2C3E5C"
+ },
+ "walls": {
+  "stone": {
+   "plain": "wall",
+   "door": "wall-door",
+   "window": "wall-window-shutters"
+  },
+  "wood": {
+   "plain": "wall-wood",
+   "door": "wall-wood-door",
+   "window": "wall-wood-window-shutters"
+  }
+ }
+}

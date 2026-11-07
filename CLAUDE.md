@@ -36,25 +36,25 @@ Read these first:
 ```
 CLAUDE.md  SPECS.md  MILESTONES.md
 index.html  package.json  vite.config.js
-data/          BalanceConfig.json, QualityConfig.json, activities/, actions/, recipes/, debt/, locations/, interiors/, entities/, items/, events/, costs/, investments/, skills/, endings/
-src/main.js    browser entry: builds GameManager + views
-src/core/      GameManager, PhaseMachine, EventBus, ContentDB, SaveSystem
-src/model/     GameState, Calendar, Wallet, Inventory, DebtAccount, SkillBook, Relationships, WeekPlan, Ledger
-src/systems/   TimeSystem, ActionRunner, EffectApplier, EconomySystem, ProductionSystem, QualityCalculator, DebtSystem, EventSystem, PlanValidator, EndingChecker
-src/phases/    Phase, PlanPhase, DoPhase, CheckPhase, ActPhase, EndingPhase
-src/views/town/  TownView, InteriorView, AssetSlot, Avatar, PathGraph
-src/views/ui/    PlannerBookView, ActionMenuView, CraftView, StockView, HudView, EventCardView, RecapView, MonthEndView, EndingView, DevOverlay
-src/sim/       Bot, runMonths.js (headless CLI), Testbed (browser panel), csv.js
-assets/models/ <slot id>.glb (optional; greybox shows when missing)
-tests/         *.test.js (Vitest, logic only)
+data/          BalanceConfig.json, items/, recipes/, places/, stations/, goals/, skills/, spots/, quests/, services/, events/, debt/, notes/, story/, start/, scene/town.json
+src/main.js    browser entry: builds GameManager, SceneView and UiRoot
+src/core/      GameManager, EventBus, ContentDB, SaveSystem, Rng
+src/model/     GameState, Calendar, Inventory
+src/systems/   ActionRunner, TimeSystem, EffectApplier, EconomySystem, StoreSystem, ProductionSystem, ExploreSystem, QuestSystem, DebtSystem, EventSystem, PlanSystem, SkillSystem, Ledger, ActivityLog
+src/phases/    Phase, PlanPhase, DoPhase, CheckPhase, ActPhase, RetroPhase
+src/views/ui/    UiRoot, Dom, Icons, Ornaments, theme.css, HudView, StartView, JournalView, CheckView, ActView, RetroView, TownMapView, PlaceView, station views, EventCardView
+src/views/scene/ SceneView (3D City View)
+src/sim/       Bot, runMonths.js (headless CLI), loadDataNode, csv.js
+assets/models/kenney/<kit>/  used Kenney GLB files + Textures/colormap.png + License.txt (CC0)
+tests/         *.test.js (Vitest, logic only), browser/ (Playwright flow test)
 ```
 
 ## Commands
 
 - `npm run dev`: Vite dev server.
-- `npm run sim -- --months 1 --runs 100`: headless bot runs, prints a summary, writes `out/sim.csv`.
+- `npm run sim -- --runs 100`: headless bot runs over two months, prints a summary, writes `out/sim.csv`.
 - `npm test`: Vitest (logic only).
-- `npm run check`: `npm test` + one headless month + build.
+- `npm run check`: `npm test` + two headless runs + build.
 - `npm run test:browser`: Playwright browser tests in `tests/browser/` (starts Vite, screenshots in `out/browser/`). Run it at each milestone with a view.
 
 ## Conventions
