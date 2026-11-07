@@ -3,7 +3,7 @@
   "name": "Grind",
   "kind": "grind",
   "locationIds": [
-    "loc_home_atelier"
+    "loc_home_grinder"
   ],
   "timeMin": 15,
   "energyKey": "ENERGY_COST_DEFAULT",

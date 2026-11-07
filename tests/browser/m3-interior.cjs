@@ -33,7 +33,19 @@ const SP = process.argv[2];
   out.cauldronMenu = await scr('st_cauldron');
   out.counterMenu = await scr('st_counter');
   out.bedMenu = await scr('st_bed');
-  await station('st_shelf'); out.shelf = (await p.locator('.station .fn.on').textContent()).includes('Shelf stocking');
+  out.grinder = await scr('st_grinder');
+  out.rack = await scr('st_drying_rack');
+  // One Crafting menu: recipe, lot, batches, packing; one Craft button.
+  await p.evaluate(() => { const g = window.__gm, r = g.content.get('recipes', 'kunyit_asam'); for (const l of Object.values(r.slots)) for (const e of l) g.state.inventory.add(e.item, e.variant, e.qty * 2, { born: 0 }); g.state.calendar.minute = Math.max(g.state.calendar.minute, 7 * 60); });
+  await p.evaluate(() => window.__ui.station.open('loc_home_atelier')); await p.waitForTimeout(80);
+  await p.click('[data-recipe="kunyit_asam"]'); await p.click('[data-cb="1"]'); await p.click('[data-container="jar"]');
+  await p.locator('select[name="lot"]').first().selectOption({ index: 1 }); await p.waitForTimeout(80);
+  await p.screenshot({ path: `${SP}/st-crafting.png` });
+  await p.click('[data-craftgo]'); await p.waitForTimeout(150);
+  out.packedJar = await p.evaluate(() => window.__gm.state.inventory.find((l) => l.pack === 'jar').reduce((n, l) => n + l.qty, 0));
+  out.craftLog = await p.evaluate(() => window.__gm.state.activityLog.slice(-2).map((l) => l.actionId).join());
+  await p.click('.station [data-close]');
+  await station('st_shelf'); out.shelf = (await p.locator('.station .fn.on').textContent()).includes('Shelf stock') && (await p.locator('.shelf3 .sl').count()) === 9;
   await p.screenshot({ path: `${SP}/m3-interior-shelf.png` });
   // Walk between stations costs 0 min.
   await p.click('.station [data-close]');
@@ -64,21 +76,35 @@ const SP = process.argv[2];
   // Customer comes to the counter (needs stock; give some for the test).
   await p.evaluate(() => { const g = window.__gm; g.state.inventory.add('fresh_jamu', 'product', 3, { tier: 'Good', born: g.state.calendar.absDay() }); g.state.calendar.minute = Math.max(g.state.calendar.minute, 9 * 60); });
   await p.evaluate(() => window.__ui.station.open('loc_home_shop', 'shelf')); await p.waitForTimeout(100);
-  await p.click('[data-stock="fresh_jamu"]'); await p.waitForTimeout(100);
-  out.shelfQty = await p.evaluate(() => window.__gm.state.shelf.fresh_jamu?.qty ?? 0);
+  await p.click('.shelf3 [data-slot="0"]'); await p.click('[data-stock]'); await p.waitForTimeout(100);
+  await p.click('.shelf3 [data-slot="4"]'); await p.waitForTimeout(60);
+  if (await p.locator('[data-stock]:not([disabled])').count()) { await p.click('[data-stock]'); await p.waitForTimeout(100); }
+  out.shelfQty = await p.evaluate(() => window.__gm.ctx.sys.economy.shelfQty());
+  await p.screenshot({ path: `${SP}/st-shelf-grid.png` });
   await p.click('.station [data-fn="store"]'); await p.waitForTimeout(80);
-  await p.click('[data-run="open_shop|serve-customer"]'); await p.waitForTimeout(300);
-  out.storeResult = await p.locator('.station .result').count();
+  await p.screenshot({ path: `${SP}/st-shop-management.png` });
+  const e0 = await p.evaluate(() => window.__gm.state.player.energy);
+  await p.evaluate(() => { window.__seenCustomer = false; window.__visits = 0; const iv = window.__ui.town.inside; const o = iv.customerVisit.bind(iv); iv.customerVisit = () => { window.__visits++; o(); window.__vis = [iv.customer.root.visible, iv.customerPath.length]; setTimeout(() => { window.__vis2 = [iv.customer.root.visible, iv.customerPath.length, iv.customer.root.position.toArray()]; }, 30); }; const t = setInterval(() => { if (window.__ui.town.inside?.customer.root.visible) { window.__seenCustomer = true; clearInterval(t); } }, 50); });
+  await p.click('[data-openshop]'); await p.waitForTimeout(1000);
+  out.live = await p.locator('.st-live').isVisible();
+  out.insideAtShop = await p.evaluate(() => [window.__ui.town.inside?.data.id ?? null, window.__gm.state.store?.hours, window.__gm.state.store?.open]);
+  await p.screenshot({ path: `${SP}/st-shop-live.png` });
+  await p.waitForSelector('.result2', { timeout: 20000 });
+  out.customer = await p.evaluate(() => window.__visits >= 1 && window.__vis?.[0] === true);
+  out.visits = await p.evaluate(() => [window.__visits, window.__vis2?.[0]]);
+  out.energyUsed = e0 - (await p.evaluate(() => window.__gm.state.player.energy));
+  out.report = await p.evaluate(() => { const s = window.__gm.state.store; return { hours: s.hours, sold: s.sold, open: s.open }; });
+  out.stopReason = await p.evaluate(() => window.__gm.ctx.sys.economy.storeStop());
+  out.storeResult = await p.locator('.report .rp').count();
   await p.screenshot({ path: `${SP}/st-store-result.png` });
-  await p.click('.station [data-close]');
+  await p.click('[data-resultok]'); await p.click('.station [data-close]');
   out.customerLog = await p.locator('#hLog p').first().textContent();
-  out.customer = await p.evaluate(() => window.__ui.town.inside?.customer.root.visible ?? false);
   await p.screenshot({ path: `${SP}/m3-interior-customer.png` });
   console.log('interior', JSON.stringify(out));
   console.log('errors', JSON.stringify(errs));
   const ok = out.bMenu === 'Home and shop' && out.bEnter === 1 && out.bActs.join() === 'craft,processing,open_shop,rest' && out.bSecs.join() === 'Production,Shop,Personal'
-    && /Cauldron/.test(out.bTags[0]) && /Cauldron.*\+.*Drying yard/.test(out.bTags[1]) && /Shop counter/.test(out.bTags[2]) && /Bed/.test(out.bTags[3]) && out.entered === 'int_home_shop'
-    && out.startInside === 'int_home_shop' && out.exitBar && out.cauldronMenu === 'Crafting' && out.counterMenu === 'Store' && out.bedMenu === 'Rest' && out.shelfQty >= 3 && out.storeResult >= 1
+    && /Cauldron/.test(out.bTags[0]) && /Grinding table.*\+.*Drying rack/.test(out.bTags[1]) && /Shop counter/.test(out.bTags[2]) && /Bed/.test(out.bTags[3]) && out.entered === 'int_home_shop'
+    && out.startInside === 'int_home_shop' && out.exitBar && out.cauldronMenu === 'Crafting' && out.counterMenu === 'Store' && out.bedMenu === 'Rest' && out.shelfQty >= 3 && out.storeResult >= 4 && out.live && out.energyUsed === 10 && !out.report.open && out.report.hours >= 1 && out.stopReason !== null && out.grinder === 'Grinding table' && out.rack === 'Drying rack' && out.packedJar === 12 && out.craftLog === 'prepare,brew'
     && out.shelf && out.walkInsideMin === 0 && out.stillInside && out.afterExit === null && out.walkedIn === 'int_home_shop' && out.customer
     && /Eat breakfast/.test(out.eatLabel) && /Ate breakfast: \+20 energy/.test(out.eatLog) && out.eatAgain && /Small rest: \+25 energy/.test(out.napLog) && out.endDayBtn === 0;
   await b.close();

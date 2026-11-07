@@ -153,14 +153,14 @@ export class Bot {
   #dryAndGrind() {
     const today = this.state.calendar.absDay();
     if (this.state.batches.some((b) => b.readyDay <= today) || this.#have('turmeric', 'fresh') >= 2) {
-      this.#go('processing', 'loc_home_drying_yard');
+      this.#go('processing', 'loc_home_drying_rack');
       if (this.state.batches.some((b) => b.readyDay <= today)) this.#run('collect-batch');
       const spare = this.#have('turmeric', 'fresh');
       if (spare >= 2) this.#run('start-batch', { item: 'turmeric', qty: spare });
     }
     const dried = this.#have('turmeric', 'dried');
     if (dried) {
-      this.#go('processing', 'loc_home_atelier');
+      this.#go('processing', 'loc_home_grinder');
       this.#run('grind', { item: 'turmeric', qty: dried });
     }
   }
@@ -170,11 +170,15 @@ export class Bot {
     if (!products() || !this.content.get('locations', 'loc_home_shop').openHours[this.state.calendar.day]) return;
     this.#go('open_shop', 'loc_home_shop');
     // Shelf stocking: every product on the shelf at the fair price (ratio 1).
-    for (const item of [...new Set(this.state.inventory.find((l) => l.variant === 'product' && !l.spoiled).map((l) => l.item))]) this.#run('restock-shelf', { item, ratio: 1 });
+    const eco = this.gm.ctx.sys.economy;
+    for (const g of eco.productGroups()) { if (eco.freeQty(g.item, g.tier, g.pack)) this.#run('restock-shelf', { item: g.item, tier: g.tier, pack: g.pack, ratio: 1 }); }
+    // Open store (one energy cost), then serve hour by hour until sold out or closing time.
+    if (!this.#energyFor('ENERGY_COST_DEFAULT') || !this.#run('open-store')) return;
     let guard = 0;
-    while (products() && this.#energyFor('ENERGY_COST_DEFAULT') && guard++ < 24) {
+    while (!eco.storeStop() && guard++ < 24) {
       if (!this.#run('serve-customer')) break;
     }
+    this.#run('close-store');
   }
 
   /** Go home; small rests until sleep time (SLEEP_EARLIEST_HOUR), eat dinner if open, then sleep. */

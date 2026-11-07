@@ -18,24 +18,46 @@ export class ProductionSystem {
     return SkillBook.levelFor(state.skills.subXp[sub] ?? 0, path.xpToNextLevel);
   }
 
-  /** @param {any} recipe @returns {string|null} reason it cannot be made, or null */
-  missing(recipe) {
-    const inv = this.ctx.state.inventory;
-    for (const list of Object.values(recipe.slots)) {
-      for (const s of list) {
-        if (inv.count(s.item, s.variant, { includeSpoiled: true }) < s.qty) return `not enough ${s.item} (${s.variant})`;
+  /** The picked lot of a recipe slot entry, or null (auto: good lots first, oldest first). @param {Record<string,string>} lots @param {string} key */
+  static pick(lots, key) {
+    const v = lots?.[key];
+    if (!v) return null;
+    const [born, sp] = String(v).split('|');
+    return { born: Number(born), spoiled: sp === '1' };
+  }
+
+  /**
+   * Lots the player can pick for one slot entry (Crafting: pick materials).
+   * @param {{item:string, variant:string}} entry @returns {{born:number, spoiled:boolean, qty:number, key:string}[]}
+   */
+  lotsFor(entry) {
+    return this.ctx.state.inventory.find((l) => l.item === entry.item && l.variant === entry.variant)
+      .sort((a, b) => Number(a.spoiled) - Number(b.spoiled) || a.born - b.born)
+      .map((l) => ({ born: l.born, spoiled: l.spoiled, qty: l.qty, key: `${l.born}|${l.spoiled ? 1 : 0}` }));
+  }
+
+  /** @param {any} recipe @param {{batches?:number, lots?:Record<string,string>}} [o] @returns {string|null} reason it cannot be made, or null */
+  missing(recipe, o = {}) {
+    const inv = this.ctx.state.inventory, b = o.batches ?? 1;
+    for (const [slot, list] of Object.entries(recipe.slots)) {
+      for (const [i, s] of list.entries()) {
+        const pk = ProductionSystem.pick(o.lots, `${slot}:${i}`);
+        const have = pk ? inv.find((l) => l.item === s.item && l.variant === s.variant && l.born === pk.born && l.spoiled === pk.spoiled).reduce((n, l) => n + l.qty, 0)
+          : inv.count(s.item, s.variant, { includeSpoiled: true });
+        if (have < s.qty * b) return `not enough ${s.item} (${s.variant})${pk ? ' in the picked lot' : ''}`;
       }
     }
     return null;
   }
 
-  /** Expected tier with the stock the player has now, for the craft screen. @param {any} recipe */
-  preview(recipe) {
-    const { inventory } = this.ctx.state;
+  /** Expected tier with the stock and the picked lots, for the craft screen. @param {any} recipe @param {{batches?:number, lots?:Record<string,string>}} [o] */
+  preview(recipe, o = {}) {
+    const { inventory } = this.ctx.state, b = o.batches ?? 1;
     const slotPoints = {};
     for (const [slot, list] of Object.entries(recipe.slots)) {
-      slotPoints[slot] = list.map((s) => {
-        const good = inventory.count(s.item, s.variant) >= s.qty;
+      slotPoints[slot] = list.map((s, i) => {
+        const pk = ProductionSystem.pick(o.lots, `${slot}:${i}`);
+        const good = pk ? !pk.spoiled : inventory.count(s.item, s.variant) >= s.qty * b;
         return this.ctx.sys.quality.points(good ? this.ctx.content.get('items', s.item).tier : 'Spoiled');
       });
     }
@@ -49,24 +71,30 @@ export class ProductionSystem {
     return { score, tier: this.ctx.sys.quality.tier(score).tier, level };
   }
 
-  /** Use the materials and make the product. Call missing() first. @param {any} recipe */
-  craft(recipe) {
-    const { state, content, bus } = this.ctx;
+  /**
+   * Use the materials and make the product. Call missing() first.
+   * @param {any} recipe @param {{batches?:number, lots?:Record<string,string>, pack?:string|null}} [o] batches x materials and output; pack = packed output
+   */
+  craft(recipe, o = {}) {
+    const { state, content, bus } = this.ctx, b = o.batches ?? 1;
     const slotPoints = {};
     for (const [slot, list] of Object.entries(recipe.slots)) {
-      slotPoints[slot] = list.map((s) => {
-        const taken = state.inventory.take(s.item, s.variant, s.qty, { includeSpoiled: true });
+      slotPoints[slot] = list.map((s, i) => {
+        const pk = ProductionSystem.pick(o.lots, `${slot}:${i}`);
+        const need = s.qty * b;
+        const taken = state.inventory.take(s.item, s.variant, need, pk ? { includeSpoiled: true, born: pk.born, spoiled: pk.spoiled } : { includeSpoiled: true });
         const tier = content.get('items', s.item).tier;
         const pts = taken.reduce((n, l) => n + l.qty * this.ctx.sys.quality.points(l.spoiled ? 'Spoiled' : tier), 0);
-        return pts / s.qty;
+        return pts / need;
       });
     }
     const r = this.#rate(recipe, slotPoints);
-    if (r.tier === 'Failed') state.stats.waste += recipe.output;
-    else state.inventory.add(recipe.product, 'product', recipe.output, { tier: r.tier, born: state.calendar.absDay() });
-    state.stats.made[r.tier] = (state.stats.made[r.tier] ?? 0) + recipe.output;
+    const out = recipe.output * b;
+    if (r.tier === 'Failed') state.stats.waste += out;
+    else state.inventory.add(recipe.product, 'product', out, { tier: r.tier, born: state.calendar.absDay(), pack: o.pack ?? null });
+    state.stats.made[r.tier] = (state.stats.made[r.tier] ?? 0) + out;
     bus.emit(MSG.INVENTORY_CHANGED, { item: recipe.product });
-    return { ...r, product: recipe.product, qty: r.tier === 'Failed' ? 0 : recipe.output };
+    return { ...r, product: recipe.product, qty: r.tier === 'Failed' ? 0 : out };
   }
 
   /** @param {string} item */

@@ -3,12 +3,12 @@
   "name": "Serve customers",
   "kind": "serveCustomers",
   "timeMin": 60,
-  "energyKey": "ENERGY_COST_DEFAULT",
   "xp": {
     "path": "sun",
     "sub": "marketing",
     "amount": 2
   },
   "source": "docs:pages/actions/serve-customer.md",
-  "_placeholder": true
+  "_placeholder": true,
+  "_flow": "user decision 7 Nov 2026: one energy cost to open the store (open-store); serving each hour costs no energy"
 }

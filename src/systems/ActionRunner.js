@@ -190,19 +190,62 @@ export class ActionRunner {
     return { minutes: action.timeMin, apply: () => ({}) };
   }
 
-  /** Shelf stocking ([Proposal]): put up to qty units of a product on the shelf at a price ratio. */
-  kind_stockShelf(action, { item, qty, ratio = 1 }) {
-    const opts = this.#c.num('SHELF_PRICE_OPTIONS');
+  /**
+   * Shelf stocking ([Proposal]): put a product group (item, tier, pack) in a shelf slot with a quantity and a price ratio.
+   * qty 0 clears the slot. No slot given: the slot that has this group, else the first empty slot.
+   * No tier given: the group of this item with the most free units.
+   */
+  kind_stockShelf(action, { slot, item, tier, pack, qty, ratio = 1 }) {
+    const eco = this.ctx.sys.economy, opts = this.#c.num('SHELF_PRICE_OPTIONS'), slots = eco.slots();
     if (!item) return { error: 'pick a product to stock' };
     if (!opts.includes(ratio)) return { error: `price must be one of ${opts.join(', ')}` };
-    const have = this.#s.inventory.count(item, 'product');
-    const n = Math.max(0, Math.min(Math.floor(qty ?? have), have));
+    if (tier === undefined) {
+      const g = eco.productGroups().filter((x) => x.item === item).sort((a, b) => eco.freeQty(b.item, b.tier, b.pack) - eco.freeQty(a.item, a.tier, a.pack))[0];
+      if (!g) return { error: `you have no ${item}` };
+      tier = g.tier; pack = g.pack;
+    }
+    pack = pack ?? null;
+    const same = (x) => x && x.item === item && x.tier === tier && (x.pack ?? null) === pack;
+    const k = slot ?? (slots.findIndex(same) >= 0 ? slots.findIndex(same) : slots.findIndex((x) => !x));
+    if (k < 0 || k >= slots.length) return { error: 'the shelf is full' };
+    const free = eco.freeQty(item, tier, pack, k);
+    const n = Math.max(0, Math.min(Math.floor(qty ?? free), free));
+    if (!n && qty !== 0) return { error: `no free ${item} to put on the shelf` };
     return {
       minutes: action.timeMin,
       apply: () => {
-        this.#s.shelf = this.#s.shelf ?? {};
-        this.#s.shelf[item] = { qty: n, ratio };
-        return { item, qty: n, ratio };
+        slots[k] = n ? { item, tier, pack, qty: n, ratio } : null;
+        return { slot: k, item, tier, pack, qty: n, ratio };
+      }
+    };
+  }
+
+  /** Open the store (user decision 7 Nov 2026): one energy cost, then serve-customer runs hour by hour with no energy cost. */
+  kind_openStore(action) {
+    if (this.#s.store?.open) return { error: 'the store is already open' };
+    if (!this.ctx.sys.economy.shelfQty()) return { error: 'the shelf is empty: stock the shelf first' };
+    const stop = this.ctx.sys.economy.storeStop();
+    if (stop) return { error: stop === 'closing time' ? 'the store is closed now' : stop };
+    return {
+      minutes: action.timeMin,
+      apply: () => {
+        this.#s.store = { open: true, absDay: this.#s.calendar.absDay(), startMin: this.#s.calendar.minute, hours: 0, customers: 0, sold: 0, gold: 0, items: {} };
+        return { opened: true };
+      }
+    };
+  }
+
+  /** Close the store: the Shop result (customers, sold per item, income). */
+  kind_closeStore(action) {
+    const st = this.#s.store;
+    if (!st?.open) return { error: 'the store is not open' };
+    return {
+      minutes: action.timeMin,
+      apply: () => {
+        st.open = false;
+        st.endMin = this.#s.calendar.minute;
+        st.unsold = this.ctx.sys.economy.shelfQty();
+        return { report: { ...st, items: { ...st.items } } };
       }
     };
   }
@@ -230,12 +273,16 @@ export class ActionRunner {
   }
 
   kind_serveCustomers(action) {
+    const st = this.#s.store;
+    if (!st?.open) return { error: 'open the store first' };
     if (!this.ctx.sys.economy.shelfQty()) return { error: 'the shelf is empty: stock the shelf first' };
     return {
       minutes: action.timeMin,
       apply: () => {
         const r = this.ctx.sys.economy.serveCustomers();
         if (r.gold) this.#gold(r.gold, `Shop sales (${r.sold})`);
+        st.hours += 1; st.customers += r.customers; st.sold += r.sold; st.gold = round2(st.gold + r.gold);
+        for (const [k, v] of Object.entries(r.items)) st.items[k] = (st.items[k] ?? 0) + v;
         return r;
       }
     };
@@ -277,13 +324,37 @@ export class ActionRunner {
     };
   }
 
-  kind_craft(action, { recipeId }) {
+  /**
+   * Craft (one Crafting menu, user decision 7 Nov 2026): recipe (sets the method), a material lot per slot,
+   * batches (materials, output and time x batches) and packing (container, label) of the output.
+   * lots: { "<slot>:<index>": "<born>|<spoiled 0/1>" }; pack: { container, label } or null.
+   */
+  kind_craft(action, { recipeId, batches = 1, lots = {}, pack = null }) {
     const recipe = recipeId && this.#c.get('recipes', recipeId);
     if (!recipe) return { error: 'pick a recipe' };
     if (recipe.action !== action.id) return { error: `${recipeId} is made with ${recipe.action}` };
-    const miss = this.ctx.sys.production.missing(recipe);
+    const b = Math.floor(batches);
+    if (!(b >= 1) || b > this.#c.num('CRAFT_MAX_BATCHES')) return { error: `batches must be 1 to ${this.#c.num('CRAFT_MAX_BATCHES')}` };
+    const miss = this.ctx.sys.production.missing(recipe, { batches: b, lots });
     if (miss) return { error: miss };
-    return { minutes: recipe.timeMin, apply: () => this.ctx.sys.production.craft(recipe) };
+    let packId = null, unitCost = 0, packMin = 0;
+    if (pack?.container) {
+      const boxes = this.#c.num('PACK_CONTAINERS'), lab = this.#c.num('PACK_LABEL');
+      if (!boxes[pack.container]) return { error: 'pick a container' };
+      packId = pack.container + (pack.label ? '+label' : '');
+      unitCost = boxes[pack.container].cost + (pack.label ? lab.cost : 0);
+      packMin = this.#c.get('actions', 'package').timeMin * b;
+      if (this.#s.wallet.gold < unitCost * recipe.output * b) return { error: 'not enough gold for the containers' };
+    }
+    return {
+      minutes: recipe.timeMin * b + packMin,
+      apply: () => {
+        const r = this.ctx.sys.production.craft(recipe, { batches: b, lots, pack: packId });
+        const cost = round2(r.qty * unitCost);
+        if (cost) this.#gold(-cost, `Packing (${r.qty} ${recipe.product})`);
+        return { ...r, batches: b, pack: packId, packCost: cost };
+      }
+    };
   }
 
   kind_startBatch(action, { item, qty }) {

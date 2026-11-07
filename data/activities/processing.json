@@ -3,8 +3,8 @@
   "name": "Processing",
   "category": "production",
   "locationIds": [
-    "loc_home_atelier",
-    "loc_home_drying_yard"
+    "loc_home_grinder",
+    "loc_home_drying_rack"
   ],
   "actionIds": [
     "travel",
@@ -18,7 +18,7 @@
   "needsAppointment": false,
   "needsPermit": false,
   "build": "Jam",
-  "source": "docs:pages/do/production.md (Processing); user decision 2 Nov 2026: Grinding and Sun drying are actions of one Processing activity",
+  "source": "docs:pages/do/production.md (Processing); user decision 2 Nov 2026: Grinding and Sun drying are actions of one Processing activity; user decision 7 Nov 2026: two Processing stations inside the home and shop (drying rack, grinding table)",
   "plannable": true,
   "planDurationMin": 180,
   "planDurationOptions": [

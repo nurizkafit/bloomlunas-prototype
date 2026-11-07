@@ -34,3 +34,16 @@ const COLOR_BY_ACTIVITY = { open_shop: KC.sell, visit: KC.buy, craft: KC.craft, 
 export function iconFor(a) { return ICON_BY_ACTIVITY[a.id] ?? 'flag'; }
 /** @param {{id:string}} a activity */
 export function colorFor(a) { return COLOR_BY_ACTIVITY[a.id] ?? KC.org; }
+
+/**
+ * Placeholder object icon (user, 7 Nov 2026: every object gets its own icon later).
+ * A coloured badge with the initials of the name. data-icon holds the object id, so a real icon can replace it by id.
+ * @param {string} id item, container or other object id @param {string} name @param {{tier?:string|null, size?:number, shape?:'round'|'diamond'}} [o]
+ */
+export function itemIcon(id, name, o = {}) {
+  let h = 0;
+  for (const ch of id) h = (h * 31 + ch.charCodeAt(0)) % 360;
+  const ini = name.split(/\s+/).map((w) => w[0]).join('').slice(0, 2).toUpperCase();
+  const tier = o.tier ? `<em class="ii-t">${o.tier[0]}</em>` : '';
+  return `<span class="ii ${o.shape ?? 'round'}" data-icon="${id}" style="--h:${h};--s:${o.size ?? 34}px" title="${name}"><b>${ini}</b>${tier}</span>`;
+}

@@ -32,11 +32,11 @@ export class Inventory {
   }
 
   /**
-   * Take qty units. o.pack (when set) takes only lots with that pack (null = not packed). Good lots first, oldest first. Spoiled lots are used only when includeSpoiled is set.
+   * Take qty units. o.born and o.spoiled (when set) take only that lot (Crafting lot pick). o.pack (when set) takes only lots with that pack (null = not packed). Good lots first, oldest first. Spoiled lots are used only when includeSpoiled is set.
    * @returns {{item:string, variant:string, qty:number, tier:string|null, born:number, spoiled:boolean}[] | null} taken parts, or null if not enough
    */
   take(item, variant, qty, o = {}) {
-    const lots = this.find((l) => l.item === item && (!variant || l.variant === variant) && (o.includeSpoiled || !l.spoiled) && (!o.tier || l.tier === o.tier) && (o.pack === undefined || (l.pack ?? null) === o.pack))
+    const lots = this.find((l) => l.item === item && (!variant || l.variant === variant) && (o.includeSpoiled || !l.spoiled) && (!o.tier || l.tier === o.tier) && (o.pack === undefined || (l.pack ?? null) === o.pack) && (o.born === undefined || l.born === o.born) && (o.spoiled === undefined || l.spoiled === o.spoiled))
       .sort((a, b) => Number(a.spoiled) - Number(b.spoiled) || a.born - b.born);
     if (lots.reduce((n, l) => n + l.qty, 0) < qty) return null;
     const taken = [];

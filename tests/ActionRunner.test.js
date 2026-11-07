@@ -19,7 +19,8 @@ describe('ActionRunner', () => {
     const gm = gameInDo(), w = (a, b) => gm.ctx.sys.actions.walkMinutes(a, b);
     expect(w('loc_home', 'loc_home_atelier')).toBe(0);
     expect(w('loc_home_atelier', 'loc_home_shop')).toBe(0);
-    expect(w('loc_home_shop', 'loc_home_drying_yard')).toBe(5);
+    expect(w('loc_home_shop', 'loc_home_drying_rack')).toBe(0);
+    expect(w('loc_home_grinder', 'loc_home_drying_rack')).toBe(0);
     expect(w('loc_home', 'loc_market')).toBe(20);
     gm.ctx.sys.actions.startActivity('craft');
     expect(run(gm, 'travel', { to: 'loc_home_atelier' })).toMatchObject({ ok: true, minutes: 0 });
@@ -94,19 +95,19 @@ describe('ActionRunner', () => {
     expect(gm.ctx.sys.actions.startActivity('explore').bonus).toBe(0);
   });
 
-  it('processing: start and collect drying at the yard, then grind at the atelier', () => {
+  it('processing: start and collect drying at the drying rack, then grind at the grinding table', () => {
     const gm = gameInDo();
     const inv = gm.state.inventory;
     gm.ctx.sys.actions.startActivity('processing');
-    run(gm, 'travel', { to: 'loc_home_drying_yard' });
-    expect(run(gm, 'grind', { item: 'turmeric', qty: 1 }).ok).toBe(false); // grind is only at the atelier
+    run(gm, 'travel', { to: 'loc_home_drying_rack' });
+    expect(run(gm, 'grind', { item: 'turmeric', qty: 1 }).ok).toBe(false); // grind is only at the grinding table
     expect(run(gm, 'start-batch', { item: 'turmeric', qty: 4 }).ok).toBe(true);
     expect(run(gm, 'collect-batch').ok).toBe(false);
     gm.state.calendar.day += gm.content.num('SUN_DRYING_DAYS');
     gm.state.calendar.minute = 9 * 60;
     expect(run(gm, 'collect-batch').collected).toBe(4);
-    run(gm, 'travel', { to: 'loc_home_atelier' });
-    expect(run(gm, 'collect-batch').ok).toBe(false); // drying is only at the yard
+    run(gm, 'travel', { to: 'loc_home_grinder' });
+    expect(run(gm, 'collect-batch').ok).toBe(false); // drying is only at the drying rack
     expect(run(gm, 'grind', { item: 'turmeric', qty: 4 }).minutes).toBe(60);
     expect(inv.count('turmeric', 'powder')).toBe(4);
   });
@@ -190,31 +191,57 @@ describe('Small rest, meals and sleep (Prototype Iteration rules)', () => {
   });
 });
 
-describe('Shelf stocking, price and packing (Scene & Flow, [Proposal])', () => {
-  it('serving needs a stocked shelf; a high price lowers the buy chance; packing adds value and costs gold', () => {
+describe('Shelf slots, Open store and one-menu Crafting (Scene & Flow, [Proposal])', () => {
+  it('shelf slots hold one product group each; open store costs energy once; serving stops when sold out', () => {
     const gm = gameInDo();
     const a = gm.ctx.sys.actions, eco = gm.ctx.sys.economy, s = gm.state;
     a.startActivity('open_shop');
     a.runAction('travel', { to: 'loc_home_shop' });
     s.calendar.minute = 9 * 60;
-    expect(a.runAction('serve-customer').ok).toBe(false);
+    expect(eco.slots().length).toBe(gm.content.num('SHELF_SLOTS'));
+    expect(a.runAction('serve-customer').ok).toBe(false); // open the store first
+    expect(a.runAction('open-store').ok).toBe(false); // shelf is empty
     expect(a.runAction('restock-shelf', { item: 'fresh_jamu', ratio: 0.5 }).ok).toBe(false);
-    const st = a.runAction('restock-shelf', { item: 'fresh_jamu', qty: 2, ratio: 1.4 });
-    expect(st.qty).toBe(2);
+    const have = s.inventory.count('fresh_jamu', 'product');
+    const st = a.runAction('restock-shelf', { slot: 4, item: 'fresh_jamu', qty: 2, ratio: 1.4 });
+    expect(st).toMatchObject({ ok: true, slot: 4, qty: 2 });
+    const g = eco.slots()[4];
+    expect(eco.freeQty(g.item, g.tier, g.pack)).toBe(have - 2);
     expect(eco.buyChance(1.4)).toBeLessThan(eco.buyChance(1));
-    const sold = a.runAction('serve-customer');
-    expect(sold.ok).toBe(true);
-    expect(eco.shelfQty('fresh_jamu')).toBe(2 - sold.sold);
-    // Packing at the atelier.
+    const e0 = s.player.energy;
+    expect(a.runAction('open-store').ok).toBe(true);
+    expect(s.player.energy).toBe(e0 - gm.content.num('ENERGY_COST_DEFAULT'));
+    let guard = 0;
+    while (!eco.storeStop() && guard++ < 12) expect(a.runAction('serve-customer').energy).toBe(0);
+    expect(s.player.energy).toBe(e0 - gm.content.num('ENERGY_COST_DEFAULT'));
+    expect(['sold out', 'closing time']).toContain(eco.storeStop());
+    const rep = a.runAction('close-store').report;
+    expect(rep.sold).toBe(2 - eco.shelfQty());
+    expect(rep.hours).toBe(guard > 12 ? 12 : guard);
+    expect(s.store.open).toBe(false);
+  });
+
+  it('craft: picked lot, batches and packing in one action', () => {
+    const gm = gameInDo();
+    const a = gm.ctx.sys.actions, s = gm.state, prod = gm.ctx.sys.production;
+    const r = gm.content.get('recipes', 'kunyit_asam');
+    for (const list of Object.values(r.slots)) for (const e of list) s.inventory.add(e.item, e.variant, e.qty * 2, { born: 0 });
     a.startActivity('craft');
     a.runAction('travel', { to: 'loc_home_atelier' });
-    const gold = s.wallet.gold;
-    const left = s.inventory.count('fresh_jamu', 'product');
-    const pk = a.runAction('package', { item: 'fresh_jamu', container: 'bottle', label: true });
-    expect(pk.qty).toBe(left);
-    expect(s.wallet.gold).toBeCloseTo(gold - left * 2.5, 5);
-    expect(s.inventory.find((l) => l.item === 'fresh_jamu' && l.pack === 'bottle+label').length).toBe(1);
-    expect(eco.packMult('bottle+label')).toBeCloseTo(1.26, 5);
-    expect(s.activityLog.some((l) => l.actionId === 'package')).toBe(true);
+    const main = r.slots.main[0];
+    const lots = prod.lotsFor(main);
+    expect(lots.length).toBeGreaterThan(0);
+    expect(a.runAction('brew', { recipeId: r.id, batches: 99 }).ok).toBe(false);
+    const gold = s.wallet.gold, m0 = s.calendar.minute;
+    const out = a.runAction('brew', { recipeId: r.id, batches: 2, lots: { 'main:0': lots[0].key }, pack: { container: 'jar', label: true } });
+    expect(out.ok).toBe(true);
+    expect(out.batches).toBe(2);
+    expect(s.calendar.minute - m0).toBeGreaterThanOrEqual(r.timeMin * 2);
+    if (out.qty) {
+      expect(out.qty).toBe(r.output * 2);
+      expect(s.inventory.find((l) => l.item === r.product && l.pack === 'jar+label').reduce((n, l) => n + l.qty, 0)).toBe(out.qty);
+      expect(s.wallet.gold).toBeCloseTo(gold - out.qty * 1.5, 5);
+    }
+    expect(gm.ctx.sys.economy.packMult('bottle+label')).toBeCloseTo(1.26, 5);
   });
 });

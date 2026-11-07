@@ -29,6 +29,36 @@
       ]
     },
     {
+      "id": "st_grinder",
+      "label": "Grinding table",
+      "assetSlotId": "int_grinder",
+      "greybox": "grinder",
+      "position": [
+        -1.2,
+        -3.2
+      ],
+      "locationId": "loc_home_grinder",
+      "stand": [
+        0,
+        1.1
+      ]
+    },
+    {
+      "id": "st_drying_rack",
+      "label": "Drying rack",
+      "assetSlotId": "int_drying_rack",
+      "greybox": "rack",
+      "position": [
+        0.6,
+        -3.3
+      ],
+      "locationId": "loc_home_drying_rack",
+      "stand": [
+        0,
+        1.1
+      ]
+    },
+    {
       "id": "st_counter",
       "label": "Shop counter",
       "assetSlotId": "int_counter",

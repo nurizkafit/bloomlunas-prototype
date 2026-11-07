@@ -57,7 +57,7 @@ export class AssetSlot {
   }
 }
 
-const STATE_TINT = { sleeping: 0x111133, busy: 0x553300, crafting: 0x442200, drying: 0x332200, ready: 0x225522, closed: 0x000000, gathered: 0x111111, alert: 0x661111 };
+const STATE_TINT = { sleeping: 0x111133, busy: 0x553300, crafting: 0x442200, grinding: 0x442200, drying: 0x332200, ready: 0x225522, closed: 0x000000, gathered: 0x111111, alert: 0x661111 };
 
 function mat(color) {
   return new THREE.MeshStandardMaterial({ color, roughness: 0.9, metalness: 0 });
@@ -141,6 +141,15 @@ function buildGreybox(kind) {
       g.add(mesh(new THREE.BoxGeometry(2.6, 2.4, 0.6), 0x7a5134, 1.2));
       for (let i = 0; i < 3; i++) put(g, mesh(new THREE.BoxGeometry(2.4, 0.08, 0.7), 0xd9b25c, 0.5 + i * 0.7, false)).position.z = 0.05;
       for (let i = 0; i < 5; i++) put(g, mesh(new THREE.CylinderGeometry(0.12, 0.12, 0.35, 8), [0x5cc29b, 0xe8735c, 0x9b5cd6, 0x4f8fc4, 0xe9b44c][i], 1.4, false)).position.set(-0.9 + i * 0.45, 1.4, 0.15);
+      break;
+    case 'rack':
+      g.add(mesh(new THREE.BoxGeometry(1.8, 1.6, 0.5), 0x7a5134, 0.8));
+      for (let i = 0; i < 3; i++) put(g, mesh(new THREE.BoxGeometry(1.7, 0.06, 0.6), 0xd9b25c, 0.4 + i * 0.5, false)).position.z = 0.05;
+      break;
+    case 'grinder':
+      g.add(mesh(new THREE.BoxGeometry(1.2, 0.8, 0.8), 0x6b4a32, 0.4));
+      put(g, mesh(new THREE.CylinderGeometry(0.28, 0.2, 0.3, 12), 0x8f8a80, 0.95, false));
+      put(g, mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.5, 6), 0xc7a46a, 1.15, false)).rotation.z = 0.5;
       break;
     case 'bed':
       g.add(mesh(new THREE.BoxGeometry(1.6, 0.5, 2.6), 0x6b4a32, 0.25));

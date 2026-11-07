@@ -3,7 +3,7 @@
   "name": "Start drying",
   "kind": "startBatch",
   "locationIds": [
-    "loc_home_drying_yard"
+    "loc_home_drying_rack"
   ],
   "timeMin": 30,
   "energyKey": "ENERGY_COST_DEFAULT",

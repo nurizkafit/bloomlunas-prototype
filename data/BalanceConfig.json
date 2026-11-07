@@ -458,5 +458,17 @@
     "unit": "Packing: label cost in G per unit, price multiplier",
     "source": "Scene & Flow chart (user, 7 Nov 2026) [Proposal]",
     "_placeholder": true
+  },
+  "SHELF_SLOTS": {
+    "value": 9,
+    "unit": "shelf slots (3 x 3); one product lot per slot, each with its own price and quantity",
+    "source": "user decision 7 Nov 2026 (fixed 3x3 slots, like the interface reference) [Proposal]",
+    "_placeholder": true
+  },
+  "CRAFT_MAX_BATCHES": {
+    "value": 5,
+    "unit": "max batches in one craft (Crafting quantity)",
+    "source": "user decision 7 Nov 2026: Preparation sets the quantity = number of batches [Proposal]",
+    "_placeholder": true
   }
 }

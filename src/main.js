@@ -53,7 +53,7 @@ new HudView(app, gm, { openPlan: () => planner.openInDo(), openMap: () => { menu
 town.onPick = (id, o) => openPlace(id, o);
 townMap.onPick = (id) => openPlace(id, { fromTown: true });
 menu.onEnter = (id) => town.enterBuilding(id);
-menu.onStation = (loc, act) => station.has(loc) && station.open(loc, act === 'processing' ? 'processing' : undefined);
+menu.onStation = (loc) => station.has(loc) && station.open(loc);
 town.onPanel = (panel) => { if (panel === 'stock') { menu.close(); station.open('loc_home_shop', 'shelf'); } };
 new EventCardView(app, gm);
 const recap = new RecapView(app, gm);

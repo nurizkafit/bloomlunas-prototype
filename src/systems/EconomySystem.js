@@ -70,37 +70,84 @@ export class EconomySystem {
     return Math.min(hi, Math.max(lo, this.#c.num('SHOP_BUY_CHANCE') * k));
   }
 
-  /** Units on the shelf (state.shelf: item -> {qty, ratio}). @param {string} [item] */
-  shelfQty(item) {
-    const sh = this.ctx.state.shelf ?? {};
-    return item ? sh[item]?.qty ?? 0 : Object.values(sh).reduce((n, x) => n + x.qty, 0);
+  /** Shelf slots ([Proposal], SHELF_SLOTS): state.shelf = array of {item, tier, pack, qty, ratio} or null. */
+  slots() {
+    const s = this.ctx.state, n = this.#c.num('SHELF_SLOTS');
+    if (!Array.isArray(s.shelf)) s.shelf = [];
+    while (s.shelf.length < n) s.shelf.push(null);
+    return s.shelf;
   }
 
-  /** One hour of shop: customers come, some buy one product each from the shelf, at the shelf price. */
+  /** Units on the shelf. @param {string} [item] */
+  shelfQty(item) {
+    return this.slots().reduce((n, x) => n + (x && (!item || x.item === item) ? x.qty : 0), 0);
+  }
+
+  /** Products the player has, grouped by item, tier and pack (one shelf slot holds one group). */
+  productGroups() {
+    const g = new Map();
+    for (const l of this.ctx.state.inventory.find((l) => l.variant === 'product' && !l.spoiled && l.tier !== 'Failed')) {
+      const k = `${l.item}|${l.tier}|${l.pack ?? ''}`;
+      const e = g.get(k) ?? { key: k, item: l.item, tier: l.tier, pack: l.pack ?? null, qty: 0 };
+      e.qty += l.qty;
+      g.set(k, e);
+    }
+    return [...g.values()];
+  }
+
+  /** Units of a group not yet on the shelf (other slots than skip). */
+  freeQty(item, tier, pack, skip = -1) {
+    const have = this.ctx.state.inventory.find((l) => l.variant === 'product' && !l.spoiled && l.item === item && l.tier === tier && (l.pack ?? null) === (pack ?? null)).reduce((n, l) => n + l.qty, 0);
+    const used = this.slots().reduce((n, x, i) => n + (x && i !== skip && x.item === item && x.tier === tier && (x.pack ?? null) === (pack ?? null) ? x.qty : 0), 0);
+    return Math.max(0, have - used);
+  }
+
+  /** Shop price of one unit of a slot. @param {{item:string, tier:string, pack:string|null, ratio:number}} sl */
+  slotPrice(sl) {
+    return round2(this.realPrice(sl.item, 'product') * this.ctx.sys.quality.priceMult(sl.tier) * this.#c.num('SHOP_PRICE_RATIO') * sl.ratio * this.packMult(sl.pack));
+  }
+
+  /** Why the store run must stop now, or null (user decision 7 Nov 2026: stop when the stock is gone or at closing time). */
+  storeStop() {
+    const { state, content } = this.ctx;
+    if (!this.shelfQty()) return 'sold out';
+    const h = content.get('locations', 'loc_home_shop').openHours?.[state.calendar.day];
+    const hour = content.get('actions', 'serve-customer').timeMin;
+    if (!h || state.calendar.minute + hour > h[1] * 60) return 'closing time';
+    if (!this.ctx.sys.time.fits(hour)) return 'closing time';
+    return null;
+  }
+
+  /** One hour of shop: customers come, some buy one product each from a shelf slot, at the slot price. */
   serveCustomers() {
     const { state, rng } = this.ctx;
     const n = this.ctx.stat('CUSTOMERS_PER_HOUR');
-    const shelf = state.shelf ?? {};
+    const shelf = this.slots();
     let sold = 0, gold = 0;
+    const items = {};
     for (let i = 0; i < n; i++) {
-      const lots = state.inventory.find((l) => l.variant === 'product' && !l.spoiled && l.tier !== 'Failed' && (shelf[l.item]?.qty ?? 0) > 0);
-      if (!lots.length) break;
-      const lot = rng.pick(lots), sh = shelf[lot.item];
-      if (!rng.chance(this.buyChance(sh.ratio))) continue;
-      const price = round2(this.realPrice(lot.item, 'product') * this.ctx.sys.quality.priceMult(lot.tier) * this.#c.num('SHOP_PRICE_RATIO') * sh.ratio * this.packMult(lot.pack));
-      state.inventory.take(lot.item, 'product', 1, { tier: lot.tier, pack: lot.pack ?? null });
-      sh.qty -= 1;
+      const full = shelf.map((x, k) => (x && x.qty > 0 ? k : -1)).filter((k) => k >= 0);
+      if (!full.length) break;
+      const k = rng.pick(full), sl = shelf[k];
+      if (!rng.chance(this.buyChance(sl.ratio))) continue;
+      const got = state.inventory.take(sl.item, 'product', 1, { tier: sl.tier, pack: sl.pack ?? null });
+      if (!got) { sl.qty = 0; continue; }
+      const price = this.slotPrice(sl);
+      sl.qty -= 1;
+      if (!sl.qty) shelf[k] = null;
       sold += 1;
       gold += price;
+      items[sl.item] = (items[sl.item] ?? 0) + 1;
     }
     state.stats.sold += sold;
     if (sold) this.ctx.bus.emit(MSG.INVENTORY_CHANGED, {});
-    return { customers: n, sold, gold: round2(gold) };
+    return { customers: n, sold, gold: round2(gold), items };
   }
 
   /** Quests past the deadline fail; appointments not kept are missed. */
   onDayStart() {
     const { state } = this.ctx;
+    if (state.store?.open) state.store.open = false;
     const today = state.calendar.absDay();
     for (const q of state.quests.filter((q) => q.dueDay < today)) {
       this.ctx.sys.effects.apply([{ type: 'relation', target: q.entityId, amount: -this.#c.num('QUEST_MISS_RELATIONSHIP_PENALTY') }], 'quest missed');

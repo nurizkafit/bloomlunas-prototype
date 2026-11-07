@@ -232,3 +232,9 @@ S1 result:
 - [Proposal] rules (not in the docs): shelf price options, price elasticity, pack containers and label. Please confirm or give the docs values.
 - Open: Today's goal comes from the plan cards until Stage 2 adds day goals.
 
+S1 update (7 Nov 2026, user requests after the S1 review):
+- Open shop like the reference: 3×3 shelf slots, Shop management with an estimate, one energy cost to open, fast replay until sold out or closing time (Stop button), Shop result.
+- Crafting in one menu (recipe with method, lot per slot, batches, packing). Processing at two stations in the house: Drying rack and Grinding table. No drying yard in the town.
+- Placeholder icons for all objects.
+- New [Proposal] values: `SHELF_SLOTS` 9, `CRAFT_MAX_BATCHES` 5.
+

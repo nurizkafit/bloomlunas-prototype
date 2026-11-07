@@ -104,3 +104,64 @@
   .st-side { flex-direction: row; flex-wrap: wrap; } .st-fns { flex-direction: row; flex-wrap: wrap; }
   .methods { grid-template-columns: 1fr; }
 }
+
+/* Placeholder object icons (itemIcon): one per object id until the real icons come. */
+.ii { position: relative; flex: none; width: var(--s); height: var(--s); display: inline-grid; place-items: center; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, hsl(var(--h) 60% 72%), hsl(var(--h) 45% 42%)); box-shadow: inset 0 0 0 2px #fff9, 0 1px 3px #0005; }
+.ii b { font: 700 calc(var(--s) * .34) var(--f-body, sans-serif); color: #fff; text-shadow: 0 1px 1px #0006; }
+.ii.diamond { border-radius: 18%; transform: rotate(45deg); } .ii.diamond b { transform: rotate(-45deg); }
+.ii-t { position: absolute; left: -4px; top: -6px; font: italic 400 calc(var(--s) * .42) var(--f-display); color: var(--gold-ink); text-shadow: 0 0 3px #fff, 0 0 2px #fff; }
+.ii.diamond .ii-t { transform: rotate(-45deg); left: -8px; top: -2px; }
+
+/* Store: shelf stock (3x3 slots), shop management, live card, shop result. Layout and mood after the interface reference. */
+.sh2 { margin: 12px 0 6px; font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+.shelfwrap { display: grid; grid-template-columns: auto 1fr; gap: 16px; align-items: start; }
+.shelf3 { display: grid; grid-template-columns: repeat(3, 104px); gap: 10px; padding: 14px; border-radius: 10px;
+  background: linear-gradient(#6b4a32, #4a3324); box-shadow: inset 0 0 0 3px #3a2618, 0 6px 16px #0004; }
+.sl { position: relative; height: 104px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; border-radius: 8px;
+  border: 2px solid transparent; background: #f1e6ca22; color: var(--paper-3); font: inherit; cursor: pointer; }
+.sl:hover { background: #f1e6ca33; } .sl.on { border-color: var(--gold); background: #f1e6ca44; }
+.sl.empty small { font-size: 11px; color: #f1e6caaa; } .sl-plus { font: 400 28px var(--f-display); color: #f1e6caaa; }
+.sl-q { position: absolute; right: 6px; top: 4px; font-size: 11px; color: #fff; text-shadow: 0 1px 2px #000; }
+.sl-p { display: inline-flex; gap: 3px; align-items: center; padding: 1px 7px; border-radius: 4px; background: #1e1810cc; color: #fbf5e6; font-size: 12px; }
+.sl-p svg { width: 12px; height: 12px; }
+.sl-ed { padding: 12px; border-radius: 10px; background: var(--paper-3); box-shadow: 0 1px 0 #0003; min-height: 340px; }
+.glist { display: flex; flex-direction: column; gap: 4px; max-height: 150px; overflow: auto; }
+.gpick { display: flex; gap: 8px; align-items: center; padding: 5px 8px; border-radius: 7px; border: 1.5px solid transparent; background: var(--paper-2); color: var(--ink); font: inherit; font-size: 12.5px; text-align: left; cursor: pointer; }
+.gpick span { display: flex; flex-direction: column; } .gpick small { font-size: 10.5px; color: var(--ink-3); }
+.gpick.on { border-color: var(--ink); background: #fff8e4; }
+.stepper { display: flex; gap: 8px; align-items: center; }
+.stepper button { width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid var(--ink-3); background: var(--paper-3); color: var(--ink); font: 700 16px var(--f-body); cursor: pointer; }
+.stepper b { min-width: 28px; text-align: center; font-size: 18px; }
+.estbar { display: flex; gap: 12px; align-items: center; margin-top: 12px; padding: 8px 12px; border-radius: 8px; background: var(--paper-2); }
+.estbar svg { width: 16px; height: 16px; vertical-align: -3px; margin-right: 4px; } .estbar b { font-size: 18px; }
+.mgmt { display: grid; grid-template-columns: auto 1fr; gap: 18px; align-items: center; margin: 10px 0 16px; }
+.shelfmini { display: grid; grid-template-columns: repeat(3, 44px); gap: 8px; padding: 12px; border-radius: 10px; background: linear-gradient(#6b4a32, #4a3324); place-items: center; }
+.sl-dot { width: 12px; height: 12px; border-radius: 50%; background: #f1e6ca33; }
+.estcard { padding: 14px 16px; border-radius: 12px; background: linear-gradient(#fbf5e6, #f1e6ca); box-shadow: inset 0 0 0 2px #c9a46a; }
+.estcard .st-kind svg { width: 14px; height: 14px; vertical-align: -2px; margin-right: 4px; }
+.estcard .big { font: 400 44px/1.1 var(--f-display); color: var(--gold-ink); margin: 2px 0 6px; }
+.st-main .go.openshop { padding: 12px 34px; border-radius: 30px; font: 400 22px var(--f-display); box-shadow: 0 4px 0 #9a6a10, 0 8px 20px #0003; }
+.st-main .go.openshop svg { width: 22px; height: 22px; }
+.station.live { background: transparent; pointer-events: none; place-items: end center; padding-bottom: 24px; }
+.st-live { pointer-events: auto; width: 300px; padding: 14px 16px; border-radius: 12px; background: var(--paper); color: var(--ink); box-shadow: 0 14px 40px #000a; display: flex; flex-direction: column; gap: 6px; }
+.st-live .st-kind { color: var(--ink-3); } .st-live .st-kind svg { width: 14px; height: 14px; vertical-align: -2px; margin-right: 4px; }
+.lv-clock { font-size: 26px; }
+.st-live .bar { height: 8px; border-radius: 4px; background: var(--paper-2); overflow: hidden; } .st-live .bar i { display: block; height: 100%; background: var(--gold); transition: width .3s; }
+.st-live .kv3 { margin: 0; }
+.result2 { display: grid; grid-template-columns: 1fr 260px; gap: 18px; height: 100%; }
+.sales { padding: 14px 16px; border-radius: 12px; background: var(--paper-3); box-shadow: inset 0 0 0 2px #e7d8b3; }
+.sales h3 { display: flex; gap: 8px; align-items: center; } .sales h3 svg { width: 20px; height: 20px; }
+.soldgrid { display: flex; flex-wrap: wrap; gap: 12px; margin: 8px 0 12px; }
+.sold { width: 76px; display: flex; flex-direction: column; align-items: center; gap: 3px; text-align: center; }
+.sold .num { padding: 0 10px; border-radius: 4px; background: var(--paper-2); font-size: 12px; } .sold small { font-size: 10.5px; color: var(--ink-2); line-height: 1.2; }
+.report { padding: 14px; border-radius: 12px; background: #fffdf6; box-shadow: 0 6px 20px #0003, inset 0 0 0 1px #e7d8b3; display: flex; flex-direction: column; gap: 6px; text-align: center; }
+.report .st-kind { font: 400 18px var(--f-display); letter-spacing: 0; text-transform: none; color: var(--ink-2); }
+.rp { display: flex; flex-direction: column; border-radius: 6px; overflow: hidden; background: var(--paper-3); }
+.rp span { padding: 2px; background: #d9b77a; color: #fff; font-size: 12px; } .rp b { padding: 4px; font-size: 18px; }
+.rp.hi span { background: #e8735c; } .rp.hi b { font-size: 22px; }
+.craftgrid { display: grid; grid-template-columns: 1fr 1.6fr; gap: 16px; }
+.t3 td.mat { display: flex; gap: 6px; align-items: center; } .t3 select { padding: 3px 4px; border-radius: 5px; border: 1px solid var(--ink-3); background: #fff; color: var(--ink); font: inherit; font-size: 12px; }
+.rlist button { flex-direction: row; align-items: center; gap: 8px; } .rlist button span { display: flex; flex-direction: column; }
+.rlist button.locked { opacity: .5; cursor: not-allowed; }
+.st-links .st-kind { margin-top: 6px; }

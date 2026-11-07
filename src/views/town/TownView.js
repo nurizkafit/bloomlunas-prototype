@@ -274,7 +274,6 @@ export class TownView {
     for (const [id, slot] of this.slots) {
       const loc = this.c.get('locations', id), h = loc.openHours?.[day];
       let st = h && min >= h[0] * 60 && min < h[1] * 60 ? 'open' : 'closed';
-      if (id === 'loc_home_drying_yard') st = this.s.batches.length ? (this.s.batches.some((b) => b.readyDay <= this.s.calendar.absDay()) ? 'ready' : 'drying') : 'empty';
       if (r && this.s.player.location === id && ['serve-customer'].includes(r.actionId)) st = 'busy';
       if (r && this.s.player.location === id && ['brew', 'concoct'].includes(r.actionId)) st = 'crafting';
       slot.setState(st);
@@ -286,6 +285,8 @@ export class TownView {
         if (st.greybox === 'cauldron' && here && r && ['brew', 'concoct'].includes(r.actionId)) state = 'crafting';
         if (st.greybox === 'counter') state = this.slots.get(st.locationId)?.state ?? 'idle';
         if (st.greybox === 'bed' && this.s.player.dayOver) state = 'sleeping';
+        if (st.greybox === 'rack') state = this.s.batches.length ? (this.s.batches.some((b) => b.readyDay <= this.s.calendar.absDay()) ? 'ready' : 'drying') : 'empty';
+        if (st.greybox === 'grinder' && here && r?.actionId === 'grind') state = 'grinding';
         int.setState(st.id, state);
       }
     }

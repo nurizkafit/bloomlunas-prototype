@@ -7,8 +7,10 @@
   ],
   "actionIds": [
     "travel",
+    "restock-shelf",
+    "open-store",
     "serve-customer",
-    "restock-shelf"
+    "close-store"
   ],
   "skillPath": "sun",
   "canMiss": true,

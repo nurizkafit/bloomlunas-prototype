@@ -1,0 +1,9 @@
+{
+  "id": "open-store",
+  "name": "Open store",
+  "kind": "openStore",
+  "timeMin": 0,
+  "energyKey": "ENERGY_COST_DEFAULT",
+  "source": "user decision 7 Nov 2026: Open shop serves customers on its own until the stock is gone or the store closes; one energy cost to open [Proposal]",
+  "_placeholder": true
+}

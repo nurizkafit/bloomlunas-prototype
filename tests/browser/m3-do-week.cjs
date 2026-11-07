@@ -40,10 +40,11 @@ const SP = process.argv[2];
   await ev(() => window.__ui.menu.close()); await ev(() => window.__ui.station.open('loc_home_shop', 'shelf')); await p.waitForTimeout(80);
   await p.screenshot({ path: SP + '/st-shelf.png' });
   await p.locator('[data-stock]').first().click(); await p.waitForTimeout(80);
-  await p.click('.station [data-fn="store"]'); await p.click('[data-run="open_shop|serve-customer"]'); await answer(); await p.click('[data-run="open_shop|serve-customer"]').catch(() => {}); await answer();
+  await p.click('.station [data-fn="store"]'); await p.click('[data-openshop]');
+  for (let i = 0; i < 60 && !(await p.locator('.result2').isVisible()); i++) { await answer(); await p.waitForTimeout(400); }
   await p.screenshot({ path: SP + '/st-store.png' });
-  await p.click('.station [data-close]').catch(() => {}); console.log('Mon', await log());
-  await act('loc_home_drying_yard', 'processing'); await run('start-batch', { qty: 2 }); console.log('Mon', await log());
+  await p.click('[data-resultok]').catch(() => {}); await p.click('.station [data-close]').catch(() => {}); console.log('Mon', await log());
+  await act('loc_home_drying_rack', 'processing'); await run('start-batch', { qty: 2 }); console.log('Mon', await log());
   await p.screenshot({ path: SP + '/m3-town.png' });
   await sleepNow();
   // Tue
@@ -54,8 +55,8 @@ const SP = process.argv[2];
   await act('loc_apothecary_guild', 'appointment'); await run('service'); console.log('Tue', await log());
   await sleepNow();
   // Wed: collect, grind
-  await act('loc_home_drying_yard', 'processing'); await run('collect-batch'); console.log('Wed', await log());
-  await act('loc_home_atelier', 'processing'); await run('grind', { qty: 2 }); console.log('Wed', await log());
+  await act('loc_home_drying_rack', 'processing'); await run('collect-batch'); console.log('Wed', await log());
+  await act('loc_home_grinder', 'processing'); await run('grind', { qty: 2 }); console.log('Wed', await log());
   await act('loc_home', 'rest'); used.add('rest'); await run('sleep');
   // Town map (Scene & Flow): list of places with walk time.
   await answer(); await p.click('#hMap'); await p.waitForTimeout(100);

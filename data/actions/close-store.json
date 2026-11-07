@@ -1,0 +1,8 @@
+{
+  "id": "close-store",
+  "name": "Close store",
+  "kind": "closeStore",
+  "timeMin": 0,
+  "source": "user decision 7 Nov 2026: the shop run ends with the Shop result [Proposal]",
+  "_placeholder": true
+}

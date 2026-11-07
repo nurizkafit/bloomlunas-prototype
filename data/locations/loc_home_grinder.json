@@ -1,0 +1,41 @@
+{
+  "id": "loc_home_grinder",
+  "name": "Grinding table",
+  "entityId": "main_character",
+  "openHours": [
+    [
+      0,
+      24
+    ],
+    [
+      0,
+      24
+    ],
+    [
+      0,
+      24
+    ],
+    [
+      0,
+      24
+    ],
+    [
+      0,
+      24
+    ],
+    [
+      0,
+      24
+    ],
+    [
+      0,
+      24
+    ]
+  ],
+  "view": "interior",
+  "assetSlotId": "int_grinder",
+  "_placeholder": true,
+  "source": "user decision 7 Nov 2026: grinding is a Processing station inside the home and shop",
+  "polyforkAssetId": null,
+  "building": "loc_home_shop"
+}

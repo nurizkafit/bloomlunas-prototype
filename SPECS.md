@@ -279,7 +279,7 @@ Card renames: Buy + Sell to organization → Visit (Guild / Organization); Organ
 | EventBus | Glue | C# events or ScriptableObject event channels |
 | ContentDB | Data | Resources or Addressables lookup |
 | TownView, InteriorView, AssetSlot, Avatar | View | Town scene, interior scene, prefabs, Cinemachine |
-| PlannerBookView, ActionMenuView, CraftView, StockView, HudView, EventCardView, RecapView, MonthEndView, EndingView, StartMenuView, TownMapView, StationView | View | UI screens |
+| PlannerBookView, ActionMenuView, CraftView, StockView, HudView, EventCardView, RecapView, MonthEndView, EndingView, StartMenuView, TownMapView, StationView | View | UI screens (StationView: Store, Crafting, Drying rack, Grinding table, Rest) |
 
 ## 13. Extension points for full scope
 
@@ -311,7 +311,14 @@ Stage 1 (this build):
 - Shelf and price [Proposal]. Action `restock-shelf` (kind `stockShelf`) puts a quantity on the shelf at a price ratio from `SHELF_PRICE_OPTIONS`. Customers buy only from the shelf. Buy chance = clamp(1 / ratio^`SHOP_PRICE_ELASTICITY`, `SHOP_BUY_CHANCE_CLAMP`). Price = real price × quality × `SHOP_PRICE_RATIO` × ratio × pack multiplier. Serve with an empty shelf is refused.
 - Packing [Proposal]. Action `package` (kind `pack`) moves unpacked product lots to a packed lot (`pack` field in the lot key). Containers and label in `PACK_CONTAINERS` and `PACK_LABEL` (cost and price multiplier).
 - HUD goals. Today's goal (Stage 1: the activity category with the most planned minutes today: Exploration, Crafting & processing, Open the store, Market & guild, else Free time) and Store's goal (set in Stage 2).
-- Journal in every phase. The Planner Book is the Journal. HUD "Journal" opens it in Do. Check and Act have an "Open the Journal" link (read only, `openJournal()`). New tabs: Skills (levels, sub-skill XP, Log activity from `state.activityLog`, last 500 actions) and Settings (last auto-save, Load last save, New game). Manual save slots are not in this build.
+- Journal in every phase. The Planner Book is the Journal. Stage 2 look (user decision 7 Nov 2026): option A, the same book frame and side tabs, with pages after the reference (Log activity timeline + detail card, skill bars with stars + sub-skill chart). HUD "Journal" opens it in Do. Check and Act have an "Open the Journal" link (read only, `openJournal()`). New tabs: Skills (levels, sub-skill XP, Log activity from `state.activityLog`, last 500 actions) and Settings (last auto-save, Load last save, New game). Manual save slots are not in this build.
+
+Open shop and Crafting update (user, 7 Nov 2026):
+- Stations. The drying yard is not in the town now. Processing has two stations inside the home and shop: Drying rack (`loc_home_drying_rack`: start and collect drying, open 6:00–18:00) and Grinding table (`loc_home_grinder`: grind). The cauldron (`loc_home_atelier`) is for Crafting only. Interior station slots: `int_drying_rack` (greybox rack), `int_grinder` (greybox grinder).
+- Shelf slots [Proposal]. `SHELF_SLOTS` = 9 (3×3). `state.shelf` = array of slots; each slot is null or {item, tier, pack, qty, ratio}. One slot holds one product group (item, quality tier, pack). `restock-shelf` params: slot, item, tier, pack, qty (0 clears the slot), ratio. The free units of a group = units in stock minus units in other slots.
+- Open shop flow (like the reference). Actions of `open_shop`: `restock-shelf`, `open-store` (one energy cost, 0 min), `serve-customer` (60 min, no energy cost, needs an open store), `close-store` (0 min, returns the Shop result). `EconomySystem.storeStop()` gives "sold out" or "closing time". The view replays one hour per 0.7 s (customers walk to the counter) and has a Stop button. Then the Shop result shows the sold items, customers, hours, unsold units and income. A new day closes an open store.
+- One Crafting menu. Recipe (the recipe sets the method: Brew, Concoct; Blend has no recipe), a material lot for each slot (auto = good lots first, oldest first), quantity = batches (1 to `CRAFT_MAX_BATCHES` = 5 [Proposal]; materials, output and time × batches), packing (none, or a container with an optional label; the output comes out packed, the cost is paid on the units made). The Craft button runs `prepare`, then the method action with params {recipeId, batches, lots, pack}. Time = prepare + recipe time × batches + packing time × batches.
+- Placeholder icons. `itemIcon(id, name)` draws a coloured badge with the initials. `data-icon` holds the object id, so each real icon can replace it later.
 
 Stage 2 (next): Plan day goals replace the 3-hour board (one goal a day; Do checks goals, not times), store planning (Store's goal), budget (Store, Personal, Buffer).
 

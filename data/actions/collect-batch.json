@@ -3,7 +3,7 @@
   "name": "Collect drying",
   "kind": "collectBatch",
   "locationIds": [
-    "loc_home_drying_yard"
+    "loc_home_drying_rack"
   ],
   "timeMin": 15,
   "energyKey": "ENERGY_COST_DEFAULT",
