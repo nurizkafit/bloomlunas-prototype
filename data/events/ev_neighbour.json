@@ -1,0 +1,40 @@
+{
+  "id": "ev_neighbour",
+  "type": "random",
+  "title": "Neighbour asks for help",
+  "icon": "people",
+  "text": "Your neighbour is sick and asks for jamu.",
+  "responses": [
+    {
+      "label": "Give 2 jamu",
+      "icon": "heart",
+      "requires": {
+        "item": "kunyit_asam",
+        "qty": 2
+      },
+      "effects": [
+        {
+          "type": "item",
+          "target": "kunyit_asam",
+          "amount": -2
+        },
+        {
+          "type": "xp",
+          "target": "sun",
+          "amount": 10
+        },
+        {
+          "type": "demand",
+          "amount": 1.2,
+          "days": 2
+        }
+      ]
+    },
+    {
+      "label": "Say sorry",
+      "icon": "cross",
+      "effects": []
+    }
+  ],
+  "_placeholder": true
+}

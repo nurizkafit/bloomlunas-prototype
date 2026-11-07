@@ -1,23 +1,19 @@
 {
   "id": "coconut_oil",
-  "kind": "material",
   "name": "Coconut oil",
-  "tier": "Common",
-  "role": "carrier",
-  "plantPart": "processed",
-  "variants": [
-    {
-      "id": "oil",
-      "shelfLifeDays": 56,
-      "priceMult": 1.0
-    }
+  "kind": "material",
+  "icon": "oil",
+  "color": "#F2E9D8",
+  "forecast": [
+    5,
+    8
   ],
-  "costKey": "COST_COCONUT_OIL",
-  "forecast": {
-    "lo": 5,
-    "hi": 8
+  "variants": [
+    "oil"
+  ],
+  "variantPriceMult": {
+    "oil": 1.0
   },
-  "build": "Jam",
-  "source": "docs:pages/materials/coconut-oil.md",
-  "_placeholder": true
+  "_placeholder": true,
+  "wild": false
 }

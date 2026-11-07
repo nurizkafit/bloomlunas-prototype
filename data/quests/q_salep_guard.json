@@ -1,0 +1,10 @@
+{
+  "id": "q_salep_guard",
+  "name": "Guard post salep",
+  "client": "Guard captain",
+  "item": "turmeric_salep",
+  "qty": 6,
+  "reward": 150,
+  "xp": 10,
+  "_placeholder": true
+}

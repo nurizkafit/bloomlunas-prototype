@@ -1,52 +1,64 @@
 import { Calendar } from './Calendar.js';
-import { Wallet } from './Wallet.js';
 import { Inventory } from './Inventory.js';
-import { DebtAccount } from './DebtAccount.js';
-import { SkillBook } from './SkillBook.js';
-import { Relationships } from './Relationships.js';
-import { WeekPlan } from './WeekPlan.js';
-import { Ledger } from './Ledger.js';
 
 /**
- * GameState: all saved data. Plain data only: no rules here (rules are in systems).
- * Unity: [Serializable] class saved as JSON.
+ * GameState: all data of one run, as plain JSON (saves, Unity [Serializable]).
+ * Logic classes change it. Views only read it.
  */
 export class GameState {
   /** @param {import('../core/ContentDB.js').ContentDB} content */
   static create(content) {
-    const s = new GameState();
-    s.calendar = new Calendar(content.num('WEEKS_PER_MONTH'), content.num('DAYS_PER_WEEK'));
-    s.calendar.minute = content.num('DAY_START_HOUR') * 60;
-    s.wallet = new Wallet(content.num('GOLD_START'));
-    s.inventory = new Inventory();
-    for (const l of content.num('START_INVENTORY')) s.inventory.add(l.item, l.variant, l.qty, { tier: l.tier ?? null, born: 0 });
-    const debt = content.all('debt')[0];
-    s.debt = new DebtAccount(debt.id, content.num(debt.principalKey));
-    s.skills = new SkillBook();
-    s.relations = new Relationships();
-    for (const e of content.all('entities')) if (e.type === 'organization') s.relations.points[e.id] = e.relationshipStart ?? 0;
-    s.plan = new WeekPlan();
-    s.ledger = new Ledger();
-    s.player = {
-      energy: content.num('ENERGY_MAX'),
-      fatigued: false,
-      workedLate: false,
-      meals: [],
-      location: 'loc_home',
-      activityId: null,
-      dayOver: false,
-      weekOver: false
+    const n = (k) => content.num(k);
+    const inv = {};
+    for (const s of content.get('start', 'start').inventory) Inventory.add(inv, s.item, s.variant, s.qty, s.tier ?? '');
+    Inventory.add(inv, 'meal', 'pack', n('START_FOOD'));
+    return {
+      phase: 'plan',
+      cal: Calendar.create(n('DAY_START_HOUR') * 60),
+      gold: n('GOLD_START'),
+      energy: n('ENERGY_MAX'),
+      energyMax: n('ENERGY_MAX'),
+      day: GameState.freshDay(),
+      debt: { balance: n('DEBT_START'), paidThisMonth: 0, utilitiesPaid: false, interestTotal: 0, feesTotal: 0, carriedTotal: 0, months: [] },
+      inv,
+      shelf: Array(n('SHELF_SLOTS')).fill(null),
+      rack: [],
+      place: 'home',
+      store: { open: false, result: null },
+      explore: { spotsToday: 0, spot: null, found: [] },
+      market: { prices: {}, prevPrices: {}, trend: {}, demandMod: 1, demandUntil: 0 },
+      plan: GameState.freshPlan(n('DAYS_PER_WEEK')),
+      week: GameState.freshWeek(n('DAYS_PER_WEEK')),
+      ledger: [],
+      log: [],
+      skills: { moon: 0, sun: 0, earth: 0 },
+      quests: { board: [], active: [], done: [], missed: [] },
+      boosts: {},
+      pendingBoosts: {},
+      servicesBought: [],
+      notes: [],
+      history: [],
+      weeks: [],
+      months: [],
+      pendingEvent: null,
+      firedEvents: [],
+      checkSummary: null,
+      actSummary: null,
+      finished: false
     };
-    /** @type {{id:string, entityId:string, ask:{item:string, qty:number}, rewardGold:number, relationship:number, dueDay:number}[]} */
-    s.quests = [];
-    s.questsDone = [];
-    /** @type {{item:string, qty:number, readyDay:number}[]} */
-    s.batches = [];
-    /** @type {{entityId:string, serviceId:string, absDay:number, minute:number, done:boolean}[]} */
-    s.appointments = [];
-    /** @type {Record<string, number>} real price per item for this week (hidden from the player) */
-    s.prices = {};
-    s.stats = { waste: 0, made: {}, sold: 0 };
-    return s;
+  }
+
+  static freshDay() {
+    return { meals: 0, workMin: 0, stations: {}, events: 0 };
+  }
+
+  /** @param {number} days */
+  static freshPlan(days) {
+    return { goals: Array(days).fill(null), products: {}, budget: { store: 0, personal: 0, buffer: 0 }, locked: false };
+  }
+
+  /** @param {number} days */
+  static freshWeek(days) {
+    return { spent: { store: 0, personal: 0, bills: 0 }, income: { store: 0, market: 0, guild: 0, quest: 0, other: 0 }, goalsMet: Array(days).fill(null), sold: {}, startGold: 0, xp: { moon: 0, sun: 0, earth: 0 }, lines: [] };
   }
 }

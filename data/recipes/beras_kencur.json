@@ -1,42 +1,29 @@
 {
   "id": "beras_kencur",
   "name": "Beras kencur",
-  "product": "fresh_jamu",
-  "action": "brew",
-  "slots": {
-    "main": [
-      {
-        "item": "kencur",
-        "variant": "fresh",
-        "qty": 2
-      }
-    ],
-    "aroma": [
-      {
-        "item": "ginger",
-        "variant": "fresh",
-        "qty": 1
-      }
-    ],
-    "sweetener": [
-      {
-        "item": "palm_sugar",
-        "variant": "block",
-        "qty": 1
-      }
-    ],
-    "carrier": [
-      {
-        "item": "rice",
-        "variant": "grain",
-        "qty": 1
-      }
-    ]
-  },
-  "output": 6,
-  "timeMin": 180,
-  "build": "Jam",
-  "source": "docs:pages/products/fresh-jamu.md",
-  "_placeholder": true,
-  "_note": "Slot materials from the docs. Amounts, output and time are TBD in the docs; placeholders."
+  "product": "beras_kencur",
+  "method": "brew",
+  "inputs": [
+    {
+      "item": "kencur",
+      "variant": "fresh",
+      "qty": 2
+    },
+    {
+      "item": "rice",
+      "variant": "grain",
+      "qty": 1
+    },
+    {
+      "item": "ginger",
+      "variant": "fresh",
+      "qty": 1
+    }
+  ],
+  "outputPerBatch": 6,
+  "minPerBatch": 60,
+  "energyPerBatch": 8,
+  "skill": "moon",
+  "xpPerBatch": 6,
+  "_placeholder": true
 }

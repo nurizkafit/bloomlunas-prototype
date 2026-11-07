@@ -1,0 +1,24 @@
+{
+  "id": "mixed_garden",
+  "name": "Old herb garden",
+  "icon": "herb",
+  "loot": [
+    {
+      "item": "turmeric",
+      "variant": "fresh",
+      "min": 1,
+      "max": 2
+    },
+    {
+      "item": "lemongrass",
+      "variant": "fresh",
+      "min": 1,
+      "max": 3
+    }
+  ],
+  "gatherMin": 75,
+  "gatherEnergy": 12,
+  "weight": 2,
+  "xp": 5,
+  "_placeholder": true
+}

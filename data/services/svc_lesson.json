@@ -1,0 +1,17 @@
+{
+  "id": "svc_lesson",
+  "name": "Herb lesson",
+  "text": "Moon skill +25 XP now.",
+  "price": 35,
+  "when": "now",
+  "effects": [
+    {
+      "type": "xp",
+      "target": "moon",
+      "amount": 25
+    }
+  ],
+  "inDo": true,
+  "inAct": false,
+  "_placeholder": true
+}

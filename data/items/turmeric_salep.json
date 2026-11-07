@@ -1,0 +1,18 @@
+{
+  "id": "turmeric_salep",
+  "name": "Turmeric salep",
+  "kind": "product",
+  "icon": "salep",
+  "color": "#C8955A",
+  "forecast": [
+    10,
+    14
+  ],
+  "variants": [
+    "product"
+  ],
+  "variantPriceMult": {
+    "product": 1.0
+  },
+  "_placeholder": true
+}

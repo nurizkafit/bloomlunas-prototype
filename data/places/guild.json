@@ -1,0 +1,39 @@
+{
+  "id": "guild",
+  "name": "Guild Center",
+  "icon": "guild",
+  "travelMin": 45,
+  "scene3d": "guild",
+  "hours": [
+    [
+      8,
+      16
+    ],
+    [
+      8,
+      16
+    ],
+    [
+      8,
+      16
+    ],
+    [
+      8,
+      16
+    ],
+    [
+      8,
+      16
+    ],
+    [
+      8,
+      16
+    ],
+    null
+  ],
+  "stations": [
+    "receptionist",
+    "questboard"
+  ],
+  "_placeholder": true
+}

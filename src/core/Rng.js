@@ -25,7 +25,7 @@ export class Rng {
     return lo + this.next() * (hi - lo);
   }
 
-  /** @param {number} p @returns {boolean} */
+  /** @param {number} p */
   chance(p) {
     return this.next() < p;
   }
@@ -33,5 +33,13 @@ export class Rng {
   /** @template T @param {T[]} list @returns {T} */
   pick(list) {
     return list[Math.floor(this.next() * list.length)];
+  }
+
+  /** Pick by weight. @template T @param {T[]} list @param {(x:T)=>number} weight @returns {T} */
+  weighted(list, weight) {
+    const total = list.reduce((s, x) => s + weight(x), 0);
+    let r = this.next() * total;
+    for (const x of list) { r -= weight(x); if (r < 0) return x; }
+    return list[list.length - 1];
   }
 }

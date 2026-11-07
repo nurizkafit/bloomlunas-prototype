@@ -1,40 +1,36 @@
 /**
- * EventBus: typed publish and subscribe between logic and view.
+ * EventBus: publish and subscribe between logic and view.
  * Views send `intent.*`. Logic sends `*.changed`, `phase.*` and results.
  * Unity: C# events or ScriptableObject event channels.
  */
 
-/** All message names (SPECS.md §7). Use these constants, not string literals. */
+/** All message names (SPECS.md §6). Use these constants, not string literals. */
 export const MSG = Object.freeze({
-  INTENT_NEXT_PHASE: 'intent.nextPhase',
-  INTENT_PLACE_CARD: 'intent.placeCard',
-  INTENT_MOVE_CARD: 'intent.moveCard',
-  INTENT_REMOVE_CARD: 'intent.removeCard',
+  INTENT_SET_GOAL: 'intent.setGoal',
+  INTENT_SET_PRODUCT: 'intent.setProduct',
   INTENT_SET_BUDGET: 'intent.setBudget',
   INTENT_LOCK_PLAN: 'intent.lockPlan',
-  INTENT_START_ACTIVITY: 'intent.startActivity',
-  INTENT_RUN_ACTION: 'intent.runAction',
+  INTENT_ACTION: 'intent.action',
   INTENT_RESPOND_EVENT: 'intent.respondEvent',
   INTENT_WRITE_NOTE: 'intent.writeNote',
+  INTENT_FINISH_CHECK: 'intent.finishCheck',
   INTENT_PAY_DEBT: 'intent.payDebt',
   INTENT_PAY_UTILITIES: 'intent.payUtilities',
-  INTENT_INVEST: 'intent.invest',
-  INTENT_BOOK_APPOINTMENT: 'intent.bookAppointment',
+  INTENT_BOOK_SERVICE: 'intent.bookService',
+  INTENT_FINISH_ACT: 'intent.finishAct',
   PHASE_ENTERED: 'phase.entered',
   PHASE_EXITED: 'phase.exited',
+  STATE_CHANGED: 'state.changed',
   CLOCK_CHANGED: 'clock.changed',
   LEDGER_CHANGED: 'ledger.changed',
-  INVENTORY_CHANGED: 'inventory.changed',
-  SKILL_CHANGED: 'skill.changed',
-  DEBT_CHANGED: 'debt.changed',
-  RELATIONSHIP_CHANGED: 'relationship.changed',
-  ACTION_STARTED: 'action.started',
-  ACTION_COMPLETED: 'action.completed',
+  ACTION_DONE: 'action.done',
   ACTION_REFUSED: 'action.refused',
+  DAY_STARTED: 'day.started',
+  DAY_ENDED: 'day.ended',
   EVENT_FIRED: 'event.fired',
   EVENT_RESOLVED: 'event.resolved',
   PLAN_VALIDATED: 'plan.validated',
-  GAME_ENDED: 'game.ended'
+  GAME_FINISHED: 'game.finished'
 });
 
 const KNOWN = new Set(Object.values(MSG));
@@ -50,12 +46,7 @@ export class EventBus {
     this.#check(name);
     if (!this.handlers.has(name)) this.handlers.set(name, new Set());
     this.handlers.get(name).add(fn);
-    return () => this.off(name, fn);
-  }
-
-  /** @param {string} name @param {Function} fn */
-  off(name, fn) {
-    this.handlers.get(name)?.delete(fn);
+    return () => this.handlers.get(name)?.delete(fn);
   }
 
   /** @param {string} name @param {any} [payload] */

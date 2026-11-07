@@ -8,7 +8,7 @@
     "build": "vite build",
     "test": "vitest run",
     "sim": "node src/sim/runMonths.js",
-    "check": "vitest run && node src/sim/runMonths.js --months 1 --runs 1 --quiet && vite build",
+    "check": "vitest run && node src/sim/runMonths.js --runs 2 --quiet && vite build",
     "graph:update": "graphify update .",
     "graph:query": "graphify query",
     "test:browser": "node tests/browser/run.mjs"

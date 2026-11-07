@@ -1,0 +1,18 @@
+{
+  "id": "meal",
+  "name": "Meal pack",
+  "kind": "food",
+  "icon": "food",
+  "color": "#9C87C0",
+  "forecast": [
+    3,
+    3
+  ],
+  "variants": [
+    "pack"
+  ],
+  "variantPriceMult": {
+    "pack": 1.0
+  },
+  "_placeholder": true
+}

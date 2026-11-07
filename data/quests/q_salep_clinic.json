@@ -1,0 +1,10 @@
+{
+  "id": "q_salep_clinic",
+  "name": "Clinic salep order",
+  "client": "Clinic",
+  "item": "turmeric_salep",
+  "qty": 4,
+  "reward": 105,
+  "xp": 10,
+  "_placeholder": true
+}

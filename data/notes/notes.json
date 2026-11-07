@@ -1,0 +1,45 @@
+{
+  "id": "notes",
+  "options": [
+    {
+      "id": "buy_less",
+      "icon": "cart",
+      "text": "Buy fewer materials"
+    },
+    {
+      "id": "buy_more",
+      "icon": "cart",
+      "text": "Buy more materials"
+    },
+    {
+      "id": "price_up",
+      "icon": "trend_up",
+      "text": "Try a higher price"
+    },
+    {
+      "id": "price_down",
+      "icon": "trend_down",
+      "text": "Try a lower price"
+    },
+    {
+      "id": "rest_more",
+      "icon": "rest",
+      "text": "Rest more"
+    },
+    {
+      "id": "buffer_more",
+      "icon": "jar",
+      "text": "Keep a bigger buffer"
+    },
+    {
+      "id": "craft_salep",
+      "icon": "cauldron",
+      "text": "Make more salep"
+    },
+    {
+      "id": "explore_more",
+      "icon": "explore",
+      "text": "Gather more, buy less"
+    }
+  ]
+}

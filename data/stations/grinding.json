@@ -1,0 +1,7 @@
+{
+  "id": "grinding",
+  "name": "Grinding table",
+  "icon": "grinder",
+  "place": "home",
+  "skill": "moon"
+}

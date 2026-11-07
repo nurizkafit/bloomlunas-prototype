@@ -1,7 +1,0 @@
-{
-  "id": "weekly_expenses",
-  "period": "weekly",
-  "amountKey": "WEEKLY_EXPENSES",
-  "paidIn": "Check",
-  "source": "docs:pages/systems/shop-economy.md"
-}

@@ -1,67 +1,29 @@
 import { Phase } from './Phase.js';
-import { MSG } from '../core/EventBus.js';
 
 /**
- * CheckPhase: end of week. Pays WEEKLY_EXPENSES (the part gold cannot cover becomes debt) and writes the week report:
- * income, expenses, XP per path, plan vs actual minutes per activity, events, lost cards. intent.writeNote saves a note for the next Plan. Goes to Act after the last week of the month.
+ * CheckPhase: the weekly recap in the Journal. Pays the weekly living cost (unpaid -> debt),
+ * sums the week (goals, store goal, budget vs actual, income and costs, XP), the player writes a note.
  */
 export class CheckPhase extends Phase {
-  constructor() {
-    super('Check');
-  }
+  constructor(ctx) { super('check', ctx); }
 
-  enter(ctx) {
-    super.enter(ctx);
-    const { state, content, sys } = ctx;
-    const cost = content.num('WEEKLY_EXPENSES');
-    const paid = Math.min(cost, Math.max(0, state.wallet.gold));
-    if (paid) sys.effects.apply([{ type: 'gold', amount: -paid, label: 'Weekly expenses' }], 'expenses');
-    sys.debt.addUnpaid(cost - paid, 'Weekly expenses');
-    const { month, week } = state.calendar;
-    state.priceHistory = state.priceHistory ?? [];
-    state.priceHistory.push({ month, week, prices: { ...state.prices } });
-    const w = state.ledger.week(month, week);
-    const made = {};
-    for (const [t, n] of Object.entries(state.stats.made)) {
-      const d = n - (state.weekStart?.made?.[t] ?? 0);
-      if (d) made[t] = d;
-    }
-    state.weekReports = state.weekReports ?? [];
-    state.weekReports.push({
-      month, week,
-      income: round2(w.income), expenses: round2(w.expenses), net: round2(w.net),
-      gold: state.wallet.gold, debt: state.debt.balance,
-      sold: state.stats.sold - (state.weekStart?.sold ?? 0),
-      waste: state.stats.waste - (state.weekStart?.waste ?? 0),
-      made, unpaid: cost - paid,
-      doNet: round2(w.lines.filter((l) => l.kind !== 'expenses').reduce((n, l) => n + l.amount, 0)),
-      living: paid,
-      xp: Object.fromEntries(Object.entries(state.skills.pathXp).map(([k, v]) => [k, v - (state.weekStart?.pathXp?.[k] ?? 0)]).filter(([, v]) => v)),
-      subXp: Object.fromEntries(Object.entries(state.skills.subXp).map(([k, v]) => [k, v - (state.weekStart?.subXp?.[k] ?? 0)]).filter(([, v]) => v)),
-      planned: { ...(state.weekPlanned ?? {}) },
-      actual: { ...(state.weekActual ?? {}) },
-      events: [...(state.weekEvents ?? [])],
-      lost: (state.lostCards ?? []).filter((c) => c.month === month && c.week === week).map((c) => c.activityId)
-    });
-    this.listen(ctx, MSG.INTENT_WRITE_NOTE, ({ text }) => {
-      const t = String(text ?? '').trim();
-      if (!t) return;
-      state.notes = state.notes ?? [];
-      state.notes.push({ month, week, text: t });
-    });
+  enter() {
+    const { state, content, sys } = this.ctx;
+    const living = content.num('WEEKLY_EXPENSES');
+    const paid = Math.min(living, Math.max(0, state.gold));
+    if (paid) sys.ledger.add(-paid, 'Living cost', 'bills');
+    if (paid < living) sys.debt.addUnpaid(living - paid, 'Living cost');
+    const w = state.week;
+    const sold = Object.values(w.sold).reduce((s, q) => s + q, 0);
+    const income = Object.values(w.income).reduce((s, q) => s + q, 0);
+    const spent = Object.values(w.spent).reduce((s, q) => s + q, 0);
+    state.checkSummary = {
+      absWeek: sys.time.absWeek(), month: state.cal.month, week: state.cal.week,
+      goals: [...state.plan.goals], goalsMet: [...w.goalsMet], goalHits: w.goalsMet.filter(Boolean).length,
+      storeGoal: sys.plan.storeGoal(), sold, soldBy: { ...w.sold },
+      budget: { ...state.plan.budget }, spent: { ...w.spent }, income: { ...w.income }, incomeTotal: Math.round(income), spentTotal: Math.round(spent),
+      startGold: w.startGold, endGold: state.gold, xp: { ...w.xp }, unpaidLiving: Math.max(0, living - paid),
+      bufferKept: state.gold >= state.plan.budget.buffer
+    };
   }
-
-  next(ctx) {
-    return ctx.state.calendar.isLastWeekOfMonth() ? 'Act' : 'Plan';
-  }
-
-  exit(ctx) {
-    super.exit(ctx);
-    if (!ctx.state.calendar.isLastWeekOfMonth()) ctx.state.calendar.nextWeek();
-  }
-}
-
-/** @param {number} n */
-function round2(n) {
-  return Math.round(n * 100) / 100;
 }

@@ -1,0 +1,7 @@
+{
+  "id": "stall",
+  "name": "Market stall",
+  "icon": "stall",
+  "place": "market",
+  "skill": "sun"
+}

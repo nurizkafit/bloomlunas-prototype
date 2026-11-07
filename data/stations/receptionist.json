@@ -1,0 +1,7 @@
+{
+  "id": "receptionist",
+  "name": "Guild receptionist",
+  "icon": "desk",
+  "place": "guild",
+  "skill": "sun"
+}

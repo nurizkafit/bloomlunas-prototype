@@ -1,0 +1,39 @@
+{
+  "id": "ev_festival",
+  "type": "scheduled",
+  "trigger": {
+    "week": 3,
+    "day": 5
+  },
+  "title": "Lantern Festival",
+  "icon": "lantern",
+  "text": "The town has a festival today. Crowds buy more.",
+  "responses": [
+    {
+      "label": "Open the store",
+      "icon": "store",
+      "effects": [
+        {
+          "type": "demand",
+          "amount": 1.8,
+          "days": 1
+        }
+      ]
+    },
+    {
+      "label": "Enjoy the festival",
+      "icon": "heart",
+      "effects": [
+        {
+          "type": "energy",
+          "amount": 20
+        },
+        {
+          "type": "time",
+          "amount": 120
+        }
+      ]
+    }
+  ],
+  "_placeholder": true
+}

@@ -1,12 +1,8 @@
-import { MSG } from '../core/EventBus.js';
+import { Inventory } from '../model/Inventory.js';
 
 /**
- * EffectApplier: applies EffectData lists. All effects of activities, events, services and investments go here.
- * EffectData = { type, target, amount, variant?, tier?, label? }
- *   gold: wallet +/- amount (ledger line) · item: target item, variant, +/- amount · xp: target "path.sub" or "path"
- *   relation: target entity · energy: +/- amount (0..ENERGY_MAX) · debt: +/- debt balance · time: minutes on the clock
- *   stat: lasting change to a BalanceConfig value (target = key), read with ctx.stat(key) (investments)
- * Unity: static class or ScriptableObject-driven command list.
+ * EffectApplier: applies EffectData lists (events, services).
+ * Types: gold, item, xp, energy, time, debt, demand, stat. Unity: static C# class.
  */
 export class EffectApplier {
   /** @param {any} ctx */
@@ -14,52 +10,42 @@ export class EffectApplier {
     this.ctx = ctx;
   }
 
-  /** @param {{type:string, target?:string, amount:number, variant?:string, tier?:string, label?:string}[]} effects @param {string} [source] */
-  apply(effects, source = 'effect') {
-    for (const e of effects ?? []) this.applyOne(e, source);
-  }
-
-  applyOne(e, source) {
-    const { state, content, bus } = this.ctx;
-    switch (e.type) {
-      case 'gold':
-        state.wallet.add(e.amount);
-        state.ledger.add(state.calendar, e.label ?? source, e.amount, source);
-        bus.emit(MSG.LEDGER_CHANGED, { gold: state.wallet.gold });
-        break;
-      case 'item':
-        if (e.amount >= 0) state.inventory.add(e.target, e.variant ?? 'product', e.amount, { tier: e.tier ?? null, born: state.calendar.absDay() });
-        else state.inventory.take(e.target, e.variant, -e.amount, { includeSpoiled: true });
-        bus.emit(MSG.INVENTORY_CHANGED, { item: e.target });
-        break;
-      case 'xp': {
-        const [path, sub] = String(e.target).split('.');
-        state.skills.addXp(path, sub, e.amount);
-        bus.emit(MSG.SKILL_CHANGED, { path, sub });
-        break;
+  /** @param {any[]} effects @param {string} source label for the ledger */
+  apply(effects, source) {
+    const { state, content, sys } = this.ctx;
+    for (const e of effects ?? []) {
+      switch (e.type) {
+        case 'gold': sys.ledger.add(e.amount, e.label ?? source, e.amount < 0 ? (e.budget ?? 'personal') : 'other'); break;
+        case 'item': {
+          const item = content.get('items', e.target);
+          const variant = e.variant ?? item.variants[0];
+          if (e.amount < 0) Inventory.take(state.inv, e.target, variant, -e.amount, item.kind === 'product' ? tiersLowFirst(content) : ['']);
+          else Inventory.add(state.inv, e.target, variant, e.amount, item.kind === 'product' ? sys.skills.tier() : '');
+          break;
+        }
+        case 'xp': sys.skills.add(e.target, e.amount); break;
+        case 'energy': state.energy = clamp(state.energy + e.amount, 0, state.energyMax); break;
+        case 'time': sys.time.advance(e.amount, true); break;
+        case 'debt': state.debt.balance = round2(state.debt.balance + e.amount); state.debt.carriedTotal += Math.max(0, e.amount); break;
+        case 'demand': state.market.demandMod = e.amount; state.market.demandUntil = sys.time.absDay() + (e.days ?? 1) - 1; break;
+        case 'stat': state.boosts[e.target] = (state.boosts[e.target] ?? 0) + e.amount; break;
+        default: throw new Error(`Unknown effect type ${e.type}`);
       }
-      case 'relation':
-        state.relations.add(e.target, e.amount);
-        bus.emit(MSG.RELATIONSHIP_CHANGED, { entityId: e.target, points: state.relations.points[e.target] });
-        break;
-      case 'energy': {
-        const max = content.num('ENERGY_MAX');
-        state.player.energy = Math.max(0, Math.min(max, state.player.energy + e.amount));
-        break;
-      }
-      case 'debt':
-        state.debt.balance += e.amount;
-        bus.emit(MSG.DEBT_CHANGED, { balance: state.debt.balance });
-        break;
-      case 'stat':
-        state.modifiers = state.modifiers ?? {};
-        state.modifiers[e.target] = (state.modifiers[e.target] ?? 0) + e.amount;
-        break;
-      case 'time':
-        this.ctx.sys.time.advance(e.amount);
-        break;
-      default:
-        throw new Error(`EffectApplier: unknown effect type ${e.type}`);
     }
   }
+}
+
+/** Product tiers, lowest first (so gifts use the cheapest stock). @param {any} content */
+export function tiersLowFirst(content) {
+  return Object.keys(content.num('QUALITY_TIERS'));
+}
+
+/** @param {number} n @param {number} lo @param {number} hi */
+export function clamp(n, lo, hi) {
+  return Math.max(lo, Math.min(hi, n));
+}
+
+/** @param {number} n */
+export function round2(n) {
+  return Math.round(n * 100) / 100;
 }

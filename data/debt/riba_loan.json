@@ -1,17 +1,10 @@
 {
   "id": "riba_loan",
+  "name": "Riba loan",
   "kind": "riba",
   "principalKey": "DEBT_START",
   "rateKey": "DEBT_INTEREST_RATE",
-  "compound": true,
-  "hiddenFees": [
-    {
-      "id": "late",
-      "key": "HIDDEN_FEE_LATE",
-      "when": "payment below minimum"
-    }
-  ],
   "minPaymentKey": "DEBT_MIN_PAYMENT",
-  "limitKey": "DEBT_LIMIT",
-  "source": "docs:pages/debt/riba-loan.md"
+  "lateFeeKey": "HIDDEN_FEE_LATE",
+  "source": "doc:core-gameplay/system-and-mechanics/debt/riba-loan"
 }

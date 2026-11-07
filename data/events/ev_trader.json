@@ -1,0 +1,33 @@
+{
+  "id": "ev_trader",
+  "type": "random",
+  "title": "A trader at the door",
+  "icon": "cart",
+  "text": "A trader sells beeswax cheap today.",
+  "responses": [
+    {
+      "label": "Buy 2 beeswax",
+      "icon": "wax",
+      "effects": [
+        {
+          "type": "gold",
+          "amount": -12,
+          "label": "Beeswax (trader)",
+          "budget": "store"
+        },
+        {
+          "type": "item",
+          "target": "beeswax",
+          "variant": "block",
+          "amount": 2
+        }
+      ]
+    },
+    {
+      "label": "No, thanks",
+      "icon": "cross",
+      "effects": []
+    }
+  ],
+  "_placeholder": true
+}

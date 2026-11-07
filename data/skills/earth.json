@@ -1,21 +1,6 @@
 {
   "id": "earth",
-  "subSkills": [
-    "foraging",
-    "wayfaring"
-  ],
-  "maxLevel": 10,
-  "xpToNextLevel": [
-    20,
-    30,
-    45,
-    60,
-    80,
-    100,
-    125,
-    150,
-    180
-  ],
-  "_placeholder": true,
-  "source": "docs:pages/skills/earth-path.md"
+  "name": "Earth",
+  "icon": "earth",
+  "text": "Gathering. Finds more materials."
 }

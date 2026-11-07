@@ -1,0 +1,10 @@
+{
+  "id": "explore",
+  "name": "Explore",
+  "icon": "explore",
+  "stations": [
+    "explore"
+  ],
+  "color": "#6B8A3A",
+  "order": 0
+}

@@ -1,9 +1,9 @@
 import { MSG } from '../core/EventBus.js';
+import { Calendar } from '../model/Calendar.js';
 
 /**
- * TimeSystem: the clock moves only when an action runs (SPECS §5).
- * Energy, fatigue (low energy at sleep, or work or sleep after DAY_END_HOUR = midnight), late wake-up, day end, week end.
- * Unity: plain C# service owned by GameManager.
+ * TimeSystem: the day clock and energy. A day runs from DAY_START_HOUR to DAY_END_HOUR.
+ * Every action uses minutes and energy. Sleep ends the day. Unity: plain C# service.
  */
 export class TimeSystem {
   /** @param {any} ctx */
@@ -11,61 +11,57 @@ export class TimeSystem {
     this.ctx = ctx;
   }
 
-  get #c() { return this.ctx.content; }
+  get endMinute() { return this.ctx.content.num('DAY_END_HOUR') * 60; }
 
-  /** Real minutes for an action: fatigue makes work slower. @param {number} base */
-  effectiveMinutes(base) {
-    const p = this.ctx.state.player;
-    return p.fatigued ? Math.round(base * (1 + this.#c.num('FATIGUE_EFFICIENCY_PENALTY'))) : base;
+  absDay() {
+    const { state, content } = this.ctx;
+    return Calendar.absDay(state.cal, content.num('WEEKS_PER_MONTH'), content.num('DAYS_PER_WEEK'));
   }
 
-  /** True if an action of this length ends before NIGHT_END_HOUR. @param {number} minutes */
-  fits(minutes) {
-    return this.ctx.state.calendar.minute + minutes <= this.#c.num('NIGHT_END_HOUR') * 60;
+  absWeek() {
+    return Calendar.absWeek(this.ctx.state.cal, this.ctx.content.num('WEEKS_PER_MONTH'));
   }
 
-  /** @param {number} minutes */
-  advance(minutes) {
-    const { state, bus } = this.ctx;
-    state.calendar.minute += minutes;
-    if (state.calendar.minute > this.#c.num('DAY_END_HOUR') * 60) state.player.workedLate = true;
-    bus.emit(MSG.CLOCK_CHANGED, state.calendar.snapshot());
-  }
-
-  /** @param {number} amount */
-  spendEnergy(amount) {
-    const p = this.ctx.state.player;
-    p.energy = Math.max(0, p.energy - amount);
-  }
-
-  /** Sleep: fatigue check, energy back, day ends. On the last day the week ends. */
-  sleep() {
+  /** Why the player cannot spend this, or null. @param {number} min @param {number} energy */
+  check(min, energy) {
     const { state } = this.ctx;
-    const p = state.player;
-    p.fatigued = p.energy < this.#c.num('FATIGUE_THRESHOLD') || p.workedLate || state.calendar.minute > this.#c.num('DAY_END_HOUR') * 60;
-    p.energy = Math.min(this.#c.num('ENERGY_MAX'), p.energy + this.#c.num('ENERGY_REST_RECOVERY'));
-    p.dayOver = true;
-    if (state.calendar.day >= this.#c.num('DAYS_PER_WEEK') - 1) p.weekOver = true;
-    else this.startDay(state.calendar.day + 1);
+    if (state.cal.minute + min > this.endMinute) return 'late';
+    if (energy > 0 && state.energy < energy) return 'tired';
+    return null;
   }
 
-  /** Start a day: wake up (late if fatigued and unlucky), then the daily ticks. @param {number} day 0 = Monday */
-  startDay(day) {
-    const { state, rng, sys } = this.ctx;
-    const p = state.player;
-    state.calendar.day = day;
-    state.calendar.minute = this.#c.num('DAY_START_HOUR') * 60;
-    p.lateWake = p.fatigued && rng.chance(this.#c.num('LATE_WAKE_CHANCE'));
-    if (p.lateWake) state.calendar.minute += this.#c.num('LATE_WAKE_DELAY_MIN');
-    p.workedLate = false;
-    p.meals = [];
-    p.dayOver = false;
-    p.weekOver = false;
-    p.activityId = null;
-    p.location = 'loc_home';
-    sys.production.onDayStart();
-    sys.economy.onDayStart();
-    this.ctx.bus.emit(MSG.CLOCK_CHANGED, state.calendar.snapshot());
-    sys.events?.tick();
+  /** Use time and energy. @param {number} min @param {number} energy @param {boolean} [work] counts as work time */
+  spend(min, energy, work = true) {
+    const { state } = this.ctx;
+    state.energy = Math.max(0, Math.min(state.energyMax, state.energy - energy));
+    this.advance(min, false);
+    if (work) state.day.workMin += min;
+  }
+
+  /** Move the clock. An event may push past the day end: clamp. @param {number} min @param {boolean} [clampToEnd] */
+  advance(min, clampToEnd = true) {
+    const { state, bus } = this.ctx;
+    state.cal.minute = clampToEnd ? Math.min(this.endMinute, state.cal.minute + min) : state.cal.minute + min;
+    bus.emit(MSG.CLOCK_CHANGED, { ...state.cal, energy: state.energy });
+  }
+
+  /** Is a place open now (and still open after min minutes)? @param {any} place @param {number} [min] */
+  isOpen(place, min = 0) {
+    const h = place.hours[Calendar.weekday(this.ctx.state.cal)];
+    if (!h) return false;
+    const m = this.ctx.state.cal.minute;
+    return m >= h[0] * 60 && m + min <= h[1] * 60;
+  }
+
+  /** Is a place open at arrival? Early arrival waits for opening. @param {any} place @param {number} travelMin */
+  openOnArrival(place, travelMin) {
+    const h = place.hours[Calendar.weekday(this.ctx.state.cal)];
+    if (!h) return false;
+    return this.ctx.state.cal.minute + travelMin < h[1] * 60;
+  }
+
+  /** Hours of a place today, or null when closed. @param {any} place */
+  hoursToday(place) {
+    return place.hours[Calendar.weekday(this.ctx.state.cal)];
   }
 }

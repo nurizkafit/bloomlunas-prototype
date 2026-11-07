@@ -1,0 +1,12 @@
+{
+  "id": "craft",
+  "name": "Craft",
+  "icon": "cauldron",
+  "stations": [
+    "crafting",
+    "drying",
+    "grinding"
+  ],
+  "color": "#5FA39A",
+  "order": 1
+}

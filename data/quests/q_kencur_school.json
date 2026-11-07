@@ -1,0 +1,10 @@
+{
+  "id": "q_kencur_school",
+  "name": "School health day",
+  "client": "Teacher",
+  "item": "beras_kencur",
+  "qty": 6,
+  "reward": 65,
+  "xp": 10,
+  "_placeholder": true
+}

@@ -1,0 +1,42 @@
+{
+  "id": "ev_rain",
+  "type": "random",
+  "title": "Heavy rain",
+  "icon": "rain",
+  "text": "Rain all morning. Few people walk to the shops.",
+  "responses": [
+    {
+      "label": "Stay in and craft",
+      "icon": "cauldron",
+      "effects": [
+        {
+          "type": "demand",
+          "amount": 0.7,
+          "days": 1
+        }
+      ]
+    },
+    {
+      "label": "Lend umbrellas",
+      "icon": "gold",
+      "effects": [
+        {
+          "type": "gold",
+          "amount": -10,
+          "label": "Umbrellas"
+        },
+        {
+          "type": "demand",
+          "amount": 1.0,
+          "days": 1
+        },
+        {
+          "type": "xp",
+          "target": "sun",
+          "amount": 5
+        }
+      ]
+    }
+  ],
+  "_placeholder": true
+}

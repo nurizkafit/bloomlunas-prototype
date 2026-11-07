@@ -1,8 +1,0 @@
-{
-  "id": "bad",
-  "rule": "bankrupt_or_deadline",
-  "title": "Bad Ending",
-  "text": "The debt is too large. The guild takes the shop and all you own. You go to jail and must do servitude.",
-  "source": "docs:pages/endings/bad.md",
-  "build": "Jam"
-}

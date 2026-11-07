@@ -1,15 +1,15 @@
 /**
  * ContentDB: holds all data files and finds them by id.
- * It does not read files itself. The entry point gives it a map of path -> JSON:
+ * It does not read files. The entry point gives it a map of path -> JSON:
  * Node uses src/sim/loadDataNode.js; the browser uses import.meta.glob in src/main.js.
  * Unity: Resources or Addressables lookup.
  */
 export class ContentDB {
-  /** @param {Record<string, any>} files map of path (for example "data/activities/craft.json") to parsed JSON */
+  /** @param {Record<string, any>} files map of path (for example "data/items/rice.json") to parsed JSON */
   constructor(files) {
     /** @type {Record<string, any>} */
     this.balance = {};
-    /** @type {Map<string, Map<string, any>>} type folder -> id -> record */
+    /** @type {Map<string, Map<string, any>>} folder -> id -> record */
     this.tables = new Map();
     for (const [path, json] of Object.entries(files)) this.#add(path, json);
   }
@@ -24,16 +24,11 @@ export class ContentDB {
     this.tables.get(type).set(id, json);
   }
 
-  /** Read one BalanceConfig value. Throws if it is missing, so no number hides in code. @param {string} key */
+  /** One BalanceConfig value. Throws if it is missing, so no number hides in code. @param {string} key */
   num(key) {
     const v = this.balance[key];
     if (v === undefined) throw new Error(`BalanceConfig is missing ${key}`);
     return typeof v === 'object' && v !== null && 'value' in v ? v.value : v;
-  }
-
-  /** A config file at the data root, for example config('QualityConfig'). @param {string} name */
-  config(name) {
-    return this.get(name, name);
   }
 
   /** @param {string} type @param {string} id */
@@ -41,6 +36,11 @@ export class ContentDB {
     const r = this.tables.get(type)?.get(id);
     if (!r) throw new Error(`ContentDB: no ${type}/${id}`);
     return r;
+  }
+
+  /** @param {string} type @param {string} id */
+  find(type, id) {
+    return this.tables.get(type)?.get(id) ?? null;
   }
 
   /** @param {string} type @returns {any[]} */

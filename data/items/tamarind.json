@@ -1,23 +1,19 @@
 {
   "id": "tamarind",
-  "kind": "material",
   "name": "Tamarind",
-  "tier": "Common",
-  "role": "aroma",
-  "plantPart": "fruit",
-  "variants": [
-    {
-      "id": "paste",
-      "shelfLifeDays": 28,
-      "priceMult": 1.0
-    }
+  "kind": "material",
+  "icon": "fruit",
+  "color": "#8A6238",
+  "forecast": [
+    3,
+    5
   ],
-  "costKey": "COST_TAMARIND",
-  "forecast": {
-    "lo": 3,
-    "hi": 5
+  "variants": [
+    "paste"
+  ],
+  "variantPriceMult": {
+    "paste": 1.0
   },
-  "build": "Jam",
-  "source": "docs:pages/materials/tamarind.md",
-  "_placeholder": true
+  "_placeholder": true,
+  "wild": false
 }

@@ -1,0 +1,18 @@
+{
+  "id": "kunyit_asam",
+  "name": "Kunyit asam",
+  "kind": "product",
+  "icon": "jamu",
+  "color": "#D9A326",
+  "forecast": [
+    4.5,
+    6.5
+  ],
+  "variants": [
+    "product"
+  ],
+  "variantPriceMult": {
+    "product": 1.0
+  },
+  "_placeholder": true
+}

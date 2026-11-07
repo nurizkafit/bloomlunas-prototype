@@ -1,0 +1,18 @@
+{
+  "id": "turmeric_patch",
+  "name": "Wild turmeric patch",
+  "icon": "root",
+  "loot": [
+    {
+      "item": "turmeric",
+      "variant": "fresh",
+      "min": 2,
+      "max": 4
+    }
+  ],
+  "gatherMin": 60,
+  "gatherEnergy": 10,
+  "weight": 3,
+  "xp": 5,
+  "_placeholder": true
+}

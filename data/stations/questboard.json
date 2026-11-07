@@ -1,0 +1,7 @@
+{
+  "id": "questboard",
+  "name": "Quest board",
+  "icon": "quest",
+  "place": "guild",
+  "skill": null
+}

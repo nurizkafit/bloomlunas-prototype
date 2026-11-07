@@ -1,0 +1,17 @@
+{
+  "id": "svc_rack",
+  "name": "Bigger drying rack",
+  "text": "Drying rack holds +10 units from next month.",
+  "price": 60,
+  "when": "month",
+  "effects": [
+    {
+      "type": "stat",
+      "target": "DRYING_CAPACITY",
+      "amount": 10
+    }
+  ],
+  "inDo": false,
+  "inAct": true,
+  "_placeholder": true
+}

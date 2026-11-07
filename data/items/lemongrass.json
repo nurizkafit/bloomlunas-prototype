@@ -1,28 +1,21 @@
 {
   "id": "lemongrass",
-  "kind": "material",
   "name": "Lemongrass",
-  "tier": "Common",
-  "role": "main",
-  "plantPart": "leaf",
-  "variants": [
-    {
-      "id": "fresh",
-      "shelfLifeDays": 3,
-      "priceMult": 1.0
-    },
-    {
-      "id": "dried",
-      "shelfLifeDays": 28,
-      "priceMult": 1.5
-    }
+  "kind": "material",
+  "icon": "leaf",
+  "color": "#6B8A3A",
+  "forecast": [
+    2,
+    4
   ],
-  "costKey": "COST_LEMONGRASS",
-  "forecast": {
-    "lo": 2,
-    "hi": 4
+  "variants": [
+    "fresh",
+    "dried"
+  ],
+  "variantPriceMult": {
+    "fresh": 1.0,
+    "dried": 1.6
   },
-  "build": "Jam",
-  "source": "docs:pages/materials/lemongrass.md",
-  "_placeholder": true
+  "_placeholder": true,
+  "wild": true
 }

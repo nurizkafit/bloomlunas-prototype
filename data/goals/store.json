@@ -1,0 +1,10 @@
+{
+  "id": "store",
+  "name": "Open store",
+  "icon": "store",
+  "stations": [
+    "store"
+  ],
+  "color": "#D9A326",
+  "order": 2
+}

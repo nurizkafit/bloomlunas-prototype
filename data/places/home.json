@@ -1,0 +1,45 @@
+{
+  "id": "home",
+  "name": "Home + Store",
+  "icon": "house",
+  "travelMin": 0,
+  "scene3d": "home",
+  "hours": [
+    [
+      0,
+      24
+    ],
+    [
+      0,
+      24
+    ],
+    [
+      0,
+      24
+    ],
+    [
+      0,
+      24
+    ],
+    [
+      0,
+      24
+    ],
+    [
+      0,
+      24
+    ],
+    [
+      0,
+      24
+    ]
+  ],
+  "stations": [
+    "store",
+    "crafting",
+    "drying",
+    "grinding",
+    "rest"
+  ],
+  "_placeholder": true
+}

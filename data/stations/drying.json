@@ -1,0 +1,7 @@
+{
+  "id": "drying",
+  "name": "Drying rack",
+  "icon": "rack",
+  "place": "home",
+  "skill": "moon"
+}

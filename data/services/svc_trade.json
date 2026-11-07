@@ -1,0 +1,17 @@
+{
+  "id": "svc_trade",
+  "name": "Trade lesson",
+  "text": "Sun skill +25 XP now.",
+  "price": 35,
+  "when": "now",
+  "effects": [
+    {
+      "type": "xp",
+      "target": "sun",
+      "amount": 25
+    }
+  ],
+  "inDo": true,
+  "inAct": false,
+  "_placeholder": true
+}

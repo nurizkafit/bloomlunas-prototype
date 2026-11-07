@@ -1,0 +1,17 @@
+{
+  "id": "svc_sign",
+  "name": "New shop sign",
+  "text": "+1 customer per hour from next month.",
+  "price": 80,
+  "when": "month",
+  "effects": [
+    {
+      "type": "stat",
+      "target": "CUSTOMERS_PER_HOUR",
+      "amount": 1
+    }
+  ],
+  "inDo": false,
+  "inAct": true,
+  "_placeholder": true
+}

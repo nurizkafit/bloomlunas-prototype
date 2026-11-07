@@ -1,0 +1,41 @@
+{
+  "id": "outskirt",
+  "name": "City Outskirt",
+  "icon": "outskirt",
+  "travelMin": 60,
+  "scene3d": null,
+  "hours": [
+    [
+      6,
+      18
+    ],
+    [
+      6,
+      18
+    ],
+    [
+      6,
+      18
+    ],
+    [
+      6,
+      18
+    ],
+    [
+      6,
+      18
+    ],
+    [
+      6,
+      18
+    ],
+    [
+      6,
+      18
+    ]
+  ],
+  "stations": [
+    "explore"
+  ],
+  "_placeholder": true
+}

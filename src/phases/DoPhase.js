@@ -1,40 +1,51 @@
 import { Phase } from './Phase.js';
 import { MSG } from '../core/EventBus.js';
+import { GameState } from '../model/GameState.js';
+import { Inventory } from '../model/Inventory.js';
 
-/** DoPhase: the week, Monday to Sunday. Player starts activities and runs actions. Sleep on Sunday ends the week. Plan changes only for days not started. Events fire from the week queue (EventSystem). */
+/**
+ * DoPhase: the week is played day by day. A day starts at home with an optional event card.
+ * Sleep ends the day: goals are checked, a history point is saved, the next day starts.
+ * After the last day of the week the machine goes to Check.
+ */
 export class DoPhase extends Phase {
-  constructor() {
-    super('Do');
+  constructor(ctx) { super('do', ctx); }
+
+  enter() {
+    this.ctx.state.cal.day = 1;
+    this.startDay();
   }
 
-  enter(ctx) {
-    super.enter(ctx);
-    ctx.state.weekStart = { waste: ctx.state.stats.waste, made: { ...ctx.state.stats.made }, sold: ctx.state.stats.sold, pathXp: { ...ctx.state.skills.pathXp }, subXp: { ...ctx.state.skills.subXp } };
-    ctx.state.weekActual = {};
-    ctx.state.weekPlanned = ctx.state.plan.cards.reduce((m, c) => { m[c.activityId] = (m[c.activityId] ?? 0) + ctx.sys.plan.duration(c); return m; }, {});
-    ctx.sys.events.buildWeekQueue();
-    ctx.sys.time.startDay(0);
-    this.listen(ctx, MSG.INTENT_START_ACTIVITY, ({ activityId }) => ctx.sys.actions.startActivity(activityId));
-    this.listen(ctx, MSG.INTENT_RUN_ACTION, ({ actionId, params }) => ctx.sys.actions.runAction(actionId, params));
-    this.listen(ctx, MSG.INTENT_RESPOND_EVENT, ({ eventId, responseIndex }) => ctx.sys.events.respond(eventId, responseIndex));
-    // Change the plan only for days that have not started (SPECS §5).
-    const future = (day) => day > ctx.state.calendar.day;
-    const refresh = () => ctx.bus.emit(MSG.PLAN_VALIDATED, ctx.sys.plan.validate());
-    this.listen(ctx, MSG.INTENT_PLACE_CARD, (card) => {
-      const a = ctx.content.get('activities', card.activityId);
-      if (a.plannable && future(card.day)) { ctx.state.plan.place({ durationMin: a.planDurationMin, ...card }); refresh(); }
-    });
-    this.listen(ctx, MSG.INTENT_MOVE_CARD, ({ uid, ...changes }) => {
-      const c = ctx.state.plan.cards.find((x) => x.uid === uid);
-      if (c && future(c.day) && future(changes.day ?? c.day)) { ctx.state.plan.change(uid, changes); refresh(); }
-    });
-    this.listen(ctx, MSG.INTENT_REMOVE_CARD, ({ uid }) => {
-      const c = ctx.state.plan.cards.find((x) => x.uid === uid);
-      if (c && future(c.day)) { ctx.state.plan.remove(uid); refresh(); }
-    });
+  startDay() {
+    const { state, content, sys, bus } = this.ctx;
+    state.cal.minute = content.num('DAY_START_HOUR') * 60;
+    state.place = 'home';
+    state.day = GameState.freshDay();
+    state.explore = { spotsToday: 0, spot: null, found: [] };
+    state.store.result = null;
+    sys.events.roll();
+    bus.emit(MSG.DAY_STARTED, { ...state.cal });
   }
 
-  next(ctx) {
-    return 'Check';
+  /** Sleep. @returns {'nextDay'|'weekDone'} */
+  endDay() {
+    const { state, content, sys, bus } = this.ctx;
+    if (state.store.open) sys.store.close();
+    const d = state.cal.day - 1;
+    state.week.goalsMet[d] = sys.plan.goalMet(state.plan.goals[d], state.day);
+    if (state.week.goalsMet[d]) {
+      const g = content.get('goals', state.plan.goals[d]);
+      const st = g.stations[0] && content.get('stations', g.stations[0]);
+      sys.skills.add(st?.skill ?? 'sun', content.num('GOAL_XP'));
+    }
+    sys.quests.expire();
+    state.energyMax = state.day.meals > 0 ? content.num('ENERGY_MAX') : content.num('ENERGY_HUNGRY_MAX');
+    state.energy = state.energyMax;
+    state.history.push({ day: sys.time.absDay(), gold: state.gold, debt: state.debt.balance, goal: state.plan.goals[d], met: state.week.goalsMet[d], meals: state.day.meals, workMin: state.day.workMin, food: Inventory.count(state.inv, 'meal', 'pack', '') });
+    bus.emit(MSG.DAY_ENDED, { day: state.cal.day, met: state.week.goalsMet[d] });
+    if (state.cal.day >= content.num('DAYS_PER_WEEK')) return 'weekDone';
+    state.cal.day += 1;
+    this.startDay();
+    return 'nextDay';
   }
 }

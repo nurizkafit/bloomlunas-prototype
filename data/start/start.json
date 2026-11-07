@@ -1,0 +1,37 @@
+{
+  "id": "start",
+  "inventory": [
+    {
+      "item": "turmeric",
+      "variant": "fresh",
+      "qty": 4
+    },
+    {
+      "item": "tamarind",
+      "variant": "paste",
+      "qty": 2
+    },
+    {
+      "item": "palm_sugar",
+      "variant": "block",
+      "qty": 2
+    },
+    {
+      "item": "coconut_oil",
+      "variant": "oil",
+      "qty": 1
+    },
+    {
+      "item": "beeswax",
+      "variant": "block",
+      "qty": 1
+    },
+    {
+      "item": "kunyit_asam",
+      "variant": "product",
+      "tier": "standard",
+      "qty": 6
+    }
+  ],
+  "_placeholder": true
+}

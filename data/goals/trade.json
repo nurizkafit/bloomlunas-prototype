@@ -1,0 +1,12 @@
+{
+  "id": "trade",
+  "name": "Market + guild",
+  "icon": "guild",
+  "stations": [
+    "stall",
+    "receptionist",
+    "questboard"
+  ],
+  "color": "#9C87C0",
+  "order": 3
+}

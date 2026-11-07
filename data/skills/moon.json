@@ -1,22 +1,6 @@
 {
   "id": "moon",
-  "subSkills": [
-    "cooking",
-    "alchemy",
-    "crafting"
-  ],
-  "maxLevel": 10,
-  "xpToNextLevel": [
-    20,
-    30,
-    45,
-    60,
-    80,
-    100,
-    125,
-    150,
-    180
-  ],
-  "_placeholder": true,
-  "source": "docs:pages/skills/moon-path.md"
+  "name": "Moon",
+  "icon": "moon",
+  "text": "Crafting and processing. Raises product quality."
 }

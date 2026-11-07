@@ -1,0 +1,37 @@
+{
+  "id": "ev_inspection",
+  "type": "scheduled",
+  "trigger": {
+    "week": 6,
+    "day": 2
+  },
+  "title": "Guild inspection",
+  "icon": "guild",
+  "text": "The guild checks all shops. A small fee is due.",
+  "responses": [
+    {
+      "label": "Pay the fee",
+      "icon": "gold",
+      "effects": [
+        {
+          "type": "gold",
+          "amount": -15,
+          "label": "Inspection fee",
+          "budget": "store"
+        }
+      ]
+    },
+    {
+      "label": "Add it to the debt",
+      "icon": "debt",
+      "effects": [
+        {
+          "type": "debt",
+          "amount": 25,
+          "label": "Inspection fee"
+        }
+      ]
+    }
+  ],
+  "_placeholder": true
+}

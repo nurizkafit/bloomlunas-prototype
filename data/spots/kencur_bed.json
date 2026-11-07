@@ -1,0 +1,18 @@
+{
+  "id": "kencur_bed",
+  "name": "Kencur bed by the stream",
+  "icon": "root",
+  "loot": [
+    {
+      "item": "kencur",
+      "variant": "fresh",
+      "min": 2,
+      "max": 4
+    }
+  ],
+  "gatherMin": 60,
+  "gatherEnergy": 10,
+  "weight": 3,
+  "xp": 5,
+  "_placeholder": true
+}

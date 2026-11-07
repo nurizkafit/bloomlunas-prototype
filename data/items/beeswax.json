@@ -1,23 +1,19 @@
 {
   "id": "beeswax",
-  "kind": "material",
   "name": "Beeswax",
-  "tier": "Common",
-  "role": "carrier",
-  "plantPart": "processed",
-  "variants": [
-    {
-      "id": "block",
-      "shelfLifeDays": 56,
-      "priceMult": 1.0
-    }
+  "kind": "material",
+  "icon": "wax",
+  "color": "#E8C060",
+  "forecast": [
+    8,
+    12
   ],
-  "costKey": "COST_BEESWAX",
-  "forecast": {
-    "lo": 8,
-    "hi": 12
+  "variants": [
+    "block"
+  ],
+  "variantPriceMult": {
+    "block": 1.0
   },
-  "build": "Jam",
-  "source": "docs:pages/materials/beeswax.md",
-  "_placeholder": true
+  "_placeholder": true,
+  "wild": false
 }

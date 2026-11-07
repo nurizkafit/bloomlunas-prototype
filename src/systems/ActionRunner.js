@@ -1,11 +1,11 @@
 import { MSG } from '../core/EventBus.js';
+import { Inventory } from '../model/Inventory.js';
 
 /**
- * ActionRunner: the player starts an activity, then runs its actions one at a time (SPECS §4, §5).
- * Rule checks (activity, location, opening hours, energy, night limit, kind rules), then time, energy,
- * effects, ledger lines and XP. Plan match bonus when an activity starts.
- * Each action kind has a handler: prepare(params) -> { minutes } | { error }, then apply() -> result.
- * Unity: plain C# service; kinds map to small command classes.
+ * ActionRunner: the one door for every Do action. It checks place, opening hours, time and energy,
+ * runs the system call, spends time and energy, writes the station time (for daily goals) and the log.
+ * Views send `intent.action` {id, params}; the result goes back as `action.done` or `action.refused`.
+ * Unity: plain C# service with one method per action.
  */
 export class ActionRunner {
   /** @param {any} ctx */
@@ -13,451 +13,168 @@ export class ActionRunner {
     this.ctx = ctx;
   }
 
-  get #c() { return this.ctx.content; }
-  get #s() { return this.ctx.state; }
+  get #n() { return (k) => this.ctx.content.num(k); }
 
-  /** Start an activity (null = stop the current one). Gives the plan match bonus once per planned card. @param {string|null} activityId */
-  startActivity(activityId) {
-    const p = this.#s.player;
-    if (p.dayOver || p.weekOver) return this.#refuse(null, 'the day is over');
-    if (!activityId) { p.activityId = null; this.ctx.bus.emit(MSG.ACTION_STARTED, { activityId: null, bonus: 0 }); return { ok: true, activityId: null, bonus: 0 }; }
-    const activity = this.#c.get('activities', activityId);
-    p.activityId = activityId;
-    const bonus = this.#planBonus(activity);
-    this.ctx.bus.emit(MSG.ACTION_STARTED, { activityId, bonus });
-    return { ok: true, activityId, bonus };
+  /** Cost preview for a button: {min, energy, reason}. @param {string} id @param {any} [params] */
+  preview(id, params = {}) {
+    const a = this.#def(id, params);
+    if (!a) return { min: 0, energy: 0, reason: 'unknown' };
+    return { min: a.min ?? 0, energy: a.energy ?? 0, reason: this.#why(a, params) };
   }
 
-  #planBonus(activity) {
-    const { calendar, plan } = this.#s;
-    const cards = plan.cards.filter((c) => !c.used && c.activityId === activity.id);
-    if (!cards.length) return 0;
-    const inTime = (c) => c.day === calendar.day && calendar.minute >= c.startMin && calendar.minute < c.startMin + c.durationMin;
-    const card = cards.find(inTime) ?? cards.find((c) => c.day === calendar.day) ?? cards[0];
-    card.used = true;
-    let xp = this.#c.num('PLAN_MATCH_XP_BONUS_ACTIVITY');
-    if (card.day === calendar.day) xp += this.#c.num('PLAN_MATCH_XP_BONUS_DAY');
-    if (inTime(card)) xp += this.#c.num('PLAN_MATCH_XP_BONUS_TIME');
-    if (activity.skillPath) this.ctx.sys.effects.apply([{ type: 'xp', target: activity.skillPath, amount: xp }], 'plan match');
-    return activity.skillPath ? xp : 0;
-  }
-
-  /** @param {string} actionId @param {Record<string, any>} [params] */
-  runAction(actionId, params = {}) {
-    const s = this.#s, p = s.player;
-    if (p.dayOver || p.weekOver) return this.#refuse(actionId, 'the day is over');
-    if (s.pendingEvent) return this.#refuse(actionId, 'answer the event first');
-    const action = this.#c.get('actions', actionId);
-    if (action.anyActivity) return this.#runAnywhere(action, params);
-    if (!p.activityId) return this.#refuse(actionId, 'start an activity first');
-    const activity = this.#c.get('activities', p.activityId);
-    if (!activity.actionIds.includes(actionId)) return this.#refuse(actionId, `${actionId} is not part of ${activity.id}`);
-    const isTravel = action.kind === 'travel', isSleep = action.kind === 'sleep';
-    if (!isTravel && activity.locationIds.length && !activity.locationIds.includes(p.location)) {
-      return this.#refuse(actionId, `go to ${activity.locationIds.join(' or ')} first`);
+  /** @param {string} id @param {any} [params] */
+  run(id, params = {}) {
+    const { bus, state } = this.ctx;
+    const a = this.#def(id, params);
+    const reason = a ? this.#why(a, params) : 'unknown';
+    if (reason) {
+      const r = { ok: false, id, reason, text: REASON_TEXT[reason] ?? reason };
+      bus.emit(MSG.ACTION_REFUSED, r);
+      return r;
     }
-    // An action can be tied to one station of a multi-location activity (Processing: grind at the atelier, drying at the yard).
-    if (!isTravel && action.locationIds?.length && !action.locationIds.includes(p.location)) {
-      return this.#refuse(actionId, `go to ${action.locationIds.join(' or ')} first`);
+    const out = a.run() ?? {};
+    if (out.ok === false) {
+      const r = { ok: false, id, reason: out.reason, text: REASON_TEXT[out.reason] ?? out.reason };
+      bus.emit(MSG.ACTION_REFUSED, r);
+      return r;
     }
-    const energy = action.energyKey ? this.#c.num(action.energyKey) : 0;
-    if (p.energy < energy) return this.#refuse(actionId, 'not enough energy: rest');
+    const min = out.min ?? a.min ?? 0, energy = out.energy ?? a.energy ?? 0;
+    if (min || energy) this.ctx.sys.time.spend(min, energy, a.work !== false);
+    if (a.station && min) state.day.stations[a.station] = (state.day.stations[a.station] ?? 0) + min;
+    if (a.skill && a.xp) this.ctx.sys.skills.add(a.skill, a.xp);
+    if (a.log) this.ctx.sys.log.add(a.station ?? 'town', typeof a.log === 'function' ? a.log(out) : a.log, a.icon);
+    const r = { ok: true, id, min, energy, ...out };
+    bus.emit(MSG.ACTION_DONE, r);
+    bus.emit(MSG.STATE_CHANGED, { id });
+    return r;
+  }
 
-    const handler = this[`kind_${action.kind}`];
-    if (!handler) throw new Error(`ActionRunner: no handler for kind ${action.kind}`);
-    const prep = handler.call(this, action, params, activity);
-    if (prep.error) return this.#refuse(actionId, prep.error);
-
-    const minutes = isSleep ? 0 : this.ctx.sys.time.effectiveMinutes(prep.minutes);
-    if (!isTravel && !isSleep && !this.ctx.sys.time.fits(minutes)) return this.#refuse(actionId, 'too late: the night limit is near');
-    if (!isTravel && !isSleep && !action.ignoreHours && !this.#isOpen(p.location, minutes)) return this.#refuse(actionId, `${p.location} is closed`);
-
-    const result = prep.apply();
-    if (!isSleep) {
-      this.ctx.sys.time.spendEnergy(energy);
-      this.ctx.sys.time.advance(minutes);
+  #why(a, params) {
+    const { state, content, sys } = this.ctx;
+    if (state.phase !== 'do') return 'phase';
+    if (state.pendingEvent && a.id !== 'respondEvent') return 'event';
+    if (a.station) {
+      const st = content.get('stations', a.station);
+      if (st.place !== state.place) return 'place';
+      const place = content.get('places', st.place);
+      if (a.needsOpen !== false && !sys.time.isOpen(place, a.min ?? 0)) return 'closed';
     }
-    if (action.xp?.amount) this.ctx.sys.effects.apply([{ type: 'xp', target: [action.xp.path, action.xp.sub].filter(Boolean).join('.'), amount: action.xp.amount }], actionId);
-    if (!isSleep) {
-      s.weekActual = s.weekActual ?? {};
-      s.weekActual[activity.id] = (s.weekActual[activity.id] ?? 0) + minutes;
-    }
-    const out = { ok: true, actionId, minutes, energy: isSleep ? 0 : energy, ...result };
-    this.#logActivity(out, activity.id, action.xp);
-    this.ctx.bus.emit(MSG.ACTION_COMPLETED, out);
-    this.ctx.sys.events?.tick();
-    return out;
+    if (a.check) { const c = a.check(params); if (c) return c; }
+    return sys.time.check(a.min ?? 0, a.energy ?? 0);
   }
 
-  /**
-   * Small rest and meals: any time, any place, with or without an activity (anyActivity in ActionData).
-   * They use time and give energy. They do not count as activity time.
-   */
-  #runAnywhere(action, params) {
-    const handler = this[`kind_${action.kind}`];
-    if (!handler) throw new Error(`ActionRunner: no handler for kind ${action.kind}`);
-    const prep = handler.call(this, action, params);
-    if (prep.error) return this.#refuse(action.id, prep.error);
-    const minutes = this.ctx.sys.time.effectiveMinutes(prep.minutes);
-    if (!this.ctx.sys.time.fits(minutes)) return this.#refuse(action.id, 'too late: the night limit is near');
-    const result = prep.apply();
-    this.ctx.sys.time.advance(minutes);
-    const out = { ok: true, actionId: action.id, minutes, energy: 0, ...result };
-    this.#logActivity(out, this.#s.player.activityId, action.xp);
-    this.ctx.bus.emit(MSG.ACTION_COMPLETED, out);
-    this.ctx.sys.events?.tick();
-    return out;
-  }
-
-  #gainEnergy(amount) {
-    const p = this.#s.player, before = p.energy;
-    p.energy = Math.min(this.#c.num('ENERGY_MAX'), p.energy + amount);
-    return p.energy - before;
-  }
-
-  /** The meal for this minute (MEAL_WINDOWS), or null. */
-  mealNow() {
-    const w = this.#c.num('MEAL_WINDOWS'), m = this.#s.calendar.minute;
-    return Object.keys(w).find((k) => m >= w[k][0] * 60 && m < w[k][1] * 60) ?? null;
-  }
-
-  kind_smallRest() {
-    return { minutes: this.#c.num('SMALL_REST_MIN'), apply: () => ({ gained: this.#gainEnergy(this.#c.num('SMALL_REST_ENERGY')) }) };
-  }
-
-  kind_meal() {
-    const meal = this.mealNow(), p = this.#s.player;
-    if (!meal) return { error: 'no meal now: breakfast, lunch and dinner have set times' };
-    if ((p.meals ?? []).includes(meal)) return { error: `you already ate ${meal} today` };
-    return { minutes: this.#c.num('MEAL_MIN'), apply: () => { p.meals = [...(p.meals ?? []), meal]; return { meal, gained: this.#gainEnergy(this.#c.num('MEAL_ENERGY')) }; } };
-  }
-
-  /** True if the location is open from now until now + minutes. */
-  #isOpen(locationId, minutes) {
-    const loc = this.#c.get('locations', locationId);
-    const hours = loc.openHours?.[this.#s.calendar.day];
-    if (!hours) return false;
-    if (hours[0] === 0 && hours[1] >= 24) return true;
-    const now = this.#s.calendar.minute;
-    return now >= hours[0] * 60 && now + minutes <= hours[1] * 60;
-  }
-
-  /** Walk minutes between two locations (data/locations/_walk.json). Same building (location.building): withinBuilding. */
-  walkMinutes(from, to) {
-    if (from === to) return 0;
-    const w = this.#c.get('locations', '_walk');
-    const building = (id) => this.#c.get('locations', id).building ?? id;
-    if (building(from) === building(to)) return w.withinBuilding;
-    const home = (id) => w.homeGroup.includes(id);
-    if (home(from) && home(to)) return w.withinHome;
-    if (home(from)) return w.fromHome[to];
-    if (home(to)) return w.fromHome[from];
-    return w.betweenTown;
-  }
-
-  /** Log activity (Journal book, Check recap): one line per action done. */
-  #logActivity(out, activityId, xp) {
-    const s = this.#s;
-    s.activityLog = s.activityLog ?? [];
-    s.activityLog.push({ week: s.calendar.week, month: s.calendar.month, day: s.calendar.day, minute: s.calendar.minute, actionId: out.actionId, activityId, minutes: out.minutes, xp: xp?.amount ? { path: xp.path, sub: xp.sub ?? null, amount: xp.amount } : null });
-    if (s.activityLog.length > 500) s.activityLog.splice(0, s.activityLog.length - 500);
-  }
-
-  #gold(amount, label) {
-    this.ctx.sys.effects.apply([{ type: 'gold', amount, label }], 'action');
-  }
-
-  #refuse(actionId, reason) {
-    this.ctx.bus.emit(MSG.ACTION_REFUSED, { actionId, reason });
-    return { ok: false, actionId, reason };
-  }
-
-  #entityAtLocation() {
-    const loc = this.#c.get('locations', this.#s.player.location);
-    return { loc, entityId: loc.entityId };
-  }
-
-  // ---- kind handlers --------------------------------------------------------------------------
-
-  kind_travel(action, { to }, activity) {
-    if (!to) return { error: 'travel needs a destination' };
-    if (activity.locationIds.length && !activity.locationIds.includes(to)) return { error: `${activity.id} is not at ${to}` };
-    const minutes = this.walkMinutes(this.#s.player.location, to);
-    return { minutes, apply: () => { this.#s.player.location = to; return { to }; } };
-  }
-
-  kind_timeOnly(action) {
-    return { minutes: action.timeMin, apply: () => ({}) };
-  }
-
-  /**
-   * Shelf stocking ([Proposal]): put a product group (item, tier, pack) in a shelf slot with a quantity and a price ratio.
-   * qty 0 clears the slot. No slot given: the slot that has this group, else the first empty slot.
-   * No tier given: the group of this item with the most free units.
-   */
-  kind_stockShelf(action, { slot, item, tier, pack, qty, ratio = 1 }) {
-    const eco = this.ctx.sys.economy, opts = this.#c.num('SHELF_PRICE_OPTIONS'), slots = eco.slots();
-    if (!item) return { error: 'pick a product to stock' };
-    if (!opts.includes(ratio)) return { error: `price must be one of ${opts.join(', ')}` };
-    if (tier === undefined) {
-      const g = eco.productGroups().filter((x) => x.item === item).sort((a, b) => eco.freeQty(b.item, b.tier, b.pack) - eco.freeQty(a.item, a.tier, a.pack))[0];
-      if (!g) return { error: `you have no ${item}` };
-      tier = g.tier; pack = g.pack;
-    }
-    pack = pack ?? null;
-    const same = (x) => x && x.item === item && x.tier === tier && (x.pack ?? null) === pack;
-    const k = slot ?? (slots.findIndex(same) >= 0 ? slots.findIndex(same) : slots.findIndex((x) => !x));
-    if (k < 0 || k >= slots.length) return { error: 'the shelf is full' };
-    const free = eco.freeQty(item, tier, pack, k);
-    const n = Math.max(0, Math.min(Math.floor(qty ?? free), free));
-    if (!n && qty !== 0) return { error: `no free ${item} to put on the shelf` };
-    return {
-      minutes: action.timeMin,
-      apply: () => {
-        slots[k] = n ? { item, tier, pack, qty: n, ratio } : null;
-        return { slot: k, item, tier, pack, qty: n, ratio };
-      }
+  /** Action table. @param {string} id @param {any} p */
+  #def(id, p) {
+    const { state, content, sys } = this.ctx;
+    const n = this.#n;
+    const D = {
+      travel: () => {
+        const place = content.find('places', p.place);
+        const from = content.find('places', state.place);
+        return {
+          min: Math.max(place?.travelMin ?? 0, from?.travelMin ?? 0), energy: n('TRAVEL_ENERGY'), work: false, icon: place?.icon,
+          check: () => !place ? 'unknown' : place.id === state.place ? 'here' : (!sys.time.openOnArrival(place, Math.max(place.travelMin, from?.travelMin ?? 0)) ? 'closed' : null),
+          run: () => { if (state.store.open) sys.store.close(); state.place = place.id; state.explore.spot = null; },
+          log: `Went to ${place?.name}`
+        };
+      },
+      shortBreak: () => ({ min: n('SHORT_BREAK_MIN'), energy: -n('SHORT_BREAK_ENERGY'), work: false, icon: 'rest', log: 'Short break', run: () => {} }),
+      eat: () => ({
+        min: n('MEAL_MIN'), energy: -n('MEAL_ENERGY'), work: false, icon: 'meal', log: 'Ate a meal',
+        check: () => state.day.meals >= n('MEALS_PER_DAY') ? 'meals' : Inventory.count(state.inv, 'meal', 'pack', '') < 1 ? 'food' : null,
+        run: () => { Inventory.add(state.inv, 'meal', 'pack', -1); state.day.meals += 1; }
+      }),
+      // Sleep works anywhere: the player walks home at night (no time cost, the day is over).
+      sleep: () => ({
+        min: 0, energy: 0, work: false, icon: 'bed', log: 'Slept',
+        run: () => { if (state.store.open) sys.store.close(); state.place = 'home'; state.explore.spot = null; return { endDay: true }; }
+      }),
+      craft: () => {
+        const r = content.find('recipes', p.recipe);
+        const b = Math.max(1, Math.min(p.batches ?? 1, n('CRAFT_MAX_BATCHES')));
+        const c = r ? sys.production.craftCost(r, b) : null;
+        return {
+          station: 'crafting', min: c?.min, energy: c?.energy, icon: 'cauldron',
+          check: () => !r ? 'unknown' : c.missing.length ? 'materials' : null,
+          run: () => sys.production.craft(r, b),
+          log: (o) => `Crafted ${o.out} ${r.name}`
+        };
+      },
+      dryStart: () => ({
+        station: 'drying', min: n('DRYING_TASK_MIN'), energy: n('DRYING_TASK_ENERGY'), icon: 'rack',
+        run: () => sys.production.dryStart(p.item, p.qty), log: `Started drying ${p.qty} ${p.item}`
+      }),
+      dryCollect: () => ({
+        station: 'drying', min: n('DRYING_TASK_MIN'), energy: n('DRYING_TASK_ENERGY'), icon: 'rack',
+        run: () => sys.production.dryCollect(), log: 'Collected dried herbs'
+      }),
+      grind: () => ({
+        station: 'grinding', min: n('GRIND_MIN_PER_UNIT') * (p.qty ?? 0), energy: n('GRIND_ENERGY_PER_UNIT') * (p.qty ?? 0), icon: 'grinder',
+        check: () => !(p.qty > 0) ? 'qty' : null,
+        run: () => sys.production.grind(p.item, p.qty), log: `Ground ${p.qty} ${p.item}`
+      }),
+      stockShelf: () => ({ station: 'store', min: 0, energy: 0, needsOpen: false, run: () => sys.economy.stockShelf(p) }),
+      storeOpen: () => ({
+        station: 'store', min: 0, energy: n('STORE_OPEN_ENERGY'), icon: 'store', needsOpen: false,
+        check: () => state.store.open ? 'open' : !sys.economy.shelfUnits() ? 'shelf' : !sys.store.inHours() ? 'storeHours' : null,
+        run: () => sys.store.open(), log: 'Opened the store'
+      }),
+      storeHour: () => ({
+        station: 'store', min: 60, energy: 0, icon: 'store', needsOpen: false, xp: 2, skill: 'sun',
+        check: () => !state.store.open ? 'notOpen' : sys.store.stopReason(),
+        run: () => sys.store.hour()
+      }),
+      storeClose: () => ({ station: 'store', min: 0, energy: 0, needsOpen: false, check: () => !state.store.open ? 'notOpen' : null, run: () => sys.store.close(), log: 'Closed the store' }),
+      marketBuy: () => {
+        const unit = sys.economy.buyPrice(p.item, p.variant);
+        return { station: 'stall', min: n('TRADE_MIN'), energy: 0, icon: 'cart', run: () => sys.economy.buy(p.item, p.variant, p.qty, unit, `Market: ${p.qty} ${p.item}`), log: `Bought ${p.qty} ${p.item}` };
+      },
+      buyFood: () => ({ station: 'stall', min: n('TRADE_MIN'), energy: 0, icon: 'meal', run: () => sys.economy.buy('meal', 'pack', p.qty, n('FOOD_PRICE'), `Food: ${p.qty} meals`), log: `Bought ${p.qty} meals` }),
+      marketSell: () => ({ station: 'stall', min: n('TRADE_MIN'), energy: 0, icon: 'gold', xp: 2, skill: 'sun', run: () => sys.economy.sell(p.item, p.tier, p.qty, sys.economy.marketSellPrice(p.item, p.tier), 'market', `Market sale: ${p.qty} ${p.item}`), log: `Sold ${p.qty} ${p.item} at the market` }),
+      wholesaleBuy: () => ({ station: 'receptionist', min: n('TRADE_MIN'), energy: 0, icon: 'cart', run: () => sys.economy.buy(p.item, p.variant, p.lots * n('WHOLESALE_LOT'), sys.economy.wholesaleLotPrice(p.item, p.variant) / n('WHOLESALE_LOT'), `Guild lot: ${p.lots * n('WHOLESALE_LOT')} ${p.item}`), log: `Bought a lot of ${p.item}` }),
+      wholesaleSell: () => ({ station: 'receptionist', min: n('TRADE_MIN'), energy: 0, icon: 'gold', xp: 3, skill: 'sun', run: () => sys.economy.sell(p.item, p.tier, p.qty, sys.economy.wholesaleSellPrice(p.item, p.tier), 'guild', `Guild sale: ${p.qty} ${p.item}`), log: `Sold ${p.qty} ${p.item} to the guild` }),
+      service: () => {
+        const s = content.find('services', p.id);
+        return {
+          station: 'receptionist', min: 60, energy: 5, icon: 'guild',
+          check: () => !s?.inDo ? 'unknown' : state.gold < s.price ? 'gold' : null,
+          run: () => { sys.ledger.add(-s.price, s.name, 'store'); sys.effects.apply(s.effects, s.name); state.servicesBought.push({ id: s.id, day: sys.time.absDay() }); },
+          log: `Service: ${s?.name}`
+        };
+      },
+      questTake: () => ({ station: 'questboard', min: 5, energy: 0, icon: 'quest', run: () => sys.quests.take(p.id), log: 'Took a commission' }),
+      questHandIn: () => ({ station: 'questboard', min: 15, energy: 0, icon: 'quest', run: () => sys.quests.handIn(p.id), log: 'Finished a commission' }),
+      exploreWalk: () => {
+        const min = state.explore.walkMin ?? (state.explore.walkMin = sys.explore.walkMinutes());
+        return {
+          station: 'explore', min, energy: n('EXPLORE_WALK_ENERGY'), icon: 'explore',
+          check: () => state.explore.spot ? 'spot' : sys.explore.spotsLeft() <= 0 ? 'spots' : null,
+          run: () => { state.explore.walkMin = null; return { spot: sys.explore.findSpot() }; },
+          log: 'Explored the outskirt'
+        };
+      },
+      exploreGather: () => {
+        const s = state.explore.spot && content.get('spots', state.explore.spot.id);
+        return {
+          station: 'explore', min: s?.gatherMin ?? 0, energy: s?.gatherEnergy ?? 0, icon: 'leaf',
+          check: () => !s ? 'none' : null, run: () => sys.explore.gather(), log: `Gathered at ${s?.name}`
+        };
+      },
+      exploreSkip: () => ({ station: 'explore', min: 0, energy: 0, check: () => !state.explore.spot ? 'none' : null, run: () => sys.explore.skip() }),
+      respondEvent: () => ({ min: 0, energy: 0, run: () => sys.events.respond(p.index) })
     };
-  }
-
-  /** Open the store (user decision 7 Nov 2026): one energy cost, then serve-customer runs hour by hour with no energy cost. */
-  kind_openStore(action) {
-    if (this.#s.store?.open) return { error: 'the store is already open' };
-    if (!this.ctx.sys.economy.shelfQty()) return { error: 'the shelf is empty: stock the shelf first' };
-    const stop = this.ctx.sys.economy.storeStop();
-    if (stop) return { error: stop === 'closing time' ? 'the store is closed now' : stop };
-    return {
-      minutes: action.timeMin,
-      apply: () => {
-        this.#s.store = { open: true, absDay: this.#s.calendar.absDay(), startMin: this.#s.calendar.minute, hours: 0, customers: 0, sold: 0, gold: 0, items: {} };
-        return { opened: true };
-      }
-    };
-  }
-
-  /** Close the store: the Shop result (customers, sold per item, income). */
-  kind_closeStore(action) {
-    const st = this.#s.store;
-    if (!st?.open) return { error: 'the store is not open' };
-    return {
-      minutes: action.timeMin,
-      apply: () => {
-        st.open = false;
-        st.endMin = this.#s.calendar.minute;
-        st.unsold = this.ctx.sys.economy.shelfQty();
-        return { report: { ...st, items: { ...st.items } } };
-      }
-    };
-  }
-
-  /** Packing ([Proposal]): put unpacked products in a container, with or without a label. Pays the cost per unit. */
-  kind_pack(action, { item, tier, container, label = false, qty }) {
-    const boxes = this.#c.num('PACK_CONTAINERS'), lab = this.#c.num('PACK_LABEL');
-    if (!boxes[container]) return { error: 'pick a container' };
-    const have = this.#s.inventory.find((l) => l.item === item && l.variant === 'product' && !l.spoiled && (!tier || l.tier === tier) && !l.pack).reduce((n, l) => n + l.qty, 0);
-    const n = Math.min(qty ?? have, have);
-    if (!n) return { error: `no unpacked ${item} to pack` };
-    const cost = Math.round(n * (boxes[container].cost + (label ? lab.cost : 0)) * 100) / 100;
-    if (this.#s.wallet.gold < cost) return { error: 'not enough gold for the containers' };
-    return {
-      minutes: action.timeMin,
-      apply: () => {
-        const parts = this.#s.inventory.take(item, 'product', n, { tier, pack: null });
-        const pack = container + (label ? '+label' : '');
-        for (const p of parts) this.#s.inventory.add(p.item, 'product', p.qty, { tier: p.tier, born: p.born, pack });
-        if (cost) this.#gold(-cost, `Packing (${n} ${item})`);
-        this.ctx.bus.emit(MSG.INVENTORY_CHANGED, {});
-        return { item, qty: n, pack, cost };
-      }
-    };
-  }
-
-  kind_serveCustomers(action) {
-    const st = this.#s.store;
-    if (!st?.open) return { error: 'open the store first' };
-    if (!this.ctx.sys.economy.shelfQty()) return { error: 'the shelf is empty: stock the shelf first' };
-    return {
-      minutes: action.timeMin,
-      apply: () => {
-        const r = this.ctx.sys.economy.serveCustomers();
-        if (r.gold) this.#gold(r.gold, `Shop sales (${r.sold})`);
-        st.hours += 1; st.customers += r.customers; st.sold += r.sold; st.gold = round2(st.gold + r.gold);
-        for (const [k, v] of Object.entries(r.items)) st.items[k] = (st.items[k] ?? 0) + v;
-        return r;
-      }
-    };
-  }
-
-  kind_sellItem(action, { item, variant, tier, qty = 1 }) {
-    const { loc, entityId } = this.#entityAtLocation();
-    const entity = entityId ? this.#c.get('entities', entityId) : null;
-    if (!entity?.buys?.includes(item)) return { error: `${loc.id} does not buy ${item}` };
-    const v = variant ?? (this.#c.get('items', item).kind === 'product' ? 'product' : null);
-    if (this.#s.inventory.count(item, v, { tier }) < qty) return { error: `not enough ${item}` };
-    return {
-      minutes: action.timeMin,
-      apply: () => {
-        const taken = this.#s.inventory.take(item, v, qty, { tier });
-        const gold = round2(taken.reduce((n, l) => n + l.qty * this.ctx.sys.economy.guildBuysAt(entityId, l), 0));
-        this.#gold(gold, `Sell ${qty} ${item} to ${entityId}`);
-        this.#s.stats.sold += qty;
-        return { item, qty, gold };
-      }
-    };
-  }
-
-  kind_buyItem(action, { item, variant, qty = 1 }) {
-    const { loc } = this.#entityAtLocation();
-    if (!this.ctx.sys.economy.sellsList(loc).includes(item)) return { error: `${loc.id} does not sell ${item}` };
-    const data = this.#c.get('items', item);
-    const v = variant ?? data.variants[0].id;
-    const unit = this.ctx.sys.economy.sellerAsks(loc, item, v);
-    const cost = round2(unit * qty);
-    if (!this.#s.wallet.canPay(cost)) return { error: 'not enough gold' };
-    return {
-      minutes: action.timeMin,
-      apply: () => {
-        this.#gold(-cost, `Buy ${qty} ${item}`);
-        this.#s.inventory.add(item, v, qty, { born: this.#s.calendar.absDay() });
-        return { item, variant: v, qty, gold: -cost };
-      }
-    };
-  }
-
-  /**
-   * Craft (one Crafting menu, user decision 7 Nov 2026): recipe (sets the method), a material lot per slot,
-   * batches (materials, output and time x batches) and packing (container, label) of the output.
-   * lots: { "<slot>:<index>": "<born>|<spoiled 0/1>" }; pack: { container, label } or null.
-   */
-  kind_craft(action, { recipeId, batches = 1, lots = {}, pack = null }) {
-    const recipe = recipeId && this.#c.get('recipes', recipeId);
-    if (!recipe) return { error: 'pick a recipe' };
-    if (recipe.action !== action.id) return { error: `${recipeId} is made with ${recipe.action}` };
-    const b = Math.floor(batches);
-    if (!(b >= 1) || b > this.#c.num('CRAFT_MAX_BATCHES')) return { error: `batches must be 1 to ${this.#c.num('CRAFT_MAX_BATCHES')}` };
-    const miss = this.ctx.sys.production.missing(recipe, { batches: b, lots });
-    if (miss) return { error: miss };
-    let packId = null, unitCost = 0, packMin = 0;
-    if (pack?.container) {
-      const boxes = this.#c.num('PACK_CONTAINERS'), lab = this.#c.num('PACK_LABEL');
-      if (!boxes[pack.container]) return { error: 'pick a container' };
-      packId = pack.container + (pack.label ? '+label' : '');
-      unitCost = boxes[pack.container].cost + (pack.label ? lab.cost : 0);
-      packMin = this.#c.get('actions', 'package').timeMin * b;
-      if (this.#s.wallet.gold < unitCost * recipe.output * b) return { error: 'not enough gold for the containers' };
-    }
-    return {
-      minutes: recipe.timeMin * b + packMin,
-      apply: () => {
-        const r = this.ctx.sys.production.craft(recipe, { batches: b, lots, pack: packId });
-        const cost = round2(r.qty * unitCost);
-        if (cost) this.#gold(-cost, `Packing (${r.qty} ${recipe.product})`);
-        return { ...r, batches: b, pack: packId, packCost: cost };
-      }
-    };
-  }
-
-  kind_startBatch(action, { item, qty }) {
-    const err = this.ctx.sys.production.cannotStartBatch(item, qty);
-    if (err) return { error: err };
-    return { minutes: action.timeMin, apply: () => this.ctx.sys.production.startBatch(item, qty) };
-  }
-
-  kind_collectBatch(action) {
-    const today = this.#s.calendar.absDay();
-    if (!this.#s.batches.some((b) => b.readyDay <= today)) return { error: 'no batch is ready' };
-    return { minutes: action.timeMin, apply: () => this.ctx.sys.production.collectBatch() };
-  }
-
-  kind_grind(action, { item, qty }) {
-    const err = this.ctx.sys.production.cannotGrind(item, qty);
-    if (err) return { error: err };
-    return { minutes: action.timeMin * qty, apply: () => this.ctx.sys.production.grind(item, qty) };
-  }
-
-  kind_gather(action) {
-    return {
-      minutes: action.timeMin,
-      apply: () => {
-        const got = [];
-        for (const y of action.yields) {
-          const n = this.ctx.rng.int(y.min, y.max);
-          if (n) {
-            this.#s.inventory.add(y.item, y.variant, n, { born: this.#s.calendar.absDay() });
-            got.push({ item: y.item, qty: n });
-          }
-        }
-        return { got };
-      }
-    };
-  }
-
-  kind_takeQuest(action, { questId }) {
-    const { entityId } = this.#entityAtLocation();
-    const q = entityId && this.#c.get('entities', entityId).questBoard?.find((x) => x.id === questId);
-    if (!q) return { error: `no quest ${questId} here` };
-    if (this.#s.quests.some((x) => x.id === questId)) return { error: 'quest already taken' };
-    return {
-      minutes: action.timeMin,
-      apply: () => {
-        const days = q.deadlineDays ?? this.#c.num('QUEST_DEADLINE_DAYS');
-        this.#s.quests.push({ id: q.id, entityId, ask: q.ask, rewardGold: q.rewardGold, relationship: q.relationship, dueDay: this.#s.calendar.absDay() + days });
-        return { questId };
-      }
-    };
-  }
-
-  kind_handInQuest(action, { questId }) {
-    const q = this.#s.quests.find((x) => x.id === questId);
-    if (!q) return { error: `quest ${questId} is not active` };
-    if (q.entityId !== this.#entityAtLocation().entityId) return { error: `hand in at ${q.entityId}` };
-    const ok = (l) => l.item === q.ask.item && !l.spoiled && l.tier !== 'Failed';
-    if (this.#s.inventory.find(ok).reduce((n, l) => n + l.qty, 0) < q.ask.qty) return { error: `need ${q.ask.qty} ${q.ask.item}` };
-    return {
-      minutes: action.timeMin,
-      apply: () => {
-        this.#s.inventory.take(q.ask.item, null, q.ask.qty);
-        this.#gold(q.rewardGold, `Quest ${q.id}`);
-        this.ctx.sys.effects.apply([{ type: 'relation', target: q.entityId, amount: q.relationship }], 'quest');
-        this.#s.quests = this.#s.quests.filter((x) => x !== q);
-        this.#s.questsDone.push(q.id);
-        return { questId, gold: q.rewardGold };
-      }
-    };
-  }
-
-  kind_service(action, { serviceId }) {
-    const { entityId } = this.#entityAtLocation();
-    const today = this.#s.calendar.absDay();
-    const appt = this.#s.appointments.find((a) => !a.done && a.entityId === entityId && a.serviceId === serviceId && a.absDay === today);
-    if (!appt) return { error: 'no appointment today' };
-    const svc = this.#c.get('entities', entityId).services.find((x) => x.id === serviceId);
-    if (!this.#s.wallet.canPay(svc.cost)) return { error: 'not enough gold' };
-    return {
-      minutes: action.timeMin,
-      apply: () => {
-        const late = this.#s.calendar.minute > appt.minute;
-        this.#gold(-svc.cost, `Service ${svc.name}`);
-        this.ctx.sys.effects.apply(svc.effects, 'service');
-        if (late) this.ctx.sys.effects.apply([{ type: 'relation', target: entityId, amount: -this.#c.num('APPOINTMENT_MISS_RELATIONSHIP_PENALTY') }], 'late');
-        appt.done = true;
-        return { serviceId, late };
-      }
-    };
-  }
-
-  kind_sleep() {
-    const from = this.#c.num('SLEEP_EARLIEST_HOUR') * 60;
-    if (this.#s.calendar.minute < from) return { error: `sleep starts at ${String(from / 60).padStart(2, '0')}:00 (night). Take a small rest or eat instead` };
-    return { minutes: 0, apply: () => { this.ctx.sys.time.sleep(); return {}; } };
-  }
-
-  kind_eventResponse() {
-    return { error: 'events come in M4' };
+    const f = D[id];
+    if (!f) return null;
+    return { id, ...f() };
   }
 }
 
-/** @param {number} n */
-function round2(n) {
-  return Math.round(n * 100) / 100;
-}
+export const REASON_TEXT = {
+  phase: 'Not now.', event: 'Answer the event first.', place: 'Go there first.', closed: 'Closed now.',
+  late: 'Not enough time today.', tired: 'Too tired. Rest or eat.', here: 'You are here.', meals: 'No more meals today.',
+  food: 'No food. Buy meals at the market.', materials: 'Missing materials.', stock: 'Not enough stock.', rack: 'The rack is full.',
+  none: 'Nothing to do.', qty: 'Pick a quantity.', open: 'The store is open.', shelf: 'The shelf is empty.',
+  storeHours: 'Store hours are over.', notOpen: 'The store is closed.', soldOut: 'Sold out.', closing: 'Closing time.',
+  gold: 'Not enough gold.', full: 'You hold the most commissions.', spot: 'Gather or skip first.', spots: 'No more spots today.',
+  unknown: 'Unknown action.', item: 'Pick a product.', variant: 'Cannot grind this.', requires: 'You do not have it.'
+};

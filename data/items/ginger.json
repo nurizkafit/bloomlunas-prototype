@@ -1,33 +1,23 @@
 {
   "id": "ginger",
-  "kind": "material",
   "name": "Ginger",
-  "tier": "Common",
-  "role": "main",
-  "plantPart": "rhizome",
-  "variants": [
-    {
-      "id": "fresh",
-      "shelfLifeDays": 3,
-      "priceMult": 1.0
-    },
-    {
-      "id": "dried",
-      "shelfLifeDays": 28,
-      "priceMult": 1.5
-    },
-    {
-      "id": "powder",
-      "shelfLifeDays": 28,
-      "priceMult": 2.0
-    }
+  "kind": "material",
+  "icon": "root",
+  "color": "#B98B57",
+  "forecast": [
+    4,
+    7
   ],
-  "costKey": "COST_GINGER",
-  "forecast": {
-    "lo": 4,
-    "hi": 7
+  "variants": [
+    "fresh",
+    "dried",
+    "powder"
+  ],
+  "variantPriceMult": {
+    "fresh": 1.0,
+    "dried": 1.6,
+    "powder": 2.0
   },
-  "build": "Jam",
-  "source": "docs:pages/materials/ginger.md",
-  "_placeholder": true
+  "_placeholder": true,
+  "wild": true
 }

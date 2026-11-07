@@ -1,0 +1,36 @@
+{
+  "id": "ev_tool",
+  "type": "random",
+  "title": "The pestle cracks",
+  "icon": "grinder",
+  "text": "Your grinding pestle cracks. A new one costs gold.",
+  "responses": [
+    {
+      "label": "Buy a new pestle",
+      "icon": "gold",
+      "effects": [
+        {
+          "type": "gold",
+          "amount": -20,
+          "label": "New pestle",
+          "budget": "store"
+        }
+      ]
+    },
+    {
+      "label": "Fix it yourself",
+      "icon": "clock",
+      "effects": [
+        {
+          "type": "time",
+          "amount": 90
+        },
+        {
+          "type": "energy",
+          "amount": -10
+        }
+      ]
+    }
+  ],
+  "_placeholder": true
+}

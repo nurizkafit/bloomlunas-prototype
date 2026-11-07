@@ -1,0 +1,18 @@
+{
+  "id": "beras_kencur",
+  "name": "Beras kencur",
+  "kind": "product",
+  "icon": "jamu",
+  "color": "#E8DFCB",
+  "forecast": [
+    4,
+    6
+  ],
+  "variants": [
+    "product"
+  ],
+  "variantPriceMult": {
+    "product": 1.0
+  },
+  "_placeholder": true
+}

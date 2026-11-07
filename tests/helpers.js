@@ -13,10 +13,11 @@ export function newContent() {
   return new ContentDB(structuredClone(files));
 }
 
-/** A game in the Do phase, Monday 07:00 (the next phase after Plan). */
+/** A game in the Do phase, day 1 at the day start. */
 export function gameInDo(content = newContent(), seed = 1) {
   const gm = new GameManager(content, { seed });
   gm.start();
-  gm.bus.emit(MSG.INTENT_NEXT_PHASE);
+  gm.bus.emit(MSG.INTENT_LOCK_PLAN);
+  gm.state.pendingEvent = null;
   return gm;
 }

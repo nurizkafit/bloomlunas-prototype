@@ -1,0 +1,10 @@
+{
+  "id": "q_kunyit_festival",
+  "name": "Festival drinks",
+  "client": "Festival host",
+  "item": "kunyit_asam",
+  "qty": 12,
+  "reward": 140,
+  "xp": 10,
+  "_placeholder": true
+}

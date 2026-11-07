@@ -1,35 +1,29 @@
 {
   "id": "lemongrass_balm",
   "name": "Lemongrass balm",
-  "product": "salep",
-  "action": "concoct",
-  "slots": {
-    "main": [
-      {
-        "item": "lemongrass",
-        "variant": "fresh",
-        "qty": 2
-      }
-    ],
-    "aroma": [],
-    "sweetener": [],
-    "carrier": [
-      {
-        "item": "coconut_oil",
-        "variant": "oil",
-        "qty": 1
-      },
-      {
-        "item": "beeswax",
-        "variant": "block",
-        "qty": 1
-      }
-    ]
-  },
-  "output": 4,
-  "timeMin": 240,
-  "build": "Jam",
-  "source": "docs:pages/products/salep.md",
-  "_placeholder": true,
-  "_note": "Slot materials from the docs. Amounts, output and time are TBD in the docs; placeholders."
+  "product": "lemongrass_balm",
+  "method": "concoct",
+  "inputs": [
+    {
+      "item": "lemongrass",
+      "variant": "dried",
+      "qty": 2
+    },
+    {
+      "item": "coconut_oil",
+      "variant": "oil",
+      "qty": 1
+    },
+    {
+      "item": "beeswax",
+      "variant": "block",
+      "qty": 1
+    }
+  ],
+  "outputPerBatch": 4,
+  "minPerBatch": 90,
+  "energyPerBatch": 10,
+  "skill": "moon",
+  "xpPerBatch": 6,
+  "_placeholder": true
 }

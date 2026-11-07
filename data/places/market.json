@@ -1,0 +1,38 @@
+{
+  "id": "market",
+  "name": "Market",
+  "icon": "market",
+  "travelMin": 30,
+  "scene3d": "market",
+  "hours": [
+    [
+      7,
+      17
+    ],
+    [
+      7,
+      17
+    ],
+    [
+      7,
+      17
+    ],
+    [
+      7,
+      17
+    ],
+    null,
+    [
+      7,
+      17
+    ],
+    [
+      7,
+      17
+    ]
+  ],
+  "stations": [
+    "stall"
+  ],
+  "_placeholder": true
+}

@@ -1,41 +1,33 @@
 {
-  "_doc": "All numbers for the prototype. Names follow bloomlunas-docs gdd/08-economy-and-variables.md. Values from SPECS.md §9; _placeholder = not balanced.",
+  "_doc": "All numbers for the jam overhaul. Names follow bloomlunas-docs gdd economy-and-variables where they exist. _placeholder = not balanced.",
+  "JAM_MONTHS": {
+    "value": 2,
+    "unit": "months of play, then the retrospective",
+    "source": "user decision 7 Nov 2026 (jam overhaul)"
+  },
   "WEEKS_PER_MONTH": {
     "value": 4,
     "unit": "weeks",
-    "source": "Core Loop doc",
-    "_placeholder": true
+    "source": "Core Loop doc"
   },
-  "JAM_MONTHS": {
-    "value": 1,
-    "unit": "months (default for npm run sim; the game goes on until an ending)",
-    "source": "Scope",
-    "_placeholder": true
+  "DAYS_PER_WEEK": {
+    "value": 7,
+    "unit": "days",
+    "source": "calendar"
   },
   "DAY_START_HOUR": {
     "value": 6,
     "unit": "hour",
-    "source": "user decision 2 Nov 2026 (Prototype Iteration)"
+    "source": "user decision 2 Nov 2026"
   },
   "DAY_END_HOUR": {
-    "value": 24,
-    "unit": "hour (after this = midnight: fatigue)",
-    "source": "user decision 2 Nov 2026 (Prototype Iteration)"
+    "value": 22,
+    "unit": "hour; no action may end later. Sleep ends the day",
+    "source": "user decision 7 Nov 2026 (jam overhaul) [Proposal]",
+    "_placeholder": true
   },
   "GOLD_START": {
     "value": 240,
-    "unit": "G",
-    "source": "Planner Book",
-    "_placeholder": true
-  },
-  "WEEKLY_EXPENSES": {
-    "value": 40,
-    "unit": "G",
-    "source": "Planner Book",
-    "_placeholder": true
-  },
-  "MONTHLY_UTILITIES": {
-    "value": 120,
     "unit": "G",
     "source": "Planner Book",
     "_placeholder": true
@@ -47,27 +39,33 @@
     "_placeholder": true
   },
   "DEBT_MIN_PAYMENT": {
-    "value": 300,
-    "unit": "G",
+    "value": 450,
+    "unit": "G per month",
     "source": "Planner Book",
     "_placeholder": true
   },
   "DEBT_INTEREST_RATE": {
     "value": 0.02,
-    "unit": "per month, compound",
+    "unit": "per month, compound on the balance",
     "source": "placeholder",
     "_placeholder": true
   },
   "HIDDEN_FEE_LATE": {
     "value": 25,
-    "unit": "G",
+    "unit": "G, when the month payment is below the minimum",
     "source": "placeholder",
     "_placeholder": true
   },
-  "DEBT_LIMIT": {
-    "value": 4500,
-    "unit": "G",
-    "source": "placeholder",
+  "WEEKLY_EXPENSES": {
+    "value": 60,
+    "unit": "G living cost, paid in Check",
+    "source": "Planner Book",
+    "_placeholder": true
+  },
+  "MONTHLY_UTILITIES": {
+    "value": 120,
+    "unit": "G, paid in Act",
+    "source": "Planner Book",
     "_placeholder": true
   },
   "ENERGY_MAX": {
@@ -76,297 +74,26 @@
     "source": "placeholder",
     "_placeholder": true
   },
-  "ENERGY_REST_RECOVERY": {
-    "value": 100,
-    "unit": "points",
-    "source": "placeholder",
+  "ENERGY_HUNGRY_MAX": {
+    "value": 80,
+    "unit": "max energy after a day with no meal",
+    "source": "user decision 7 Nov 2026 (jam overhaul) [Proposal]",
     "_placeholder": true
   },
-  "ENERGY_COST_DEFAULT": {
-    "value": 10,
-    "unit": "points",
-    "source": "placeholder",
-    "_placeholder": true
-  },
-  "ENERGY_COST_EXPLORE": {
-    "value": 20,
-    "unit": "points",
-    "source": "placeholder",
-    "_placeholder": true
-  },
-  "FATIGUE_THRESHOLD": {
-    "value": 20,
-    "unit": "points",
-    "source": "placeholder",
-    "_placeholder": true
-  },
-  "LATE_WAKE_CHANCE": {
-    "value": 0.3,
-    "unit": "chance",
-    "source": "placeholder",
-    "_placeholder": true
-  },
-  "FATIGUE_EFFICIENCY_PENALTY": {
-    "value": 0.25,
-    "unit": "ratio",
-    "source": "placeholder",
-    "_placeholder": true
-  },
-  "PLAN_MATCH_XP_BONUS_ACTIVITY": {
-    "value": 1,
-    "unit": "XP",
-    "source": "placeholder",
-    "_placeholder": true
-  },
-  "PLAN_MATCH_XP_BONUS_DAY": {
-    "value": 2,
-    "unit": "XP",
-    "source": "placeholder",
-    "_placeholder": true
-  },
-  "PLAN_MATCH_XP_BONUS_TIME": {
-    "value": 3,
-    "unit": "XP",
-    "source": "placeholder",
-    "_placeholder": true
-  },
-  "RELATIONSHIP_PRICE_MODIFIER": {
-    "value": 0.02,
-    "unit": "per level",
-    "source": "placeholder",
-    "_placeholder": true
-  },
-  "QUEST_DEADLINE_DAYS": {
-    "value": 7,
-    "unit": "days",
-    "source": "placeholder",
-    "_placeholder": true
-  },
-  "EVENTS_PER_WEEK_MIN": {
-    "value": 1,
-    "unit": "events",
-    "source": "docs (early levels)"
-  },
-  "EVENTS_PER_WEEK_MAX": {
-    "value": 2,
-    "unit": "events",
-    "source": "docs (early levels)"
-  },
-  "NIGHT_END_HOUR": {
-    "value": 27,
-    "unit": "hour (27 = 03:00 next morning; hard limit)",
-    "source": "user decision 2 Nov 2026 (Prototype Iteration)"
-  },
-  "LATE_WAKE_DELAY_MIN": {
-    "value": 180,
-    "unit": "minutes",
-    "source": "user decision 2 Nov 2026 (Prototype Iteration)"
-  },
-  "DAYS_PER_WEEK": {
-    "value": 7,
-    "unit": "days",
-    "source": "calendar"
-  },
-  "CUSTOMERS_PER_HOUR": {
-    "value": 2,
-    "unit": "customers",
-    "source": "placeholder",
-    "_placeholder": true
-  },
-  "SHOP_BUY_CHANCE": {
-    "value": 0.7,
-    "unit": "chance",
-    "source": "placeholder",
-    "_placeholder": true
-  },
-  "GUILD_BUY_RATIO": {
-    "value": 0.8,
-    "unit": "x real price, guild buys from player",
-    "source": "placeholder",
-    "_placeholder": true
-  },
-  "GUILD_SELL_RATIO": {
-    "value": 0.9,
-    "unit": "x real price, guild sells to player",
-    "source": "placeholder",
-    "_placeholder": true
-  },
-  "RELATIONSHIP_POINTS_PER_LEVEL": {
-    "value": 10,
-    "unit": "points",
-    "source": "placeholder",
-    "_placeholder": true
-  },
-  "APPOINTMENT_MISS_RELATIONSHIP_PENALTY": {
+  "TRAVEL_ENERGY": {
     "value": 5,
-    "unit": "points",
+    "unit": "points per trip",
     "source": "placeholder",
     "_placeholder": true
   },
-  "QUEST_MISS_RELATIONSHIP_PENALTY": {
-    "value": 3,
-    "unit": "points",
-    "source": "docs [Proposal]",
-    "_placeholder": true
-  },
-  "SUN_DRYING_DAYS": {
-    "value": 2,
-    "unit": "days",
-    "source": "placeholder",
-    "_placeholder": true
-  },
-  "SUN_DRYING_RACK_CAPACITY": {
-    "value": 10,
-    "unit": "units",
-    "source": "placeholder",
-    "_placeholder": true
-  },
-  "START_INVENTORY": {
-    "value": [
-      {
-        "item": "turmeric",
-        "variant": "fresh",
-        "qty": 4
-      },
-      {
-        "item": "ginger",
-        "variant": "fresh",
-        "qty": 2
-      },
-      {
-        "item": "beeswax",
-        "variant": "block",
-        "qty": 1
-      },
-      {
-        "item": "coconut_oil",
-        "variant": "oil",
-        "qty": 1
-      },
-      {
-        "item": "fresh_jamu",
-        "variant": "product",
-        "qty": 3,
-        "tier": "Standard"
-      },
-      {
-        "item": "salep",
-        "variant": "product",
-        "qty": 1,
-        "tier": "Standard"
-      }
-    ],
-    "unit": "items",
-    "source": "Planner Book (materials renamed to docs ids)",
-    "_placeholder": true
-  },
-  "SEED": {
-    "value": 1,
-    "unit": "rng seed",
-    "source": "sim"
-  },
-  "COST_TURMERIC": {
-    "value": 4.0,
-    "unit": "G per unit (base)",
-    "source": "placeholder",
-    "_placeholder": true
-  },
-  "COST_KENCUR": {
-    "value": 4.0,
-    "unit": "G per unit (base)",
-    "source": "placeholder",
-    "_placeholder": true
-  },
-  "COST_GINGER": {
-    "value": 5.5,
-    "unit": "G per unit (base)",
-    "source": "placeholder",
-    "_placeholder": true
-  },
-  "COST_LEMONGRASS": {
-    "value": 3.0,
-    "unit": "G per unit (base)",
-    "source": "placeholder",
-    "_placeholder": true
-  },
-  "COST_TAMARIND": {
-    "value": 4.0,
-    "unit": "G per unit (base)",
-    "source": "placeholder",
-    "_placeholder": true
-  },
-  "COST_PALM_SUGAR": {
-    "value": 4.0,
-    "unit": "G per unit (base)",
-    "source": "placeholder",
-    "_placeholder": true
-  },
-  "COST_RICE": {
-    "value": 2.0,
-    "unit": "G per unit (base)",
-    "source": "placeholder",
-    "_placeholder": true
-  },
-  "COST_COCONUT_OIL": {
-    "value": 6.5,
-    "unit": "G per unit (base)",
-    "source": "placeholder",
-    "_placeholder": true
-  },
-  "COST_BEESWAX": {
-    "value": 10.0,
-    "unit": "G per unit (base)",
-    "source": "placeholder",
-    "_placeholder": true
-  },
-  "PRICE_FRESH_JAMU": {
-    "value": 6,
-    "unit": "G per bottle (base)",
-    "source": "Planner Book",
-    "_placeholder": true
-  },
-  "PRICE_SALEP": {
-    "value": 12,
-    "unit": "G per jar (base)",
-    "source": "Planner Book",
-    "_placeholder": true
-  },
-  "SHOP_PRICE_RATIO": {
-    "value": 1.0,
-    "unit": "x real price, customers buy at the shop",
-    "source": "placeholder",
-    "_placeholder": true
-  },
-  "MARKET_SELL_RATIO": {
-    "value": 1.0,
-    "unit": "x real price, market sells to player",
-    "source": "placeholder",
-    "_placeholder": true
-  },
-  "DEADLINE_MONTHS": {
-    "value": 12,
-    "unit": "months",
-    "source": "placeholder (docs: TBD)",
-    "_placeholder": true
-  },
-  "PLAN_SLOT_HOURS": {
-    "value": 3,
-    "unit": "hours per Plan slot",
-    "source": "user decision 2 Nov 2026 (Prototype Iteration)"
-  },
-  "SLEEP_EARLIEST_HOUR": {
-    "value": 18,
-    "unit": "hour (sleep from here; night slots 18-21, 21-24 are safe)",
-    "source": "user decision 2 Nov 2026 (Prototype Iteration)"
-  },
-  "SMALL_REST_MIN": {
+  "SHORT_BREAK_MIN": {
     "value": 30,
     "unit": "minutes",
     "source": "placeholder",
     "_placeholder": true
   },
-  "SMALL_REST_ENERGY": {
-    "value": 25,
+  "SHORT_BREAK_ENERGY": {
+    "value": 10,
     "unit": "points",
     "source": "placeholder",
     "_placeholder": true
@@ -378,97 +105,316 @@
     "_placeholder": true
   },
   "MEAL_ENERGY": {
-    "value": 20,
+    "value": 25,
     "unit": "points",
     "source": "placeholder",
     "_placeholder": true
   },
-  "MEAL_WINDOWS": {
-    "value": {
-      "breakfast": [
-        6,
-        9
-      ],
-      "lunch": [
-        12,
-        15
-      ],
-      "dinner": [
-        18,
-        21
-      ]
-    },
-    "unit": "hours [from, to) per meal, once a day each",
+  "MEALS_PER_DAY": {
+    "value": 3,
+    "unit": "meals",
     "source": "placeholder",
     "_placeholder": true
   },
-  "SHELF_PRICE_OPTIONS": {
-    "value": [
-      0.8,
-      1.0,
-      1.2,
-      1.4
-    ],
-    "unit": "x fair shop price the player can set per product (Shelf stocking)",
-    "source": "Scene & Flow chart (user, 7 Nov 2026) [Proposal]",
+  "FOOD_PRICE": {
+    "value": 3,
+    "unit": "G per meal pack (market)",
+    "source": "placeholder",
     "_placeholder": true
   },
-  "SHOP_PRICE_ELASTICITY": {
-    "value": 1.5,
-    "unit": "buy chance x (1 - (price ratio - 1) x this), clamped to SHOP_BUY_CHANCE_CLAMP",
-    "source": "Scene & Flow chart (user, 7 Nov 2026) [Proposal]",
+  "START_FOOD": {
+    "value": 6,
+    "unit": "meal packs at the start",
+    "source": "placeholder",
     "_placeholder": true
   },
-  "SHOP_BUY_CHANCE_CLAMP": {
-    "value": [
-      0.1,
-      1.0
-    ],
-    "unit": "min and max buy chance after price",
-    "source": "Scene & Flow chart (user, 7 Nov 2026) [Proposal]",
-    "_placeholder": true
+  "BUDGET_STEP": {
+    "value": 10,
+    "unit": "G per +/- click in the budget jars",
+    "source": "user decision 7 Nov 2026 (jam overhaul)"
   },
-  "PACK_CONTAINERS": {
-    "value": {
-      "leaf": {
-        "name": "Banana-leaf wrap",
-        "cost": 0,
-        "priceMult": 1.0
-      },
-      "jar": {
-        "name": "Clay jar",
-        "cost": 1,
-        "priceMult": 1.1
-      },
-      "bottle": {
-        "name": "Glass bottle",
-        "cost": 2,
-        "priceMult": 1.2
-      }
-    },
-    "unit": "Packing: cost in G per unit, price multiplier",
-    "source": "Scene & Flow chart (user, 7 Nov 2026) [Proposal]",
-    "_placeholder": true
-  },
-  "PACK_LABEL": {
-    "value": {
-      "cost": 0.5,
-      "priceMult": 1.05
-    },
-    "unit": "Packing: label cost in G per unit, price multiplier",
-    "source": "Scene & Flow chart (user, 7 Nov 2026) [Proposal]",
-    "_placeholder": true
+  "PLAN_PRODUCT_STEP": {
+    "value": 2,
+    "unit": "units per +/- click in Store planning",
+    "source": "user decision 7 Nov 2026 (jam overhaul)"
   },
   "SHELF_SLOTS": {
     "value": 9,
-    "unit": "shelf slots (3 x 3); one product lot per slot, each with its own price and quantity",
-    "source": "user decision 7 Nov 2026 (fixed 3x3 slots, like the interface reference) [Proposal]",
+    "unit": "shelf slots (3 x 3)",
+    "source": "user decision 7 Nov 2026",
+    "_placeholder": true
+  },
+  "SHELF_SLOT_MAX": {
+    "value": 12,
+    "unit": "units per shelf slot",
+    "source": "placeholder",
+    "_placeholder": true
+  },
+  "PRICE_LEVELS": {
+    "value": {
+      "low": {
+        "mult": 0.8,
+        "demand": 1.25
+      },
+      "fair": {
+        "mult": 1.0,
+        "demand": 1.0
+      },
+      "high": {
+        "mult": 1.25,
+        "demand": 0.6
+      }
+    },
+    "unit": "price x and buy chance x per level",
+    "source": "user decision 7 Nov 2026 (jam overhaul)",
+    "_placeholder": true
+  },
+  "STORE_OPEN_HOURS": {
+    "value": [
+      9,
+      20
+    ],
+    "unit": "customers come in these hours",
+    "source": "placeholder",
+    "_placeholder": true
+  },
+  "STORE_OPEN_ENERGY": {
+    "value": 10,
+    "unit": "points, once per opening",
+    "source": "placeholder",
+    "_placeholder": true
+  },
+  "CUSTOMERS_PER_HOUR": {
+    "value": 2.5,
+    "unit": "customers (before trend and skill)",
+    "source": "placeholder",
+    "_placeholder": true
+  },
+  "SHOP_BUY_CHANCE": {
+    "value": 0.7,
+    "unit": "chance a customer buys (before price level)",
+    "source": "placeholder",
+    "_placeholder": true
+  },
+  "TREND_DEMAND": {
+    "value": {
+      "high": 1.4,
+      "normal": 1.0,
+      "low": 0.7
+    },
+    "unit": "customer x per weekly trend",
+    "source": "placeholder",
+    "_placeholder": true
+  },
+  "TREND_WEIGHTS": {
+    "value": {
+      "high": 1,
+      "normal": 2,
+      "low": 1
+    },
+    "unit": "weekly trend roll weights",
+    "source": "placeholder",
+    "_placeholder": true
+  },
+  "MARKET_BUY_FROM_PLAYER": {
+    "value": 0.6,
+    "unit": "x real price: market buys products from the player",
+    "source": "placeholder",
+    "_placeholder": true
+  },
+  "WHOLESALE_LOT": {
+    "value": 10,
+    "unit": "units per wholesale lot",
+    "source": "placeholder",
+    "_placeholder": true
+  },
+  "WHOLESALE_BUY_RATIO": {
+    "value": 0.8,
+    "unit": "x real price: guild sells material lots to the player",
+    "source": "placeholder",
+    "_placeholder": true
+  },
+  "WHOLESALE_SELL_RATIO": {
+    "value": 0.75,
+    "unit": "x real price: guild buys products from the player",
+    "source": "placeholder",
+    "_placeholder": true
+  },
+  "TRADE_MIN": {
+    "value": 15,
+    "unit": "minutes per buy or sell order",
+    "source": "placeholder",
     "_placeholder": true
   },
   "CRAFT_MAX_BATCHES": {
     "value": 5,
-    "unit": "max batches in one craft (Crafting quantity)",
-    "source": "user decision 7 Nov 2026: Preparation sets the quantity = number of batches [Proposal]",
+    "unit": "batches per craft",
+    "source": "user decision 7 Nov 2026",
     "_placeholder": true
+  },
+  "DRYING_DAYS": {
+    "value": 2,
+    "unit": "days on the rack (ready at the start of the day)",
+    "source": "placeholder",
+    "_placeholder": true
+  },
+  "DRYING_CAPACITY": {
+    "value": 10,
+    "unit": "units on the rack",
+    "source": "placeholder",
+    "_placeholder": true
+  },
+  "DRYING_TASK_MIN": {
+    "value": 30,
+    "unit": "minutes to start or collect a batch",
+    "source": "placeholder",
+    "_placeholder": true
+  },
+  "DRYING_TASK_ENERGY": {
+    "value": 5,
+    "unit": "points",
+    "source": "placeholder",
+    "_placeholder": true
+  },
+  "GRIND_MIN_PER_UNIT": {
+    "value": 10,
+    "unit": "minutes per unit",
+    "source": "placeholder",
+    "_placeholder": true
+  },
+  "GRIND_ENERGY_PER_UNIT": {
+    "value": 2,
+    "unit": "points per unit",
+    "source": "placeholder",
+    "_placeholder": true
+  },
+  "EXPLORE_WALK_MIN": {
+    "value": [
+      30,
+      60
+    ],
+    "unit": "minutes of auto-walk until a spot is found",
+    "source": "placeholder",
+    "_placeholder": true
+  },
+  "EXPLORE_WALK_ENERGY": {
+    "value": 5,
+    "unit": "points per walk",
+    "source": "placeholder",
+    "_placeholder": true
+  },
+  "EXPLORE_SPOTS_PER_DAY": {
+    "value": 5,
+    "unit": "spots per day at the outskirt",
+    "source": "placeholder",
+    "_placeholder": true
+  },
+  "QUEST_BOARD_SIZE": {
+    "value": 3,
+    "unit": "commissions on the board each week",
+    "source": "placeholder",
+    "_placeholder": true
+  },
+  "QUEST_MAX_ACTIVE": {
+    "value": 2,
+    "unit": "commissions the player can hold",
+    "source": "placeholder",
+    "_placeholder": true
+  },
+  "QUEST_DEADLINE_DAYS": {
+    "value": 7,
+    "unit": "days",
+    "source": "placeholder",
+    "_placeholder": true
+  },
+  "EVENT_CHANCE_PER_DAY": {
+    "value": 0.3,
+    "unit": "chance of a random event at the start of a day",
+    "source": "placeholder",
+    "_placeholder": true
+  },
+  "XP_LEVELS": {
+    "value": [
+      0,
+      30,
+      80,
+      150,
+      250,
+      380,
+      550
+    ],
+    "unit": "XP needed for level 1..7",
+    "source": "placeholder",
+    "_placeholder": true
+  },
+  "QUALITY_BY_MOON_LEVEL": {
+    "value": [
+      "standard",
+      "standard",
+      "fine",
+      "fine",
+      "premium",
+      "premium",
+      "masterwork"
+    ],
+    "unit": "product tier per Moon level 1..7",
+    "source": "user decision 7 Nov 2026 (jam overhaul) [Proposal]",
+    "_placeholder": true
+  },
+  "QUALITY_TIERS": {
+    "value": {
+      "standard": {
+        "name": "Standard",
+        "mult": 1.0,
+        "stars": 1
+      },
+      "fine": {
+        "name": "Fine",
+        "mult": 1.25,
+        "stars": 2
+      },
+      "premium": {
+        "name": "Premium",
+        "mult": 1.5,
+        "stars": 3
+      },
+      "masterwork": {
+        "name": "Masterwork",
+        "mult": 2.0,
+        "stars": 4
+      }
+    },
+    "unit": "price x per tier",
+    "source": "SPECS 2 Nov 2026 (tiers), jam subset",
+    "_placeholder": true
+  },
+  "SUN_CUSTOMER_BONUS": {
+    "value": 0.08,
+    "unit": "customers x per Sun level above 1",
+    "source": "placeholder",
+    "_placeholder": true
+  },
+  "EARTH_LOOT_BONUS": {
+    "value": 0.15,
+    "unit": "chance per Earth level above 1 of +1 unit per loot line",
+    "source": "placeholder",
+    "_placeholder": true
+  },
+  "GOAL_XP": {
+    "value": 5,
+    "unit": "XP for a daily goal met",
+    "source": "placeholder",
+    "_placeholder": true
+  },
+  "FREE_TIME_MAX_WORK_MIN": {
+    "value": 240,
+    "unit": "a Free time day is met if work time is at most this",
+    "source": "placeholder",
+    "_placeholder": true
+  },
+  "SEED": {
+    "value": 1,
+    "unit": "rng seed",
+    "source": "sim"
   }
 }

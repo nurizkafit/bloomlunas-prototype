@@ -1,0 +1,10 @@
+{
+  "id": "q_balm_caravan",
+  "name": "Caravan needs balm",
+  "client": "Caravan",
+  "item": "lemongrass_balm",
+  "qty": 4,
+  "reward": 95,
+  "xp": 10,
+  "_placeholder": true
+}
