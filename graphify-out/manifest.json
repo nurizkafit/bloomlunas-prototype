@@ -318,9 +318,9 @@
     "semantic_hash": ""
   },
   "SPECS.md": {
-    "mtime": 1794100216.2119195,
-    "seen": 1794100221.3300273,
-    "ast_hash": "91a4160036bcc43ad7f0781309ee3a69",
+    "mtime": 1794104738.5924456,
+    "seen": 1794105401.1635282,
+    "ast_hash": "83b8b9064b4e01962fbe70b59efedbab",
     "semantic_hash": ""
   },
   "index.html": {
@@ -504,9 +504,9 @@
     "semantic_hash": ""
   },
   "data/scene/town.json": {
-    "mtime": 1794099798.1317747,
-    "seen": 1794100221.3299384,
-    "ast_hash": "b93c79eb31289ca7b283530c9facb9bd",
+    "mtime": 1794104738.5786717,
+    "seen": 1794105401.1634386,
+    "ast_hash": "f496d15dd8e387c988e9304e70c6ab06",
     "semantic_hash": ""
   },
   "data/services/svc_lesson.json": {
@@ -684,9 +684,9 @@
     "semantic_hash": ""
   },
   "src/views/scene/SceneView.js": {
-    "mtime": 1794101014.5652065,
-    "seen": 1794101016.5897498,
-    "ast_hash": "71581b0ee9116cf4ff45391ce605f54a",
+    "mtime": 1794104367.394508,
+    "seen": 1794105401.163497,
+    "ast_hash": "f587efe1e8ba03b138f3f094c2415653",
     "semantic_hash": ""
   },
   "src/views/ui/ActView.js": {

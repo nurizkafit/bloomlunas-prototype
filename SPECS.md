@@ -99,7 +99,7 @@ Visual style: approved style board v3 (project files `screens/overhaul-style/sty
 ## 8. 3D City View (`src/views/scene/SceneView.js`)
 
 - Kenney CC0 kits (uploaded by the user) as placeholders: Fantasy Town (houses, stalls, fountain, lanterns, banners), Nature (palms, crops, flowers), Survival (grinding bench, barrels, tent, campfire), Food, Mini Forest, Mini Shop, Mini Characters (animated walkers and the player), Furniture (room props). The Factory kit is not used yet.
-- Interior rooms (`scene/town.json` `rooms`): an open-front room per building, away from the town. The camera cuts to the room when the player is in a building and the town list is shut. Station hotspots (DOM pills) follow anchor points in the room.
+- Interior rooms (`scene/town.json` `rooms`): an open-front room per building, away from the town. The Market is an open-air set (`outdoor: true`): ground, paving, stalls, trees, idle and walking shoppers, no walls (user decision, 8 Nov 2026). The camera cuts to the room when the player is in a building and the town list is shut. Station hotspots (DOM pills) follow anchor points in the room.
 - Only the GLB files the town uses are committed, under `assets/models/kenney/<kit>/`, with each kit's `Textures/colormap.png` and `License.txt`.
 - Roofs and ground use the M2 town colours (`scene/town.json` `tints`). Houses are built from wall pieces and a scaled roof.
 - The camera moves to the current place (`places`), with a slow sway. Light goes from day light to moon light by the clock.

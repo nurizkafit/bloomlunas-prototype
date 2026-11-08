@@ -176,6 +176,7 @@ export class SceneView {
     for (const r of this.#roomList()) {
       for (const p of r.props) names.add(p.m);
       for (const n of r.npc ?? []) names.add(n.m);
+      for (const w of r.walkers ?? []) names.add(w.m);
     }
     const loader = new GLTFLoader();
     await Promise.all([...names].map((n) => loader.loadAsync(`${d.base}${n}.glb`).then((g) => this.cache.set(n, g)).catch((e) => console.warn('missing model', n, e))));
@@ -203,6 +204,31 @@ export class SceneView {
     const box = (w, h, dd, x, y, z, m) => { const o = new THREE.Mesh(new THREE.BoxGeometry(w, h, dd), m); o.position.set(x, y, z); o.castShadow = true; o.receiveShadow = true; g.add(o); return o; };
     const W = r.w, D = r.d, H = r.h, t = 0.12;
     const wall = mat(r.wall), beam = mat(r.beam), floor = mat(r.floor);
+    if (r.outdoor) this.#yard(g, r, mat);
+    else this.#walls(g, r, mat, box, W, D, H, t, wall, beam, floor);
+    this.#roomProps(g, r, mat, box, beam, H);
+    g.position.set(r.origin[0], 0, r.origin[1]);
+    this.scene.add(g);
+    this.rooms.set(key, { g, r });
+    // Shoppers walk in world space along room-local paths.
+    for (const w of r.walkers ?? []) this.#walker({ ...w, path: w.path.map(([x, z]) => [x + r.origin[0], z + r.origin[1]]) });
+  }
+
+  /** Open-air set (user decision, 8 Nov 2026): ground, paving, no walls. */
+  #yard(g, r, mat) {
+    const ground = new THREE.Mesh(new THREE.CircleGeometry(r.groundR ?? 26, 48), mat(r.ground ?? '#A9B886'));
+    ground.rotation.x = -Math.PI / 2; ground.position.y = -0.02; ground.receiveShadow = true; g.add(ground);
+    const pave = new THREE.Mesh(new THREE.CylinderGeometry(r.paveR ?? 5.2, r.paveR ?? 5.2, 0.06, 40), mat(r.floor));
+    pave.position.set(0, 0.0, 0.2); pave.receiveShadow = true; g.add(pave);
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(r.paveR ?? 5.2, 0.07, 6, 48), mat(r.beam));
+    ring.rotation.x = Math.PI / 2; ring.position.set(0, 0.03, 0.2); g.add(ring);
+    for (const [x, z, w, d] of r.paths ?? []) {
+      const m = new THREE.Mesh(new THREE.BoxGeometry(w, 0.04, d), mat(r.path ?? r.floor));
+      m.position.set(x, -0.005, z); m.receiveShadow = true; g.add(m);
+    }
+  }
+
+  #walls(g, r, mat, box, W, D, H, t, wall, beam, floor) {
     box(W + 2 * t, 0.1, D + 0.6, 0, -0.05, 0.3, floor);
     box(W + 2 * t, H, t, 0, H / 2, -D / 2 - t / 2, wall);
     box(t, H, D, -W / 2 - t / 2, H / 2, 0, wall);
@@ -219,6 +245,9 @@ export class SceneView {
       box(0.06, 0.78, 0.05, x, y, -D / 2 + 0.04, beam); box(0.98, 0.06, 0.05, x, y, -D / 2 + 0.04, beam);
       box(1.02, 0.08, 0.1, x, y - 0.4, -D / 2 + 0.06, beam);
     }
+  }
+
+  #roomProps(g, r, mat, box, beam, H) {
     for (const b of r.boards ?? []) {
       box(b.w + 0.12, b.h + 0.12, 0.05, b.x, b.y, b.z, beam);
       box(b.w, b.h, 0.06, b.x, b.y, b.z + 0.01, mat('#C8A57A'));
@@ -238,9 +267,11 @@ export class SceneView {
       o.position.set(p.x - c.x, (p.y ?? 0) - bb.min.y, p.z - c.z);
       g.add(o);
     }
-    const lamp = new THREE.PointLight('#FFD9A0', 6, 9, 1.6);
-    lamp.position.set(0, H + 0.6, 0.6);
-    g.add(lamp);
+    if (!r.outdoor) {
+      const lamp = new THREE.PointLight('#FFD9A0', 6, 9, 1.6);
+      lamp.position.set(0, H + 0.6, 0.6);
+      g.add(lamp);
+    }
     for (const n of r.npc ?? []) {
       const c = this.#character(n.m, 'idle');
       if (!c) continue;
@@ -248,9 +279,6 @@ export class SceneView {
       c.obj.rotation.y = THREE.MathUtils.degToRad(n.r ?? 0);
       g.add(c.obj);
     }
-    g.position.set(r.origin[0], 0, r.origin[1]);
-    this.scene.add(g);
-    this.rooms.set(key, { g, r });
   }
 
   /** A clone of a loaded model, with matte materials and shadows. @param {string} name @param {string} [tint] */
@@ -341,7 +369,7 @@ export class SceneView {
     let goal, dir, dist;
     if (room) {
       const c = room.cam;
-      goal = new THREE.Vector3(room.origin[0] + 0.2, 0.55, room.origin[1] + 0.1);
+      goal = new THREE.Vector3(room.origin[0] + (c.tx ?? 0.2), 0.55, room.origin[1] + (c.tz ?? 0.1));
       dir = new THREE.Vector3(Math.sin(c.yaw + sway * 0.4), c.pitch, Math.cos(c.yaw + sway * 0.4)).normalize();
       dist = c.dist;
     } else {
@@ -357,7 +385,8 @@ export class SceneView {
     this.camGoal.copy(this.target).addScaledVector(dir, dist);
     if (cut) this.camera.position.copy(this.camGoal); else this.camera.position.lerp(this.camGoal, 1 - Math.pow(0.05, dt));
     this.camera.lookAt(this.target);
-    this.indoor = !!room;
+    this.inRoom = !!room;
+    this.indoor = !!room && !room.outdoor;
     if (this.view?.x !== this.offsetX) this.#resize();
     for (const m of this.mixers) m.update(dt);
     for (const w of this.walkers) {
@@ -368,7 +397,7 @@ export class SceneView {
       w.obj.lookAt(ahead.x, 0, ahead.z);
     }
     if (this.player && this.playerPlace) {
-      const rp = this.indoor && d.rooms[this.playerPlace]?.player;
+      const rp = this.inRoom && d.rooms[this.playerPlace]?.player;
       if (rp) {
         const o = d.rooms[this.playerPlace].origin;
         this.player.obj.position.set(o[0] + rp[0], 0, o[1] + rp[1]); this.player.obj.rotation.y = THREE.MathUtils.degToRad(rp[2] ?? 0);
