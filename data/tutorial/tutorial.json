@@ -1,0 +1,71 @@
+{
+  "id": "tutorial",
+  "_doc": "First-week guide (user decision 8 Nov 2026). Each step shows once, the first time its 'when' matches. 'week' is the week of the game (1 = first week); 'month' is the month. The player can skip one step or all steps. {KEY} shows a BalanceConfig number.",
+  "_placeholder": true,
+  "speaker": {
+    "name": "Mbok Sari",
+    "role": "Your neighbour",
+    "icon": "neighbour"
+  },
+  "steps": [
+    {
+      "id": "plan",
+      "when": { "phase": "plan", "week": 1 },
+      "lines": [
+        "I saw the guild clerk at your door. That grey seal never brings good news.",
+        "I am Mbok Sari, from the jamu stall next door. Your parent and I shared this street for twenty years.",
+        "The debt is heavy. But it is not the end. We take it one week at a time.",
+        "This is your parent's planner book. Every week starts here. Put a goal card on each day.",
+        "On the Store plan page, choose what to sell. Then share your gold into three jars. The Buffer jar is for the debt, so try not to touch it.",
+        "When the plan feels right, press Finish plan at the top."
+      ]
+    },
+    {
+      "id": "home",
+      "when": { "phase": "do", "place": "home", "week": 1 },
+      "lines": [
+        "The week has started. This is your home and your shop.",
+        "Make products at the Crafting table. Put them on the shelf in the Store, then open the doors.",
+        "Every task takes time and energy. The green ring around the clock is your energy.",
+        "No herbs? Press Town and walk to the market or the guild."
+      ]
+    },
+    {
+      "id": "market",
+      "when": { "phase": "do", "place": "market", "week": 1 },
+      "lines": [
+        "Ah, the market. Prices change every week. Your planner book shows them.",
+        "At the stall, Fill from plan puts what your plan needs in the basket.",
+        "Buy some meal packs too. Working hungry makes a long day longer."
+      ]
+    },
+    {
+      "id": "rest",
+      "when": { "phase": "do", "station": "rest", "week": 1 },
+      "lines": [
+        "Tired already? A short break or a meal gives you energy back.",
+        "Sleep ends the day. Do not stay up for a few more coins. Tomorrow needs you too."
+      ]
+    },
+    {
+      "id": "check",
+      "when": { "phase": "check", "week": 1 },
+      "lines": [
+        "One week done. Let us look back, without blame.",
+        "Compare your plan with what really happened. Where did the gold go?",
+        "Then pick one or two notes for next week. Small changes add up."
+      ]
+    },
+    {
+      "id": "act",
+      "when": { "phase": "act", "month": 1 },
+      "lines": [
+        "Month end. The guild wants its payment today.",
+        "Pay at least {DEBT_MIN_PAYMENT} gold. If you can pay more, next month's interest is smaller.",
+        "Pay the utilities too. Unpaid bills go onto the debt.",
+        "Then you can book one guild appointment for next month.",
+        "You made it through a whole month. That counts for something."
+      ]
+    }
+  ]
+}

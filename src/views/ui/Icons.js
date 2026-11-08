@@ -35,6 +35,7 @@ const P = {
   desk: `<path d="M2 11h20v3H2z" fill="${C.rat}"/><path d="M4 14v7M20 14v7" stroke="#8A6238" stroke-width="2"/><path d="M14 6h5v5h-5z" fill="${C.cream}"/><circle cx="7" cy="8" r="2.5" fill="${C.wis}"/><path d="M4 11a3 3 0 016 0" fill="${C.wis}"/>`,
   people: `<circle cx="9" cy="8" r="3" fill="${C.rat}"/><path d="M3 20a6 6 0 0112 0z" fill="${C.ver}"/><circle cx="16.5" cy="9" r="2.5" fill="${C.tur}"/><path d="M12.5 20a4.5 5 0 019 0z" fill="${C.wis}"/>`,
   customer: `<circle cx="12" cy="8" r="3.5" fill="${C.rat}"/><path d="M5 21a7 7 0 0114 0z" fill="${C.ver}"/>`,
+  neighbour: `<path d="M5 21a7 7 0 0114 0z" fill="${C.tur}"/><path d="M6.5 10a5.5 5.5 0 0111 0v3h-11z" fill="${C.wis}"/><circle cx="12" cy="10.5" r="3.6" fill="${C.rat}"/><path d="M8 8.6a4.4 4.4 0 018 0" stroke="${C.wis}" stroke-width="2.4" fill="none"/><path d="M10.4 11.6q1.6 1.2 3.2 0" stroke="${INK}" stroke-width=".9" fill="none"/>`,
   root: `<path d="M9 5c4-2 8 1 7 6-1 4-4 9-8 10 1-4-2-6 0-10" fill="${C.tur}"/><path d="M10 6c-1-2-3-3-5-3M11 5c0-2 1-3 2-4" stroke="${C.bam}" stroke-width="1.6" fill="none"/>`,
   leaf: `<path d="M5 19C5 9 11 4 20 4c0 9-5 15-15 15z" fill="${C.bam}"/><path d="M5 19L15 9" stroke="${C.fern}" stroke-width="1.2"/>`,
   herb: `<path d="M12 21V9" stroke="${C.fern}" stroke-width="1.4"/><path d="M12 12c-4 0-6-3-6-6 4 0 6 3 6 6zM12 15c4 0 6-3 6-6-4 0-6 3-6 6zM12 9c-2-2-2-5 0-7 2 2 2 5 0 7z" fill="${C.bam}"/>`,

@@ -11,17 +11,18 @@ export class RetroView {
 
   render() {
     const ui = this.ui, r = ui.gm.phases.retro.summary();
+    const story = ui.c.find('story', 'retro');
     const pct = (x) => `${Math.round(x * 100)}%`;
     const weeks = r.weekList;
     const gold = [r.startGold, ...weeks.map((w) => w.endGold)];
     const debt = [r.startDebt, ...weeks.map((w) => w.debt ?? r.endDebt)];
     const left = [
-      h('h3', Dom.icon('chart', 28), 'Two months'),
+      h('h3', Dom.icon('chart', 28), 'Two months of work'),
       h('div.legend', { style: { marginTop: '8px' } }, h('span', h('i', { style: { background: '#D9A326' } }), 'Gold'), h('span', h('i', { style: { background: '#B5523B' } }), 'Debt')),
       Dom.raw(this.#chart(gold, debt)),
-      h('h4', Dom.icon('calendar', 18), 'Weeks', h('span.aside', Dom.icon('star', 14), 'goals')),
+      h('h4', Dom.icon('calendar', 18), 'Week by week', h('span.aside', Dom.icon('star', 14), 'goals')),
       h('div', { style: { display: 'grid', gridTemplateColumns: `repeat(${Math.max(1, weeks.length)}, 1fr)`, gap: '8px' } }, weeks.map((w) => h('div.stat', h('span.k', `W${w.absWeek}`), Dom.dots(7, w.goalsMet.map((m) => m ? 'ok' : 'no')).cloneNode(true), h('span.small.num', `${w.sold}/${w.storeGoal}`)))),
-      h('h4', Dom.icon('debt', 18), 'Debt'),
+      h('h4', Dom.icon('debt', 18), 'What the debt cost'),
       h('div.statgrid',
         h('div.stat', h('span.k', Dom.icon('gold', 16), 'Paid'), h('span.v', String(Math.round(r.paid)))),
         h('div.stat', h('span.k', Dom.icon('trend_up', 16), 'Interest'), h('span.v', String(Math.round(r.interest)))),
@@ -31,22 +32,23 @@ export class RetroView {
       h('h3', Dom.icon('star', 28), 'Habits'),
       h('div.statgrid', { style: { marginTop: '8px' } },
         h('div.stat', h('span.k', Dom.icon('star', 16), 'Goals'), h('span.v', pct(r.goalRate))),
-        h('div.stat', h('span.k', Dom.icon('tag', 16), 'Sell goal'), h('span.v', pct(r.storeRate))),
+        h('div.stat', h('span.k', Dom.icon('tag', 16), 'Sales goal'), h('span.v', pct(r.storeRate))),
         h('div.stat', h('span.k', Dom.icon('buffer', 16), 'Buffer'), h('span.v', pct(r.bufferRate)))),
       h('div.statgrid', { style: { marginTop: '16px' } },
         h('div.stat', h('span.k', Dom.icon('jamu', 16), 'Sold'), h('span.v', String(r.sold))),
-        h('div.stat', h('span.k', Dom.icon('quest', 16), 'Quests'), h('span.v', `${r.quests}`)),
-        h('div.stat', h('span.k', Dom.icon('calendar', 16), 'Late'), h('span.v', `${r.missedMonths}`))),
+        h('div.stat', h('span.k', Dom.icon('quest', 16), 'Commissions'), h('span.v', `${r.quests}`)),
+        h('div.stat', h('span.k', Dom.icon('calendar', 16), 'Late months'), h('span.v', `${r.missedMonths}`))),
       h('h4', Dom.icon('skills', 18), 'Skills'),
       h('div.chipline', ['moon', 'sun', 'earth'].map((k) => Dom.chip(k, `Lv ${ui.sys.skills.level(k)}`))),
-      h('h4', Dom.icon('debt', 18), 'Balance'),
+      h('h4', Dom.icon('debt', 18), 'From start to now'),
       h('div.ln', Dom.icon('gold', 20), 'Gold', h('span.v', `${r.startGold} → ${Math.round(r.endGold)}`)),
       h('div.ln', Dom.icon('debt', 20), 'Debt', h('span.v.neg', `${r.startDebt} → ${Math.round(r.endDebt)}`)),
       r.carried ? h('div.ln', Dom.icon('house', 20), 'Unpaid bills', h('span.v.neg', `+${Math.round(r.carried)}`)) : null,
+      story ? h('div.retrostory', h('p', story.clerk), h('p', r.endDebt < r.startDebt ? story.down : story.up)) : null,
       h('div.row.end', { style: { marginTop: 'auto' } }, Dom.btn('New game', () => ui.o.onNewGame(), { cls: 'gold', icon: 'herb' }))
     ];
     return [
-      h('div.phasebar', Dom.slim('plaque', Dom.medal('guild', 38), h('div', h('small', `MONTH ${ui.st.cal.month}`), h('b', 'Retrospective')))),
+      h('div.phasebar', Dom.slim('plaque', Dom.medal('guild', 38), h('div', h('small', `MONTH ${ui.st.cal.month}`), h('b', 'The clerk reads your books')))),
       h('div.book', { style: { top: '84px' } }, h('div.tool'), h('div.tool2'), h('div.spineband'),
         h('div.pages', h('div.pg.l', ...left), h('div.pg.r', ...right)),
         ...Dom.corners().map((c) => { c.style.zIndex = 3; return c; }))

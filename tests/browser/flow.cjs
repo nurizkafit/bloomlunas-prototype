@@ -14,6 +14,8 @@ async function run(w, hgt) {
   const ev = (fn, arg) => page.evaluate(fn, arg);
   const clickText = async (t) => { await page.getByRole('button', { name: t, exact: false }).first().click(); await page.waitForTimeout(120); };
   const draw = () => ev(() => window.__bl.ui.drawNow());
+  // First-week guide: screenshot the dialogue, then close it with a button of the box.
+  const tip = async (name, btn = /^\s*Skip\s*$/) => { await page.waitForSelector('.tutor'); await shot(name); await page.locator('.tutor button', { hasText: btn }).click(); await page.waitForTimeout(120); };
   const clearEvent = async () => { await ev(() => { const { gm } = window.__bl; if (gm.state.pendingEvent) gm.action('respondEvent', { index: 0 }); }); await draw(); };
 
   await page.goto(URL);
@@ -23,8 +25,11 @@ async function run(w, hgt) {
   await page.goto(URL + '?new&seed=5');
   await page.waitForSelector('.letter');
   await shot('02-story');
-  await clickText('Open the Journal');
+  await clickText('Fold the letter');
   await page.waitForSelector('.book');
+  await page.waitForSelector('.tutor');
+  await page.locator('.tutor button', { hasText: 'Next' }).click();
+  await tip('03a-tutor-plan');
   await shot('03-plan');
   await page.locator('.deck .gcard').nth(0).dragTo(page.locator('.drow').nth(0));
   await page.locator('.deck .gcard').nth(1).click(); await page.locator('.drow').nth(1).click();
@@ -32,9 +37,10 @@ async function run(w, hgt) {
   await page.locator('.ribbon').click();
   await page.waitForSelector('.veil');
   await shot('04-review');
-  await clickText('Start week');
+  await clickText('Begin the week');
   await clearEvent();
   await page.waitForSelector('.side');
+  await tip('05a-tutor-home');
   await shot('05-home');
   // Crafting
   await page.locator('.smenu .srow', { hasText: 'Crafting' }).click();
@@ -44,6 +50,7 @@ async function run(w, hgt) {
   await page.locator('.smenu .srow', { hasText: 'Grinding' }).click();
   await shot('08-grind');
   await page.locator('.smenu .srow', { hasText: 'Rest' }).click();
+  await tip('09a-tutor-rest');
   await shot('09-rest');
   // Map + market
   await page.keyboard.press('m');
@@ -58,12 +65,13 @@ async function run(w, hgt) {
   await shot('10c-walk');
   await page.waitForFunction(() => !window.__bl.ui.local.walk, null, { timeout: 15000 });
   await clearEvent();
+  await tip('10d-tutor-market', 'Skip all tips');
   await page.locator('.smenu .srow', { hasText: 'Market stall' }).click();
   await shot('11-stall');
   await page.locator('.mstep button').nth(1).click();
   await page.locator('.mstep button').nth(1).click();
   await shot('11b-basket');
-  await clickText('Buy all');
+  await page.locator('.tpanel .btn.gold', { hasText: 'Buy' }).click();
   await page.locator('.ib').first().click();
   await page.waitForSelector('.icard');
   await shot('11c-itemcard');
@@ -71,21 +79,21 @@ async function run(w, hgt) {
   // Guild
   await ev(() => { const { gm } = window.__bl; gm.action('travel', { place: 'guild' }); });
   await draw();
-  await page.locator('.smenu .srow', { hasText: 'receptionist' }).click();
+  await page.locator('.smenu .srow', { hasText: 'Guild desk' }).click();
   await shot('12-reception');
   await page.locator('.smenu .srow', { hasText: 'Quest board' }).click();
   await shot('13-quests');
-  await clickText('Give');
+  await clickText('You ask');
   await shot('13b-give');
   // Outskirt
   await ev(() => { const { gm, ui } = window.__bl; gm.action('travel', { place: 'outskirt' }); ui.local.station = null; });
   await draw();
-  await page.locator('.smenu .srow', { hasText: 'Exploration' }).click();
-  await clickText('Walk on');
+  await page.locator('.smenu .srow', { hasText: 'Explore' }).click();
+  await clickText('Keep walking');
   await page.waitForSelector('.card');
   await shot('14-spot');
   await clickText('Gather');
-  await clickText('End exploration');
+  await clickText('Head back');
   await page.waitForSelector('.recap');
   await shot('14b-recap');
   await clickText('Stay');
@@ -115,27 +123,30 @@ async function run(w, hgt) {
   await freeze(0.3); await shot('17e-sleep-night');
   await freeze(0.68); await shot('17f-sleep-dawn');
   await ev(() => document.querySelector('.nightfx')?.remove());
-  await page.locator('.smenu .srow', { hasText: 'Store' }).click();
+  await page.locator('.smenu .srow', { hasText: 'Shop' }).click();
   await shot('18-store');
   await ev(() => { window.__bl.ui.local.fast = true; });
-  await clickText('Open store');
+  await clickText('Open the shop');
   await page.waitForTimeout(400);
   await shot('19-store-open');
-  await page.waitForSelector('text=Shop result', { timeout: 15000 });
+  await page.waitForSelector('text=The shop day is over', { timeout: 15000 });
   await shot('20-store-result');
   // Finish the week -> Check
   await ev(() => { const { gm } = window.__bl; let g = 0; while (gm.state.phase === 'do' && g++ < 50) { if (gm.state.pendingEvent) gm.action('respondEvent', { index: 0 }); gm.action('sleep'); } });
   await draw();
   await page.waitForSelector('.book');
+  await ev(() => { window.__bl.gm.state.tutorialOff = false; window.__bl.ui.drawNow(); });
+  await tip('21a-tutor-check');
   await shot('21-check');
   await page.locator('.notepick button').first().click();
   // Jump to week 4 check -> Act
   await ev(() => { const { gm } = window.__bl; gm.state.cal.week = 4; gm.finishCheck({ ids: [] }); });
   await draw();
+  await tip('22a-tutor-act');
   await shot('22-act');
   await ev(() => { const { gm } = window.__bl; gm.state.cal.month = 2; gm.finishAct(); });
   await draw();
-  await page.waitForSelector('text=Retrospective');
+  await page.waitForSelector('text=The clerk reads your books');
   await shot('23-retro');
   // Event card
   await ev(() => { const { gm } = window.__bl; gm.state.phase = 'do'; gm.state.pendingEvent = gm.content.all('events')[0].id; window.__bl.ui.local.station = null; });

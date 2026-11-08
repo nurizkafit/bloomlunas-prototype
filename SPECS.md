@@ -62,12 +62,12 @@ After the Check of week 4: Act (Journal, month end) -> next month Plan. After mo
 
 ## 5. Data files
 
-`BalanceConfig.json`, `items/`, `recipes/`, `places/`, `stations/`, `goals/`, `skills/`, `spots/`, `quests/`, `services/`, `events/`, `debt/riba_loan.json`, `notes/notes.json`, `help/help.json` (help popups), `objectives/objectives.json` (Journal objectives, mini tutorial; each names a check in `ObjectiveSystem`), `story/premise.json`, `start/start.json`, `scene/town.json` (3D layout: houses, props, roads, walkers, camera spots, tints, interior `rooms` per building with props, NPC, station anchors and camera; view data only). Items carry a `text` line for the item card.
+`BalanceConfig.json`, `items/`, `recipes/`, `places/`, `stations/`, `goals/`, `skills/`, `spots/`, `quests/`, `services/`, `events/`, `debt/riba_loan.json`, `notes/notes.json`, `help/help.json` (help popups), `objectives/objectives.json` (Journal objectives, mini tutorial; each names a check in `ObjectiveSystem`), `story/premise.json` (opening letter from the Merchant Guild; `{KEY}` shows a BalanceConfig number), `story/retro.json` (closing lines of the look-back screen), `tutorial/tutorial.json` (first-week guide: speaker and steps, each with a `when` and its dialogue lines), `start/start.json`, `scene/town.json` (3D layout: houses, props, roads, walkers, camera spots, tints, interior `rooms` per building with props, NPC, station anchors and camera; view data only). Items carry a `text` line for the item card.
 Field names map one to one to Unity ScriptableObjects.
 
 ## 6. EventBus messages (`MSG` in `src/core/EventBus.js`)
 
-Intents (views -> logic): `intent.setGoal {index, goal}`, `intent.setProduct {product, qty}`, `intent.setBudget {store?, personal?, buffer?}`, `intent.lockPlan`, `intent.action {id, params}`, `intent.respondEvent {index}`, `intent.finishCheck {ids}`, `intent.payDebt {amount}`, `intent.payUtilities`, `intent.bookService {id}`, `intent.finishAct`.
+Intents (views -> logic): `intent.setGoal {index, goal}`, `intent.setProduct {product, qty}`, `intent.setBudget {store?, personal?, buffer?}`, `intent.lockPlan`, `intent.action {id, params}`, `intent.respondEvent {index}`, `intent.finishCheck {ids}`, `intent.payDebt {amount}`, `intent.payUtilities`, `intent.bookService {id}`, `intent.finishAct`, `intent.tutorialSeen {id, all?}` (marks a guide step as seen; `all` turns the guide off).
 Logic -> views: `phase.entered`, `phase.exited`, `state.changed`, `clock.changed`, `action.done`, `action.refused {reason, text}`, `plan.validated`, `event.fired`, `event.resolved`, `day.started`, `day.ended`.
 
 Action ids: `travel`, `shortBreak`, `eat`, `sleep`, `craft`, `dryStart`, `dryCollect`, `grind`, `stockShelf`, `storeOpen`, `storeHour`, `storeClose`, `marketBuy`, `buyFood`, `marketSell`, `wholesaleBuy`, `wholesaleSell`, `service`, `questTake`, `questHandIn`, `questPost {item, variant, qty}`, `exploreWalk`, `exploreGather`, `exploreSkip`, `exploreEnd` (returns the recap), `respondEvent`. `marketBuy`, `marketSell`, `wholesaleBuy`, `wholesaleSell` take `{lines: [...]}` (one line per item).
@@ -95,6 +95,7 @@ Visual style: approved style board v3 (project files `screens/overhaul-style/sty
 | `ItemCardView` | Detail card of a material, product or food pack (opens from any item icon) |
 | `StoreView`, `CraftView`, `DryingView`, `GrindView`, `RestView`, `StallView`, `ReceptionView`, `QuestBoardView`, `ExploreView` | Station windows |
 | `EventCardView` | Event card with responses |
+| `TutorialView` | First-week guide: the neighbour (Mbok Sari) talks in a dialogue box the first time the player sees Plan, home, the market, Rest, Check and the first Act. Next, Skip, Skip all tips. Seen steps live in `GameState.tutorialSeen`, the off switch in `GameState.tutorialOff`. |
 
 ## 8. 3D City View (`src/views/scene/SceneView.js`)
 

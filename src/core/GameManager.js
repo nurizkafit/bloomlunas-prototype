@@ -63,6 +63,13 @@ export class GameManager {
     b.on(MSG.INTENT_PAY_UTILITIES, () => { s.debt.payUtilities(); this.#changed(); });
     b.on(MSG.INTENT_BOOK_SERVICE, ({ id }) => { this.phases.act.book(id); this.#changed(); });
     b.on(MSG.INTENT_FINISH_ACT, () => this.finishAct());
+    b.on(MSG.INTENT_TUTORIAL_SEEN, ({ id, all }) => {
+      const st = this.state;
+      st.tutorialSeen ??= [];
+      if (id && !st.tutorialSeen.includes(id)) st.tutorialSeen.push(id);
+      if (all) st.tutorialOff = true;
+      this.#changed();
+    });
   }
 
   #changed() { this.bus.emit(MSG.STATE_CHANGED, {}); }

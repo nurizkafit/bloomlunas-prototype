@@ -33,11 +33,11 @@ export class DryingView {
       h('div.row', Dom.chip('rack', `${used}/${cap}`), Dom.chip('clock', `${ui.num('DRYING_DAYS')}d`), h('span.spacer'),
         Dom.btn('Collect', () => ui.act('dryCollect'), { cls: 'sm', icon: 'dried', disabled: !!pvC.reason || !ready.length, min: ui.num('DRYING_TASK_MIN') })));
     const pick = h('div.col', { style: { gap: '12px' } },
-      Dom.tlist('28px 1fr 48px 48px', ['', 'Fresh herb', 'Fresh', 'Dried'], fresh.map((f) => ({
+      Dom.tlist('28px 1fr 48px 48px', ['', 'Herb', 'Fresh', 'Dried'], fresh.map((f) => ({
         on: f === sel, onclick: f.q ? () => ui.set({ pick: { item: f.it.id } }) : undefined,
         cells: [ui.itemBtn(f.it.id, 'fresh'), f.it.name, String(f.q), String(Inventory.count(st.inv, f.it.id, 'dried', ''))]
       }))),
-      h('div.row', Dom.stepper(qty, (d) => ui.set({ pick: { ...L.pick, item: sel.it.id, qty: Math.max(0, qty + d) } }), { max }), h('span.spacer'), h('span.small.muted', `${ui.num('DRYING_DAYS')} days on the rack`)));
+      h('div.row', Dom.stepper(qty, (d) => ui.set({ pick: { ...L.pick, item: sel.it.id, qty: Math.max(0, qty + d) } }), { max }), h('span.spacer'), h('span.small.muted', `Ready in ${ui.num('DRYING_DAYS')} days`)));
     return PlaceView.win(ui, 'rack', 'Drying rack', [rack, pick],
       [Dom.btn('Start drying', () => ui.act('dryStart', { item: sel.it.id, qty }), { cls: 'gold', icon: 'rack', min: pvS.min, energy: pvS.energy, disabled: !!pvS.reason || qty <= 0, title: ui.why(pvS.reason) })], 'cols-6-6');
   }

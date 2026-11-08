@@ -469,3 +469,15 @@ button.tlr:hover:not(:disabled) { background: rgba(95,163,154,.12); }
 .tab .tl { font-family: var(--head); font-size: 10px; line-height: 1; color: var(--cream); letter-spacing: .02em; white-space: nowrap; }
 .tab.on .tl { color: var(--teal); }
 .tabs { gap: 6px; }
+
+/* First-week guide (TutorialView): the neighbour talks in a box at the bottom of the screen. */
+.rf.tutor { position: absolute; left: 50%; bottom: 44px; transform: translateX(-50%); width: 760px; z-index: 55; padding: 10px; }
+.rf.tutor > .in { display: grid; grid-template-columns: 112px 1fr; gap: 16px; padding: 16px 20px 14px 16px; }
+.rf.tutor .who { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; text-align: center; }
+.rf.tutor .who b { font-family: var(--head); font-weight: 400; font-size: 18px; margin-top: 4px; }
+.rf.tutor .who small { font-size: 12px; color: var(--fern); }
+.rf.tutor .say { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 12px; }
+.rf.tutor .say p { margin: 0; font-size: 17px; line-height: 1.45; min-height: 50px; }
+.rf.tutor .say .row { gap: 8px; }
+.retrostory { margin-top: 12px; display: flex; flex-direction: column; gap: 6px; font-size: 14px; line-height: 1.4; font-style: italic; color: var(--fern); }
+.retrostory p { margin: 0; }

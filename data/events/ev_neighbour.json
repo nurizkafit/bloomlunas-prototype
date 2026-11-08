@@ -1,12 +1,12 @@
 {
   "id": "ev_neighbour",
   "type": "random",
-  "title": "Neighbour asks for help",
+  "title": "Mbok Sari is sick",
   "icon": "people",
-  "text": "Your neighbour is sick and asks for jamu.",
+  "text": "Your neighbour has a fever. She cannot open her stall today. She asks for two cups of kunyit asam.",
   "responses": [
     {
-      "label": "Give 2 jamu",
+      "label": "Bring her 2 kunyit asam",
       "icon": "heart",
       "requires": {
         "item": "kunyit_asam",
@@ -31,7 +31,7 @@
       ]
     },
     {
-      "label": "Say sorry",
+      "label": "Say sorry, not today",
       "icon": "cross",
       "effects": []
     }

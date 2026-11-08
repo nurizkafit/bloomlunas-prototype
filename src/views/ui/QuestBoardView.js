@@ -16,7 +16,7 @@ export class QuestBoardView {
   render() {
     const ui = this.ui, L = ui.local;
     const mode = L.pick.mode ?? 'take';
-    const tabs = StallView.tabs(ui, mode, [['take', 'quest', 'Take'], ['give', 'note', 'Give']]);
+    const tabs = StallView.tabs(ui, mode, [['take', 'quest', 'Town asks'], ['give', 'note', 'You ask']]);
     const [list, panel] = mode === 'give' ? this.#give() : this.#take();
     return PlaceView.win(ui, 'quest', 'Quest board', [h('div.col', tabs, list), panel], [], 'cols-7-5');
   }
@@ -31,10 +31,10 @@ export class QuestBoardView {
       const days = x.a ? Math.max(0, x.a.due - today) : ui.num('QUEST_DEADLINE_DAYS');
       return {
         on: x === sel, onclick: () => ui.set({ pick: { mode: 'take', quest: x.id } }),
-        cells: [Dom.icon(it.icon, 20), h('span', d.name), `${q.have(x.id)}/${d.qty}`, String(d.reward), `${days}d`, x.a ? h('span.badge.ok', 'taken') : '']
+        cells: [Dom.icon(it.icon, 20), h('span', d.name), `${q.have(x.id)}/${d.qty}`, String(d.reward), `${days}d`, x.a ? h('span.badge.ok', 'yours') : '']
       };
     });
-    const list = Dom.tlist('28px 1fr 52px 48px 36px 52px', ['', 'Commission', 'Have', h('span', Dom.icon('gold', 12)), Dom.icon('calendar', 12), ''], rows, 'New board next week.');
+    const list = Dom.tlist('28px 1fr 52px 48px 36px 52px', ['', 'Commission', 'Have', h('span', Dom.icon('gold', 12)), Dom.icon('calendar', 12), ''], rows, 'No commissions now. New ones come on Monday.');
     if (!sel) return [list, h('div')];
     const d = ui.c.get('quests', sel.id), it = ui.c.get('items', d.item);
     const have = q.have(sel.id);
@@ -49,8 +49,8 @@ export class QuestBoardView {
         h('div.ln.sm', Dom.icon('sun', 18), 'Sun XP', h('span.v', `+${d.xp ?? 0}`)),
         h('div.ln.sm', Dom.icon('calendar', 18), sel.a ? 'Days left' : 'Time to finish', h('span.v', `${sel.a ? Math.max(0, sel.a.due - today) : ui.num('QUEST_DEADLINE_DAYS')}d`))),
       h('div.row', Dom.chip('quest', `${st.quests.active.length}/${ui.num('QUEST_MAX_ACTIVE')}`), h('span.spacer'),
-        sel.a ? Dom.btn('Hand in', () => ui.act('questHandIn', { id: sel.id }), { cls: 'gold', icon: 'check', disabled: !!pvH.reason || have < d.qty, title: ui.why(pvH.reason) || (have < d.qty ? 'Not enough products.' : '') })
-          : Dom.btn('Take', () => ui.act('questTake', { id: sel.id }), { cls: 'gold', icon: 'quest', disabled: !!pvT.reason || full, title: full ? ui.why('full') : ui.why(pvT.reason) })));
+        sel.a ? Dom.btn('Deliver', () => ui.act('questHandIn', { id: sel.id }), { cls: 'gold', icon: 'check', disabled: !!pvH.reason || have < d.qty, title: ui.why(pvH.reason) || (have < d.qty ? 'You do not have enough yet.' : '') })
+          : Dom.btn('Accept', () => ui.act('questTake', { id: sel.id }), { cls: 'gold', icon: 'quest', disabled: !!pvT.reason || full, title: full ? ui.why('full') : ui.why(pvT.reason) })));
     return [list, panel];
   }
 
@@ -65,21 +65,21 @@ export class QuestBoardView {
       on: o === sel, onclick: () => ui.set({ pick: { mode: 'give', item: o.it.id, variant: o.v, qty } }),
       cells: [ui.itemBtn(o.it.id, o.v), h('span', o.it.name, h('small.muted', ` ${o.v}`)), String(q.requestUnit(o.it.id, o.v))]
     }));
-    const list = Dom.tlist('28px 1fr 64px', ['', 'Request item', h('span', Dom.icon('gold', 12), 'each')], rows);
+    const list = Dom.tlist('28px 1fr 64px', ['', 'Ask for', h('span', Dom.icon('gold', 12), 'each')], rows);
     const cost = q.requestCost(sel.it.id, sel.v, qty);
     const p = { item: sel.it.id, variant: sel.v, qty };
     const pv = ui.preview('questPost', p);
     const open = st.quests.requests ?? [];
     const panel = h('div.tpanel',
-      h('div.kick', 'Post a request'),
+      h('div.kick', 'Ask the town'),
       h('div.row', { style: { gap: '12px' } }, Dom.medal(Icons.forItem(sel.it, sel.v), 44), h('div', h('div', { style: { fontFamily: 'var(--head)', fontSize: '20px' } }, sel.it.name), h('div.small.muted', sel.v))),
       h('div.row.center', Dom.stepper(qty, (d) => ui.set({ pick: { ...L.pick, mode: 'give', item: sel.it.id, variant: sel.v, qty: Math.max(step, qty + d) } }), { min: step, step })),
       h('div', h('div.ln.sm', Dom.icon('calendar', 18), 'Arrives in', h('span.v', `${ui.num('REQUEST_DAYS')}d`)),
         h('div.ln.sm', Dom.icon('note', 18), 'Posting fee', h('span.v', String(ui.num('REQUEST_FEE'))))),
       h('div.row', h('span.tot.neg', Dom.icon('gold', 26), `-${cost}`), h('span.spacer'), ui.jarTag('store', cost)),
       h('div.row', Dom.chip('note', `${open.length}/${ui.num('REQUEST_MAX_OPEN')}`), h('span.spacer'),
-        Dom.btn('Post', () => ui.act('questPost', p), { cls: 'gold', icon: 'note', min: pv.min, disabled: !!pv.reason, title: ui.why(pv.reason) })),
-      open.length ? h('div', h('div.kick', 'Open requests'), open.map((r) => { const it = ui.c.get('items', r.item); return h('div.ln.sm', ui.itemBtn(r.item, r.variant, null, 18), h('span', `${it.name} ×${r.qty}`), h('span.v', `${Math.max(0, r.readyDay - today)}d`)); })) : null);
+        Dom.btn('Pin it up', () => ui.act('questPost', p), { cls: 'gold', icon: 'note', min: pv.min, disabled: !!pv.reason, title: ui.why(pv.reason) })),
+      open.length ? h('div', h('div.kick', 'Waiting for'), open.map((r) => { const it = ui.c.get('items', r.item); return h('div.ln.sm', ui.itemBtn(r.item, r.variant, null, 18), h('span', `${it.name} ×${r.qty}`), h('span.v', `${Math.max(0, r.readyDay - today)}d`)); })) : null);
     return [list, panel];
   }
 }

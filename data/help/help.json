@@ -4,83 +4,83 @@
   "items": {
     "day": {
       "title": "Day and time",
-      "text": "One turn of the dial is 12 hours: the sun or moon goes round once before noon (AM) and once after (PM). The centre shows the time in 24-hour form. A day runs from 06:00 to 22:00. Each action uses time. Sleep ends the day. The green ring is your energy."
+      "text": "The sun or moon goes round the dial once in the morning and once in the afternoon. The centre shows the time. Your day runs from 06:00 to 22:00. Every task takes some of it. Sleep ends the day. The green ring is your energy."
     },
     "calendar": {
       "title": "Calendar",
-      "text": "Month, week and day. The jam build has 2 months of 4 weeks."
+      "text": "Month, week and day. The guild clerk comes to read your books after two months of four weeks."
     },
     "gold": {
       "title": "Gold",
-      "text": "Your money. Buy materials and food, pay bills and the debt."
+      "text": "The gold in your purse. It buys herbs and food, and it pays the bills and the debt."
     },
     "debt": {
       "title": "Debt",
-      "text": "The riba loan. Pay the minimum at month end. A short payment adds a late fee."
+      "text": "The riba loan your parent left you. Interest grows on it every month. Pay at least the minimum at month end, or a late fee is added."
     },
     "food": {
-      "title": "Food packs",
-      "text": "Eat up to 3 meals a day for energy. No meal lowers your energy for the next day."
+      "title": "Meal packs",
+      "text": "Eat up to 3 meals a day for energy. A day with no meal makes the next day harder."
     },
     "energy": {
       "title": "Energy",
-      "text": "Work uses energy. Rest, eat and sleep give it back."
+      "text": "Work makes you tired. A break, a meal and a night of sleep give your energy back."
     },
     "todayGoal": {
       "title": "Today's goal",
-      "text": "The goal you set for today in the plan. Use one of its stations to meet it."
+      "text": "The goal you gave today in your plan. Use one of its stations today to meet it."
     },
     "tabSchedule": {
       "title": "Daily goals",
-      "text": "Drag a goal card onto each day of the week."
+      "text": "Give each day of the week a goal card."
     },
     "tabStore": {
       "title": "Store plan",
-      "text": "Pick the products to sell and fill the budget jars."
+      "text": "Choose what to sell this week. Then share your gold into the three jars."
     },
     "tabLedger": {
       "title": "Ledger and assets",
-      "text": "Income, costs and what you own."
+      "text": "Where your gold came from, where it went, and what you own."
     },
     "tabMarket": {
-      "title": "Market forecast",
-      "text": "This week's prices and demand trend."
+      "title": "Market",
+      "text": "This week's prices, and which products people want more or less."
     },
     "tabHours": {
       "title": "Public schedule",
-      "text": "Opening hours of each place and this week's events."
+      "text": "When each place opens, and what happens in town this week."
     },
     "tabSkills": {
-      "title": "Skills and level",
-      "text": "Your skills and what each level gives you."
+      "title": "Skills",
+      "text": "What you are good at, and what the next level gives you."
     },
     "tabNotes": {
-      "title": "Notes and objectives",
-      "text": "Your notes from last week and the game objectives."
+      "title": "Notes",
+      "text": "The notes you wrote to yourself, and small steps to learn the shop."
     },
     "tabLog": {
       "title": "Log",
-      "text": "What you did today and before."
+      "text": "What you did today and on the days before."
     },
     "goalDeck": {
       "title": "Goal cards",
-      "text": "Drag a card onto a day. Or click a card, then click a day. Drag a day card back here to clear it."
+      "text": "Drag a card onto a day. Or click a card, then click a day. Drag a card back here to clear the day."
     },
     "goalMet": {
       "title": "Goal met",
-      "text": "A goal is met when you use one of its stations that day. Each met goal gives XP."
+      "text": "You meet a goal when you use one of its stations on that day. Each met goal gives XP."
     },
     "products": {
       "title": "Products to sell",
-      "text": "How many units you plan to sell this week. This sets the store goal and the materials."
+      "text": "How many you want to sell this week. This sets your sales goal and the herbs you need."
     },
     "materials": {
-      "title": "Materials needed",
-      "text": "What the products need. Buy the missing ones at the market or the guild. Dried and powder come from the rack and the grinder."
+      "title": "Herbs and materials",
+      "text": "What your products need. Buy the missing ones at the market or the guild. Dried herbs come from the rack. Powder comes from the grinder."
     },
     "jarStore": {
       "title": "Store jar",
-      "text": "Gold for materials and store costs this week."
+      "text": "Gold for herbs, materials and shop costs this week."
     },
     "jarPersonal": {
       "title": "Personal jar",
@@ -88,55 +88,55 @@
     },
     "jarBuffer": {
       "title": "Buffer jar",
-      "text": "Gold you keep safe for bills and the debt. Try not to spend it."
+      "text": "Gold you keep safe for the bills and the debt. Try not to touch it."
     },
     "goldAfter": {
-      "title": "Gold after plan",
-      "text": "An estimate: gold now, minus planned costs, plus 80% of planned sales."
+      "title": "Gold after the week",
+      "text": "A guess: your gold now, minus the planned costs, plus most of the planned sales."
     },
     "warnings": {
       "title": "Plan check",
-      "text": "Problems in the plan. They do not block you."
+      "text": "Things in the plan that can go wrong. You can still start the week."
     },
     "reviewPlan": {
-      "title": "Review plan",
-      "text": "See the plan totals, then start the week."
+      "title": "Finish plan",
+      "text": "See the totals of your plan, then begin the week."
     },
     "trend": {
-      "title": "Demand trend",
-      "text": "Up: more customers want it this week. Down: fewer."
+      "title": "Demand",
+      "text": "Up: more people want it this week. Down: fewer people want it."
     },
     "priceRange": {
       "title": "Price range",
-      "text": "The usual price range. The price changes each week inside it."
+      "text": "The usual prices. The price moves inside this range each week."
     },
     "hours": {
       "title": "Opening hours",
-      "text": "A place is closed outside its hours. Early arrival waits at the door."
+      "text": "A place is closed outside its hours. If you come early, you wait at the door."
     },
     "skillMoon": {
       "title": "Moon",
-      "text": "Craft and process. A higher level makes better quality products."
+      "text": "Crafting and processing. A higher level makes better products."
     },
     "skillSun": {
       "title": "Sun",
-      "text": "Sell and trade. A higher level brings more customers."
+      "text": "Selling and trade. A higher level brings more customers."
     },
     "skillEarth": {
       "title": "Earth",
-      "text": "Gather. A higher level finds more loot."
+      "text": "Gathering. A higher level finds more herbs."
     },
     "notes": {
       "title": "Your notes",
-      "text": "The notes you picked at the end of last week."
+      "text": "The notes you wrote to yourself at the end of last week."
     },
     "objectives": {
-      "title": "Objectives",
-      "text": "Small steps to learn the game. They tick when you do them."
+      "title": "First steps",
+      "text": "Small steps to learn the shop. Each one ticks when you do it."
     },
     "town": {
       "title": "Town",
-      "text": "Open the place list. Pick a place, then Go. Travel uses time and energy."
+      "text": "Walk to another place. Pick a place, then Go. The walk takes time and energy."
     }
   }
 }

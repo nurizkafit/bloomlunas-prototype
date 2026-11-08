@@ -15,7 +15,7 @@ export class EventCardView {
       return Dom.chip(icon, v, (e.type === 'time' || e.amount < 0) ? 'miss' : 'ok');
     };
     return h('div.veil', Dom.rattan('card', ...Dom.corners(),
-      h('div.kick', ev.type === 'scheduled' ? 'Today' : 'Event'),
+      h('div.kick', ev.type === 'scheduled' ? 'Today in town' : 'Something happens'),
       Dom.medal(Icons.has(ev.icon) ? ev.icon : 'info', 88),
       h('h3', ev.title), h('p', ev.text),
       h('div.acts', ev.responses.map((r, i) => {

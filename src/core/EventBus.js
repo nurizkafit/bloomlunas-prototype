@@ -18,6 +18,7 @@ export const MSG = Object.freeze({
   INTENT_PAY_UTILITIES: 'intent.payUtilities',
   INTENT_BOOK_SERVICE: 'intent.bookService',
   INTENT_FINISH_ACT: 'intent.finishAct',
+  INTENT_TUTORIAL_SEEN: 'intent.tutorialSeen',
   PHASE_ENTERED: 'phase.entered',
   PHASE_EXITED: 'phase.exited',
   STATE_CHANGED: 'state.changed',

@@ -37,6 +37,8 @@ export class GameState {
       pendingBoosts: {},
       servicesBought: [],
       notes: [],
+      tutorialSeen: [],
+      tutorialOff: false,
       history: [],
       weeks: [],
       months: [],

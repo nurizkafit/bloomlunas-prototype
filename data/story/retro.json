@@ -1,0 +1,7 @@
+{
+  "id": "retro",
+  "_doc": "Closing lines on the look-back screen. 'down' when the debt is lower than at the start, 'up' when it is not.",
+  "clerk": "The clerk closes your books. \"The guild will come back next month.\"",
+  "down": "Mbok Sari smiles at the door. \"The debt is smaller than when you started. Your parent would be proud.\"",
+  "up": "Mbok Sari puts a warm cup in your hands. \"The debt grew, but now you know how it grows. That is where change starts.\""
+}

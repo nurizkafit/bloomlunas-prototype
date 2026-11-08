@@ -3,7 +3,7 @@
   "type": "random",
   "title": "Heavy rain",
   "icon": "rain",
-  "text": "Rain all morning. Few people walk to the shops.",
+  "text": "Rain falls all morning. Only a few people walk to the shops.",
   "responses": [
     {
       "label": "Stay in and craft",
@@ -17,7 +17,7 @@
       ]
     },
     {
-      "label": "Lend umbrellas",
+      "label": "Lend umbrellas to the neighbours",
       "icon": "gold",
       "effects": [
         {

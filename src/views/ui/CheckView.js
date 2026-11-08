@@ -24,26 +24,26 @@ export class CheckView {
     };
     const ratio = s.storeGoal ? s.sold / s.storeGoal : 0;
     const left = [
-      h('h3', Dom.icon('note', 28), `Week ${s.absWeek} recap`),
-      h('h4', Dom.icon('star', 18), 'Goals', h('span.aside', `${s.goalHits}/7`)),
+      h('h3', Dom.icon('note', 28), `Week ${s.absWeek}, looking back`),
+      h('h4', Dom.icon('star', 18), 'Goals met', h('span.aside', `${s.goalHits}/7`)),
       h('div.days', s.goals.map(goalCell)),
       h('h4', Dom.icon('tag', 18), 'Sold', h('span.aside', `${s.sold}/${s.storeGoal}`)),
       Dom.bar(ratio, ratio >= 1 ? '' : 'gold'),
       h('div.chipline', { style: { marginTop: '8px' } }, Object.entries(s.soldBy).map(([id, q]) => Dom.chip(ui.c.get('items', id).icon, q))),
       h('div.statgrid', { style: { marginTop: '16px' } },
-        h('div.stat', h('span.k', Dom.icon('trend_up', 16), 'In'), h('span.v', `+${s.incomeTotal}`)),
-        h('div.stat', h('span.k', Dom.icon('trend_down', 16), 'Out'), h('span.v', `-${s.spentTotal}`)),
+        h('div.stat', h('span.k', Dom.icon('trend_up', 16), 'Earned'), h('span.v', `+${s.incomeTotal}`)),
+        h('div.stat', h('span.k', Dom.icon('trend_down', 16), 'Spent'), h('span.v', `-${s.spentTotal}`)),
         h('div.stat', h('span.k', Dom.icon('gold', 16), 'Gold'), h('span.v', `${Math.round(s.endGold)}`))),
-      s.unpaidLiving ? h('div.warn', { style: { marginTop: '8px' } }, Dom.icon('debt', 18), `+${s.unpaidLiving} living cost went onto the debt.`) : null
+      s.unpaidLiving ? h('div.warn', { style: { marginTop: '8px' } }, Dom.icon('debt', 18), `You could not pay ${s.unpaidLiving} of living costs. It went onto the debt.`) : null
     ];
-    const jar = (k, icon) => h('div.ln', Dom.icon(icon, 20), h('span', { style: { width: '72px' } }, k), Dom.bar(s.budget[k] ? s.spent[k] / s.budget[k] : 0, s.spent[k] > s.budget[k] ? 'low' : 'ver', 176), h('span.v', `${Math.round(s.spent[k])}/${s.budget[k]}`));
+    const jar = (k, icon) => h('div.ln', Dom.icon(icon, 20), h('span', { style: { width: '72px' } }, k[0].toUpperCase() + k.slice(1)), Dom.bar(s.budget[k] ? s.spent[k] / s.budget[k] : 0, s.spent[k] > s.budget[k] ? 'low' : 'ver', 176), h('span.v', `${Math.round(s.spent[k])}/${s.budget[k]}`));
     const right = [
       h('h3', Dom.icon('jar', 28), 'Jars'),
       jar('store', 'cart'), jar('personal', 'meal'),
-      h('div.ln', Dom.icon('buffer', 20), h('span', { style: { width: '72px' } }, 'buffer'), h('span.spacer'), s.bufferKept ? Dom.icon('check', 20) : Dom.icon('x', 18), h('span.v', String(s.budget.buffer))),
+      h('div.ln', Dom.icon('buffer', 20), h('span', { style: { width: '72px' } }, 'Buffer'), h('span.spacer'), s.bufferKept ? Dom.icon('check', 20) : Dom.icon('x', 18), h('span.v', String(s.budget.buffer))),
       h('h4', Dom.icon('skills', 18), 'XP'),
       h('div.chipline', Object.entries(s.xp).map(([k, v]) => Dom.chip(k, `+${v}`))),
-      h('h4', Dom.icon('note', 18), 'Note for next week', h('span.aside', `${picked.length}/2`)),
+      h('h4', Dom.icon('note', 18), 'A note for next week', h('span.aside', `${picked.length}/2`)),
       h('div.notepick', opts.map((o) => h(`button${picked.includes(o.id) ? '.on' : ''}`, {
         onclick: () => {
           const n = picked.includes(o.id) ? picked.filter((x) => x !== o.id) : [...picked, o.id].slice(-2);

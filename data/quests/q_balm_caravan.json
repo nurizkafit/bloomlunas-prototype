@@ -1,10 +1,11 @@
 {
   "id": "q_balm_caravan",
-  "name": "Caravan needs balm",
-  "client": "Caravan",
+  "name": "Balm for the caravan",
+  "client": "Caravan master",
   "item": "lemongrass_balm",
   "qty": 4,
   "reward": 95,
   "xp": 10,
-  "_placeholder": true
+  "_placeholder": true,
+  "text": "The caravan leaves soon. Long roads make sore shoulders, and the drivers want lemongrass balm."
 }

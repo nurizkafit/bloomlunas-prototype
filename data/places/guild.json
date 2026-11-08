@@ -1,6 +1,6 @@
 {
   "id": "guild",
-  "name": "Guild Center",
+  "name": "Guild Hall",
   "icon": "guild",
   "travelMin": 45,
   "scene3d": "guild",

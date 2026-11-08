@@ -46,7 +46,7 @@ export class JournalView {
         market: () => this.#market(), hours: () => this.#hours(mode), skills: () => this.#skills(), notes: () => this.#notes(), log: () => this.#log()
       };
       pages = page[L.tab]();
-      if (mode === 'plan') { ribbon = Dom.btn('Review plan', () => ui.set({ review: true }), { cls: 'gold.ribbon', icon: 'check' }); ribbon.dataset.help = 'reviewPlan'; }
+      if (mode === 'plan') { ribbon = Dom.btn('Finish plan', () => ui.set({ review: true }), { cls: 'gold.ribbon', icon: 'check' }); ribbon.dataset.help = 'reviewPlan'; }
     }
     const n = (ui.st.cal.month - 1) * ui.num('WEEKS_PER_MONTH') + ui.st.cal.week;
     const tag = { plan: ['calendar', 'Plan'], do: ['journal', 'Journal'], check: ['note', 'Check'], act: ['debt', 'Act'] }[mode];
@@ -110,7 +110,7 @@ export class JournalView {
       const cls = [mode === 'do' && i === st.cal.day - 1 ? 'now' : '', mode === 'do' && i < st.cal.day - 1 ? 'past' : '', editable(i) ? '' : 'lock'].filter(Boolean).join('.');
       const card = goal
         ? h('div.gcard.sm', { style: { '--gc': goal.color } }, Dom.icon(goal.icon, 22), h('b', goal.name))
-        : h('div.gslot', editable(i) ? (picked ? 'Click to set' : 'Drop a goal') : '—');
+        : h('div.gslot', editable(i) ? (picked ? 'Click to place' : 'Drop a goal here') : '—');
       if (goal && editable(i)) dragFrom(card, `d:${i}`);
       const row = h(`div.drow${cls ? '.' + cls : ''}`, { onclick: () => { if (picked && editable(i)) { setGoal(i, picked); } } },
         h('div.dn', h('b', WEEKDAYS[i]), h('small', `D${i + 1}`)),
@@ -134,7 +134,7 @@ export class JournalView {
     return [
       [h('h3', Dom.icon('calendar', 28), `Week ${absWeek}`, Dom.help('tabSchedule'), h('span.aside', Dom.icon('star', 16), `${set}/${st.plan.goals.length}`)),
         h('div.drows', rows)],
-      [h('h3', Dom.icon('star', 28), 'Goal cards', Dom.help('goalDeck')), mode === 'plan' ? null : h('p.small.muted', Dom.icon('lock', 14), ' The week plan is fixed. Change it in next week\'s Plan phase.'), deckBox]
+      [h('h3', Dom.icon('star', 28), 'Goal cards', Dom.help('goalDeck')), mode === 'plan' ? null : h('p.small.muted', Dom.icon('lock', 14), ' This week is set. You can change it when you plan next week.'), deckBox]
     ];
   }
 
@@ -154,7 +154,7 @@ export class JournalView {
     const jarsTotal = b.store + b.personal + b.buffer;
     const left = [
       h('h3', Dom.icon('jamu', 28), 'Products to sell', Dom.help('products'), h('span.aside', { 'data-help': 'products' }, Dom.icon('tag', 16), `${f.storeGoal}`)),
-      h('div.ptab.head', h('span'), h('span', 'Product'), h('span', { 'data-help': 'trend' }, 'Trend'), h('span', Dom.icon('gold', 12), 'each'), h('span', 'Units')),
+      h('div.ptab.head', h('span'), h('span', 'Product'), h('span', { 'data-help': 'trend' }, 'Demand'), h('span', Dom.icon('gold', 12), 'each'), h('span', 'Units')),
       ...products.map((p) => {
         const q = st.plan.products[p.id] ?? 0;
         return h('div.ptab',
@@ -163,7 +163,7 @@ export class JournalView {
           h('span.num', `${Math.round(sys.economy.productValue(p.id, tier))}`),
           edit ? Dom.stepper(q, (d) => ui.send(MSG.INTENT_SET_PRODUCT, { product: p.id, qty: Math.max(0, q + d) }), { step }) : h('span.num', String(q)));
       }),
-      h('h4', Dom.icon('cart', 18), 'Materials needed', Dom.help('materials'), h('span.aside', Dom.icon('gold', 14), `${f.matCost}`)),
+      h('h4', Dom.icon('cart', 18), 'Herbs you need', Dom.help('materials'), h('span.aside', Dom.icon('gold', 14), `${f.matCost}`)),
       h('div.scroll.mats', f.materials.length ? f.materials.map((m) => {
         const it = ui.c.get('items', m.item);
         const ok = m.have >= m.need;
@@ -172,20 +172,20 @@ export class JournalView {
           h(`span.qchip${ok ? '.ok' : '.miss'}`, { title: 'Have / need' }, `${m.have}/${m.need}`),
           m.process && !ok ? h('span.row.small', { title: m.process === 'dried' ? 'Dry on the rack' : 'Dry, then grind' }, Dom.icon(m.process === 'dried' ? 'rack' : 'grinder', 18), m.process === 'dried' ? 'Dry' : 'Dry + grind') : null,
           h('span.v', ok ? Dom.icon('check', 16) : `${m.cost}`));
-      }) : h('div.small.muted', { style: { padding: '8px 0' } }, 'Pick products first.'))
+      }) : h('div.small.muted', { style: { padding: '8px 0' } }, 'Choose what to sell first.'))
     ];
     const right = [
       h('h3', Dom.icon('jar', 28), 'Budget', h('span.aside', { 'data-help': 'gold' }, Dom.icon('gold', 16), `${Math.round(st.gold)}`)),
       h('div.jars', jar('store', 'cart', '#5FA39A', 'Store'), jar('personal', 'meal', '#D9A326', 'Personal'), jar('buffer', 'buffer', '#9C87C0', 'Buffer')),
       h('div', { style: { marginTop: '16px' } },
-        h('div.ln', Dom.icon('jar', 20), 'In jars', h(`span.v${jarsTotal > st.gold ? '.neg' : ''}`, `${jarsTotal} / ${Math.round(st.gold)}`)),
-        h('div.ln', Dom.icon('cart', 20), 'Materials', h('span.v.neg', `-${f.matCost}`)),
-        h('div.ln', Dom.icon('house', 20), 'Living cost', h('span.v.neg', `-${f.living}`)),
-        f.monthEnd ? h('div.ln', Dom.icon('debt', 20), 'Month-end bills', h('span.v.neg', `-${f.due}`)) : null,
+        h('div.ln', Dom.icon('jar', 20), 'In the jars', h(`span.v${jarsTotal > st.gold ? '.neg' : ''}`, `${jarsTotal} / ${Math.round(st.gold)}`)),
+        h('div.ln', Dom.icon('cart', 20), 'Herbs', h('span.v.neg', `-${f.matCost}`)),
+        h('div.ln', Dom.icon('house', 20), 'Living costs', h('span.v.neg', `-${f.living}`)),
+        f.monthEnd ? h('div.ln', Dom.icon('debt', 20), 'Month-end payments', h('span.v.neg', `-${f.due}`)) : null,
         h('div.ln.tot', { 'data-help': 'goldAfter' }, Dom.icon('gold', 20), 'Gold after', h('span.v', `≈ ${f.goldAfter}`))),
       h('h4', Dom.icon('warn', 18), 'Plan check', Dom.help('warnings')),
       f.warnings.length ? h('div.warns', f.warnings.map((w) => h('div.warn', Dom.icon(w.icon, 18), w.text)))
-        : h('div.warn.ok', Dom.icon('check', 18), 'The plan looks fine.')
+        : h('div.warn.ok', Dom.icon('check', 18), 'The plan looks good.')
     ];
     return [left, right];
   }
@@ -194,18 +194,18 @@ export class JournalView {
     const ui = this.ui, f = ui.sys.plan.forecast();
     return h('div.veil',
       Dom.rattan('card',
-        h('div.kick', 'Review plan'),
-        h('h3', 'Start the week?'),
+        h('div.kick', 'Your plan'),
+        h('h3', 'Ready for the week?'),
         h('div', { style: { width: '100%' } },
-          h('div.ln', Dom.icon('tag', 20), 'Sell goal', h('span.v', String(f.storeGoal))),
-          h('div.ln', Dom.icon('cart', 20), 'Materials', h('span.v.neg', `-${f.matCost}`)),
-          h('div.ln', Dom.icon('house', 20), 'Living cost', h('span.v.neg', `-${f.living}`)),
-          h('div.ln', Dom.icon('store', 20), 'Sales (est.)', h('span.v.pos', `+${f.sales}`)),
+          h('div.ln', Dom.icon('tag', 20), 'Sales goal', h('span.v', String(f.storeGoal))),
+          h('div.ln', Dom.icon('cart', 20), 'Herbs', h('span.v.neg', `-${f.matCost}`)),
+          h('div.ln', Dom.icon('house', 20), 'Living costs', h('span.v.neg', `-${f.living}`)),
+          h('div.ln', Dom.icon('store', 20), 'Sales (a guess)', h('span.v.pos', `+${f.sales}`)),
           h('div.ln.tot', Dom.icon('gold', 20), 'Gold after', h('span.v', `≈ ${f.goldAfter}`))),
         f.warnings.length ? h('div.warns', { style: { width: '100%' } }, f.warnings.map((w) => h('div.warn', Dom.icon(w.icon, 18), w.text))) : null,
         h('div.row', { style: { gap: '16px' } },
-          Dom.btn('Edit', () => ui.set({ review: false }), { cls: 'alt', icon: 'back' }),
-          Dom.btn('Start week', () => { ui.local.review = false; ui.local.pick = {}; ui.send(MSG.INTENT_LOCK_PLAN); }, { cls: 'gold', icon: 'lock' }))));
+          Dom.btn('Change it', () => ui.set({ review: false }), { cls: 'alt', icon: 'back' }),
+          Dom.btn('Begin the week', () => { ui.local.review = false; ui.local.pick = {}; ui.send(MSG.INTENT_LOCK_PLAN); }, { cls: 'gold', icon: 'lock' }))));
   }
 
   /* ---------- Ledger and assets ---------- */
@@ -224,28 +224,28 @@ export class JournalView {
     const prods = inv.filter((r) => r.it.kind === 'product'), mats = inv.filter((r) => r.it.kind === 'material'), food = inv.filter((r) => r.it.kind === 'food');
     return [
       [h('h3', Dom.icon('ledger', 28), 'Ledger', Dom.help('tabLedger')),
-        h('h4', Dom.icon('trend_up', 18), 'Income this week', h('span.aside', String(sum(inc)))), ...(inc.length ? inc.map(([k, v]) => barRow(k, v, 'ver')) : [h('div.small.muted', '—')]),
+        h('h4', Dom.icon('trend_up', 18), 'Earned this week', h('span.aside', String(sum(inc)))), ...(inc.length ? inc.map(([k, v]) => barRow(k, v, 'ver')) : [h('div.small.muted', '—')]),
         h('h4', Dom.icon('trend_down', 18), 'Spent this week', h('span.aside', String(sum(sp)))), ...(sp.length ? sp.map(([k, v]) => barRow(k, v, 'gold')) : [h('div.small.muted', '—')]),
-        h('h4', Dom.icon('jar', 18), 'Jars used'),
+        h('h4', Dom.icon('jar', 18), 'Jars spent'),
         ...['store', 'personal'].map((k) => h('div.ln.sm', { 'data-help': k === 'store' ? 'jarStore' : 'jarPersonal' }, Dom.icon(k === 'store' ? 'cart' : 'meal', 18), h('span', { style: { width: '72px' } }, name(k)), Dom.bar(st.plan.budget[k] ? w.spent[k] / st.plan.budget[k] : 0, w.spent[k] > st.plan.budget[k] ? 'low' : 'ver', 144), h('span.v', `${Math.round(w.spent[k])}/${st.plan.budget[k]}`))),
-        h('h4', Dom.icon('log', 18), 'Last lines'),
+        h('h4', Dom.icon('log', 18), 'Latest entries'),
         h('div.scroll', { style: { flex: 1, minHeight: 0 } }, st.ledger.length ? st.ledger.slice(-10).reverse().map((l) => h('div.ln.sm', Dom.icon(icon[l.cat] ?? 'gold', 16), h('span.small', l.label), h(`span.v${l.amount < 0 ? '.neg' : '.pos'}`, `${l.amount > 0 ? '+' : ''}${Math.round(l.amount)}`))) : h('div.small.muted', '—'))],
-      [h('h3', Dom.icon('bag', 28), 'Assets'),
+      [h('h3', Dom.icon('bag', 28), 'What you own'),
         h('div.ln', { 'data-help': 'gold' }, Dom.icon('gold', 20), 'Gold', h('span.v', Math.round(st.gold).toLocaleString('en'))),
         h('div.ln', { 'data-help': 'debt' }, Dom.icon('debt', 20), 'Debt', h('span.small.muted', `due ${sys.debt.dueLeft()}`), h('span.v.neg', Math.round(st.debt.balance).toLocaleString('en'))),
         h('div.scroll', { style: { flex: 1, minHeight: 0 } },
           h('h4', Dom.icon('jamu', 18), 'Products', h('span.aside', Dom.icon('shelf', 14), `${sys.economy.shelfUnits()} on shelf`)),
-          prods.length ? prods.map(prodRow) : h('div.small.muted', 'No products yet.'),
+          prods.length ? prods.map(prodRow) : h('div.small.muted', 'No products yet. Your shelf waits.'),
           h('h4', Dom.icon('leaf', 18), 'Materials', h('span.aside', Dom.icon('rack', 14), `${sys.production.rackUsed()}/${sys.production.rackCapacity()} drying`)),
-          mats.length ? h('div.two', mats.map(matRow)) : h('div.small.muted', 'No materials yet.'),
-          food.length ? food.map((r) => h('div.ln.sm', { 'data-help': 'food' }, Dom.icon('meal', 20), h('span', 'Food packs'), h('span.v', `×${r.q}`))) : null)]
+          mats.length ? h('div.two', mats.map(matRow)) : h('div.small.muted', 'No herbs yet.'),
+          food.length ? food.map((r) => h('div.ln.sm', { 'data-help': 'food' }, Dom.icon('meal', 20), h('span', 'Meal packs'), h('span.v', `×${r.q}`))) : null)]
     ];
   }
 
   /* ---------- Market forecast and trend ---------- */
   #market() {
     const ui = this.ui, st = ui.st;
-    const head = h('div.mtab.head', h('span'), h('span', 'Item'), h('span', { 'data-help': 'trend' }, 'Trend'), h('span', { 'data-help': 'priceRange' }, 'Range'), h('span', Dom.icon('gold', 12), 'Now'));
+    const head = h('div.mtab.head', h('span'), h('span', 'Item'), h('span', { 'data-help': 'trend' }, 'Demand'), h('span', { 'data-help': 'priceRange' }, 'Usual'), h('span', Dom.icon('gold', 12), 'Now'));
     const row = (it) => {
       const prod = it.kind === 'product';
       const v = prod ? 'product' : it.variants[0];
@@ -261,9 +261,9 @@ export class JournalView {
     const items = ui.c.all('items');
     return [
       [h('h3', Dom.icon('chart', 28), 'Products', Dom.help('tabMarket')), head, ...items.filter((i) => i.kind === 'product').map(row),
-        h('h4', Dom.icon('lantern', 18), 'Price levels'),
+        h('h4', Dom.icon('lantern', 18), 'Shelf prices'),
         h('div.lvpick', ['low', 'fair', 'high'].map((k) => { const lv = ui.num('PRICE_LEVELS')[k]; return h(`div.lv-${k}`, k[0].toUpperCase() + k.slice(1), h('small', `×${lv.mult} · ${Math.round(lv.demand * 100)}%`)); }))],
-      [h('h3', Dom.icon('cart', 28), 'Materials', Dom.help('priceRange')), head.cloneNode(true), ...items.filter((i) => i.kind === 'material').map(row)]
+      [h('h3', Dom.icon('cart', 28), 'Herbs and materials', Dom.help('priceRange')), head.cloneNode(true), ...items.filter((i) => i.kind === 'material').map(row)]
     ];
   }
 
@@ -282,15 +282,15 @@ export class JournalView {
         ...places.map((p) => h('div.htab',
           h('span.hp', Dom.icon(p.icon, 20), h('span', h('b', p.name), h('small.muted', p.travelMin ? ` ${Dom.mins(p.travelMin)}` : ''))),
           ...p.hours.map(cell))),
-        h('div.small.muted', { style: { marginTop: '16px', display: 'flex', gap: '8px', alignItems: 'center' } }, Dom.icon('walk', 16), 'Travel time is next to the name. Early arrival waits at the door.')],
+        h('div.small.muted', { style: { marginTop: '16px', display: 'flex', gap: '8px', alignItems: 'center' } }, Dom.icon('walk', 16), 'The walk time is next to the name. Come early, and you wait at the door.')],
       [h('h3', Dom.icon('calendar', 28), `Week ${absWeek}`),
-        h('h4', Dom.icon('festival', 18), 'Events'),
-        evs.length ? evs.map((e) => h('div.ln', Dom.icon(e.icon, 20), h('b', { style: { width: '40px' } }, WEEKDAYS[e.trigger.day - 1]), h('span', e.title))) : h('div.small.muted', 'No town events this week.'),
+        h('h4', Dom.icon('festival', 18), 'In town'),
+        evs.length ? evs.map((e) => h('div.ln', Dom.icon(e.icon, 20), h('b', { style: { width: '40px' } }, WEEKDAYS[e.trigger.day - 1]), h('span', e.title))) : h('div.small.muted', 'A quiet week in town.'),
         h('h4', Dom.icon('note', 18), 'Every week'),
-        h('div.ln', Dom.icon('quest', 20), 'New commissions on the quest board', h('span.v', 'Mon')),
-        h('div.ln', Dom.icon('house', 20), 'Living cost, paid at Check', h('span.v.neg', `-${ui.num('WEEKLY_EXPENSES')}`)),
+        h('div.ln', Dom.icon('quest', 20), 'New commissions at the guild', h('span.v', 'Mon')),
+        h('div.ln', Dom.icon('house', 20), 'Living costs, paid at week end', h('span.v.neg', `-${ui.num('WEEKLY_EXPENSES')}`)),
         h('h4', Dom.icon('debt', 18), monthEnd ? 'Month end (this week)' : `Month end (week ${st.cal.month * ui.num('WEEKS_PER_MONTH')})`),
-        h('div.ln', { 'data-help': 'debt' }, Dom.icon('debt', 20), 'Debt minimum', h('span.v.neg', `${ui.sys.debt.dueLeft()}`)),
+        h('div.ln', { 'data-help': 'debt' }, Dom.icon('debt', 20), 'Debt payment (minimum)', h('span.v.neg', `${ui.sys.debt.dueLeft()}`)),
         h('div.ln', Dom.icon('house', 20), 'Utilities', h('span.v.neg', `${ui.num('MONTHLY_UTILITIES')}`))]
     ];
   }
@@ -298,7 +298,7 @@ export class JournalView {
   /* ---------- Skills and level ---------- */
   #skills() {
     const ui = this.ui, sk = ui.sys.skills;
-    const info = { moon: ['moon', 'Moon', 'Craft and process.', 'wis'], sun: ['sun', 'Sun', 'Sell and trade.', 'gold'], earth: ['earth', 'Earth', 'Gather.', ''] };
+    const info = { moon: ['moon', 'Moon', 'Crafting and processing.', 'wis'], sun: ['sun', 'Sun', 'Selling and trade.', 'gold'], earth: ['earth', 'Earth', 'Gathering.', ''] };
     const tiers = ui.num('QUALITY_TIERS'), byLv = ui.num('QUALITY_BY_MOON_LEVEL');
     const maxLv = ui.num('XP_LEVELS').length;
     const pct = (x) => `+${Math.round(x * 100)}%`;
@@ -321,13 +321,13 @@ export class JournalView {
             Dom.bar(p.ratio, info[k][3]),
             h('div.row.small.muted', { style: { marginTop: '4px' } }, h('span', info[k][2]), h('span.spacer'), h('span', p.level >= maxLv ? 'Max' : `${p.xp}/${p.to} XP`))));
       }),
-      h('div.small.muted', { style: { marginTop: '16px', display: 'flex', gap: '8px', alignItems: 'center' } }, Dom.icon('star', 16), `A met daily goal gives ${ui.num('GOAL_XP')} XP.`)],
-      [h('h3', Dom.icon('star', 28), 'Effects'),
-        eff('Moon', 'moon', 'Moon: product quality',
+      h('div.small.muted', { style: { marginTop: '16px', display: 'flex', gap: '8px', alignItems: 'center' } }, Dom.icon('star', 16), `Each daily goal you meet gives ${ui.num('GOAL_XP')} XP.`)],
+      [h('h3', Dom.icon('star', 28), 'What they give'),
+        eff('Moon', 'moon', 'Moon: better products',
           h('span.row', { style: { gap: '8px' } }, Dom.stars(now.stars), now.name, h('span.muted', `price ×${now.mult}`)),
           nextTierLv > 0 ? h('span.row', { style: { gap: '8px' } }, `Lv ${nextTierLv}:`, Dom.stars(tierAt(nextTierLv).stars), tierAt(nextTierLv).name) : 'Max'),
-        eff('Sun', 'sun', 'Sun: store customers', `${pct((sun - 1) * sunB)} customers`, sun >= maxLv ? 'Max' : `Lv ${sun + 1}: ${pct(sun * sunB)}`),
-        eff('Earth', 'earth', 'Earth: gather loot', `${pct((earth - 1) * earthB)} chance of +1 loot`, earth >= maxLv ? 'Max' : `Lv ${earth + 1}: ${pct(earth * earthB)}`)]
+        eff('Sun', 'sun', 'Sun: more customers', `${pct((sun - 1) * sunB)} customers`, sun >= maxLv ? 'Max' : `Lv ${sun + 1}: ${pct(sun * sunB)}`),
+        eff('Earth', 'earth', 'Earth: more herbs', `${pct((earth - 1) * earthB)} chance of +1 herb`, earth >= maxLv ? 'Max' : `Lv ${earth + 1}: ${pct(earth * earthB)}`)]
     ];
   }
 
@@ -343,12 +343,12 @@ export class JournalView {
     const obj = ui.sys.objectives.status();
     const done = obj.filter((o) => o.done).length;
     return [
-      [h('h3', Dom.icon('note', 28), 'Notes', Dom.help('notes')),
+      [h('h3', Dom.icon('note', 28), 'Notes to self', Dom.help('notes')),
         h('h4', Dom.icon('calendar', 18), absWeek > 1 ? `From week ${absWeek - 1}` : 'From last week'),
-        last ? noteRows(last) : h('div.small.muted', absWeek > 1 ? 'You did not pick a note last week.' : 'Week 1. You pick notes at the end of each week.'),
+        last ? noteRows(last) : h('div.small.muted', absWeek > 1 ? 'You left no note last week.' : 'Your first week. At the end of each week, you leave a note here for yourself.'),
         older.length ? h('h4', Dom.icon('log', 18), 'Older notes') : null,
         ...older.map((n) => h('div', h('div.small.muted', `Week ${n.absWeek}`), noteRows(n)))],
-      [h('h3', Dom.icon('quest', 28), 'Objectives', Dom.help('objectives'), h('span.aside', Dom.icon('check', 16), `${done}/${obj.length}`)),
+      [h('h3', Dom.icon('quest', 28), 'First steps', Dom.help('objectives'), h('span.aside', Dom.icon('check', 16), `${done}/${obj.length}`)),
         h('div.scroll', { style: { flex: 1, minHeight: 0 } }, obj.map((o) => h(`div.obj${o.done ? '.done' : ''}`,
           h('span.box', o.done ? Dom.icon('check', 16) : null), Dom.icon(o.icon, 20), h('span', o.text))))]
     ];
@@ -370,9 +370,9 @@ export class JournalView {
     const dayName = (d) => { const w = Math.ceil(d / dpw), dd = ((d - 1) % dpw) + 1; return `Week ${w} · ${WEEKDAYS[(dd - 1) % 7]} (D${dd})`; };
     const box = (kids, empty) => h('div.scroll.logbox', kids.length ? kids : h('div.small.muted', { style: { padding: '8px' } }, empty));
     return [
-      [h('h3', Dom.icon('log', 28), 'Today', h('span.aside', `${today.length} lines`)), box(today.map(line), 'Nothing done yet today.')],
-      [h('h3', Dom.icon('calendar', 28), 'Before', h('span.aside', `${before.length} lines`)),
-        box(groups.flatMap((g) => [h('div.logday', dayName(g.day)), ...g.lines.map(line)]), 'No earlier days yet.')]
+      [h('h3', Dom.icon('log', 28), 'Today', h('span.aside', `${today.length}`)), box(today.map(line), 'The day is still fresh.')],
+      [h('h3', Dom.icon('calendar', 28), 'Before', h('span.aside', `${before.length}`)),
+        box(groups.flatMap((g) => [h('div.logday', dayName(g.day)), ...g.lines.map(line)]), 'This is your first day.')]
     ];
   }
 }

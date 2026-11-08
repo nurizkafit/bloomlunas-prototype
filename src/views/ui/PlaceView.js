@@ -65,7 +65,7 @@ export class PlaceView {
     const ui = this.ui, L = ui.local;
     const s = ui.c.get('stations', id);
     const shut = !open && id !== 'store' && id !== 'rest';
-    return h(`button.srow${L.station === id ? '.on' : ''}`, { onclick: () => ui.set({ station: L.station === id ? null : id, pick: {} }), disabled: shut, title: shut ? 'Closed now' : s.name },
+    return h(`button.srow${L.station === id ? '.on' : ''}`, { onclick: () => ui.set({ station: L.station === id ? null : id, pick: {} }), disabled: shut, title: shut ? 'Closed at this hour' : s.name },
       h('span.si', Dom.icon(s.icon, 22)), h('span.t', s.name), h('span.m', this.#badge(id)));
   }
 
@@ -74,11 +74,11 @@ export class PlaceView {
     const ui = this.ui;
     const close = (map) => ui.set({ recap: null, map });
     return h('div.veil', Dom.rattan('card.recap',
-      h('div.kick', 'Exploration recap'), h('h3', 'City outskirt'),
+      h('div.kick', 'Back from the outskirt'), h('h3', 'Your herb basket'),
       h('div.costrow', h('span', { title: 'Walks' }, Dom.icon('walk', 18), String(r.walks)), h('span', { title: 'Gathered' }, Dom.icon('leaf', 18), String(r.gathered)), h('span', { title: 'Skipped' }, Dom.icon('skip', 18), String(r.skipped))),
       h('div', { style: { width: '100%' } },
         r.items.length ? r.items.map((l) => { const it = ui.c.get('items', l.item); return h('div.ln.sm', ui.itemBtn(l.item, l.variant, null, 20), h('span', it.name), h('span.small.muted', l.variant), h('span.v.pos', `+${l.qty}`)); })
-          : h('div.small.muted', { style: { textAlign: 'center' } }, 'Nothing gathered.'),
+          : h('div.small.muted', { style: { textAlign: 'center' } }, 'Your basket is empty this time.'),
         h('div.ln.sm', Dom.icon('clock', 18), 'Time', h('span.v', Dom.mins(r.min))),
         h('div.ln.sm', Dom.icon('energy', 18), 'Energy', h('span.v.neg', `-${r.energy}`)),
         h('div.ln.sm', Dom.icon('earth', 18), 'Earth XP', h('span.v.pos', `+${r.xp}`))),

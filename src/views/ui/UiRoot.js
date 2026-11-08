@@ -10,6 +10,7 @@ import { PlaceView } from './PlaceView.js';
 import { EventCardView } from './EventCardView.js';
 import { RetroView } from './RetroView.js';
 import { ItemCardView } from './ItemCardView.js';
+import { TutorialView } from './TutorialView.js';
 import { Icons } from './Icons.js';
 import { Calendar, WEEKDAYS } from '../../model/Calendar.js';
 
@@ -43,7 +44,7 @@ export class UiRoot {
     this.stage.addEventListener('click', (e) => { if (e.target.closest?.('.helpq')) this.#hover(e.target); });
     host.append(this.stage);
     Ornaments.mount(this.stage);
-    this.views = { hud: new HudView(this), start: new StartView(this), journal: new JournalView(this), map: new TownMapView(this), place: new PlaceView(this), event: new EventCardView(this), retro: new RetroView(this), card: new ItemCardView(this) };
+    this.views = { hud: new HudView(this), start: new StartView(this), journal: new JournalView(this), map: new TownMapView(this), place: new PlaceView(this), event: new EventCardView(this), retro: new RetroView(this), card: new ItemCardView(this), tutor: new TutorialView(this) };
     this.#fit();
     addEventListener('resize', () => this.#fit());
     addEventListener('keydown', (e) => this.#key(e));
@@ -91,13 +92,25 @@ export class UiRoot {
     const left = Math.round(b - spent - cost);
     const color = JAR_COLOR[jar];
     return h(`span.jartag${left < 0 ? '.over' : ''}`, { 'data-help': jar === 'store' ? 'jarStore' : 'jarPersonal', style: { '--jc': color } },
-      Dom.raw(Dom.jarSvg(b ? (b - spent - cost) / b : 0, color, 18)), h('b', jar === 'store' ? 'Store jar' : 'Personal jar'), h('span', `${left < 0 ? 'over' : 'left'} ${Math.abs(left)}`));
+      Dom.raw(Dom.jarSvg(b ? (b - spent - cost) / b : 0, color, 18)), h('b', jar === 'store' ? 'Store jar' : 'Personal jar'), h('span', `${left < 0 ? 'over by' : 'left'} ${Math.abs(left)}`));
   }
 
   /** Item icon that opens the item card. */
   itemBtn(item, variant, tier, size = 22) {
     const it = this.c.get('items', item);
     return h('button.ib', { title: `${it.name}: details`, onclick: (e) => { e.stopPropagation(); this.set({ card: { item, variant, tier } }); } }, Dom.icon(Icons.forItem(it, variant), size));
+  }
+
+  /**
+   * Story text with numbers from BalanceConfig: {KEY} shows the number, {KEY%} shows it as a percent.
+   * @param {string} text
+   */
+  fill(text) {
+    return String(text ?? '').replace(/\{([A-Z_]+)(%?)\}/g, (m, k, pc) => {
+      const v = this.num(k);
+      if (typeof v !== 'number') return m;
+      return pc ? `${Math.round(v * 1000) / 10}%` : v.toLocaleString('en');
+    });
   }
 
   /** Short text for a refusal reason. */
@@ -142,7 +155,7 @@ export class UiRoot {
     const ms = this.num('SLEEP_FADE_MS');
     const el = h('div.nightfx', { style: { '--fx': `${ms}ms` } },
       h('div.nf-sky', h('span.nf-moon'), h('span.nf-sun')),
-      h('div.nf-t', h('small', weekEnd ? 'Good night' : 'A new day'), h('b', weekEnd ? 'Week done' : `Day ${day}`), weekEnd ? null : h('span', `${wd} · ${Calendar.clock(this.num('DAY_START_HOUR') * 60)}`)));
+      h('div.nf-t', h('small', weekEnd ? 'Good night' : 'A new morning'), h('b', weekEnd ? 'The week is over' : `Day ${day}`), weekEnd ? null : h('span', `${wd} · ${Calendar.clock(this.num('DAY_START_HOUR') * 60)}`)));
     this.fx.replaceChildren(el);
     setTimeout(() => el.remove(), ms + 100);
   }
@@ -184,15 +197,17 @@ export class UiRoot {
         if (L.journal) { this.screen.append(this.views.journal.render('do')); hint = [['J', 'Close book'], ['Tabs', 'Pages']]; }
         else if (L.walk) {
           const p = this.c.get('places', L.walk.to);
-          this.screen.append(h('div.walkbar', Dom.medal('walk', 32), h('span', 'Walking to'), h('b', p.name)));
+          this.screen.append(h('div.walkbar', Dom.medal('walk', 32), h('span', 'On the way to'), h('b', p.name)));
           hint = [];
         }
-        else if (L.map) { this.screen.append(...this.views.map.render()); hint = [['M', 'Close town list'], ['Click', 'Pick a place']]; }
+        else if (L.map) { this.screen.append(...this.views.map.render()); hint = [['M', 'Close town'], ['Click', 'Pick a place']]; }
         else { this.screen.append(...this.views.place.render()); hint = [['M', 'Town'], ['J', 'Journal'], ['Esc', 'Back']]; }
         if (st.pendingEvent && !L.walk) this.modal.append(this.views.event.render());
       }
     }
     if (L.card && L.screen === 'game') this.modal.append(this.views.card.render());
+    const tip = this.views.tutor.step();
+    if (tip) this.modal.append(this.views.tutor.render(tip));
     this.spotLayer.replaceChildren(...this.spotList.map((s) => s.el));
     this.o.scene?.setSpots?.(this.spotList);
     this.hint.replaceChildren(...hint.map(([k, t]) => h('span', h('i', k), t)));
@@ -236,7 +251,7 @@ export class UiRoot {
 }
 
 const JAR_COLOR = { store: '#5FA39A', personal: '#D9A326', buffer: '#9C87C0' };
-const PHASE_TOAST = { do: 'Plan locked. Go!', check: 'Week done. Check.', act: 'Month end. Act.', retro: 'Two months done.' };
+const PHASE_TOAST = { do: 'The week begins.', check: 'The week is over. Look back.', act: 'Month end. The guild waits.', retro: 'The guild clerk is here.' };
 const DONE_TOAST = {
   craft: ['cauldron', (r) => `+${r.out} made`],
   marketBuy: ['cart', (r) => `-${Math.round(r.cost)} G`],

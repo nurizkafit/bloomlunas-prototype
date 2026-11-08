@@ -7,10 +7,10 @@
   },
   "title": "Guild inspection",
   "icon": "guild",
-  "text": "The guild checks all shops. A small fee is due.",
+  "text": "A guild inspector in a grey coat walks in. Every shop pays a small fee today. He does not smile.",
   "responses": [
     {
-      "label": "Pay the fee",
+      "label": "Pay the fee now",
       "icon": "gold",
       "effects": [
         {

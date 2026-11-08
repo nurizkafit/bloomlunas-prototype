@@ -1,6 +1,6 @@
 {
   "id": "crafting",
-  "name": "Crafting",
+  "name": "Crafting table",
   "icon": "cauldron",
   "place": "home",
   "skill": "moon"

@@ -84,11 +84,11 @@ export class PlanSystem {
     const goldAfter = Math.round(state.gold - matCost - b.personal - living + sales * 0.8);
     const warnings = [];
     const total = b.store + b.personal + b.buffer;
-    if (total > state.gold) warnings.push({ id: 'over', icon: 'gold', text: 'Jars hold more gold than you have.' });
-    if (matCost > b.store) warnings.push({ id: 'store', icon: 'cart', text: 'Materials cost more than the Store jar.' });
-    if (b.personal < content.num('FOOD_PRICE') * content.num('DAYS_PER_WEEK')) warnings.push({ id: 'food', icon: 'meal', text: 'Personal jar is low for food.' });
-    if (state.plan.goals.some((g) => !g)) warnings.push({ id: 'goals', icon: 'calendar', text: 'Some days have no goal.' });
-    if (monthEnd && goldAfter < due) warnings.push({ id: 'due', icon: 'debt', text: 'Gold after plan is below the month-end bills.' });
+    if (total > state.gold) warnings.push({ id: 'over', icon: 'gold', text: 'The jars hold more gold than you have.' });
+    if (matCost > b.store) warnings.push({ id: 'store', icon: 'cart', text: 'The herbs cost more than the Store jar holds.' });
+    if (b.personal < content.num('FOOD_PRICE') * content.num('DAYS_PER_WEEK')) warnings.push({ id: 'food', icon: 'meal', text: 'The Personal jar is low. You may go hungry.' });
+    if (state.plan.goals.some((g) => !g)) warnings.push({ id: 'goals', icon: 'calendar', text: 'Some days have no goal yet.' });
+    if (monthEnd && goldAfter < due) warnings.push({ id: 'due', icon: 'debt', text: 'You may not have enough gold for the month-end payment.' });
     const f = { matCost, living, sales: Math.round(sales), goldAfter, due, monthEnd, storeGoal: this.storeGoal(), warnings, materials: mats };
     bus.emit(MSG.PLAN_VALIDATED, f);
     return f;

@@ -1,7 +1,7 @@
 {
   "id": "svc_trade",
   "name": "Trade lesson",
-  "text": "Sun skill +25 XP now.",
+  "text": "A merchant teaches you to read customers. Sun skill +25 XP now.",
   "price": 35,
   "when": "now",
   "effects": [

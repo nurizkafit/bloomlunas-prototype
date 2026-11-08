@@ -14,7 +14,7 @@ export class GrindView {
     const sel = items.find((x) => x.it.id === L.pick.item) ?? items.find((x) => x.q > 0) ?? items[0];
     const qty = Math.max(0, Math.min(L.pick.qty ?? sel.q, sel.q));
     const pv = ui.preview('grind', { item: sel.it.id, qty });
-    const list = h('div.col', Dom.tlist('28px 1fr 52px 56px', ['', 'Dried herb', 'Dried', 'Powder'], items.map((x) => ({
+    const list = h('div.col', Dom.tlist('28px 1fr 52px 56px', ['', 'Herb', 'Dried', 'Powder'], items.map((x) => ({
       on: x === sel, onclick: x.q ? () => ui.set({ pick: { item: x.it.id } }) : undefined,
       cells: [ui.itemBtn(x.it.id, 'dried'), x.it.name, String(x.q), String(x.p)]
     }))));

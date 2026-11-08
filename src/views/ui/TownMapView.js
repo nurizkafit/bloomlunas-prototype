@@ -33,7 +33,7 @@ export class TownMapView {
     return [h('div.side',
       PlaceView.header(ui, 'map', 'Town', h('span.hchip', Dom.icon('clock', 14), Calendar.clock(st.cal.minute))),
       Dom.slim('smenu', ...rows, h('div.sdiv'),
-        L.pick.zoom ? h('button.srow', { onclick: () => ui.set({ pick: { ...L.pick, zoom: false } }) }, h('span.si', Dom.icon('map', 22)), h('span.t', 'Whole town')) : null,
+        L.pick.zoom ? h('button.srow', { onclick: () => ui.set({ pick: { ...L.pick, zoom: false } }) }, h('span.si', Dom.icon('map', 22)), h('span.t', 'See the whole town')) : null,
         h('button.srow', { onclick: () => ui.set({ map: false }) }, h('span.si', Dom.icon('back', 22)), h('span.t', 'Back'), h('span.m', h('i.key', 'M')))),
       sel ? this.#info(sel) : null)];
   }
@@ -47,7 +47,7 @@ export class TownMapView {
       h('div.row', Dom.medal(p.icon, 36), h('b', p.name)),
       h('div.chipline', p.stations.map((s) => { const sd = ui.c.get('stations', s); return h('span.qchip.named', { title: sd.name }, Dom.icon(sd.icon, 16), sd.name); })),
       h('div.costrow', { style: { justifyContent: 'flex-start' } },
-        h('span', { title: 'Travel time' }, Dom.icon('clock', 16), Dom.mins(pv.min)), h('span', { title: 'Energy' }, Dom.icon('energy', 16), `-${pv.energy}`),
+        h('span', { title: 'Walk time' }, Dom.icon('clock', 16), Dom.mins(pv.min)), h('span', { title: 'Energy' }, Dom.icon('energy', 16), `-${pv.energy}`),
         h('span', { title: 'Arrive at' }, Dom.icon('walk', 16), `arrive ${Calendar.clock(Math.min(arrive, 24 * 60 - 1))}`)),
       here ? h('span.qchip.ok', Dom.icon('walk', 16), 'You are here')
         : Dom.btn('Go', () => ui.travel(p.id), { cls: 'gold.sm', icon: 'walk', disabled: !!pv.reason, title: ui.why(pv.reason) }),

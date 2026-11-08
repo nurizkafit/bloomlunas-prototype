@@ -4,12 +4,12 @@
     {
       "id": "buy_less",
       "icon": "cart",
-      "text": "Buy fewer materials"
+      "text": "Buy fewer herbs"
     },
     {
       "id": "buy_more",
       "icon": "cart",
-      "text": "Buy more materials"
+      "text": "Buy more herbs"
     },
     {
       "id": "price_up",
@@ -24,12 +24,12 @@
     {
       "id": "rest_more",
       "icon": "rest",
-      "text": "Rest more"
+      "text": "Rest more, work less"
     },
     {
       "id": "buffer_more",
       "icon": "jar",
-      "text": "Keep a bigger buffer"
+      "text": "Keep more in the Buffer jar"
     },
     {
       "id": "craft_salep",

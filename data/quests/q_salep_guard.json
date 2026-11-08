@@ -1,10 +1,11 @@
 {
   "id": "q_salep_guard",
-  "name": "Guard post salep",
+  "name": "Salep for the guard post",
   "client": "Guard captain",
   "item": "turmeric_salep",
   "qty": 6,
   "reward": 150,
   "xp": 10,
-  "_placeholder": true
+  "_placeholder": true,
+  "text": "Long nights on watch mean bruises. The guard captain wants turmeric salep."
 }

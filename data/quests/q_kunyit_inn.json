@@ -1,10 +1,11 @@
 {
   "id": "q_kunyit_inn",
   "name": "The inn wants jamu",
-  "client": "Inn keeper",
+  "client": "Innkeeper",
   "item": "kunyit_asam",
   "qty": 6,
   "reward": 75,
   "xp": 10,
-  "_placeholder": true
+  "_placeholder": true,
+  "text": "Guests at the inn ask for a morning drink. The innkeeper remembers your parent's kunyit asam."
 }

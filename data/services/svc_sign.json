@@ -1,7 +1,7 @@
 {
   "id": "svc_sign",
   "name": "New shop sign",
-  "text": "+1 customer per hour from next month.",
+  "text": "A painted sign that people see from the road. +1 customer per hour from next month.",
   "price": 80,
   "when": "month",
   "effects": [

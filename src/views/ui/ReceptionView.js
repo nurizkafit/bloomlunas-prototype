@@ -15,10 +15,10 @@ export class ReceptionView {
   render() {
     const ui = this.ui, L = ui.local;
     const mode = L.pick.mode ?? 'lots';
-    const tabs = StallView.tabs(ui, mode, [['lots', 'cart', 'Lots'], ['sell', 'gold', 'Sell'], ['service', 'lesson', 'Service']]);
+    const tabs = StallView.tabs(ui, mode, [['lots', 'cart', 'Bulk lots'], ['sell', 'gold', 'Sell'], ['service', 'lesson', 'Lessons']]);
     const eco = ui.sys.economy;
     const [list, panel] = mode === 'sell' ? StallView.sellParts(ui, 'wholesaleSell', (it, t) => eco.wholesaleSellPrice(it, t)) : mode === 'service' ? this.#service() : this.#lots();
-    return PlaceView.win(ui, 'desk', 'Guild receptionist', [h('div.col', tabs, list), panel], [], 'cols-7-5');
+    return PlaceView.win(ui, 'desk', 'Guild desk', [h('div.col', tabs, list), panel], [], 'cols-7-5');
   }
 
   #lots() {
@@ -48,20 +48,20 @@ export class ReceptionView {
     const svc = ui.c.all('services').filter((s) => s.inDo);
     const used = (id) => st.servicesBought.some((b) => b.id === id && b.day === ui.sys.time.absDay());
     const sel = svc.find((s) => s.id === L.pick.svc) ?? svc[0];
-    const list = Dom.tlist('28px 1fr 64px', ['', 'Service', h('span', Dom.icon('gold', 12), 'price')], svc.map((s) => ({
+    const list = Dom.tlist('28px 1fr 64px', ['', 'Lesson', h('span', Dom.icon('gold', 12), 'price')], svc.map((s) => ({
       on: s === sel, onclick: () => ui.set({ pick: { mode: 'service', svc: s.id } }),
       cells: [Dom.icon(s.id === 'svc_lesson' ? 'lesson' : 'trade', 20), s.name, String(s.price)]
     })));
     if (!sel) return [list, h('div')];
     const pv = ui.preview('service', { id: sel.id });
     const panel = h('div.tpanel',
-      h('div.kick', 'Service'),
+      h('div.kick', 'Lesson'),
       h('div.row', { style: { gap: '12px' } }, Dom.medal(sel.id === 'svc_lesson' ? 'lesson' : 'trade', 48), h('div', { style: { fontFamily: 'var(--head)', fontSize: '20px' } }, sel.name)),
       h('p.small', sel.text),
       h('div.costrow', { style: { justifyContent: 'flex-start' } }, h('span', Dom.icon('clock', 16), Dom.mins(pv.min)), h('span', Dom.icon('energy', 16), String(pv.energy))),
       h('div.row', h('span.tot.neg', Dom.icon('gold', 26), `-${sel.price}`), h('span.spacer'), ui.jarTag('store', sel.price)),
-      h('div.row.end', Dom.btn(used(sel.id) ? 'Done today' : 'Book', () => ui.act('service', { id: sel.id }), { cls: 'gold', icon: 'lesson', disabled: !!pv.reason || used(sel.id), title: ui.why(pv.reason) })),
-      h('div.small.muted', 'Monthly upgrades: book them at month end.'));
+      h('div.row.end', Dom.btn(used(sel.id) ? 'Taken today' : 'Book', () => ui.act('service', { id: sel.id }), { cls: 'gold', icon: 'lesson', disabled: !!pv.reason || used(sel.id), title: ui.why(pv.reason) })),
+      h('div.small.muted', 'Shop upgrades are booked at month end.'));
     return [list, panel];
   }
 }

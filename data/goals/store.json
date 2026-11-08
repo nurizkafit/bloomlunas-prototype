@@ -1,11 +1,11 @@
 {
   "id": "store",
-  "name": "Open store",
+  "name": "Open shop",
   "icon": "store",
   "stations": [
     "store"
   ],
   "color": "#D9A326",
   "order": 2,
-  "text": "Stock the shelf. Open the store."
+  "text": "Fill the shelf and open the shop."
 }

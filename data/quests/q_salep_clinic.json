@@ -1,10 +1,11 @@
 {
   "id": "q_salep_clinic",
-  "name": "Clinic salep order",
-  "client": "Clinic",
+  "name": "Salep for the clinic",
+  "client": "Clinic healer",
   "item": "turmeric_salep",
   "qty": 4,
   "reward": 105,
   "xp": 10,
-  "_placeholder": true
+  "_placeholder": true,
+  "text": "The town clinic is low on turmeric salep for small cuts and aches."
 }

@@ -109,7 +109,7 @@ export class ActionRunner {
       },
       dryStart: () => ({
         station: 'drying', min: n('DRYING_TASK_MIN'), energy: n('DRYING_TASK_ENERGY'), icon: 'rack',
-        run: () => sys.production.dryStart(p.item, p.qty), log: `Started drying ${p.qty} ${p.item}`
+        run: () => sys.production.dryStart(p.item, p.qty), log: `Put ${p.qty} ${content.find('items', p.item)?.name ?? p.item} on the rack`
       }),
       dryCollect: () => ({
         station: 'drying', min: n('DRYING_TASK_MIN'), energy: n('DRYING_TASK_ENERGY'), icon: 'rack',
@@ -118,20 +118,20 @@ export class ActionRunner {
       grind: () => ({
         station: 'grinding', min: n('GRIND_MIN_PER_UNIT') * (p.qty ?? 0), energy: n('GRIND_ENERGY_PER_UNIT') * (p.qty ?? 0), icon: 'grinder',
         check: () => !(p.qty > 0) ? 'qty' : null,
-        run: () => sys.production.grind(p.item, p.qty), log: `Ground ${p.qty} ${p.item}`
+        run: () => sys.production.grind(p.item, p.qty), log: `Ground ${p.qty} ${content.find('items', p.item)?.name ?? p.item} to powder`
       }),
       stockShelf: () => ({ station: 'store', min: 0, energy: 0, needsOpen: false, run: () => sys.economy.stockShelf(p) }),
       storeOpen: () => ({
         station: 'store', min: 0, energy: n('STORE_OPEN_ENERGY'), icon: 'store', needsOpen: false,
         check: () => state.store.open ? 'open' : !sys.economy.shelfUnits() ? 'shelf' : !sys.store.inHours() ? 'storeHours' : null,
-        run: () => sys.store.open(), log: 'Opened the store'
+        run: () => sys.store.open(), log: 'Opened the shop'
       }),
       storeHour: () => ({
         station: 'store', min: 60, energy: 0, icon: 'store', needsOpen: false, xp: 2, skill: 'sun',
         check: () => !state.store.open ? 'notOpen' : sys.store.stopReason(),
         run: () => sys.store.hour()
       }),
-      storeClose: () => ({ station: 'store', min: 0, energy: 0, needsOpen: false, check: () => !state.store.open ? 'notOpen' : null, run: () => sys.store.close(), log: 'Closed the store' }),
+      storeClose: () => ({ station: 'store', min: 0, energy: 0, needsOpen: false, check: () => !state.store.open ? 'notOpen' : null, run: () => sys.store.close(), log: 'Closed the shop' }),
       // Trade actions take one line ({item, variant, qty}) or many (lines: [...]) for one TRADE_MIN.
       marketBuy: () => {
         const lines = p.lines ?? [{ item: p.item, variant: p.variant, qty: p.qty }];
@@ -142,7 +142,7 @@ export class ActionRunner {
           log: `Bought ${lines.reduce((s, l) => s + l.qty, 0)} materials`
         };
       },
-      buyFood: () => ({ station: 'stall', min: n('TRADE_MIN'), energy: 0, icon: 'meal', run: () => sys.economy.buy('meal', 'pack', p.qty, n('FOOD_PRICE'), `Food: ${p.qty} meals`), log: `Bought ${p.qty} meals` }),
+      buyFood: () => ({ station: 'stall', min: n('TRADE_MIN'), energy: 0, icon: 'meal', run: () => sys.economy.buy('meal', 'pack', p.qty, n('FOOD_PRICE'), `Food: ${p.qty} meals`), log: `Bought ${p.qty} meal packs` }),
       marketSell: () => {
         const lines = p.lines ?? [{ item: p.item, tier: p.tier, qty: p.qty }];
         return {
@@ -180,13 +180,13 @@ export class ActionRunner {
           log: `Service: ${s?.name}`
         };
       },
-      questTake: () => ({ station: 'questboard', min: 5, energy: 0, icon: 'quest', run: () => sys.quests.take(p.id), log: 'Took a commission' }),
-      questHandIn: () => ({ station: 'questboard', min: 15, energy: 0, icon: 'quest', run: () => sys.quests.handIn(p.id), log: 'Finished a commission' }),
+      questTake: () => ({ station: 'questboard', min: 5, energy: 0, icon: 'quest', run: () => sys.quests.take(p.id), log: 'Accepted a commission' }),
+      questHandIn: () => ({ station: 'questboard', min: 15, energy: 0, icon: 'quest', run: () => sys.quests.handIn(p.id), log: 'Delivered a commission' }),
       // The player posts a request: pays now, the items come in REQUEST_DAYS days.
       questPost: () => ({
         station: 'questboard', min: 10, energy: 0, icon: 'quest',
         check: () => sys.quests.postCheck(p.item, p.variant, p.qty),
-        run: () => sys.quests.post(p.item, p.variant, p.qty), log: `Posted a request: ${p.qty} ${p.item}`
+        run: () => sys.quests.post(p.item, p.variant, p.qty), log: `Asked the town for ${p.qty} ${content.find('items', p.item)?.name ?? p.item}`
       }),
       exploreWalk: () => {
         const min = state.explore.walkMin ?? (state.explore.walkMin = sys.explore.walkMinutes());
@@ -194,7 +194,7 @@ export class ActionRunner {
           station: 'explore', min, energy: n('EXPLORE_WALK_ENERGY'), icon: 'explore',
           check: () => state.explore.spot ? 'spot' : sys.explore.spotsLeft() <= 0 ? 'spots' : null,
           run: () => { state.explore.walkMin = null; sys.explore.addWalk(min); return { spot: sys.explore.findSpot() }; },
-          log: 'Explored the outskirt'
+          log: 'Walked the outskirt'
         };
       },
       exploreGather: () => {
@@ -215,11 +215,11 @@ export class ActionRunner {
 }
 
 export const REASON_TEXT = {
-  phase: 'Not now.', event: 'Answer the event first.', place: 'Go there first.', closed: 'Closed now.',
-  late: 'Not enough time today.', tired: 'Too tired. Rest or eat.', here: 'You are here.', meals: 'No more meals today.',
-  food: 'No food. Buy meals at the market.', materials: 'Missing materials.', stock: 'Not enough stock.', rack: 'The rack is full.',
-  none: 'Nothing to do.', qty: 'Pick a quantity.', open: 'The store is open.', shelf: 'The shelf is empty.',
-  storeHours: 'Store hours are over.', notOpen: 'The store is closed.', soldOut: 'Sold out.', closing: 'Closing time.',
-  gold: 'Not enough gold.', full: 'You hold the most commissions.', spot: 'Gather or skip first.', spots: 'No more spots today.',
-  unknown: 'Unknown action.', requests: 'You have the most open requests.', empty: 'Pick some items first.', item: 'Pick a product.', variant: 'Cannot grind this.', requires: 'You do not have it.'
+  phase: 'Not now.', event: 'Something needs your answer first.', place: 'Walk there first.', closed: 'It is closed at this hour.',
+  late: 'There is not enough time left today.', tired: 'You are too tired. Rest or eat first.', here: 'You are already here.', meals: 'You cannot eat more today.',
+  food: 'You have no food. Buy meal packs at the market.', materials: 'Some herbs or materials are missing.', stock: 'You do not have enough.', rack: 'The rack is full.',
+  none: 'There is nothing to do here.', qty: 'Choose how many.', open: 'The shop is open.', shelf: 'The shelf is empty.',
+  storeHours: 'Shop hours are over.', notOpen: 'The shop is closed.', soldOut: 'Sold out.', closing: 'Closing time.',
+  gold: 'You do not have enough gold.', full: 'Your hands are full. Finish a commission first.', spot: 'Gather here or pass by first.', spots: 'You found all the spots for today.',
+  unknown: 'You cannot do that.', requests: 'You are already waiting for many requests.', empty: 'Choose some items first.', item: 'Choose a product.', variant: 'You cannot grind this.', requires: 'You do not have it.'
 };

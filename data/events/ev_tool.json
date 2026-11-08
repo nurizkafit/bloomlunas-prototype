@@ -3,7 +3,7 @@
   "type": "random",
   "title": "The pestle cracks",
   "icon": "grinder",
-  "text": "Your grinding pestle cracks. A new one costs gold.",
+  "text": "Your parent's old grinding pestle cracks in your hand. A new one costs gold.",
   "responses": [
     {
       "label": "Buy a new pestle",
@@ -18,7 +18,7 @@
       ]
     },
     {
-      "label": "Fix it yourself",
+      "label": "Mend it yourself",
       "icon": "clock",
       "effects": [
         {

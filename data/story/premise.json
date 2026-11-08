@@ -1,14 +1,17 @@
 {
   "id": "premise",
-  "title": "A letter at the shop door",
-  "from": "Merchant Guild",
+  "title": "Notice of unpaid debt",
+  "from": "Merchant Guild · Office of Accounts",
   "paragraphs": [
-    "Your parent ran this herb shop for many years. It sells jamu and salep.",
-    "Your parent left on an expedition and did not come back. The shop is now yours.",
-    "The shop also has a large riba debt. The interest grows every month.",
-    "Plan each week. Make good products. Keep a buffer. Pay at the end of each month.",
-    "You have two months. Then the guild will look at your books with you."
+    "To the new owner of the herb shop.",
+    "Your parent signed a loan with this guild. Your parent left on an expedition and did not return. By town law, the shop and its debt now pass to you.",
+    "The balance is {DEBT_START} gold. Interest of {DEBT_INTEREST_RATE%} is added to it at the end of each month.",
+    "Pay at least {DEBT_MIN_PAYMENT} gold at each month end. A short payment adds a late fee of {HIDDEN_FEE_LATE} gold. The guild does not give more time.",
+    "In two months, a clerk will come to read your books. Keep them in order.",
+    "No reply is needed."
   ],
-  "sign": "With hope, the Merchant Guild",
+  "sign": "Clerk of Accounts, Merchant Guild",
+  "button": "Fold the letter",
+  "_doc": "Opening letter. Tone: cold and strict (user decision 8 Nov 2026). {KEY} shows a BalanceConfig number, {KEY%} shows it as a percent.",
   "source": "docs:gdd/02-game-overview/02-story-and-setting"
 }
