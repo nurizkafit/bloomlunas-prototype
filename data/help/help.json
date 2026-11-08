@@ -4,7 +4,7 @@
   "items": {
     "day": {
       "title": "Day and time",
-      "text": "The clock shows the hour (AM before noon, PM after). The pill shows the time in 24-hour form. A day runs from 06:00 to 22:00. Each action uses time. Sleep ends the day. The green ring is your energy."
+      "text": "One turn of the dial is 12 hours: the sun or moon goes round once before noon (AM) and once after (PM). The centre shows the time in 24-hour form. A day runs from 06:00 to 22:00. Each action uses time. Sleep ends the day. The green ring is your energy."
     },
     "calendar": {
       "title": "Calendar",

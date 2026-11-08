@@ -442,10 +442,10 @@ button.tlr:hover:not(:disabled) { background: rgba(95,163,154,.12); }
 /* Day dial + energy ring (user decision 8 Nov 2026) */
 .daydial { position: relative; width: 128px; height: 128px; flex: none; margin: -8px 0 0 -8px; filter: drop-shadow(0 6px 8px rgba(0,0,0,.4)); }
 .daydial svg { display: block; }
-.pill.time > span { min-width: 0; gap: 6px; }
-.pill.time small { font-family: var(--head); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; opacity: .8; }
-.pill.time b { font-family: var(--big); font-size: 18px; font-variant-numeric: tabular-nums; }
-.pill.time i { font-style: normal; font-size: 11px; font-weight: 700; padding: 1px 6px; border-radius: 8px; background: var(--teal); color: var(--cream); }
+.daydial .dt { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: grid; place-items: center; color: var(--cream); line-height: 1; text-align: center; pointer-events: none; }
+.daydial .dt small { font-family: var(--head); font-size: 10px; letter-spacing: .08em; margin-bottom: 1px; }
+.daydial .dt b { font-family: var(--big); font-size: 19px; }
+.daydial .dt i { font-style: normal; font-family: var(--head); font-size: 9px; letter-spacing: .1em; margin-top: 2px; padding: 0 5px; border-radius: 6px; background: #D9A326; color: #1F3A3D; }
 .daydial .ph { position: absolute; top: -4px; right: -6px; }
 .daydial .en { position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%); display: inline-flex; align-items: center; gap: 2px; padding: 1px 8px 1px 5px; border-radius: 10px; background: var(--paper); box-shadow: 0 0 0 1.5px var(--woodD); font-weight: 700; font-size: 14px; color: var(--teal); white-space: nowrap; }
 .daydial .en.low { color: var(--red); box-shadow: 0 0 0 1.5px var(--red); }

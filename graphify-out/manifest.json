@@ -288,9 +288,9 @@
     "semantic_hash": ""
   },
   "src/views/ui/HudView.js": {
-    "mtime": 1794149613.065935,
-    "seen": 1794149625.7063606,
-    "ast_hash": "0857b15d841b1c55e88e1cbaf3b58540",
+    "mtime": 1794150586.8169487,
+    "seen": 1794150679.0579565,
+    "ast_hash": "fb8396c13cf4561201e98634f6f9a146",
     "semantic_hash": ""
   },
   "tests/browser/run.mjs": {
@@ -810,9 +810,9 @@
     "semantic_hash": ""
   },
   "data/help/help.json": {
-    "mtime": 1794149613.0579348,
-    "seen": 1794149625.7062001,
-    "ast_hash": "0e57e2d92c0afe3c53e6978bf0941047",
+    "mtime": 1794150586.819542,
+    "seen": 1794150679.057737,
+    "ast_hash": "e963c0be7a78c6fb770daae3753ccf2f",
     "semantic_hash": ""
   },
   "data/objectives/objectives.json": {
@@ -858,9 +858,9 @@
     "semantic_hash": ""
   },
   "src/views/sheet/InterfaceSheet.js": {
-    "mtime": 1794149613.005935,
-    "seen": 1794149625.7063482,
-    "ast_hash": "0a777699e78e3f54666913badcf65f92",
+    "mtime": 1794150596.196282,
+    "seen": 1794150679.0579426,
+    "ast_hash": "3df490ec1ff165e2463d687a6e4d1720",
     "semantic_hash": ""
   },
   "tests/browser/sheet.cjs": {

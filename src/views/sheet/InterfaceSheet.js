@@ -292,7 +292,7 @@ export class InterfaceSheet {
 
       /* ===== HUD ===== */
       { code: 'HUD', title: 'HUD', sub: 'Drawn by the real HudView', items: [
-        { id: 'HUD-01', name: 'Day dial', cls: '.daydial (svg + .dt + .ph + .en)', used: 'HUD top left in every phase. Sky colour and hand follow the hour. Ring = energy.', w: 780, bg: 'teal', stage: { paddingTop: '32px' },
+        { id: 'HUD-01', name: 'Day dial', cls: '.daydial (svg + .dt + .ph + .en)', used: 'HUD top left in every phase. One turn = 12 hours (AM, then PM). Sky colour and sun or moon follow the hour. Centre: weekday, 24-hour time, AM/PM. Ring = energy.', w: 780, bg: 'teal', stage: { paddingTop: '32px' },
           vars: [['08:00 morning', this.dial({ minute: 8 * 60, phase: 'plan' })], ['13:00 day', this.dial({ minute: 13 * 60 })], ['18:30 dusk', this.dial({ minute: 18 * 60 + 30, energy: 45, phase: 'check' })], ['21:30 night, low energy', this.dial({ minute: 21 * 60 + 30, energy: 15, phase: 'act' })]] },
         { id: 'HUD-02', name: 'Phase medal', cls: '.daydial .ph (medal)', used: 'Top right of the day dial. Icon per phase.', w: 420, bg: 'teal',
           vars: [['Plan', Dom.medal('calendar', 30)], ['Do', Dom.medal('walk', 30)], ['Check', Dom.medal('note', 30)], ['Act', Dom.medal('debt', 30)]] },
