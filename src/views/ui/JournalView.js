@@ -74,7 +74,7 @@ export class JournalView {
   #schedule(mode) {
     const ui = this.ui, st = ui.st, L = ui.local;
     const goals = ui.c.all('goals').sort((a, b) => a.order - b.order);
-    const editable = (i) => mode === 'plan' || i >= st.cal.day;
+    const editable = () => mode === 'plan'; // fixed in the Do phase (user rule, 8 Nov 2026)
     const sched = ui.c.all('events').filter((e) => e.type === 'scheduled');
     const absWeek = this.#absWeek();
     const places = ui.c.all('places');
@@ -127,13 +127,14 @@ export class JournalView {
       const c = h(`div.gcard${picked === g.id ? '.on' : ''}`, { style: { '--gc': g.color }, title: g.name, onclick: () => ui.set({ pick: { ...L.pick, goal: picked === g.id ? null : g.id } }) },
         h('div.gi', Dom.medal(g.icon, 40)),
         h('div', h('b', g.name), h('p', g.text ?? '')));
+      if (mode !== 'plan') { c.onclick = null; c.classList.add('lock'); return c; }
       return dragFrom(c, `g:${g.id}`);
     });
     const deckBox = dropZone(h('div.deck', deck), (d) => { if (d.startsWith('d:')) { const j = Number(d.slice(2)); if (editable(j)) setGoal(j, null); } });
     return [
       [h('h3', Dom.icon('calendar', 28), `Week ${absWeek}`, Dom.help('tabSchedule'), h('span.aside', Dom.icon('star', 16), `${set}/${st.plan.goals.length}`)),
         h('div.drows', rows)],
-      [h('h3', Dom.icon('star', 28), 'Goal cards', Dom.help('goalDeck')), deckBox]
+      [h('h3', Dom.icon('star', 28), 'Goal cards', Dom.help('goalDeck')), mode === 'plan' ? null : h('p.small.muted', Dom.icon('lock', 14), ' The week plan is fixed. Change it in next week\'s Plan phase.'), deckBox]
     ];
   }
 

@@ -59,13 +59,8 @@ Ornaments.DEFS = `<svg width="0" height="0" style="position:absolute">
    <use href="#leaf" x="33" y="-2" width="14" height="26"/>
   </symbol>
   <symbol id="nouveau" viewBox="0 0 120 120">
-   <g fill="none" stroke-linecap="round">
-    <path d="M8 116 C8 52 40 10 116 8" stroke="#5a3b1c" stroke-width="6"/><path d="M8 116 C8 52 40 10 116 8" stroke="url(#gold)" stroke-width="3.5"/>
-    <path d="M22 116 C22 70 44 40 72 34 C92 30 100 44 90 54 C82 62 70 56 74 48" stroke="#D9A326" stroke-width="2.2"/>
-    <path d="M116 22 C76 22 50 40 42 66 C36 86 50 96 60 88 C68 82 62 72 56 76" stroke="#D9A326" stroke-width="2.2"/>
-   </g>
-   <use href="#leaf" x="56" y="58" width="12" height="24" transform="rotate(130 62 70)"/><use href="#leaf" x="80" y="40" width="10" height="20" transform="rotate(70 85 50)"/>
-   <use href="#bloom" x="12" y="12" width="40" height="40"/>
+   <path d="M14 96 C14 48 48 14 96 14" fill="none" stroke="#5a3b1c" stroke-width="4.5" stroke-linecap="round"/><path d="M14 96 C14 48 48 14 96 14" fill="none" stroke="url(#gold)" stroke-width="2.4" stroke-linecap="round"/>
+   <use href="#bloom" x="16" y="16" width="26" height="26"/>
   </symbol>
   <symbol id="divider" viewBox="0 0 400 20">
    <path d="M0 10 C60 10 80 2 130 6 C160 9 170 16 190 12" fill="none" stroke="#C8955A" stroke-width="1.6"/><path d="M400 10 C340 10 320 2 270 6 C240 9 230 16 210 12" fill="none" stroke="#C8955A" stroke-width="1.6"/>

@@ -110,7 +110,7 @@ export class Dom {
    */
   static tlist(cols, head, rows, empty = '—') {
     const row = (r) => Dom.h(`${r.onclick ? 'button' : 'div'}.tlr${r.on ? '.on' : ''}${r.cls ? '.' + r.cls : ''}`, { style: { gridTemplateColumns: cols }, onclick: r.onclick, disabled: r.disabled, title: r.title }, r.cells.map((c) => Dom.h('span', c)));
-    return Dom.h('div.tl',
+    return Dom.h('div.tlst',
       Dom.h('div.tlh', { style: { gridTemplateColumns: cols } }, head.map((c) => Dom.h('span', c))),
       Dom.h('div.tlb', rows.length ? rows.map(row) : Dom.h('div.small.muted', { style: { padding: '8px' } }, empty)));
   }

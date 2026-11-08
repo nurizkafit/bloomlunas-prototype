@@ -70,3 +70,12 @@ describe('end exploration', () => {
     expect(gm.state.explore.session).toBe(null);
   });
 });
+
+describe('week plan (user rule, 8 Nov 2026)', () => {
+  it('cannot change goals in the Do phase', () => {
+    const gm = gameInDo();
+    const before = [...gm.state.plan.goals];
+    expect(gm.sys.plan.setGoal(6, 'explore')).toBe(false);
+    expect(gm.state.plan.goals).toEqual(before);
+  });
+});

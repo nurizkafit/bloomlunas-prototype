@@ -50,7 +50,7 @@ After the Check of week 4: Act (Journal, month end) -> next month Plan. After mo
 
 - Places (`data/places/`): Home + Store (0-24), Market (7-17, shut Fri), Guild Center (8-16, shut Sun), City Outskirt (6-18). Travel time = the larger `travelMin` of the two places. Early arrival waits for opening time.
 - Stations (`data/stations/`) belong to a place. A station needs its place open (Store and Rest do not).
-- Daily goals (`data/goals/`): a goal is met when the player used one of its stations that day. Free time is met when work time is at most `FREE_TIME_MAX_WORK_MIN`.
+- Daily goals (`data/goals/`): each Plan phase starts with empty day slots. The goals are fixed once the week starts; the Do phase cannot change them (user rule, 8 Nov 2026). A goal is met when the player used one of its stations that day. Free time is met when work time is at most `FREE_TIME_MAX_WORK_MIN`.
 - Store: stock the 3x3 shelf (product group, quantity up to `SHELF_SLOT_MAX`, price level). Open store costs `STORE_OPEN_ENERGY` once, then the hours play out (`CUSTOMERS_PER_HOUR`, buy chance x price level demand, trend weights) until sold out or the end of `STORE_OPEN_HOURS`. Shop result after close.
 - Trade is a basket (user feedback D4): set a quantity on many rows, then one Buy all or Sell all action trades every line for one `TRADE_MIN`. Each cost shows the jar that pays it: Store jar for materials, lots, services and requests; Personal jar for food.
 - Market stall: buy materials at the weekly price, buy meal packs (`FOOD_PRICE`), sell products at `MARKET_BUY_FROM_PLAYER` x value.

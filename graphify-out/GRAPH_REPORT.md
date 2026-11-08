@@ -1,7 +1,7 @@
 # Graph Report - bloomlunas-prototype  (2026-11-08)
 
 ## Corpus Check
-- 140 files · ~44,402 words
+- 140 files · ~44,437 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 5 file(s) not represented in the graph (top: (none) 2, .css 1, .glb 1)
 
@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `d93591e8`
+- Built from commit: `19b3d216`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -56,12 +56,12 @@
 10. `Bot` - 18 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `7. Views (DOM, `src/views/ui/`)` --references--> `ActView`  [INFERRED]
-  SPECS.md → src/views/ui/ActView.js
-- `7. Views (DOM, `src/views/ui/`)` --references--> `CheckView`  [INFERRED]
-  SPECS.md → src/views/ui/CheckView.js
+- `9. Class catalog (JS -> Unity)` --references--> `PlanSystem`  [INFERRED]
+  SPECS.md → src/systems/PlanSystem.js
 - `7. Views (DOM, `src/views/ui/`)` --references--> `JournalView`  [INFERRED]
   SPECS.md → src/views/ui/JournalView.js
+- `6. EventBus messages (`MSG` in `src/core/EventBus.js`)` --references--> `travel()`  [INFERRED]
+  SPECS.md → tests/do-feedback.test.js
 - `2. Architecture` --references--> `GameState`  [INFERRED]
   SPECS.md → src/model/GameState.js
 - `2. Architecture` --references--> `Inventory`  [INFERRED]

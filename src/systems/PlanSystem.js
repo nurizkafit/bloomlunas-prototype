@@ -15,7 +15,7 @@ export class PlanSystem {
   /** @param {number} dayIndex 0..6 @param {string|null} goalId */
   setGoal(dayIndex, goalId) {
     const { state } = this.ctx;
-    if (state.phase !== 'plan' && dayIndex < state.cal.day) return false; // only days not started
+    if (state.phase !== 'plan') return false; // the week plan is fixed once the week starts (user rule, 8 Nov 2026)
     state.plan.goals[dayIndex] = goalId;
     return true;
   }
@@ -32,11 +32,10 @@ export class PlanSystem {
     for (const k of ['store', 'personal', 'buffer']) if (b[k] !== undefined) cur[k] = Math.max(0, Math.round(b[k]));
   }
 
-  /** A first plan the player can change: last week's goals, a fair budget split. */
+  /** A first plan the player can change: empty goal slots (user rule, 8 Nov 2026), a fair budget split. */
   suggest() {
     const { state, content } = this.ctx;
-    const last = state.weeks.at(-1)?.goals;
-    state.plan.goals = last ? [...last] : ['craft', 'store', 'trade', 'explore', 'craft', 'store', 'free'];
+    state.plan.goals = Array(content.num('DAYS_PER_WEEK')).fill(null);
     if (!Object.keys(state.plan.products).length) state.plan.products = { kunyit_asam: 12 };
     const personal = content.num('FOOD_PRICE') * content.num('MEALS_PER_DAY') * content.num('DAYS_PER_WEEK');
     const buffer = Math.min(Math.round(state.gold * 0.3 / 10) * 10, Math.max(0, state.gold - personal));
