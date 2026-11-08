@@ -58,6 +58,6 @@ export class ActView {
 
   ribbon() {
     const ui = this.ui;
-    return h('button.ribbon', { onclick: () => { ui.local.pick = {}; ui.send(MSG.INTENT_FINISH_ACT); } }, 'Close month');
+    return Dom.btn('Close month', () => { ui.local.pick = {}; ui.send(MSG.INTENT_FINISH_ACT); }, { cls: 'gold.ribbon', icon: 'check' });
   }
 }

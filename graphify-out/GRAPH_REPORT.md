@@ -1,17 +1,17 @@
 # Graph Report - bloomlunas-prototype  (2026-11-08)
 
 ## Corpus Check
-- 140 files · ~44,335 words
+- 140 files · ~44,402 words
 - Verdict: corpus is large enough that graph structure adds value.
-- Unclassified: 6 file(s) not represented in the graph (top: (none) 2, .css 1, .glb 1)
+- Unclassified: 5 file(s) not represented in the graph (top: (none) 2, .css 1, .glb 1)
 
 ## Summary
-- 553 nodes · 1438 edges · 26 communities (12 shown, 14 thin omitted)
+- 553 nodes · 1441 edges · 27 communities (12 shown, 15 thin omitted)
 - Extraction: 95% EXTRACTED · 5% INFERRED · 0% AMBIGUOUS · INFERRED: 75 edges (avg confidence: 0.93)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `6e9a80e5`
+- Built from commit: `d93591e8`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -39,6 +39,7 @@
 - SkillSystem
 - GameState
 - TimeSystem
+- ActView
 - DoPhase
 - .mcp.json
 
@@ -55,16 +56,16 @@
 10. `Bot` - 18 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `7. Views (DOM, `src/views/ui/`)` --references--> `HudView`  [INFERRED]
-  SPECS.md → src/views/ui/HudView.js
+- `7. Views (DOM, `src/views/ui/`)` --references--> `ActView`  [INFERRED]
+  SPECS.md → src/views/ui/ActView.js
+- `7. Views (DOM, `src/views/ui/`)` --references--> `CheckView`  [INFERRED]
+  SPECS.md → src/views/ui/CheckView.js
+- `7. Views (DOM, `src/views/ui/`)` --references--> `JournalView`  [INFERRED]
+  SPECS.md → src/views/ui/JournalView.js
 - `2. Architecture` --references--> `GameState`  [INFERRED]
   SPECS.md → src/model/GameState.js
 - `2. Architecture` --references--> `Inventory`  [INFERRED]
   SPECS.md → src/model/Inventory.js
-- `2. Architecture` --references--> `ActionRunner`  [INFERRED]
-  SPECS.md → src/systems/ActionRunner.js
-- `3. Phase flow (Scene & Flow)` --references--> `DoPhase`  [INFERRED]
-  SPECS.md → src/phases/DoPhase.js
 
 ## Import Cycles
 - 2-file cycle: `src/views/ui/GrindView.js -> src/views/ui/PlaceView.js -> src/views/ui/GrindView.js`
@@ -79,7 +80,7 @@
 - 3-file cycle: `src/views/ui/PlaceView.js -> src/views/ui/ReceptionView.js -> src/views/ui/StallView.js -> src/views/ui/PlaceView.js`
 - 3-file cycle: `src/views/ui/PlaceView.js -> src/views/ui/QuestBoardView.js -> src/views/ui/StallView.js -> src/views/ui/PlaceView.js`
 
-## Communities (26 total, 14 thin omitted)
+## Communities (27 total, 15 thin omitted)
 
 ### Community 0 - "Dom"
 Cohesion: 0.08
@@ -114,8 +115,8 @@ Cohesion: 0.21
 Nodes (5): KNOWN, MSG, Calendar, WEEKDAYS, TABS
 
 ### Community 12 - ".h"
-Cohesion: 0.08
-Nodes (7): ActView, CheckView, HudView, JournalView, trendIcon(), StallView, StoreView
+Cohesion: 0.09
+Nodes (5): HudView, JournalView, trendIcon(), StallView, StoreView
 
 ### Community 13 - "Milestones (game jam overhaul)"
 Cohesion: 0.29
@@ -130,7 +131,7 @@ Cohesion: 0.39
 Nodes (5): vitest, files, gameInDo(), newContent(), root
 
 ## Knowledge Gaps
-- **14 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **15 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
@@ -146,6 +147,6 @@ _Questions this graph is uniquely positioned to answer:_
 - **Should `.count` be split into smaller, more focused modules?**
   _Cohesion score 0.06471631205673758 - nodes in this community are weakly interconnected._
 - **Why does `UiRoot` connect `UiRoot` to `Dom`?**
-  _High betweenness centrality (0.072) - this node is a cross-community bridge._
+  _High betweenness centrality (0.071) - this node is a cross-community bridge._
 - **Should `9. Class catalog (JS -> Unity)` be split into smaller, more focused modules?**
   _Cohesion score 0.14285714285714285 - nodes in this community are weakly interconnected._

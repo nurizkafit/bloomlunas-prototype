@@ -57,6 +57,6 @@ export class CheckView {
   ribbon() {
     const ui = this.ui;
     const last = ui.st.cal.week >= ui.num('WEEKS_PER_MONTH');
-    return h('button.ribbon', { onclick: () => { const ids = ui.local.pick.notes ?? []; ui.local.pick = {}; ui.send(MSG.INTENT_FINISH_CHECK, { ids }); } }, last ? 'Month end' : 'Next week');
+    return Dom.btn(last ? 'Month end' : 'Next week', () => { const ids = ui.local.pick.notes ?? []; ui.local.pick = {}; ui.send(MSG.INTENT_FINISH_CHECK, { ids }); }, { cls: 'gold.ribbon', icon: 'check' });
   }
 }

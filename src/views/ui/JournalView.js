@@ -20,7 +20,7 @@ const TABS = [
 const trendIcon = (t) => (t === 'high' ? 'trend_up' : t === 'low' ? 'trend_down' : 'trend_flat');
 
 /**
- * JournalView: the Planner Book (night-teal bookcloth, gold tooling, die-cut tabs, purple ribbon, no rattan).
+ * JournalView: the Planner Book (night-teal bookcloth, gold tooling, die-cut tabs, phase plaque and gold action button at top right (user decision 8 Nov 2026), no rattan).
  * Plan phase tabs (Scene & Flow): Daily goals, Store plan, Ledger and assets, Market, Public schedule,
  * Skills, Notes (last week's notes and the objectives). The "Review plan" ribbon locks the plan.
  * Do phase: the same book to look up, plus the Log tab. Check and Act pages come from CheckView and ActView.
@@ -46,12 +46,14 @@ export class JournalView {
         market: () => this.#market(), hours: () => this.#hours(mode), skills: () => this.#skills(), notes: () => this.#notes(), log: () => this.#log()
       };
       pages = page[L.tab]();
-      if (mode === 'plan') ribbon = h('button.ribbon', { 'data-help': 'reviewPlan', onclick: () => ui.set({ review: true }) }, 'Review plan');
+      if (mode === 'plan') { ribbon = Dom.btn('Review plan', () => ui.set({ review: true }), { cls: 'gold.ribbon', icon: 'check' }); ribbon.dataset.help = 'reviewPlan'; }
     }
     const n = (ui.st.cal.month - 1) * ui.num('WEEKS_PER_MONTH') + ui.st.cal.week;
     const tag = { plan: ['calendar', 'Plan'], do: ['journal', 'Journal'], check: ['note', 'Check'], act: ['debt', 'Act'] }[mode];
     const els = [
-      h('div.stag', Dom.icon(tag[0], 24), tag[1]),
+      h(`div.phasebar${mode === 'do' ? '.do' : ''}`,
+        Dom.slim('plaque', Dom.medal(tag[0], 38), h('div', h('small', mode === 'act' ? `MONTH ${ui.st.cal.month}` : `WEEK ${ui.st.cal.week}`), h('b', tag[1]))),
+        ribbon),
       h('div.book',
         h('div.tool'), h('div.tool2'), h('div.spineband'),
         h('div.pages',
@@ -59,7 +61,6 @@ export class JournalView {
           h('div.pg.r', ...pages[1], h('div.pageno', String(n * 2), Dom.icon('moon', 14)))),
         tabs.length ? h('div.tabs', tabs.map((t) => h(`button.tab${L.tab === t.id ? '.on' : ''}`, { 'data-label': t.label, 'data-help': t.help, onclick: () => ui.set({ tab: t.id }) }, Dom.icon(t.icon, 26)))) : null,
         ...Dom.corners().map((c) => { c.style.zIndex = 3; return c; }),
-        ribbon,
         mode === 'do' ? h('button.iconbtn.close', { style: { right: '-12px', top: '-12px' }, title: 'Close', onclick: () => ui.set({ journal: false }), html: Icons.svg('x', 16) }) : null)
     ];
     const box = h('div', { style: { position: 'absolute', inset: 0 } }, ...els);
