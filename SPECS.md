@@ -86,7 +86,7 @@ Visual style: approved style board v3 (project files `screens/overhaul-style/sty
 | Class | Screen |
 | --- | --- |
 | `UiRoot` | Stage, layers, phase routing, toasts, hint bar, keys (M town, J journal, Esc back), hotspot layer over the 3D view, jar badge (`jarTag`), item buttons (`itemBtn`) |
-| `HudView` | Day medal (weekday + clock), calendar pill (month, week, day), gold, debt, food, energy bar, day bar, today's goal, Map and Journal buttons |
+| `HudView` | Day dial (user decision, 8 Nov 2026): the day from `DAY_START_HOUR` to `DAY_END_HOUR` on a 270 degree dial with a moving sun or moon, sky colour by the hour, weekday and time in the centre, energy ring around it with the energy number. Calendar pill (month, week, day), gold, debt, food, today's goal, Town and Journal buttons |
 | `StartView` | Start menu and story letter |
 | `JournalView` | Tabs in Scene & Flow order: Daily goals (drag goal cards onto days, or click a card then a day), Store plan (products to sell + materials needed; budget jars + plan check), Ledger and assets, Market (forecast range, trend, price now), Public schedule (opening hours, events, month-end bills), Skills (level and effects), Notes (last week's notes + objectives). Do adds Log. Review plan ribbon on every Plan tab. |
 | `CheckView`, `ActView`, `RetroView` | Weekly recap, month end, retrospective |

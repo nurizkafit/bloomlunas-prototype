@@ -96,16 +96,12 @@ button:disabled { cursor: not-allowed; }
 .bar.gold > i { background: linear-gradient(180deg, #F0C866, #D9A326); }
 .bar.wis > i { background: linear-gradient(180deg, #C6B5E2, var(--wis)); }
 .bar.ver > i { background: linear-gradient(180deg, #9ED3CB, var(--verd)); }
-.energyrow { display: flex; align-items: center; gap: 8px; color: var(--cream); font-weight: 700; font-size: 13px; text-shadow: 0 1px 2px rgba(0,0,0,.6); }
-.energyrow .bar { width: 160px; }
 .goalcard { width: 304px; }
 .goalcard .in { padding: 8px 16px; display: flex; align-items: center; gap: 8px; font-size: 14px; min-height: 52px; }
 .goalcard small { font-family: var(--head); font-size: 11px; letter-spacing: .1em; color: var(--fern); display: block; }
 .goalcard .st { margin-left: auto; }
 .hright { margin-left: auto; display: flex; gap: 16px; padding-top: 4px; }
 .clock { font-family: var(--big); font-size: 22px; color: var(--cream); text-shadow: 0 1px 3px rgba(0,0,0,.7); display: flex; align-items: center; gap: 8px; }
-.daybar { position: relative; width: 160px; height: 6px; border-radius: 3px; background: rgba(242,233,216,.35); }
-.daybar i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 3px; background: linear-gradient(90deg, #F6E7B8, var(--tur)); }
 
 /* Journal book */
 .book { position: absolute; left: 64px; width: 1104px; top: 112px; bottom: 48px; border-radius: 14px 18px 18px 14px; padding: 24px; background: var(--cloth), radial-gradient(ellipse at 30% 20%, #356862, #1F3A3D 70%, #152a2c); box-shadow: 0 0 0 2px #0f1f20, 0 40px 70px rgba(0,0,0,.5); z-index: 25; }
@@ -444,3 +440,13 @@ button.tlr:hover:not(:disabled) { background: rgba(95,163,154,.12); }
 .icard h3 { text-align: left; }
 .recap { width: 416px; }
 .recap > .in { padding: 28px 32px 32px; }
+
+/* Day dial + energy ring (user decision 8 Nov 2026) */
+.daydial { position: relative; width: 104px; height: 104px; flex: none; margin: -8px 0 0 -8px; filter: drop-shadow(0 6px 8px rgba(0,0,0,.4)); }
+.daydial svg { display: block; }
+.daydial .dt { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: grid; place-items: center; color: var(--cream); line-height: 1; text-align: center; pointer-events: none; }
+.daydial .dt small { font-family: var(--head); font-size: 9px; letter-spacing: .08em; margin-bottom: 2px; }
+.daydial .dt b { font-family: var(--big); font-size: 15px; }
+.daydial .ph { position: absolute; top: -4px; right: -6px; }
+.daydial .en { position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%); display: inline-flex; align-items: center; gap: 2px; padding: 1px 8px 1px 5px; border-radius: 10px; background: var(--paper); box-shadow: 0 0 0 1.5px var(--woodD); font-weight: 700; font-size: 12px; color: var(--teal); white-space: nowrap; }
+.daydial .en.low { color: var(--red); box-shadow: 0 0 0 1.5px var(--red); }
