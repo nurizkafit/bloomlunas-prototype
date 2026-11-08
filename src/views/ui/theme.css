@@ -442,9 +442,10 @@ button.tlr:hover:not(:disabled) { background: rgba(95,163,154,.12); }
 /* Day dial + energy ring (user decision 8 Nov 2026) */
 .daydial { position: relative; width: 128px; height: 128px; flex: none; margin: -8px 0 0 -8px; filter: drop-shadow(0 6px 8px rgba(0,0,0,.4)); }
 .daydial svg { display: block; }
-.daydial .dt { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: grid; place-items: center; color: var(--cream); line-height: 1; text-align: center; pointer-events: none; }
-.daydial .dt small { font-family: var(--head); font-size: 11px; letter-spacing: .08em; margin-bottom: 2px; }
-.daydial .dt b { font-family: var(--big); font-size: 20px; }
+.pill.time > span { min-width: 0; gap: 6px; }
+.pill.time small { font-family: var(--head); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; opacity: .8; }
+.pill.time b { font-family: var(--big); font-size: 18px; font-variant-numeric: tabular-nums; }
+.pill.time i { font-style: normal; font-size: 11px; font-weight: 700; padding: 1px 6px; border-radius: 8px; background: var(--teal); color: var(--cream); }
 .daydial .ph { position: absolute; top: -4px; right: -6px; }
 .daydial .en { position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%); display: inline-flex; align-items: center; gap: 2px; padding: 1px 8px 1px 5px; border-radius: 10px; background: var(--paper); box-shadow: 0 0 0 1.5px var(--woodD); font-weight: 700; font-size: 14px; color: var(--teal); white-space: nowrap; }
 .daydial .en.low { color: var(--red); box-shadow: 0 0 0 1.5px var(--red); }
@@ -458,3 +459,44 @@ button.tlr:hover:not(:disabled) { background: rgba(95,163,154,.12); }
 .plaque b { display: block; font-family: var(--head); font-weight: 400; font-size: 20px; line-height: 1.05; }
 .ribbon { height: 44px; }
 .deck .gcard.lock { cursor: default; opacity: .75; }
+
+/* Sleep transition (user feedback 8 Nov 2026): night falls, the moon sets, the sun comes up, the new day fades in. */
+.fx { z-index: 80; }
+.nightfx { position: absolute; inset: 0; display: grid; place-items: center; background: radial-gradient(ellipse at 50% 70%, #3B4A72, #1F2A44 60%, #141B2E); animation: nf-veil var(--fx) ease-in-out forwards; }
+.nightfx::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, #F1D6A2, #EDB27C 60%, #D3E4DA); opacity: 0; animation: nf-dawn var(--fx) ease-in-out forwards; }
+.nf-sky { position: absolute; left: 50%; top: 50%; width: 0; height: 0; z-index: 2; }
+.nf-moon, .nf-sun { position: absolute; left: -36px; width: 72px; height: 72px; border-radius: 50%; }
+.nf-moon { background: #E9EEF8; box-shadow: inset -18px -6px 0 #C7CFE3, 0 0 40px rgba(233,238,248,.5); animation: nf-moon var(--fx) ease-in-out forwards; }
+.nf-sun { background: #F2C14E; box-shadow: 0 0 0 6px rgba(242,193,78,.35), 0 0 60px rgba(242,193,78,.7); opacity: 0; animation: nf-sun var(--fx) ease-in-out forwards; }
+.nf-t { position: relative; z-index: 3; margin-top: 150px; display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--cream); text-shadow: 0 2px 6px rgba(0,0,0,.5); animation: nf-text var(--fx) ease-in-out forwards; }
+.nf-t small { font-family: var(--head); font-size: 16px; letter-spacing: .18em; text-transform: uppercase; }
+.nf-t b { font-family: var(--big); font-size: 64px; line-height: 1; }
+.nf-t span { font-family: var(--head); font-size: 20px; }
+@keyframes nf-veil { 0% { opacity: 0; } 10% { opacity: 1; } 82% { opacity: 1; } 100% { opacity: 0; visibility: hidden; } }
+@keyframes nf-dawn { 0%, 45% { opacity: 0; } 72% { opacity: 1; } 100% { opacity: 1; } }
+@keyframes nf-moon { 0% { top: -200px; opacity: 1; } 35% { top: -120px; opacity: 1; } 55% { top: 40px; opacity: 0; } 100% { top: 40px; opacity: 0; } }
+@keyframes nf-sun { 0%, 45% { top: 40px; opacity: 0; } 75% { top: -130px; opacity: 1; } 100% { top: -150px; opacity: 1; } }
+@keyframes nf-text { 0%, 12% { opacity: 0; transform: translateY(8px); } 25% { opacity: 1; transform: none; } 45% { color: var(--cream); text-shadow: 0 2px 6px rgba(0,0,0,.5); } 65% { color: #1F3A3D; text-shadow: 0 1px 0 rgba(255,255,255,.5); } 80% { opacity: 1; color: #1F3A3D; text-shadow: 0 1px 0 rgba(255,255,255,.5); } 100% { opacity: 0; color: #1F3A3D; text-shadow: none; } }
+
+/* Named chips (user feedback 8 Nov 2026: every icon shows its name). */
+.qchip.named { font-weight: 400; font-size: 13px; padding-right: 10px; }
+.qchip.named b { margin-left: 2px; }
+.qchip .small { font-weight: 400; }
+.ln.sm.lab { border-bottom: 0; color: var(--fern); font-family: var(--head); }
+.chipline.sub { padding: 0 2px 8px 28px; gap: 6px; border-bottom: 1px dashed var(--rule); }
+.shut .small { margin-left: 2px; font-size: 11px; padding-right: 2px; }
+
+/* Activity log (user feedback 8 Nov 2026): framed scroll boxes. */
+.logbox { flex: 1 1 0; min-height: 0; margin-top: 8px; padding: 4px 10px 8px; border-radius: 8px; background: rgba(255,255,255,.28); box-shadow: inset 0 0 0 1px var(--rule); overflow-y: scroll; scrollbar-width: auto; }
+.logbox .lt { width: 44px; flex: none; font-variant-numeric: tabular-nums; }
+.logday { position: sticky; top: -4px; z-index: 1; margin: 6px -10px 2px; padding: 4px 10px; font-family: var(--head); font-size: 13px; color: var(--fern); background: #EFE5CF; border-bottom: 1px solid var(--rule); }
+
+/* Walk banner (user feedback 8 Nov 2026). */
+.walkbar { position: absolute; left: 50%; bottom: 120px; transform: translateX(-50%); display: flex; align-items: center; gap: 10px; height: 48px; padding: 0 22px 0 8px; border-radius: 24px; background: var(--paper); box-shadow: 0 0 0 2px var(--rattan), 0 0 0 4px var(--woodD), 0 8px 14px rgba(0,0,0,.35); font-family: var(--head); font-size: 18px; color: var(--teal); }
+.walkbar b { font-weight: 400; color: var(--ink); }
+
+/* Journal tabs show their name under the icon (user feedback 8 Nov 2026). */
+.tab { height: 54px; grid-template-rows: auto auto; align-content: center; gap: 1px; }
+.tab .tl { font-family: var(--head); font-size: 10px; line-height: 1; color: var(--cream); letter-spacing: .02em; white-space: nowrap; }
+.tab.on .tl { color: var(--teal); }
+.tabs { gap: 6px; }

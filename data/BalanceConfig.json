@@ -327,9 +327,17 @@
     "source": "placeholder",
     "_placeholder": true
   },
-  "EVENT_CHANCE_PER_DAY": {
-    "value": 0.3,
-    "unit": "chance of a random event at the start of a day",
+  "EVENTS_PER_WEEK": {
+    "value": [
+      1,
+      2
+    ],
+    "unit": "random event days per week [min, max]; never two days in a row",
+    "source": "user feedback 8 Nov 2026 (once or twice a week)"
+  },
+  "EVENT_REPEAT_MAX": {
+    "value": 2,
+    "unit": "times one random event can fire in a run (then the pool refills)",
     "source": "placeholder",
     "_placeholder": true
   },
@@ -445,6 +453,12 @@
     "value": 5,
     "unit": "request quantity step",
     "source": "user feedback 8 Nov 2026 (Do phase D3: player posts a request on the quest board)",
+    "_placeholder": true
+  },
+  "SLEEP_FADE_MS": {
+    "value": 2600,
+    "unit": "ms; sleep transition (view only)",
+    "source": "user feedback 8 Nov 2026",
     "_placeholder": true
   }
 }

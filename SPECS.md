@@ -41,7 +41,7 @@ After the Check of week 4: Act (Journal, month end) -> next month Plan. After mo
 | Phase | Class | What happens |
 | --- | --- | --- |
 | Plan | `PlanPhase` | Rolls weekly prices, trends and the quest board. The player sets a daily goal per day, the store plan (products to sell -> materials) and three budget jars (Store, Personal, Buffer). "Review plan" shows the forecast and warnings (never blocks), then "Start week" locks the plan. |
-| Do | `DoPhase` | Seven days. A day can start with an event card. Day 06:00-22:00. Sleep ends the day (works anywhere: the player walks home). Day end: goal check (+XP), quests expire, energy restore (lower max with no meal). |
+| Do | `DoPhase` | Seven days. A day can start with an event card: scheduled events on their day, random events on `EVENTS_PER_WEEK` (1 to 2) random days, never two days in a row, never the same random event twice in a row. Day 06:00-22:00. Sleep ends the day (works anywhere: the player walks home). Day end: goal check (+XP), quests expire, energy restore (lower max with no meal). |
 | Check | `CheckPhase` | Pays the weekly living cost (unpaid -> debt). Recap: goals per day, sold vs store goal, income and costs, jars vs actual, XP. The player picks up to two notes for next week. |
 | Act | `ActPhase` | Month end: pay the debt (minimum or more) and utilities, book one guild appointment for next month. Close month: unpaid utilities -> debt, interest, late fee if the minimum is not paid. |
 | Retro | `RetroPhase` | Gold and debt per week, goal rate, store goal rate, buffer habit, sales, quests, interest, fees, carried bills, skills. |

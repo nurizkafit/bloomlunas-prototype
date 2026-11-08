@@ -38,7 +38,7 @@ export class PlaceView {
         ...place.stations.map((id) => this.#row(id, open)),
         h('div.sdiv'),
         h('button.srow', { onclick: () => ui.set({ map: true, station: null, pick: {} }), 'data-help': 'town' }, h('span.si', Dom.icon('map', 22)), h('span.t', 'Town'), h('span.m', h('i.key', 'M'))),
-        st.place !== 'home' ? h('button.srow', { onclick: () => { L.station = null; ui.act('travel', { place: 'home' }); } }, h('span.si', Dom.icon('house', 22)), h('span.t', 'Go home'), h('span.m', Dom.icon('clock', 14), Dom.mins(homeMin))) : null));
+        st.place !== 'home' ? h('button.srow', { onclick: () => ui.travel('home') }, h('span.si', Dom.icon('house', 22)), h('span.t', 'Go home'), h('span.m', Dom.icon('clock', 14), Dom.mins(homeMin))) : null));
     for (const id of L.station || L.recap ? [] : place.stations) {
       const s = ui.c.get('stations', id);
       const shut = !open && id !== 'store' && id !== 'rest';

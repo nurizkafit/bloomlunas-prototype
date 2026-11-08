@@ -42,6 +42,7 @@ export class GameState {
       months: [],
       pendingEvent: null,
       firedEvents: [],
+      lastRandomEvent: null,
       checkSummary: null,
       actSummary: null,
       finished: false
@@ -59,6 +60,6 @@ export class GameState {
 
   /** @param {number} days */
   static freshWeek(days) {
-    return { spent: { store: 0, personal: 0, bills: 0 }, income: { store: 0, market: 0, guild: 0, quest: 0, other: 0 }, goalsMet: Array(days).fill(null), sold: {}, startGold: 0, xp: { moon: 0, sun: 0, earth: 0 }, lines: [] };
+    return { spent: { store: 0, personal: 0, bills: 0 }, income: { store: 0, market: 0, guild: 0, quest: 0, other: 0 }, goalsMet: Array(days).fill(null), sold: {}, startGold: 0, xp: { moon: 0, sun: 0, earth: 0 }, lines: [], eventDays: null };
   }
 }

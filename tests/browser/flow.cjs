@@ -49,9 +49,14 @@ async function run(w, hgt) {
   await page.keyboard.press('m');
   await page.waitForSelector('.pinfo');
   await shot('10-map');
+  await page.locator('.smenu .srow', { hasText: 'Guild' }).click();
+  await page.waitForTimeout(800);
+  await shot('10b-map-zoom');
   await page.locator('.smenu .srow', { hasText: 'Market' }).click();
   await page.locator('.pinfo .btn', { hasText: 'Go' }).click();
-  await page.waitForTimeout(150);
+  await page.waitForTimeout(500);
+  await shot('10c-walk');
+  await page.waitForFunction(() => !window.__bl.ui.local.walk, null, { timeout: 15000 });
   await clearEvent();
   await page.locator('.smenu .srow', { hasText: 'Market stall' }).click();
   await shot('11-stall');
@@ -91,6 +96,7 @@ async function run(w, hgt) {
   await page.locator('.tab[data-label="Market"]').click(); await shot('17-market');
   await page.locator('.tab[data-label="Public schedule"]').click(); await shot('17b-hours');
   await page.locator('.tab[data-label="Notes"]').click(); await shot('17c-notes');
+  await page.locator('.tab[data-label="Log"]').click(); await shot('17d-log');
   await page.keyboard.press('j');
   // Store day: back home, craft, stock, open
   await ev(() => {
@@ -103,6 +109,12 @@ async function run(w, hgt) {
     while (gm.state.cal.minute < 9 * 60) gm.action('shortBreak');
   });
   await draw();
+  // Sleep transition (frozen at the night frame and the dawn frame for the screenshots).
+  const freeze = (t) => ev((k) => { for (const a of document.querySelector('.nightfx')?.getAnimations({ subtree: true }) ?? []) { a.pause(); a.currentTime = k * a.effect.getTiming().duration; } }, t);
+  await page.waitForSelector('.nightfx');
+  await freeze(0.3); await shot('17e-sleep-night');
+  await freeze(0.68); await shot('17f-sleep-dawn');
+  await ev(() => document.querySelector('.nightfx')?.remove());
   await page.locator('.smenu .srow', { hasText: 'Store' }).click();
   await shot('18-store');
   await ev(() => { window.__bl.ui.local.fast = true; });

@@ -4,8 +4,8 @@ import { Calendar, WEEKDAYS } from '../../model/Calendar.js';
 const h = Dom.h;
 
 /**
- * HudView: top band. Day dial (user decision 8 Nov 2026: the day from DAY_START_HOUR to DAY_END_HOUR with a moving
- * hand, sky colour by the hour, the time in the centre, an energy ring around it), calendar, gold, debt and food pills,
+ * HudView: top band. Clock dial (user feedback 8 Nov 2026: a 12-hour clock face with hands and AM/PM, sky colour by
+ * the hour, an energy ring around it; the weekday and 24-hour time on a plate under it), calendar, gold, debt and food pills,
  * today's goal card, and round buttons (Map, Journal). Icon + number, few words.
  */
 export class HudView {
@@ -25,6 +25,7 @@ export class HudView {
       h('div.hcol',
         h('div.prow',
           h('div.pill.cal', { 'data-help': 'calendar' }, h('span', Dom.icon('calendar', 20), `M${st.cal.month}`, h('i', '·'), `W${st.cal.week}`, h('i', '·'), `D${st.cal.day}`)),
+          h('div.pill.time', { 'data-help': 'day' }, h('span', Dom.icon('clock', 18), h('small', wd), h('b', Calendar.clock(st.cal.minute)), h('i', st.cal.minute < 720 ? 'AM' : 'PM'))),
           h('div.pill', { 'data-help': 'gold' }, h('span', Dom.icon('gold', 22), Math.round(st.gold).toLocaleString('en'))),
           h('div.pill.debt', { 'data-help': 'debt' }, h('span', Dom.icon('debt', 22), Math.round(st.debt.balance).toLocaleString('en'))),
           h('div.pill', { 'data-help': 'food' }, h('span', Dom.icon('meal', 22), String(this.#food())))),
@@ -34,41 +35,49 @@ export class HudView {
         this.#rb('journal', 'Journal', L.journal, () => ui.set({ journal: !L.journal, map: false }))) : null);
   }
 
-  /** Day dial with the energy ring. Angles: -135 deg (day start) to +135 deg (day end), clockwise from the top. */
+  /**
+   * Clock dial with the energy ring (user feedback 8 Nov 2026: a normal 12-hour clock face with AM/PM; the digital
+   * time stays in 24-hour form). Hour and minute hands, 12 numbers, sky colour by the hour, sun or moon mark.
+   */
   #dial(wd, phaseIcon, start, end, eRatio) {
     const st = this.ui.st, m = st.cal.minute;
-    const t = Math.max(0, Math.min(1, (m - start) / (end - start)));
-    const ang = (r) => -135 + 270 * r;
     const pt = (a, r) => [50 + r * Math.sin(a * Math.PI / 180), 50 - r * Math.cos(a * Math.PI / 180)];
-    const arc = (a0, a1, r) => { const [x0, y0] = pt(a0, r), [x1, y1] = pt(a1, r); return `M${x0.toFixed(2)} ${y0.toFixed(2)} A${r} ${r} 0 ${a1 - a0 > 180 ? 1 : 0} 1 ${x1.toFixed(2)} ${y1.toFixed(2)}`; };
+    const f = (n) => n.toFixed(2);
     const hr = m / 60, sky = HudView.sky(hr), night = hr >= 19 || hr < 6;
-    const hours = (end - start) / 60;
-    let ticks = '';
-    for (let i = 0; i <= hours; i++) {
-      const hh = start / 60 + i, a = ang(i / hours), big = hh % 6 === 0;
-      const [x0, y0] = pt(a, big ? 30.5 : 33), [x1, y1] = pt(a, 36.5);
-      ticks += `<path d="M${x0.toFixed(2)} ${y0.toFixed(2)}L${x1.toFixed(2)} ${y1.toFixed(2)}" stroke="${night ? '#F2E9D8' : '#1F3A3D'}" stroke-opacity="${big ? 0.85 : 0.45}" stroke-width="${big ? 1.6 : 0.9}" stroke-linecap="round"/>`;
+    const ink = night ? '#F2E9D8' : '#1F3A3D';
+    let face = '';
+    for (let i = 0; i < 60; i++) {
+      const a = i * 6, big = i % 5 === 0;
+      const [x0, y0] = pt(a, big ? 36 : 38), [x1, y1] = pt(a, 39.5);
+      face += `<path d="M${f(x0)} ${f(y0)}L${f(x1)} ${f(y1)}" stroke="${ink}" stroke-opacity="${big ? 0.85 : 0.35}" stroke-width="${big ? 1.4 : 0.6}" stroke-linecap="round"/>`;
     }
-    const a = ang(t), [hx, hy] = pt(a, 31);
+    for (let n = 1; n <= 12; n++) {
+      const [x, y] = pt(n * 30, 29.5);
+      face += `<text x="${f(x)}" y="${f(y)}" text-anchor="middle" dominant-baseline="central" font-family="Marcellus, Georgia, serif" font-size="${n % 3 === 0 ? 9 : 7}" fill="${ink}" fill-opacity="${n % 3 === 0 ? 1 : 0.7}">${n}</text>`;
+    }
+    const hAng = ((hr % 12) / 12) * 360, mAng = ((m % 60) / 60) * 360;
+    const [hx, hy] = pt(hAng, 18), [mx, my] = pt(mAng, 30), [tx, ty] = pt(hAng + 180, 4), [ux, uy] = pt(mAng + 180, 5);
     const e = Math.max(0, Math.min(1, eRatio)), low = e < 0.25;
     const eLen = 2 * Math.PI * 45.5;
+    const ampm = hr < 12 ? 'AM' : 'PM';
+    const mark = night
+      ? `<circle cx="50" cy="66" r="4" fill="#E9EEF8"/><circle cx="51.8" cy="64.8" r="3.3" fill="${sky}"/>`
+      : `<circle cx="50" cy="66" r="3.6" fill="#F2C14E" stroke="#B5523B" stroke-width=".6"/>`;
     const svg = `<svg viewBox="0 0 100 100" width="128" height="128" aria-hidden="true">
       <circle cx="50" cy="50" r="49" fill="#7A5634"/><circle cx="50" cy="50" r="48" fill="none" stroke="#D9B077" stroke-width="1"/>
       <circle cx="50" cy="50" r="45.5" fill="none" stroke="#2A1E14" stroke-opacity=".55" stroke-width="5"/>
       <circle cx="50" cy="50" r="45.5" fill="none" stroke="${low ? '#C0583F' : '#8DBA5A'}" stroke-width="4" stroke-linecap="round"
-        stroke-dasharray="${(e * eLen).toFixed(2)} ${eLen.toFixed(2)}" transform="rotate(-90 50 50)"/>
+        stroke-dasharray="${f(e * eLen)} ${f(eLen)}" transform="rotate(-90 50 50)"/>
       <circle cx="50" cy="50" r="41" fill="${sky}" stroke="#5A3D22" stroke-width="1.4"/>
-      <path d="${arc(-135, a, 38.5)}" fill="none" stroke="${night ? '#A9B8E8' : '#D9A326'}" stroke-opacity=".7" stroke-width="2.4" stroke-linecap="round"/>
-      ${ticks}
-      <circle cx="50" cy="50" r="22" fill="#1F3A3D" stroke="#D9A326" stroke-width="1.2"/>
-      <path d="M50 50L${hx.toFixed(2)} ${hy.toFixed(2)}" stroke="#2D3B3A" stroke-width="2" stroke-linecap="round" opacity=".55"/>
-      ${night
-        ? `<circle cx="${hx.toFixed(2)}" cy="${hy.toFixed(2)}" r="5" fill="#E9EEF8" stroke="#2C3E5C" stroke-width=".8"/><circle cx="${(hx + 2).toFixed(2)}" cy="${(hy - 1.5).toFixed(2)}" r="4" fill="${sky}"/>`
-        : `<circle cx="${hx.toFixed(2)}" cy="${hy.toFixed(2)}" r="5" fill="#F2C14E" stroke="#B5523B" stroke-width=".8"/>`}
+      ${face}
+      <text x="50" y="38" text-anchor="middle" dominant-baseline="central" font-family="Marcellus, Georgia, serif" font-size="7" letter-spacing=".6" fill="${ink}">${ampm}</text>
+      ${mark}
+      <path d="M${f(tx)} ${f(ty)}L${f(hx)} ${f(hy)}" stroke="#1F3A3D" stroke-width="3.2" stroke-linecap="round"/>
+      <path d="M${f(ux)} ${f(uy)}L${f(mx)} ${f(my)}" stroke="#B5523B" stroke-width="1.8" stroke-linecap="round"/>
+      <circle cx="50" cy="50" r="2.6" fill="#D9A326" stroke="#5A3D22" stroke-width=".8"/>
     </svg>`;
     return h('div.daydial', { 'data-help': 'day' },
       Dom.raw(svg),
-      h('div.dt', h('small', wd.toUpperCase()), h('b', Calendar.clock(m))),
       h('span.ph', Dom.medal(phaseIcon, 30)),
       h(`span.en${low ? '.low' : ''}`, { 'data-help': 'energy' }, Dom.icon('energy', 14), String(Math.round(st.energy))));
   }

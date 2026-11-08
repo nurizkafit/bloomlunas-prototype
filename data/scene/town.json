@@ -28,6 +28,12 @@
    "x": 0.5,
    "z": 0,
    "dist": 28
+  },
+  "townmap": {
+   "_doc": "Town list camera: all places in view (user feedback 8 Nov 2026).",
+   "x": 2.2,
+   "z": 0.6,
+   "dist": 34
   }
  },
  "houses": [
@@ -1103,6 +1109,21 @@
    "speed": 0.35
   }
  ],
+ "walk": {
+  "_doc": "Player walk on travel (user feedback 8 Nov 2026). routes: points from the plaza ring out to the place spot. ring: plaza radius (walk round the fountain). speed: units per second. camDist: camera distance on the walk. zoomDist: extra zoom when a place is picked on the town list.",
+  "ring": 2.8,
+  "speed": 4.2,
+  "minMs": 1400,
+  "maxMs": 4200,
+  "camDist": 15,
+  "zoomDist": 10,
+  "routes": {
+   "home": [[-2, 2.6], [-4.5, 4.4], [-6.2, 4.2]],
+   "market": [[-0.8, 2.4]],
+   "guild": [[2.5, -2.8], [5.5, -3.5], [7, -3.6]],
+   "outskirt": [[4, 2.5], [6.5, 4], [9.0, 6.4]]
+  }
+ },
  "player": {
   "m": "mini-characters/character-female-b",
   "spots": {

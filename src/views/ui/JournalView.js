@@ -1,18 +1,18 @@
 import { MSG } from '../../core/EventBus.js';
 import { Dom } from './Dom.js';
 import { Icons } from './Icons.js';
-import { WEEKDAYS } from '../../model/Calendar.js';
+import { Calendar, WEEKDAYS } from '../../model/Calendar.js';
 import { CheckView } from './CheckView.js';
 import { ActView } from './ActView.js';
 
 const h = Dom.h;
 /** Journal tabs in Scene & Flow order (Plan phase). The Do phase adds the Log tab. */
 const TABS = [
-  { id: 'schedule', icon: 'calendar', label: 'Daily goals', help: 'tabSchedule' },
-  { id: 'store', icon: 'store', label: 'Store plan', help: 'tabStore' },
-  { id: 'ledger', icon: 'ledger', label: 'Ledger and assets', help: 'tabLedger' },
+  { id: 'schedule', icon: 'calendar', label: 'Daily goals', short: 'Goals', help: 'tabSchedule' },
+  { id: 'store', icon: 'store', label: 'Store plan', short: 'Store', help: 'tabStore' },
+  { id: 'ledger', icon: 'ledger', label: 'Ledger and assets', short: 'Ledger', help: 'tabLedger' },
   { id: 'market', icon: 'chart', label: 'Market', help: 'tabMarket' },
-  { id: 'hours', icon: 'clock', label: 'Public schedule', help: 'tabHours' },
+  { id: 'hours', icon: 'clock', label: 'Public schedule', short: 'Hours', help: 'tabHours' },
   { id: 'skills', icon: 'skills', label: 'Skills', help: 'tabSkills' },
   { id: 'notes', icon: 'note', label: 'Notes', help: 'tabNotes' },
   { id: 'log', icon: 'log', label: 'Log', help: 'tabLog' }
@@ -59,7 +59,7 @@ export class JournalView {
         h('div.pages',
           h('div.pg.l', ...pages[0], h('div.pageno', Dom.icon('moon', 14), String(n * 2 - 1))),
           h('div.pg.r', ...pages[1], h('div.pageno', String(n * 2), Dom.icon('moon', 14)))),
-        tabs.length ? h('div.tabs', tabs.map((t) => h(`button.tab${L.tab === t.id ? '.on' : ''}`, { 'data-label': t.label, 'data-help': t.help, onclick: () => ui.set({ tab: t.id }) }, Dom.icon(t.icon, 26)))) : null,
+        tabs.length ? h('div.tabs', tabs.map((t) => h(`button.tab${L.tab === t.id ? '.on' : ''}`, { 'data-label': t.label, 'data-help': t.help, onclick: () => ui.set({ tab: t.id }) }, Dom.icon(t.icon, 22), h('span.tl', t.short ?? t.label)))) : null,
         ...Dom.corners().map((c) => { c.style.zIndex = 3; return c; }),
         mode === 'do' ? h('button.iconbtn.close', { style: { right: '-12px', top: '-12px' }, title: 'Close', onclick: () => ui.set({ journal: false }), html: Icons.svg('x', 16) }) : null)
     ];
@@ -117,7 +117,7 @@ export class JournalView {
         card,
         h('div.dnote',
           ev ? h('span.qchip', { title: ev.title }, Dom.icon(ev.icon, 16), h('span.small', ev.title)) : null,
-          ...shut.map((p) => h('span.shut', { title: `${p.name} closed` }, Dom.icon(p.icon, 16), Dom.icon('x', 10)))),
+          ...shut.map((p) => h('span.shut', { title: `${p.name} closed` }, Dom.icon(p.icon, 16), h('span.small', `${p.name.split(' ')[0]} shut`)))),
         h('div.dmet', { 'data-help': 'goalMet' }, met === true ? Dom.icon('check', 18) : met === false ? Dom.icon('x', 16) : null));
       return editable(i) ? dropZone(row, (d) => drop(i, d)) : row;
     });
@@ -170,7 +170,7 @@ export class JournalView {
         return h('div.ln.sm',
           Dom.icon(Icons.forItem(it, m.variant), 20), h('span', it.name), h('span.small.muted', m.variant),
           h(`span.qchip${ok ? '.ok' : '.miss'}`, { title: 'Have / need' }, `${m.have}/${m.need}`),
-          m.process && !ok ? h('span.row', { title: m.process === 'dried' ? 'Dry on the rack' : 'Dry, then grind' }, Dom.icon(m.process === 'dried' ? 'rack' : 'grinder', 18)) : null,
+          m.process && !ok ? h('span.row.small', { title: m.process === 'dried' ? 'Dry on the rack' : 'Dry, then grind' }, Dom.icon(m.process === 'dried' ? 'rack' : 'grinder', 18), m.process === 'dried' ? 'Dry' : 'Dry + grind') : null,
           h('span.v', ok ? Dom.icon('check', 16) : `${m.cost}`));
       }) : h('div.small.muted', { style: { padding: '8px 0' } }, 'Pick products first.'))
     ];
@@ -365,14 +365,24 @@ export class JournalView {
   }
 
   /* ---------- Log (Do phase) ---------- */
+  /** Two scroll boxes (user feedback 8 Nov 2026): today (newest first) and all earlier days, grouped by day. */
   #log() {
-    const ui = this.ui, st = ui.st;
-    const today = st.log.filter((l) => l.day === ui.sys.time.absDay());
-    const before = st.log.filter((l) => l.day !== ui.sys.time.absDay()).slice(-12).reverse();
-    const line = (l) => h('div.ln', Dom.icon(Icons.has(l.icon) ? l.icon : 'log', 18), h('span.small.muted', { style: { width: '44px' } }, `${String(Math.floor(l.minute / 60)).padStart(2, '0')}:${String(l.minute % 60).padStart(2, '0')}`), h('span.small', l.text));
+    const ui = this.ui, st = ui.st, now = ui.sys.time.absDay();
+    const dpw = ui.num('DAYS_PER_WEEK');
+    const today = st.log.filter((l) => l.day === now).reverse();
+    const before = st.log.filter((l) => l.day !== now).reverse();
+    const line = (l) => h('div.ln.sm', Dom.icon(Icons.has(l.icon) ? l.icon : 'log', 18), h('span.small.muted.lt', Calendar.clock(l.minute)), h('span.small', l.text));
+    const groups = [];
+    for (const l of before) {
+      if (groups.at(-1)?.day !== l.day) groups.push({ day: l.day, lines: [] });
+      groups.at(-1).lines.push(l);
+    }
+    const dayName = (d) => { const w = Math.ceil(d / dpw), dd = ((d - 1) % dpw) + 1; return `Week ${w} · ${WEEKDAYS[(dd - 1) % 7]} (D${dd})`; };
+    const box = (kids, empty) => h('div.scroll.logbox', kids.length ? kids : h('div.small.muted', { style: { padding: '8px' } }, empty));
     return [
-      [h('h3', Dom.icon('log', 28), 'Today'), h('div.scroll', { style: { flex: 1 } }, today.slice().reverse().map(line))],
-      [h('h3', Dom.icon('calendar', 28), 'Before'), h('div.scroll', { style: { flex: 1 } }, before.map(line))]
+      [h('h3', Dom.icon('log', 28), 'Today', h('span.aside', `${today.length} lines`)), box(today.map(line), 'Nothing done yet today.')],
+      [h('h3', Dom.icon('calendar', 28), 'Before', h('span.aside', `${before.length} lines`)),
+        box(groups.flatMap((g) => [h('div.logday', dayName(g.day)), ...g.lines.map(line)]), 'No earlier days yet.')]
     ];
   }
 }

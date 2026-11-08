@@ -65,11 +65,41 @@ export class SceneView {
     const inGame = local.screen === 'game', doing = inGame && state.phase === 'do';
     const room = this.data.rooms?.[state.place];
     this.focus = doing && !local.map ? (room ? `room:${state.place}` : state.place) : 'overview';
+    // Town list (user feedback 8 Nov 2026): all places in view; a picked place zooms in; travel shows the walk.
+    if (doing && local.map) this.focus = 'townmap';
+    this.zoom = !!(doing && local.map && local.pick?.zoom && this.data.places[local.pick.place]);
+    if (this.zoom) this.focus = local.pick.place;
+    if (doing && local.walk && this.walkAnim) this.focus = 'walk';
     this.selected = doing && local.map ? local.pick?.place ?? null : null;
     this.minute = inGame ? state.cal.minute : 16 * 60;
     this.playerPlace = inGame ? state.place : null;
     // Free view area: right of the station list or the place list when no window is open.
-    this.offsetX = doing && !local.station && !local.journal ? -150 : 0;
+    this.offsetX = doing && !local.station && !local.journal && !local.walk ? -150 : 0;
+  }
+
+  /**
+   * Start the player walk from one place to another along the town roads (round the plaza fountain).
+   * @param {string} from @param {string} to @returns {number} walk time in ms (0 when the town is not ready)
+   */
+  walk(from, to) {
+    const w = this.data?.walk, sp = this.data?.player?.spots;
+    if (!this.ready || !this.player || !w || !w.routes[from] || !w.routes[to] || !sp[from] || !sp[to]) return 0;
+    const out = [...w.routes[from]].reverse(), into = w.routes[to];
+    const a0 = Math.atan2(out.at(-1)[1], out.at(-1)[0]), a1 = Math.atan2(into[0][1], into[0][0]);
+    let da = a1 - a0;
+    while (da > Math.PI) da -= 2 * Math.PI;
+    while (da < -Math.PI) da += 2 * Math.PI;
+    const steps = Math.max(1, Math.ceil(Math.abs(da) / (Math.PI / 4)));
+    const ring = [];
+    for (let i = 0; i <= steps; i++) { const a = a0 + (da * i) / steps; ring.push([Math.cos(a) * w.ring, Math.sin(a) * w.ring]); }
+    const pts = [sp[from], ...out, ...ring, ...into, sp[to]].map(([x, z]) => new THREE.Vector3(x, 0, z))
+      .filter((p, i, arr) => i === 0 || p.distanceTo(arr[i - 1]) > 0.2);
+    const curve = new THREE.CatmullRomCurve3(pts, false, 'centripetal');
+    const len = curve.getLength();
+    const dur = Math.max(w.minMs, Math.min(w.maxMs, (len / w.speed) * 1000));
+    this.walkAnim = { curve, t0: this.clock.getElapsed(), dur };
+    this.target.copy(pts[0]);
+    return dur;
   }
 
   /**
@@ -343,9 +373,21 @@ export class SceneView {
     obj.traverse((m) => { if (m.isMesh) { m.castShadow = true; m.material = m.material.clone(); m.material.roughness = 1; m.material.metalness = 0; } });
     const mixer = new THREE.AnimationMixer(obj);
     const a = g.animations.find((x) => x.name === clip) ?? g.animations[0];
-    if (a) mixer.clipAction(a).play();
+    const c = { obj, mixer, anims: g.animations, clip: a?.name, action: a ? mixer.clipAction(a) : null };
+    c.action?.play();
     this.mixers.push(mixer);
-    return { obj, mixer };
+    return c;
+  }
+
+  /** Cross-fade a character to a clip by name (no-op when it already plays it). */
+  #clip(c, name) {
+    if (c.clip === name) return;
+    const a = c.anims.find((x) => x.name === name);
+    if (!a) return;
+    const next = c.mixer.clipAction(a);
+    next.reset().play();
+    if (c.action) c.action.crossFadeTo(next, 0.2, false);
+    c.action = next; c.clip = name;
   }
 
   #walker(w) {
@@ -367,7 +409,18 @@ export class SceneView {
     const roomKey = this.focus.startsWith('room:') ? this.focus.slice(5) : null;
     const room = roomKey ? d.rooms[roomKey] : null;
     let goal, dir, dist;
-    if (room) {
+    const wa = this.focus === 'walk' ? this.walkAnim : null;
+    let wp = null;
+    if (wa) {
+      const k = Math.min(1, ((this.clock.getElapsed() - wa.t0) * 1000) / wa.dur);
+      const e = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+      wp = { p: wa.curve.getPointAt(e), ahead: wa.curve.getPointAt(Math.min(1, e + 0.02)) };
+    }
+    if (wp) {
+      goal = new THREE.Vector3(wp.p.x, 0.4, wp.p.z);
+      dir = new THREE.Vector3(Math.sin(0.62 + sway), 0.82, Math.cos(0.62 + sway)).normalize();
+      dist = d.walk.camDist;
+    } else if (room) {
       const c = room.cam;
       goal = new THREE.Vector3(room.origin[0] + (c.tx ?? 0.2), 0.55, room.origin[1] + (c.tz ?? 0.1));
       dir = new THREE.Vector3(Math.sin(c.yaw + sway * 0.4), c.pitch, Math.cos(c.yaw + sway * 0.4)).normalize();
@@ -376,12 +429,12 @@ export class SceneView {
       const place = d.places[this.focus] ?? d.places.overview;
       goal = new THREE.Vector3(place.x, 0.4, place.z);
       dir = new THREE.Vector3(Math.sin(0.62 + sway), 0.82, Math.cos(0.62 + sway)).normalize();
-      dist = place.dist;
+      dist = this.zoom ? d.walk?.zoomDist ?? place.dist : place.dist;
     }
     // Cut (no long glide) when the camera goes in or out of a room.
     const cut = this.lastRoom !== roomKey;
     this.lastRoom = roomKey;
-    if (cut) this.target.copy(goal); else this.target.lerp(goal, 1 - Math.pow(0.02, dt));
+    if (cut) this.target.copy(goal); else this.target.lerp(goal, wp ? 1 - Math.pow(0.0005, dt) : 1 - Math.pow(0.02, dt));
     this.camGoal.copy(this.target).addScaledVector(dir, dist);
     if (cut) this.camera.position.copy(this.camGoal); else this.camera.position.lerp(this.camGoal, 1 - Math.pow(0.05, dt));
     this.camera.lookAt(this.target);
@@ -396,7 +449,12 @@ export class SceneView {
       w.obj.position.copy(p);
       w.obj.lookAt(ahead.x, 0, ahead.z);
     }
-    if (this.player && this.playerPlace) {
+    if (this.player) this.#clip(this.player, wp ? 'walk' : 'idle');
+    if (this.player && wp) {
+      this.player.obj.position.copy(wp.p);
+      if (wp.ahead.distanceTo(wp.p) > 0.01) this.player.obj.lookAt(wp.ahead.x, 0, wp.ahead.z);
+      this.player.obj.visible = true;
+    } else if (this.player && this.playerPlace) {
       const rp = this.inRoom && d.rooms[this.playerPlace]?.player;
       if (rp) {
         const o = d.rooms[this.playerPlace].origin;

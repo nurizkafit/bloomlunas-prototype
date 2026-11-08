@@ -32,7 +32,7 @@ export class CraftView {
       h('div.row', { style: { gap: '16px' } }, Dom.medal(prod.icon, 88), h('div', h('div.kick', r.method), h('div', { style: { fontFamily: 'var(--head)', fontSize: '24px' } }, prod.name), h('div.row', Dom.stars(tiers[tier].stars), h('span.small', tiers[tier].name)))),
       h('div.chipline', { style: { justifyContent: 'center' } }, r.inputs.map((i) => {
         const it = ui.c.get('items', i.item), have = Inventory.count(st.inv, i.item, i.variant, ''), need = i.qty * b;
-        return h(`span.qchip${have >= need ? '.ok' : '.miss'}`, { title: `${it.name} (${i.variant})` }, ui.itemBtn(i.item, i.variant, null, 18), `${have}/${need}`);
+        return h(`span.qchip${have >= need ? '.ok' : '.miss'}`, { title: `${it.name} (${i.variant})` }, ui.itemBtn(i.item, i.variant, null, 18), h('span.small', it.name), `${have}/${need}`);
       })),
       Dom.stepper(b, (d) => ui.set({ pick: { ...L.pick, recipe: r.id, batches: b + d } }), { min: 1, max: maxB, big: true }),
       h('div.dots', Array.from({ length: maxB }, (_, i) => h(`i${i < b ? (i < can ? '.ok' : '.no') : ''}`))),

@@ -11,6 +11,7 @@ import { EventCardView } from './EventCardView.js';
 import { RetroView } from './RetroView.js';
 import { ItemCardView } from './ItemCardView.js';
 import { Icons } from './Icons.js';
+import { Calendar, WEEKDAYS } from '../../model/Calendar.js';
 
 const h = Dom.h;
 
@@ -35,7 +36,8 @@ export class UiRoot {
     this.toasts = h('div.toasts');
     this.hint = h('div.hint');
     this.pop = h('div.helppop');
-    this.stage.append(this.sceneLayer, h('div.paperveil'), h('div.vignette'), this.spotLayer, this.hud, this.screen, this.modal, this.toasts, this.hint, this.pop);
+    this.fx = h('div.layer.pass.fx');
+    this.stage.append(this.sceneLayer, h('div.paperveil'), h('div.vignette'), this.spotLayer, this.hud, this.screen, this.modal, this.toasts, this.hint, this.pop, this.fx);
     this.stage.addEventListener('mousemove', (e) => this.#hover(e.target));
     this.stage.addEventListener('mouseleave', () => this.#hover(null));
     this.stage.addEventListener('click', (e) => { if (e.target.closest?.('.helpq')) this.#hover(e.target); });
@@ -58,6 +60,24 @@ export class UiRoot {
   send(msg, payload = {}) { this.gm.bus.emit(msg, payload); }
   /** Ask for a Do action. @param {string} id @param {any} [params] */
   act(id, params = {}) { this.send(MSG.INTENT_ACTION, { id, params }); }
+  /**
+   * Travel with the walk (user feedback 8 Nov 2026): the player walks along the town roads, then the new place opens.
+   * @param {string} place
+   */
+  travel(place) {
+    const from = this.st.place;
+    Object.assign(this.local, { map: false, station: null, pick: {} });
+    this.act('travel', { place });
+    if (this.st.place !== place) return;
+    const ms = this.o.scene?.walk?.(from, place) ?? 0;
+    if (!ms) return;
+    this.local.walk = { to: place };
+    this.render();
+    clearTimeout(this.#walkT);
+    this.#walkT = setTimeout(() => this.set({ walk: null }), ms + 150);
+  }
+  #walkT = 0;
+
   /** Cost preview for a button. */
   preview(id, params = {}) { return this.sys.actions.preview(id, params); }
 
@@ -106,7 +126,25 @@ export class UiRoot {
     if (['marketBuy', 'marketSell', 'wholesaleBuy', 'wholesaleSell'].includes(r.id) && this.local.pick.cart) this.local.pick = { ...this.local.pick, cart: {} };
     const t = DONE_TOAST[r.id];
     if (t) this.toast(t[0], t[1](r, this));
-    if (r.endDay && this.st.phase === 'do') this.toast('sleep', `Day ${this.st.cal.day + 1}`);
+    if (r.endDay) this.#sleep();
+  }
+
+  /**
+   * Sleep (user feedback 8 Nov 2026): close all windows, fade to night, show the new day, fade in on a fresh day
+   * at home. The overlay lives in its own layer, so redraws do not remove it.
+   */
+  #sleep() {
+    const st = this.st, L = this.local;
+    Object.assign(L, { station: null, map: false, journal: false, recap: null, pick: {}, card: null, walk: null });
+    const weekEnd = st.cal.day >= this.num('DAYS_PER_WEEK');
+    const day = weekEnd ? null : st.cal.day + 1;
+    const wd = day ? WEEKDAYS[Calendar.weekday({ day })] : '';
+    const ms = this.num('SLEEP_FADE_MS');
+    const el = h('div.nightfx', { style: { '--fx': `${ms}ms` } },
+      h('div.nf-sky', h('span.nf-moon'), h('span.nf-sun')),
+      h('div.nf-t', h('small', weekEnd ? 'Good night' : 'A new day'), h('b', weekEnd ? 'Week done' : `Day ${day}`), weekEnd ? null : h('span', `${wd} · ${Calendar.clock(this.num('DAY_START_HOUR') * 60)}`)));
+    this.fx.replaceChildren(el);
+    setTimeout(() => el.remove(), ms + 100);
   }
 
   /** Show a short toast: icon + few words. */
@@ -144,9 +182,14 @@ export class UiRoot {
         hint = [['Click', 'Select'], ['Tabs', 'Pages']];
       } else if (st.phase === 'do') {
         if (L.journal) { this.screen.append(this.views.journal.render('do')); hint = [['J', 'Close book'], ['Tabs', 'Pages']]; }
+        else if (L.walk) {
+          const p = this.c.get('places', L.walk.to);
+          this.screen.append(h('div.walkbar', Dom.medal('walk', 32), h('span', 'Walking to'), h('b', p.name)));
+          hint = [];
+        }
         else if (L.map) { this.screen.append(...this.views.map.render()); hint = [['M', 'Close town list'], ['Click', 'Pick a place']]; }
         else { this.screen.append(...this.views.place.render()); hint = [['M', 'Town'], ['J', 'Journal'], ['Esc', 'Back']]; }
-        if (st.pendingEvent) this.modal.append(this.views.event.render());
+        if (st.pendingEvent && !L.walk) this.modal.append(this.views.event.render());
       }
     }
     if (L.card && L.screen === 'game') this.modal.append(this.views.card.render());
@@ -161,7 +204,7 @@ export class UiRoot {
   #key(e) {
     if (this.local.screen !== 'game') return;
     if (e.key === 'Escape' && this.local.card) { this.set({ card: null }); return; }
-    if (this.st.phase !== 'do' || this.st.pendingEvent) return;
+    if (this.st.phase !== 'do' || this.st.pendingEvent || this.local.walk) return;
     if (e.key === 'j' || e.key === 'J') this.set({ journal: !this.local.journal, map: false });
     else if (e.key === 'm' || e.key === 'M') this.set({ map: !this.local.map, journal: false });
     else if (e.key === 'Escape') this.set({ journal: false, map: false, station: null });
