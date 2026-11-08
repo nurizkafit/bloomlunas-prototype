@@ -288,9 +288,9 @@
     "semantic_hash": ""
   },
   "src/views/ui/HudView.js": {
-    "mtime": 1794113353.1661513,
-    "seen": 1794113551.3048866,
-    "ast_hash": "ba905bc78a4320fc22eb9f824679354b",
+    "mtime": 1794116709.6980891,
+    "seen": 1794118388.3697073,
+    "ast_hash": "99b299ca3ce469750fc6ef206fcb5aaf",
     "semantic_hash": ""
   },
   "tests/browser/run.mjs": {

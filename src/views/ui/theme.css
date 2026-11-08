@@ -50,7 +50,8 @@ button:disabled { cursor: not-allowed; }
 .plate { position: relative; height: 32px; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: var(--head); font-size: 18px; color: var(--cream); background: linear-gradient(180deg, #2E5A56, #1F3A3D); clip-path: polygon(14px 0, calc(100% - 14px) 0, 100% 50%, calc(100% - 14px) 100%, 14px 100%, 0 50%); letter-spacing: .04em; }
 .plate::before, .plate::after { content: ""; position: absolute; top: 50%; width: 36px; height: 10px; transform: translateY(-50%); background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 10'><path d='M2 5 C8 0 14 0 18 5 C14 10 8 10 2 5Z M18 5 C24 1 30 2 34 5' fill='none' stroke='%23D9A326' stroke-width='1.2'/></svg>") no-repeat center/contain; }
 .plate::before { left: 18px; } .plate::after { right: 18px; transform: translateY(-50%) scaleX(-1); }
-.stag { position: absolute; left: 0; top: 120px; z-index: 30; height: 40px; padding: 0 32px 0 24px; display: flex; align-items: center; gap: 8px; font-family: var(--head); font-size: 20px; color: var(--ink); background: var(--paper); clip-path: polygon(0 0, 100% 0, calc(100% - 16px) 50%, 100% 100%, 0 100%); box-shadow: inset 0 2px 0 var(--rattan), inset 0 -2px 0 var(--rattan), inset 0 -4px 0 var(--rattanD); filter: drop-shadow(0 3px 4px rgba(0,0,0,.4)); }
+.stag { position: absolute; top: 22px; left: 620px; right: 150px; width: fit-content; margin: 0 auto; z-index: 30; height: 40px; padding: 0 30px; display: flex; align-items: center; gap: 8px; font-family: var(--head); font-size: 20px; color: #fff; background: linear-gradient(90deg, rgba(0,0,0,.18), transparent 22%, transparent 78%, rgba(0,0,0,.18)), var(--ribbon); clip-path: polygon(0 0, 100% 0, calc(100% - 14px) 50%, 100% 100%, 0 100%, 14px 50%); box-shadow: inset 0 2px 0 rgba(255,255,255,.25), inset 0 -3px 0 rgba(0,0,0,.25); filter: drop-shadow(0 3px 4px rgba(0,0,0,.4)); }
+.stag .ico, .stag svg { filter: brightness(1.05); }
 .hint { position: absolute; left: 0; right: 0; bottom: 0; height: 32px; z-index: 40; display: flex; justify-content: flex-end; align-items: center; gap: 24px; padding: 0 32px; font-size: 13px; color: var(--cream); background: linear-gradient(90deg, transparent, rgba(22,41,43,.88) 35%); pointer-events: none; }
 .hint i { font-style: normal; display: inline-grid; place-items: center; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 10px; background: var(--cream); color: var(--teal); font-size: 11px; font-weight: 700; margin-right: 6px; }
 .corner { position: absolute; width: 72px; height: 72px; pointer-events: none; z-index: 4; }
@@ -79,7 +80,7 @@ button:disabled { cursor: not-allowed; }
 .close { position: absolute; right: 8px; top: 8px; z-index: 6; }
 
 /* HUD */
-.hud { position: absolute; left: var(--m); right: var(--m); top: 16px; height: 88px; display: flex; align-items: flex-start; gap: 16px; z-index: 20; }
+.hud { position: absolute; left: var(--m); right: var(--m); top: 16px; height: 88px; display: flex; align-items: flex-start; gap: 16px; z-index: 26; }
 .daymedal { width: 88px; height: 88px; border-radius: 50%; background: var(--wood); box-shadow: 0 0 0 3px var(--woodD), inset 0 0 0 2px #D9B077, 0 6px 12px rgba(0,0,0,.45); display: grid; place-items: center; position: relative; flex: none; }
 .daymedal > div { width: 68px; height: 68px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #2E5A56, #1F3A3D 70%); box-shadow: 0 0 0 2px var(--woodD), inset 0 0 0 2px var(--tur); display: grid; place-items: center; align-content: center; text-align: center; color: var(--cream); line-height: 1; }
 .daymedal b { font-family: var(--big); font-size: 28px; }
@@ -96,9 +97,10 @@ button:disabled { cursor: not-allowed; }
 .bar.gold > i { background: linear-gradient(180deg, #F0C866, #D9A326); }
 .bar.wis > i { background: linear-gradient(180deg, #C6B5E2, var(--wis)); }
 .bar.ver > i { background: linear-gradient(180deg, #9ED3CB, var(--verd)); }
-.goalcard { width: 304px; }
-.goalcard .in { padding: 8px 16px; display: flex; align-items: center; gap: 8px; font-size: 14px; min-height: 52px; }
-.goalcard small { font-family: var(--head); font-size: 11px; letter-spacing: .1em; color: var(--fern); display: block; }
+.goalcard { align-self: stretch; }
+.goalcard .in { padding: 2px 12px 2px 4px; display: flex; align-items: center; gap: 8px; font-size: 15px; min-height: 34px; }
+.goalcard small { font-family: var(--head); font-size: 11px; letter-spacing: .1em; color: var(--fern); }
+.goalcard .gn { font-family: var(--head); }
 .goalcard .st { margin-left: auto; }
 .hright { margin-left: auto; display: flex; gap: 16px; padding-top: 4px; }
 .clock { font-family: var(--big); font-size: 22px; color: var(--cream); text-shadow: 0 1px 3px rgba(0,0,0,.7); display: flex; align-items: center; gap: 8px; }
@@ -122,9 +124,9 @@ button:disabled { cursor: not-allowed; }
 .pageno { position: absolute; bottom: 12px; font-size: 13px; display: flex; gap: 8px; align-items: center; color: var(--fern); font-family: var(--head); }
 .pg.l .pageno { left: 32px; } .pg.r .pageno { right: 32px; }
 .tabs { position: absolute; right: -44px; top: 40px; display: flex; flex-direction: column; gap: 8px; z-index: 1; }
-.tab { width: 64px; height: 48px; padding-left: 20px; display: grid; place-items: center; border-radius: 0 12px 12px 0; background: var(--wood); box-shadow: 0 0 0 1.5px var(--woodD), 0 3px 4px rgba(0,0,0,.35); clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); position: relative; }
+.tab { width: 64px; height: 48px; padding-left: 20px; display: grid; place-items: center; border-radius: 0 12px 12px 0; background: var(--wood); box-shadow: inset 0 0 0 1.5px var(--woodD); filter: drop-shadow(0 3px 3px rgba(0,0,0,.35)); position: relative; }
 .tab.on { background: linear-gradient(180deg, #F4ECDB, #E2D2B2); width: 72px; }
-.ribbon { position: absolute; right: 120px; bottom: -28px; width: 168px; height: 64px; padding-top: 12px; text-align: center; background: linear-gradient(90deg, rgba(0,0,0,.18), transparent 20%, transparent 80%, rgba(0,0,0,.18)), var(--ribbon); color: #fff; font-family: var(--head); font-size: 18px; clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%); z-index: 6; }
+.ribbon { position: absolute; right: 120px; bottom: -14px; width: 168px; height: 54px; padding-top: 8px; text-align: center; background: linear-gradient(90deg, rgba(0,0,0,.18), transparent 20%, transparent 80%, rgba(0,0,0,.18)), var(--ribbon); color: #fff; font-family: var(--head); font-size: 18px; clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%); z-index: 6; }
 .ribbon::before { content: ""; position: absolute; left: 8px; right: 8px; top: 4px; bottom: 16px; border-left: 1px dashed rgba(255,255,255,.5); border-right: 1px dashed rgba(255,255,255,.5); }
 .ribbon:hover { filter: brightness(1.12); }
 .ribbon:disabled { filter: grayscale(.6); }
@@ -174,7 +176,7 @@ button:disabled { cursor: not-allowed; }
 
 /* Place panel + station windows */
 .stcard > .sf { width: 100%; }
-.side { position: absolute; left: var(--m); top: 120px; width: 292px; z-index: 22; display: flex; flex-direction: column; gap: 12px; }
+.side { position: absolute; left: var(--m); top: 148px; width: 292px; z-index: 22; display: flex; flex-direction: column; gap: 12px; }
 .side .sf .in { padding: 8px; display: flex; align-items: center; gap: 8px; }
 .stcard { width: 100%; text-align: left; display: flex; align-items: center; gap: 8px; }
 .stcard .t { font-family: var(--head); font-size: 16px; line-height: 1.1; }
@@ -442,11 +444,12 @@ button.tlr:hover:not(:disabled) { background: rgba(95,163,154,.12); }
 .recap > .in { padding: 28px 32px 32px; }
 
 /* Day dial + energy ring (user decision 8 Nov 2026) */
-.daydial { position: relative; width: 104px; height: 104px; flex: none; margin: -8px 0 0 -8px; filter: drop-shadow(0 6px 8px rgba(0,0,0,.4)); }
+.daydial { position: relative; width: 128px; height: 128px; flex: none; margin: -8px 0 0 -8px; filter: drop-shadow(0 6px 8px rgba(0,0,0,.4)); }
 .daydial svg { display: block; }
 .daydial .dt { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: grid; place-items: center; color: var(--cream); line-height: 1; text-align: center; pointer-events: none; }
-.daydial .dt small { font-family: var(--head); font-size: 9px; letter-spacing: .08em; margin-bottom: 2px; }
-.daydial .dt b { font-family: var(--big); font-size: 15px; }
+.daydial .dt small { font-family: var(--head); font-size: 11px; letter-spacing: .08em; margin-bottom: 2px; }
+.daydial .dt b { font-family: var(--big); font-size: 20px; }
 .daydial .ph { position: absolute; top: -4px; right: -6px; }
-.daydial .en { position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%); display: inline-flex; align-items: center; gap: 2px; padding: 1px 8px 1px 5px; border-radius: 10px; background: var(--paper); box-shadow: 0 0 0 1.5px var(--woodD); font-weight: 700; font-size: 12px; color: var(--teal); white-space: nowrap; }
+.daydial .en { position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%); display: inline-flex; align-items: center; gap: 2px; padding: 1px 8px 1px 5px; border-radius: 10px; background: var(--paper); box-shadow: 0 0 0 1.5px var(--woodD); font-weight: 700; font-size: 14px; color: var(--teal); white-space: nowrap; }
 .daydial .en.low { color: var(--red); box-shadow: 0 0 0 1.5px var(--red); }
+.book > .corner.tl { display: none; } /* under the day dial; showed as a pale box */

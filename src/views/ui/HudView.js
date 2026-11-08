@@ -27,8 +27,8 @@ export class HudView {
           h('div.pill.cal', { 'data-help': 'calendar' }, h('span', Dom.icon('calendar', 20), `M${st.cal.month}`, h('i', '·'), `W${st.cal.week}`, h('i', '·'), `D${st.cal.day}`)),
           h('div.pill', { 'data-help': 'gold' }, h('span', Dom.icon('gold', 22), Math.round(st.gold).toLocaleString('en'))),
           h('div.pill.debt', { 'data-help': 'debt' }, h('span', Dom.icon('debt', 22), Math.round(st.debt.balance).toLocaleString('en'))),
-          h('div.pill', { 'data-help': 'food' }, h('span', Dom.icon('meal', 22), String(this.#food()))))),
-      goal ? Dom.slim('goalcard', { 'data-help': 'todayGoal' }, Dom.medal(goal.icon, 36), h('div', h('small', 'TODAY'), goal.name), h('span.st', met ? Dom.icon('check', 22) : Dom.icon('clock', 20))) : null,
+          h('div.pill', { 'data-help': 'food' }, h('span', Dom.icon('meal', 22), String(this.#food())))),
+        goal ? Dom.slim('goalcard', { 'data-help': 'todayGoal' }, Dom.medal(goal.icon, 26), h('small', 'TODAY'), h('span.gn', goal.name), h('span.st', met ? Dom.icon('check', 18) : Dom.icon('clock', 16))) : null),
       st.phase === 'do' ? h('div.hright',
         this.#rb('map', 'Town', L.map, () => ui.set({ map: !L.map, journal: false })),
         this.#rb('journal', 'Journal', L.journal, () => ui.set({ journal: !L.journal, map: false }))) : null);
@@ -52,7 +52,7 @@ export class HudView {
     const a = ang(t), [hx, hy] = pt(a, 31);
     const e = Math.max(0, Math.min(1, eRatio)), low = e < 0.25;
     const eLen = 2 * Math.PI * 45.5;
-    const svg = `<svg viewBox="0 0 100 100" width="104" height="104" aria-hidden="true">
+    const svg = `<svg viewBox="0 0 100 100" width="128" height="128" aria-hidden="true">
       <circle cx="50" cy="50" r="49" fill="#7A5634"/><circle cx="50" cy="50" r="48" fill="none" stroke="#D9B077" stroke-width="1"/>
       <circle cx="50" cy="50" r="45.5" fill="none" stroke="#2A1E14" stroke-opacity=".55" stroke-width="5"/>
       <circle cx="50" cy="50" r="45.5" fill="none" stroke="${low ? '#C0583F' : '#8DBA5A'}" stroke-width="4" stroke-linecap="round"
