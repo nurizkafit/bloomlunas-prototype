@@ -55,5 +55,5 @@ only. Their use does not imply any affiliation with or endorsement by those owne
 ## Kenney game assets (kenney.nl), CC0 1.0
 
 3D placeholder models in `assets/models/kenney/`: Fantasy Town Kit 2.0, Nature Kit, Survival Kit, Food Kit, Mini Forest 1.0,
-Mini Shop 2.1, Mini Characters. Each kit folder has its `License.txt` (Creative Commons Zero, CC0). Credit is not required;
+Mini Shop 2.1, Mini Characters, Furniture Kit. Each kit folder has its `License.txt` (Creative Commons Zero, CC0). Credit is not required;
 "Kenney (www.kenney.nl)" is given here as thanks. The files were uploaded by the user; only the used files are committed.

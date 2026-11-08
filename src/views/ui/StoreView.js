@@ -51,13 +51,11 @@ export class StoreView {
       h('div.row', Dom.chip('shelf', units), Dom.chip('gold', `≈ ${Math.round(st.shelf.reduce((s, x) => s + (x ? x.qty * eco.shelfPrice(x.item, x.tier, x.level) : 0), 0))}`), h('span.spacer'), Dom.chip('clock', `${o}–${c}`)));
     const right = h('div', { style: { display: 'flex', flexDirection: 'column', gap: '8px' } },
       h('div.kick', `Slot ${sel + 1}`),
-      h('div.scroll', { style: { maxHeight: '176px' } }, products.length ? products.map((p) => {
+      h('div', { style: { height: '152px', display: 'flex' } }, Dom.tlist('28px 1fr 48px', ['', 'Product', 'Free'], products.map((p) => {
         const it = ui.c.get('items', p.item);
-        const on = p.item === pItem && p.tier === pTier;
-        return h(`button.pick${on ? '.on' : ''}`, { onclick: () => pick({ item: p.item, tier: p.tier, qty: undefined }) },
-          Dom.medal(it.icon, 36), h('span.t', it.name), Dom.stars(tiers[p.tier].stars),
-          h('span.r', Dom.icon('bag', 16), String(eco.freeStock(p.item, p.tier))));
-      }) : h('div.small.muted', { style: { padding: '16px' } }, 'No products. Craft first.')),
+        return { on: p.item === pItem && p.tier === pTier, onclick: () => pick({ item: p.item, tier: p.tier, qty: undefined }),
+          cells: [ui.itemBtn(p.item, 'product', p.tier), h('span', it.name, ' ', Dom.stars(tiers[p.tier].stars)), String(eco.freeStock(p.item, p.tier))] };
+      }), 'No products. Craft first.')),
       h('div.lvpick', LV.map((k) => h(`button.lv-${k}${level === k ? '.on' : ''}`, { onclick: () => pick({ level: k }) },
         k[0].toUpperCase() + k.slice(1), pItem ? h('small.row', { style: { gap: '4px' } }, Dom.icon('gold', 12), `${eco.shelfPrice(pItem, pTier, k)}`, Dom.icon('customer', 12), '●'.repeat(k === 'low' ? 3 : k === 'fair' ? 2 : 1)) : null))),
       h('div.row', { style: { marginTop: '8px' } }, Dom.stepper(qty, (d) => pick({ qty: Math.max(0, qty + d) }), { max, big: true }), h('span.spacer'),

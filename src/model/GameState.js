@@ -32,7 +32,7 @@ export class GameState {
       ledger: [],
       log: [],
       skills: { moon: 0, sun: 0, earth: 0 },
-      quests: { board: [], active: [], done: [], missed: [] },
+      quests: { board: [], active: [], done: [], missed: [], requests: [] },
       boosts: {},
       pendingBoosts: {},
       servicesBought: [],

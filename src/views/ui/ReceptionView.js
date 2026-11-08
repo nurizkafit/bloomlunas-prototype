@@ -5,44 +5,63 @@ import { Inventory } from '../../model/Inventory.js';
 
 const h = Dom.h;
 
-/** ReceptionView: the Guild receptionist desk. Wholesale lots (buy), sell products (better ratio), one service. */
+/**
+ * ReceptionView: the Guild receptionist desk. Wholesale lots (bulk basket), sell products (better ratio),
+ * one service. Compact lists (Interface Reference) and a jar badge on every cost.
+ */
 export class ReceptionView {
   constructor(ui) { this.ui = ui; }
 
   render() {
     const ui = this.ui, L = ui.local;
     const mode = L.pick.mode ?? 'lots';
-    const tabs = h('div.row', { style: { gap: '8px', marginBottom: '8px' } }, [['lots', 'cart', 'Lots'], ['sell', 'gold', 'Sell'], ['service', 'lesson', 'Service']].map(([id, ic, t]) =>
-      Dom.btn(t, () => ui.set({ pick: { mode: id } }), { cls: mode === id ? 'sm' : 'alt.sm', icon: ic })));
+    const tabs = StallView.tabs(ui, mode, [['lots', 'cart', 'Lots'], ['sell', 'gold', 'Sell'], ['service', 'lesson', 'Service']]);
     const eco = ui.sys.economy;
-    const [list, detail, foot] = mode === 'sell' ? StallView.sellParts(ui, 'guild', 'wholesaleSell', (it, t) => eco.wholesaleSellPrice(it, t)) : mode === 'service' ? this.#service() : this.#lots();
-    return PlaceView.win(ui, 'desk', 'Guild receptionist', [h('div', { style: { display: 'flex', flexDirection: 'column', minHeight: 0 } }, tabs, list), detail], foot);
+    const [list, panel] = mode === 'sell' ? StallView.sellParts(ui, 'wholesaleSell', (it, t) => eco.wholesaleSellPrice(it, t)) : mode === 'service' ? this.#service() : this.#lots();
+    return PlaceView.win(ui, 'desk', 'Guild receptionist', [h('div.col', tabs, list), panel], [], 'cols-7-5');
   }
 
   #lots() {
-    const ui = this.ui, st = ui.st, L = ui.local, eco = ui.sys.economy;
+    const ui = this.ui, st = ui.st, eco = ui.sys.economy;
     const lot = ui.num('WHOLESALE_LOT');
     const mats = ui.c.all('items').filter((i) => i.kind === 'material');
-    const sel = mats.find((m) => m.id === L.pick.item) ?? mats[0];
-    const v = sel.variants[0];
-    const lp = eco.wholesaleLotPrice(sel.id, v);
-    const lots = Math.max(1, L.pick.lots ?? 1);
-    const list = h('div.scroll', { style: { flex: 1 } }, mats.map((m) => h(`button.pick${m === sel ? '.on' : ''}`, { onclick: () => ui.set({ pick: { mode: 'lots', item: m.id } }) },
-      Dom.medal(m.icon, 36), h('span.t', m.name), h('span.r', `×${lot}`, Dom.icon('gold', 14), String(eco.wholesaleLotPrice(m.id, m.variants[0]))))));
-    const pv = ui.preview('wholesaleBuy', { item: sel.id, variant: v, lots });
-    const detail = StallView.detail(ui, sel.icon, `${sel.name} ×${lot * lots}`, Inventory.count(st.inv, sel.id, v, ''), lots, (d) => ui.set({ pick: { mode: 'lots', item: sel.id, lots: Math.max(1, lots + d) } }), Math.max(1, Math.floor(st.gold / lp)), -Math.round(lp * lots));
-    return [list, detail, [Dom.btn('Buy lot', () => ui.act('wholesaleBuy', { item: sel.id, variant: v, lots }), { cls: 'gold', icon: 'cart', min: pv.min, disabled: !!pv.reason || lp * lots > st.gold, title: ui.why(pv.reason) })]];
+    const need = Object.fromEntries(ui.sys.plan.materials().map((m) => [`${m.item}|${m.buyVariant}`, m.buy]));
+    const cart = StallView.cart(ui);
+    const rows = mats.map((m) => {
+      const v = m.variants[0], k = `${m.id}|${v}`, q = cart[k] ?? 0;
+      return {
+        cls: q ? 'has' : '',
+        cells: [ui.itemBtn(m.id, v), h('span', m.name, h('small.muted', ` ×${lot}`)), String(eco.wholesaleLotPrice(m.id, v)), String(Inventory.count(st.inv, m.id, v, '')),
+          need[k] ? h('b', { style: { color: 'var(--red)' } }, String(need[k])) : '·',
+          Dom.mini(q, (d) => StallView.setCart(ui, { ...cart, [k]: Math.max(0, q + d) }))]
+      };
+    });
+    const list = Dom.tlist('28px 1fr 60px 40px 40px 84px', ['', `Lot (×${lot})`, h('span', Dom.icon('gold', 12), 'lot'), 'Have', 'Plan', 'Lots'], rows);
+    const lines = Object.entries(cart).filter(([, q]) => q > 0).map(([k, lots]) => { const [item, variant] = k.split('|'); return { item, variant, lots, qty: lots * lot, cost: eco.wholesaleLotPrice(item, variant) * lots }; });
+    const fill = () => StallView.setCart(ui, Object.fromEntries(Object.entries(need).filter(([, n]) => n > 0).map(([k, n]) => [k, Math.ceil(n / lot)])));
+    const panel = StallView.buyPanel(ui, lines, 'wholesaleBuy', { lines: lines.map(({ item, variant, lots }) => ({ item, variant, lots })) }, fill, Object.values(need).some((n) => n > 0));
+    return [list, panel];
   }
 
   #service() {
-    const ui = this.ui, st = ui.st;
+    const ui = this.ui, st = ui.st, L = ui.local;
     const svc = ui.c.all('services').filter((s) => s.inDo);
     const used = (id) => st.servicesBought.some((b) => b.id === id && b.day === ui.sys.time.absDay());
-    const list = h('div', { style: { display: 'flex', flexDirection: 'column', gap: '8px' } }, svc.map((s) => {
-      const pv = ui.preview('service', { id: s.id });
-      return Dom.slim('', h('div.row', { style: { padding: '8px', width: '100%' } }, Dom.medal(s.id === 'svc_lesson' ? 'lesson' : 'trade', 48), h('div', h('div.t', { style: { fontFamily: 'var(--head)', fontSize: '17px' } }, s.name), h('div.small', s.text)), h('span.spacer'),
-        Dom.btn(`${s.price}`, () => ui.act('service', { id: s.id }), { cls: 'sm', icon: 'gold', disabled: !!pv.reason || used(s.id), title: ui.why(pv.reason) })));
-    }));
-    return [list, h('div.bigicon', Dom.medal('guild', 96), h('div.small.muted', { style: { marginTop: '8px' } }, 'Monthly upgrades: book at month end.')), []];
+    const sel = svc.find((s) => s.id === L.pick.svc) ?? svc[0];
+    const list = Dom.tlist('28px 1fr 64px', ['', 'Service', h('span', Dom.icon('gold', 12), 'price')], svc.map((s) => ({
+      on: s === sel, onclick: () => ui.set({ pick: { mode: 'service', svc: s.id } }),
+      cells: [Dom.icon(s.id === 'svc_lesson' ? 'lesson' : 'trade', 20), s.name, String(s.price)]
+    })));
+    if (!sel) return [list, h('div')];
+    const pv = ui.preview('service', { id: sel.id });
+    const panel = h('div.tpanel',
+      h('div.kick', 'Service'),
+      h('div.row', { style: { gap: '12px' } }, Dom.medal(sel.id === 'svc_lesson' ? 'lesson' : 'trade', 48), h('div', { style: { fontFamily: 'var(--head)', fontSize: '20px' } }, sel.name)),
+      h('p.small', sel.text),
+      h('div.costrow', { style: { justifyContent: 'flex-start' } }, h('span', Dom.icon('clock', 16), Dom.mins(pv.min)), h('span', Dom.icon('energy', 16), String(pv.energy))),
+      h('div.row', h('span.tot.neg', Dom.icon('gold', 26), `-${sel.price}`), h('span.spacer'), ui.jarTag('store', sel.price)),
+      h('div.row.end', Dom.btn(used(sel.id) ? 'Done today' : 'Book', () => ui.act('service', { id: sel.id }), { cls: 'gold', icon: 'lesson', disabled: !!pv.reason || used(sel.id), title: ui.why(pv.reason) })),
+      h('div.small.muted', 'Monthly upgrades: book them at month end.'));
+    return [list, panel];
   }
 }

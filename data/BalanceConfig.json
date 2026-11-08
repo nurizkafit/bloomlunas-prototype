@@ -416,5 +416,35 @@
     "value": 1,
     "unit": "rng seed",
     "source": "sim"
+  },
+  "REQUEST_FEE": {
+    "value": 10,
+    "unit": "gold fee to post one request on the quest board (Store jar)",
+    "source": "user feedback 8 Nov 2026 (Do phase D3: player posts a request on the quest board)",
+    "_placeholder": true
+  },
+  "REQUEST_PRICE_MULT": {
+    "value": 1.2,
+    "unit": "x market buy price of the item variant, paid when posting",
+    "source": "user feedback 8 Nov 2026 (Do phase D3: player posts a request on the quest board)",
+    "_placeholder": true
+  },
+  "REQUEST_DAYS": {
+    "value": 2,
+    "unit": "days until the requested items arrive (at day start, in stock)",
+    "source": "user feedback 8 Nov 2026 (Do phase D3: player posts a request on the quest board)",
+    "_placeholder": true
+  },
+  "REQUEST_MAX_OPEN": {
+    "value": 2,
+    "unit": "open requests at one time",
+    "source": "user feedback 8 Nov 2026 (Do phase D3: player posts a request on the quest board)",
+    "_placeholder": true
+  },
+  "REQUEST_QTY_STEP": {
+    "value": 5,
+    "unit": "request quantity step",
+    "source": "user feedback 8 Nov 2026 (Do phase D3: player posts a request on the quest board)",
+    "_placeholder": true
   }
 }

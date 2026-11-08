@@ -44,7 +44,7 @@ const P = {
   oil: `<path d="M9 3h6v3l3 4v10H6V10l3-4z" fill="${C.cream}"/><path d="M6 13h12v7H6z" fill="${C.tur}" opacity=".7"/><path d="M9 3h6" stroke="${INK}" stroke-width="2"/>`,
   wax: `<path d="M12 3l7 4v9l-7 5-7-5V7z" fill="#E8C060"/><path d="M12 3v18M5 7l14 9M19 7L5 16" stroke="#A8771A" stroke-width=".8"/>`,
   jamu: `<path d="M8 3h8v3l2 3v12H6V9l2-3z" fill="${C.cream}"/><path d="M6 12h12v9H6z" fill="${C.tur}"/><path d="M8 3h8" stroke="${INK}" stroke-width="2"/><path d="M9 15h6" stroke="#fff" stroke-width="1.2"/>`,
-  salep: `<ellipse cx="12" cy="9" rx="8" ry="3" fill="${C.ver}"/><path d="M4 9v7c0 1.7 3.6 3 8 3s8-1.3 8-3V9" fill="${C.stone}"/><ellipse cx="12" cy="9" rx="5" ry="1.6" fill="${C.cream}"/>`,
+  salep: `<ellipse cx="12" cy="9" rx="8" ry="3" fill="${C.ver}"/><path d="M4 9v7c0 1.7 3.6 3 8 3s8-1.3 8-3V9" fill="${C.rat}" stroke="${INK}" stroke-width=".8"/><ellipse cx="12" cy="9" rx="5" ry="1.6" fill="${C.cream}"/>`,
   jar: `<path d="M7 6h10v2l1 2v10H6V10l1-2z" fill="${C.cream}"/><path d="M6 14h12v6H6z" fill="${C.ver}"/><path d="M6 4h12v2H6z" fill="${C.rat}"/>`,
   heart: `<path d="M12 20s-8-5-8-11a4 4 0 018-1 4 4 0 018 1c0 6-8 11-8 11z" fill="${C.red}"/>`,
   cross: `<path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6z" fill="${C.red}"/>`,

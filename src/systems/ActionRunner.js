@@ -132,14 +132,45 @@ export class ActionRunner {
         run: () => sys.store.hour()
       }),
       storeClose: () => ({ station: 'store', min: 0, energy: 0, needsOpen: false, check: () => !state.store.open ? 'notOpen' : null, run: () => sys.store.close(), log: 'Closed the store' }),
+      // Trade actions take one line ({item, variant, qty}) or many (lines: [...]) for one TRADE_MIN.
       marketBuy: () => {
-        const unit = sys.economy.buyPrice(p.item, p.variant);
-        return { station: 'stall', min: n('TRADE_MIN'), energy: 0, icon: 'cart', run: () => sys.economy.buy(p.item, p.variant, p.qty, unit, `Market: ${p.qty} ${p.item}`), log: `Bought ${p.qty} ${p.item}` };
+        const lines = p.lines ?? [{ item: p.item, variant: p.variant, qty: p.qty }];
+        return {
+          station: 'stall', min: n('TRADE_MIN'), energy: 0, icon: 'cart',
+          check: () => sys.economy.checkLines(lines, (l) => sys.economy.buyPrice(l.item, l.variant) * l.qty),
+          run: () => sys.economy.buyLines(lines.map((l) => ({ ...l, unit: sys.economy.buyPrice(l.item, l.variant), label: `Market: ${l.qty} ${l.item}` }))),
+          log: `Bought ${lines.reduce((s, l) => s + l.qty, 0)} materials`
+        };
       },
       buyFood: () => ({ station: 'stall', min: n('TRADE_MIN'), energy: 0, icon: 'meal', run: () => sys.economy.buy('meal', 'pack', p.qty, n('FOOD_PRICE'), `Food: ${p.qty} meals`), log: `Bought ${p.qty} meals` }),
-      marketSell: () => ({ station: 'stall', min: n('TRADE_MIN'), energy: 0, icon: 'gold', xp: 2, skill: 'sun', run: () => sys.economy.sell(p.item, p.tier, p.qty, sys.economy.marketSellPrice(p.item, p.tier), 'market', `Market sale: ${p.qty} ${p.item}`), log: `Sold ${p.qty} ${p.item} at the market` }),
-      wholesaleBuy: () => ({ station: 'receptionist', min: n('TRADE_MIN'), energy: 0, icon: 'cart', run: () => sys.economy.buy(p.item, p.variant, p.lots * n('WHOLESALE_LOT'), sys.economy.wholesaleLotPrice(p.item, p.variant) / n('WHOLESALE_LOT'), `Guild lot: ${p.lots * n('WHOLESALE_LOT')} ${p.item}`), log: `Bought a lot of ${p.item}` }),
-      wholesaleSell: () => ({ station: 'receptionist', min: n('TRADE_MIN'), energy: 0, icon: 'gold', xp: 3, skill: 'sun', run: () => sys.economy.sell(p.item, p.tier, p.qty, sys.economy.wholesaleSellPrice(p.item, p.tier), 'guild', `Guild sale: ${p.qty} ${p.item}`), log: `Sold ${p.qty} ${p.item} to the guild` }),
+      marketSell: () => {
+        const lines = p.lines ?? [{ item: p.item, tier: p.tier, qty: p.qty }];
+        return {
+          station: 'stall', min: n('TRADE_MIN'), energy: 0, icon: 'gold', xp: 2, skill: 'sun',
+          check: () => sys.economy.checkSell(lines),
+          run: () => sys.economy.sellLines(lines.map((l) => ({ ...l, unit: sys.economy.marketSellPrice(l.item, l.tier), cat: 'market', label: `Market sale: ${l.qty} ${l.item}` }))),
+          log: `Sold ${lines.reduce((s, l) => s + l.qty, 0)} products at the market`
+        };
+      },
+      wholesaleBuy: () => {
+        const lot = n('WHOLESALE_LOT');
+        const lines = p.lines ?? [{ item: p.item, variant: p.variant, lots: p.lots }];
+        return {
+          station: 'receptionist', min: n('TRADE_MIN'), energy: 0, icon: 'cart',
+          check: () => sys.economy.checkLines(lines, (l) => sys.economy.wholesaleLotPrice(l.item, l.variant) * l.lots),
+          run: () => sys.economy.buyLines(lines.map((l) => ({ item: l.item, variant: l.variant, qty: l.lots * lot, unit: sys.economy.wholesaleLotPrice(l.item, l.variant) / lot, label: `Guild lot: ${l.lots * lot} ${l.item}` }))),
+          log: `Bought ${lines.reduce((s, l) => s + l.lots, 0)} guild lots`
+        };
+      },
+      wholesaleSell: () => {
+        const lines = p.lines ?? [{ item: p.item, tier: p.tier, qty: p.qty }];
+        return {
+          station: 'receptionist', min: n('TRADE_MIN'), energy: 0, icon: 'gold', xp: 3, skill: 'sun',
+          check: () => sys.economy.checkSell(lines),
+          run: () => sys.economy.sellLines(lines.map((l) => ({ ...l, unit: sys.economy.wholesaleSellPrice(l.item, l.tier), cat: 'guild', label: `Guild sale: ${l.qty} ${l.item}` }))),
+          log: `Sold ${lines.reduce((s, l) => s + l.qty, 0)} products to the guild`
+        };
+      },
       service: () => {
         const s = content.find('services', p.id);
         return {
@@ -151,12 +182,18 @@ export class ActionRunner {
       },
       questTake: () => ({ station: 'questboard', min: 5, energy: 0, icon: 'quest', run: () => sys.quests.take(p.id), log: 'Took a commission' }),
       questHandIn: () => ({ station: 'questboard', min: 15, energy: 0, icon: 'quest', run: () => sys.quests.handIn(p.id), log: 'Finished a commission' }),
+      // The player posts a request: pays now, the items come in REQUEST_DAYS days.
+      questPost: () => ({
+        station: 'questboard', min: 10, energy: 0, icon: 'quest',
+        check: () => sys.quests.postCheck(p.item, p.variant, p.qty),
+        run: () => sys.quests.post(p.item, p.variant, p.qty), log: `Posted a request: ${p.qty} ${p.item}`
+      }),
       exploreWalk: () => {
         const min = state.explore.walkMin ?? (state.explore.walkMin = sys.explore.walkMinutes());
         return {
           station: 'explore', min, energy: n('EXPLORE_WALK_ENERGY'), icon: 'explore',
           check: () => state.explore.spot ? 'spot' : sys.explore.spotsLeft() <= 0 ? 'spots' : null,
-          run: () => { state.explore.walkMin = null; return { spot: sys.explore.findSpot() }; },
+          run: () => { state.explore.walkMin = null; sys.explore.addWalk(min); return { spot: sys.explore.findSpot() }; },
           log: 'Explored the outskirt'
         };
       },
@@ -168,6 +205,7 @@ export class ActionRunner {
         };
       },
       exploreSkip: () => ({ station: 'explore', min: 0, energy: 0, check: () => !state.explore.spot ? 'none' : null, run: () => sys.explore.skip() }),
+      exploreEnd: () => ({ station: 'explore', min: 0, energy: 0, check: () => state.explore.spot ? 'spot' : null, run: () => ({ recap: sys.explore.end() }) }),
       respondEvent: () => ({ min: 0, energy: 0, run: () => sys.events.respond(p.index) })
     };
     const f = D[id];
@@ -183,5 +221,5 @@ export const REASON_TEXT = {
   none: 'Nothing to do.', qty: 'Pick a quantity.', open: 'The store is open.', shelf: 'The shelf is empty.',
   storeHours: 'Store hours are over.', notOpen: 'The store is closed.', soldOut: 'Sold out.', closing: 'Closing time.',
   gold: 'Not enough gold.', full: 'You hold the most commissions.', spot: 'Gather or skip first.', spots: 'No more spots today.',
-  unknown: 'Unknown action.', item: 'Pick a product.', variant: 'Cannot grind this.', requires: 'You do not have it.'
+  unknown: 'Unknown action.', requests: 'You have the most open requests.', empty: 'Pick some items first.', item: 'Pick a product.', variant: 'Cannot grind this.', requires: 'You do not have it.'
 };

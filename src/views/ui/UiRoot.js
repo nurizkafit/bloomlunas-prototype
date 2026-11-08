@@ -9,6 +9,8 @@ import { TownMapView } from './TownMapView.js';
 import { PlaceView } from './PlaceView.js';
 import { EventCardView } from './EventCardView.js';
 import { RetroView } from './RetroView.js';
+import { ItemCardView } from './ItemCardView.js';
+import { Icons } from './Icons.js';
 
 const h = Dom.h;
 
@@ -26,19 +28,20 @@ export class UiRoot {
     this.local = { screen: o.startScreen ?? 'start', station: null, journal: false, tab: 'schedule', map: false, pick: {}, story: 0, storeRun: null };
     this.stage = h('div.stage');
     this.sceneLayer = h('div.layer.scene3d');
+    this.spotLayer = h('div.layer.pass.spots');
     this.hud = h('div.layer.pass');
     this.screen = h('div.layer.pass');
     this.modal = h('div.layer.pass');
     this.toasts = h('div.toasts');
     this.hint = h('div.hint');
     this.pop = h('div.helppop');
-    this.stage.append(this.sceneLayer, h('div.paperveil'), h('div.vignette'), this.hud, this.screen, this.modal, this.toasts, this.hint, this.pop);
+    this.stage.append(this.sceneLayer, h('div.paperveil'), h('div.vignette'), this.spotLayer, this.hud, this.screen, this.modal, this.toasts, this.hint, this.pop);
     this.stage.addEventListener('mousemove', (e) => this.#hover(e.target));
     this.stage.addEventListener('mouseleave', () => this.#hover(null));
     this.stage.addEventListener('click', (e) => { if (e.target.closest?.('.helpq')) this.#hover(e.target); });
     host.append(this.stage);
     Ornaments.mount(this.stage);
-    this.views = { hud: new HudView(this), start: new StartView(this), journal: new JournalView(this), map: new TownMapView(this), place: new PlaceView(this), event: new EventCardView(this), retro: new RetroView(this) };
+    this.views = { hud: new HudView(this), start: new StartView(this), journal: new JournalView(this), map: new TownMapView(this), place: new PlaceView(this), event: new EventCardView(this), retro: new RetroView(this), card: new ItemCardView(this) };
     this.#fit();
     addEventListener('resize', () => this.#fit());
     addEventListener('keydown', (e) => this.#key(e));
@@ -57,6 +60,25 @@ export class UiRoot {
   act(id, params = {}) { this.send(MSG.INTENT_ACTION, { id, params }); }
   /** Cost preview for a button. */
   preview(id, params = {}) { return this.sys.actions.preview(id, params); }
+
+  /** A 3D hotspot (DOM pill kept over its 3D anchor by the SceneView). @param {'station'|'place'} kind */
+  spot(kind, id, el) { this.spotList.push({ kind, id, el }); return el; }
+  spotList = [];
+
+  /** Budget jar of a cost kind: badge with the jar colour and the gold left after the cost. @param {'store'|'personal'} jar @param {number} cost */
+  jarTag(jar, cost = 0) {
+    const st = this.st, b = st.plan.budget[jar] ?? 0, spent = st.week.spent[jar] ?? 0;
+    const left = Math.round(b - spent - cost);
+    const color = JAR_COLOR[jar];
+    return h(`span.jartag${left < 0 ? '.over' : ''}`, { 'data-help': jar === 'store' ? 'jarStore' : 'jarPersonal', style: { '--jc': color } },
+      Dom.raw(Dom.jarSvg(b ? (b - spent - cost) / b : 0, color, 18)), h('b', jar === 'store' ? 'Store jar' : 'Personal jar'), h('span', `${left < 0 ? 'over' : 'left'} ${Math.abs(left)}`));
+  }
+
+  /** Item icon that opens the item card. */
+  itemBtn(item, variant, tier, size = 22) {
+    const it = this.c.get('items', item);
+    return h('button.ib', { title: `${it.name}: details`, onclick: (e) => { e.stopPropagation(); this.set({ card: { item, variant, tier } }); } }, Dom.icon(Icons.forItem(it, variant), size));
+  }
 
   /** Short text for a refusal reason. */
   why(r) { return r ? REASON_TEXT[r] ?? r : ''; }
@@ -80,6 +102,8 @@ export class UiRoot {
   }
 
   #done(r) {
+    if (r.id === 'exploreEnd') { this.local.recap = r.recap; this.local.station = null; }
+    if (['marketBuy', 'marketSell', 'wholesaleBuy', 'wholesaleSell'].includes(r.id) && this.local.pick.cart) this.local.pick = { ...this.local.pick, cart: {} };
     const t = DONE_TOAST[r.id];
     if (t) this.toast(t[0], t[1](r, this));
     if (r.endDay && this.st.phase === 'do') this.toast('sleep', `Day ${this.st.cal.day + 1}`);
@@ -106,6 +130,7 @@ export class UiRoot {
     this.hud.replaceChildren();
     this.screen.replaceChildren();
     this.modal.replaceChildren();
+    this.spotList = [];
     let hint = [['Click', 'Select']];
     if (L.screen !== 'game') {
       this.screen.append(this.views.start.render());
@@ -119,11 +144,14 @@ export class UiRoot {
         hint = [['Click', 'Select'], ['Tabs', 'Pages']];
       } else if (st.phase === 'do') {
         if (L.journal) { this.screen.append(this.views.journal.render('do')); hint = [['J', 'Close book'], ['Tabs', 'Pages']]; }
-        else if (L.map) { this.screen.append(...this.views.map.render()); hint = [['M', 'Close map'], ['Click', 'Travel']]; }
-        else { this.screen.append(...this.views.place.render()); hint = [['M', 'Map'], ['J', 'Journal'], ['Esc', 'Back']]; }
+        else if (L.map) { this.screen.append(...this.views.map.render()); hint = [['M', 'Close town list'], ['Click', 'Pick a place']]; }
+        else { this.screen.append(...this.views.place.render()); hint = [['M', 'Town'], ['J', 'Journal'], ['Esc', 'Back']]; }
         if (st.pendingEvent) this.modal.append(this.views.event.render());
       }
     }
+    if (L.card && L.screen === 'game') this.modal.append(this.views.card.render());
+    this.spotLayer.replaceChildren(...this.spotList.map((s) => s.el));
+    this.o.scene?.setSpots?.(this.spotList);
     this.hint.replaceChildren(...hint.map(([k, t]) => h('span', h('i', k), t)));
     if (this.#helpEl && !this.#helpEl.isConnected) { this.#helpEl = null; this.pop.classList.remove('on'); }
   }
@@ -131,7 +159,9 @@ export class UiRoot {
   drawNow() { cancelAnimationFrame(this.#raf); this.#raf = 0; this.#draw(); }
 
   #key(e) {
-    if (this.local.screen !== 'game' || this.st.phase !== 'do' || this.st.pendingEvent) return;
+    if (this.local.screen !== 'game') return;
+    if (e.key === 'Escape' && this.local.card) { this.set({ card: null }); return; }
+    if (this.st.phase !== 'do' || this.st.pendingEvent) return;
     if (e.key === 'j' || e.key === 'J') this.set({ journal: !this.local.journal, map: false });
     else if (e.key === 'm' || e.key === 'M') this.set({ map: !this.local.map, journal: false });
     else if (e.key === 'Escape') this.set({ journal: false, map: false, station: null });
@@ -162,10 +192,12 @@ export class UiRoot {
   }
 }
 
+const JAR_COLOR = { store: '#5FA39A', personal: '#D9A326', buffer: '#9C87C0' };
 const PHASE_TOAST = { do: 'Plan locked. Go!', check: 'Week done. Check.', act: 'Month end. Act.', retro: 'Two months done.' };
 const DONE_TOAST = {
   craft: ['cauldron', (r) => `+${r.out} made`],
   marketBuy: ['cart', (r) => `-${Math.round(r.cost)} G`],
+  questPost: ['quest', (r) => `-${Math.round(r.cost)} G`],
   wholesaleBuy: ['cart', (r) => `-${Math.round(r.cost)} G`],
   buyFood: ['meal', (r) => `-${Math.round(r.cost)} G`],
   marketSell: ['gold', (r) => `+${Math.round(r.income)} G`],

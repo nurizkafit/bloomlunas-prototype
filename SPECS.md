@@ -15,12 +15,12 @@ Reduce: crafting, processing, economics, NPC interaction and exploration.
 
 | Topic | Jam rule (user decision, 7 Nov 2026) |
 | --- | --- |
-| Movement | Town map menu. The 3D City View is a backdrop. Travel costs time and energy. |
+| Movement | Place list over the 3D town (M or the Town button); a name pill over each place picks it too. Go travels; travel costs time and energy. Each building (Home + Store, Market, Guild Center) has a 3D interior room (user decision, 8 Nov 2026). |
 | Crafting | Pick a recipe and a batch count. Materials, method and packing come from the recipe. |
 | Processing | Drying rack (fresh -> dried, takes days) and Grinding table (dried -> powder). |
 | Shop price | 3 levels: Low, Fair, High. High sells fewer. Weekly market trend per product. |
-| Guild Center | Receptionist desk (wholesale lots buy, product sell, one service) and a separate Quest board. |
-| Exploration | City Outskirt, auto-explore one area. Each walk finds a spot: a card shows materials, time and energy; Gather or Skip. |
+| Guild Center | Receptionist desk (wholesale lots buy, product sell, one service) and a separate Quest board: Take a commission or Give (post your own material request). |
+| Exploration | City Outskirt, auto-explore one area. Each walk finds a spot: a card shows materials, time and energy; Gather or Skip. End exploration shows a recap (walks, gathered, skipped, items, time, energy, Earth XP). |
 | Length | Two months (8 weeks). No Good or Bad ending: a retrospective of the two months. |
 | Missed debt payment | The game goes on. The unpaid amount carries over with a late fee. The retrospective shows it. |
 
@@ -52,15 +52,17 @@ After the Check of week 4: Act (Journal, month end) -> next month Plan. After mo
 - Stations (`data/stations/`) belong to a place. A station needs its place open (Store and Rest do not).
 - Daily goals (`data/goals/`): a goal is met when the player used one of its stations that day. Free time is met when work time is at most `FREE_TIME_MAX_WORK_MIN`.
 - Store: stock the 3x3 shelf (product group, quantity up to `SHELF_SLOT_MAX`, price level). Open store costs `STORE_OPEN_ENERGY` once, then the hours play out (`CUSTOMERS_PER_HOUR`, buy chance x price level demand, trend weights) until sold out or the end of `STORE_OPEN_HOURS`. Shop result after close.
+- Trade is a basket (user feedback D4): set a quantity on many rows, then one Buy all or Sell all action trades every line for one `TRADE_MIN`. Each cost shows the jar that pays it: Store jar for materials, lots, services and requests; Personal jar for food.
 - Market stall: buy materials at the weekly price, buy meal packs (`FOOD_PRICE`), sell products at `MARKET_BUY_FROM_PLAYER` x value.
 - Guild receptionist: buy lots of `WHOLESALE_LOT` at `WHOLESALE_BUY_RATIO`, sell products at `WHOLESALE_SELL_RATIO`, one Do service (`data/services/`, `inDo`).
 - Quest board: `QUEST_BOARD_SIZE` commissions per week, take up to `QUEST_MAX_ACTIVE`, hand in before `QUEST_DEADLINE_DAYS`.
+- Quest board Give: post a request for a material (steps of `REQUEST_QTY_STEP`). Pay now from the Store jar: unit price x `REQUEST_PRICE_MULT` x qty + `REQUEST_FEE`. The items arrive at day start after `REQUEST_DAYS`. Up to `REQUEST_MAX_OPEN` open requests.
 - Outskirt: each walk takes `EXPLORE_WALK_MIN` and finds one spot (`data/spots/`, weighted), up to `EXPLORE_SPOTS_PER_DAY` per day. Earth level adds loot.
 - Skills: Moon (craft, process; sets the product tier through `QUALITY_BY_MOON_LEVEL`), Sun (sell, trade; more customers), Earth (gather; more loot).
 
 ## 5. Data files
 
-`BalanceConfig.json`, `items/`, `recipes/`, `places/`, `stations/`, `goals/`, `skills/`, `spots/`, `quests/`, `services/`, `events/`, `debt/riba_loan.json`, `notes/notes.json`, `help/help.json` (help popups), `objectives/objectives.json` (Journal objectives, mini tutorial; each names a check in `ObjectiveSystem`), `story/premise.json`, `start/start.json`, `scene/town.json` (3D layout: houses, props, roads, walkers, camera spots, tints; view data only).
+`BalanceConfig.json`, `items/`, `recipes/`, `places/`, `stations/`, `goals/`, `skills/`, `spots/`, `quests/`, `services/`, `events/`, `debt/riba_loan.json`, `notes/notes.json`, `help/help.json` (help popups), `objectives/objectives.json` (Journal objectives, mini tutorial; each names a check in `ObjectiveSystem`), `story/premise.json`, `start/start.json`, `scene/town.json` (3D layout: houses, props, roads, walkers, camera spots, tints, interior `rooms` per building with props, NPC, station anchors and camera; view data only). Items carry a `text` line for the item card.
 Field names map one to one to Unity ScriptableObjects.
 
 ## 6. EventBus messages (`MSG` in `src/core/EventBus.js`)
@@ -68,7 +70,7 @@ Field names map one to one to Unity ScriptableObjects.
 Intents (views -> logic): `intent.setGoal {index, goal}`, `intent.setProduct {product, qty}`, `intent.setBudget {store?, personal?, buffer?}`, `intent.lockPlan`, `intent.action {id, params}`, `intent.respondEvent {index}`, `intent.finishCheck {ids}`, `intent.payDebt {amount}`, `intent.payUtilities`, `intent.bookService {id}`, `intent.finishAct`.
 Logic -> views: `phase.entered`, `phase.exited`, `state.changed`, `clock.changed`, `action.done`, `action.refused {reason, text}`, `plan.validated`, `event.fired`, `event.resolved`, `day.started`, `day.ended`.
 
-Action ids: `travel`, `shortBreak`, `eat`, `sleep`, `craft`, `dryStart`, `dryCollect`, `grind`, `stockShelf`, `storeOpen`, `storeHour`, `storeClose`, `marketBuy`, `buyFood`, `marketSell`, `wholesaleBuy`, `wholesaleSell`, `service`, `questTake`, `questHandIn`, `exploreWalk`, `exploreGather`, `exploreSkip`, `respondEvent`.
+Action ids: `travel`, `shortBreak`, `eat`, `sleep`, `craft`, `dryStart`, `dryCollect`, `grind`, `stockShelf`, `storeOpen`, `storeHour`, `storeClose`, `marketBuy`, `buyFood`, `marketSell`, `wholesaleBuy`, `wholesaleSell`, `service`, `questTake`, `questHandIn`, `questPost {item, variant, qty}`, `exploreWalk`, `exploreGather`, `exploreSkip`, `exploreEnd` (returns the recap), `respondEvent`. `marketBuy`, `marketSell`, `wholesaleBuy`, `wholesaleSell` take `{lines: [...]}` (one line per item).
 
 ## 7. Views (DOM, `src/views/ui/`)
 
@@ -83,19 +85,21 @@ Visual style: approved style board v3 (project files `screens/overhaul-style/sty
 
 | Class | Screen |
 | --- | --- |
-| `UiRoot` | Stage, layers, phase routing, toasts, hint bar, keys (M map, J journal, Esc back) |
+| `UiRoot` | Stage, layers, phase routing, toasts, hint bar, keys (M town, J journal, Esc back), hotspot layer over the 3D view, jar badge (`jarTag`), item buttons (`itemBtn`) |
 | `HudView` | Day medal (weekday + clock), calendar pill (month, week, day), gold, debt, food, energy bar, day bar, today's goal, Map and Journal buttons |
 | `StartView` | Start menu and story letter |
 | `JournalView` | Tabs in Scene & Flow order: Daily goals (drag goal cards onto days, or click a card then a day), Store plan (products to sell + materials needed; budget jars + plan check), Ledger and assets, Market (forecast range, trend, price now), Public schedule (opening hours, events, month-end bills), Skills (level and effects), Notes (last week's notes + objectives). Do adds Log. Review plan ribbon on every Plan tab. |
 | `CheckView`, `ActView`, `RetroView` | Weekly recap, month end, retrospective |
-| `TownMapView` | Town map menu with travel time, hours and Go |
-| `PlaceView` | Station list at the current place and the station window |
+| `TownMapView` | Place list over the 3D town (travel time, hours), card of the picked place with Go, name pills over the places |
+| `PlaceView` | One location header frame, station list (with Town and Go home), station hotspots in the room, station window, exploration recap |
+| `ItemCardView` | Detail card of a material, product or food pack (opens from any item icon) |
 | `StoreView`, `CraftView`, `DryingView`, `GrindView`, `RestView`, `StallView`, `ReceptionView`, `QuestBoardView`, `ExploreView` | Station windows |
 | `EventCardView` | Event card with responses |
 
 ## 8. 3D City View (`src/views/scene/SceneView.js`)
 
-- Kenney CC0 kits (uploaded by the user) as placeholders: Fantasy Town (houses, stalls, fountain, lanterns, banners), Nature (palms, crops, flowers), Survival (grinding bench, barrels, tent, campfire), Food, Mini Forest, Mini Shop, Mini Characters (animated walkers and the player). Furniture and Factory kits are not used yet.
+- Kenney CC0 kits (uploaded by the user) as placeholders: Fantasy Town (houses, stalls, fountain, lanterns, banners), Nature (palms, crops, flowers), Survival (grinding bench, barrels, tent, campfire), Food, Mini Forest, Mini Shop, Mini Characters (animated walkers and the player), Furniture (room props). The Factory kit is not used yet.
+- Interior rooms (`scene/town.json` `rooms`): an open-front room per building, away from the town. The camera cuts to the room when the player is in a building and the town list is shut. Station hotspots (DOM pills) follow anchor points in the room.
 - Only the GLB files the town uses are committed, under `assets/models/kenney/<kit>/`, with each kit's `Textures/colormap.png` and `License.txt`.
 - Roofs and ground use the M2 town colours (`scene/town.json` `tints`). Houses are built from wall pieces and a scaled roof.
 - The camera moves to the current place (`places`), with a slow sway. Light goes from day light to moon light by the clock.

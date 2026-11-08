@@ -14,5 +14,6 @@
   "variantPriceMult": {
     "pack": 1.0
   },
-  "_placeholder": true
+  "_placeholder": true,
+  "text": "A meal pack. Eat it at Rest for energy."
 }

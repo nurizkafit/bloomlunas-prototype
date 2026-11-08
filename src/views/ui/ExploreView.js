@@ -18,32 +18,36 @@ export class ExploreView {
     const spot = st.explore.spot;
     const pvW = ui.preview('exploreWalk');
     const x = 8 + (n / per) * 84;
-    const trail = h('div.trail',
+    const trail = h('div.trail', { style: { flex: 'none', height: '84px' } },
       Dom.raw(TRAIL_SVG),
-      ...Array.from({ length: per }, (_, i) => h('span', { style: { position: 'absolute', left: `${8 + ((i + 1) / per) * 84}%`, bottom: '56px', transform: 'translateX(-50%)' } }, Dom.icon(i < n ? 'leaf' : 'info', 20))),
-      h('div.walker', { style: { left: `${x}%` } }, Dom.medal('walk', 44)));
-    const found = st.explore.found.slice(-8);
-    const area = ui.c.all('spots');
-    const info = h('div.grid2', { style: { marginTop: '8px' } },
-      h('div', h('div.kick', 'Found today'), h('div.chipline', { style: { marginTop: '8px' } }, found.length ? found.flatMap((f) => f.loot.map((l) => Dom.chip(Icons.forItem(ui.c.get('items', l.item), l.variant), `+${l.qty}`, 'ok'))) : h('span.small.muted', '—'))),
-      h('div', h('div.kick', 'This area'), h('div', { style: { display: 'grid', gridTemplateColumns: '1fr', gap: '4px', marginTop: '8px' } },
-        area.map((a) => h('div.row.small', { title: a.name }, a.loot.map((l) => Dom.icon(Icons.forItem(ui.c.get('items', l.item), l.variant), 18)), h('span', a.name), h('span.spacer'), Dom.icon('clock', 12), Dom.mins(a.gatherMin))))));
+      ...Array.from({ length: per }, (_, i) => h('span', { style: { position: 'absolute', left: `${8 + ((i + 1) / per) * 84}%`, bottom: '36px', transform: 'translateX(-50%)' } }, Dom.icon(i < n ? 'leaf' : 'info', 20))),
+      h('div.walker', { style: { left: `${x}%` } }, Dom.medal('walk', 38)));
+    const ses = st.explore.session;
+    const got = {};
+    for (const f of st.explore.found) for (const l of f.loot) { const k = `${l.item}|${l.variant}`; got[k] = (got[k] ?? 0) + l.qty; }
+    const foundList = Dom.tlist('28px 1fr 56px', ['', 'Found today', 'Qty'], Object.entries(got).map(([k, q]) => { const [item, variant] = k.split('|'); const it = ui.c.get('items', item); return { cells: [ui.itemBtn(item, variant), h('span', it.name, h('small.muted', ` ${variant}`)), h('b', { style: { color: 'var(--bamboo)' } }, `+${q}`)] }; }), 'Nothing yet. Walk on.');
+    const areaList = Dom.tlist('52px 1fr 56px', ['', 'This area', Dom.icon('clock', 12)], ui.c.all('spots').map((a) => ({
+      cells: [a.loot.map((l) => Dom.icon(Icons.forItem(ui.c.get('items', l.item), l.variant), 16)), a.name, Dom.mins(a.gatherMin)]
+    })));
     let card = null;
     if (spot) {
       const d = ui.c.get('spots', spot.id);
       const pvG = ui.preview('exploreGather');
       card = h('div.veil', { style: { position: 'absolute', borderRadius: '8px', background: 'rgba(31,58,61,.35)' } }, Dom.rattan('card', ...Dom.corners(),
         h('div.kick', 'Spot found'), h('h3', d.name),
-        h('div.row', { style: { gap: '16px', justifyContent: 'center' } }, spot.loot.map((l) => { const it = ui.c.get('items', l.item); return h('div', { style: { textAlign: 'center' } }, Dom.medal(Icons.forItem(it, l.variant), 64), h('div.num', `+${l.qty}`)); })),
+        h('div.row', { style: { gap: '16px', justifyContent: 'center' } }, spot.loot.map((l) => { const it = ui.c.get('items', l.item); return h('div', { style: { textAlign: 'center' } }, Dom.medal(Icons.forItem(it, l.variant), 64), h('div.num', `+${l.qty}`), h('div.small', it.name)); })),
         h('div.costrow', h('span', Dom.icon('clock', 18), Dom.mins(d.gatherMin)), h('span', Dom.icon('energy', 18), String(d.gatherEnergy)), h('span', Dom.icon('earth', 18), `+${d.xp}`)),
         h('div.row', { style: { gap: '16px' } },
           Dom.btn('Skip', () => ui.act('exploreSkip'), { cls: 'alt', icon: 'skip' }),
           Dom.btn('Gather', () => ui.act('exploreGather'), { cls: 'gold', icon: 'leaf', disabled: !!pvG.reason, title: ui.why(pvG.reason) }))));
     }
-    const body = h('div', { style: { display: 'flex', flexDirection: 'column', gap: '16px' } },
-      h('div.row', { style: { gap: '16px' } }, Dom.chip('leaf', `${per - n}/${per}`), Dom.chip('earth', `Lv ${ui.sys.skills.level('earth')}`), Dom.chip('energy', Math.round(st.energy))), info);
-    return PlaceView.win(ui, 'explore', 'City outskirt', [h('div', { style: { display: 'flex', flexDirection: 'column', gap: '16px' } }, trail, body), card],
-      spot ? [] : [Dom.btn('Walk on', () => ui.act('exploreWalk'), { cls: 'gold', icon: 'walk', min: pvW.min, energy: pvW.energy, disabled: !!pvW.reason, title: ui.why(pvW.reason) })], 'one');
+    const chips = h('div.row', { style: { gap: '8px', marginRight: 'auto' } }, Dom.chip('leaf', `${per - n}/${per}`), Dom.chip('earth', `Lv ${ui.sys.skills.level('earth')}`), Dom.chip('energy', Math.round(st.energy)),
+      ses ? Dom.chip('walk', ses.walks) : null);
+    const body = h('div.col', { style: { gap: '8px' } }, trail, h('div.grid2', { style: { flex: 1, minHeight: 0 } }, foundList, areaList));
+    return PlaceView.win(ui, 'explore', 'City outskirt', [body, card],
+      spot ? [] : [chips,
+        Dom.btn('End exploration', () => ui.act('exploreEnd'), { cls: 'alt', icon: 'back', disabled: !ses, title: ses ? 'See the recap' : 'Walk first' }),
+        Dom.btn('Walk on', () => ui.act('exploreWalk'), { cls: 'gold', icon: 'walk', min: pvW.min, energy: pvW.energy, disabled: !!pvW.reason, title: ui.why(pvW.reason) })], 'one');
   }
 }
 

@@ -37,39 +37,53 @@ async function run(w, hgt) {
   await page.waitForSelector('.side');
   await shot('05-home');
   // Crafting
-  await page.locator('.stcard', { hasText: 'Crafting' }).click();
+  await page.locator('.smenu .srow', { hasText: 'Crafting' }).click();
   await shot('06-craft');
-  await page.locator('.stcard', { hasText: 'Drying' }).click();
+  await page.locator('.smenu .srow', { hasText: 'Drying' }).click();
   await shot('07-drying');
-  await page.locator('.stcard', { hasText: 'Grinding' }).click();
+  await page.locator('.smenu .srow', { hasText: 'Grinding' }).click();
   await shot('08-grind');
-  await page.locator('.stcard', { hasText: 'Rest' }).click();
+  await page.locator('.smenu .srow', { hasText: 'Rest' }).click();
   await shot('09-rest');
   // Map + market
   await page.keyboard.press('m');
-  await page.waitForSelector('.mapwin');
+  await page.waitForSelector('.pinfo');
   await shot('10-map');
-  await page.locator('.node', { hasText: 'Market' }).click();
-  await clickText('Go');
+  await page.locator('.smenu .srow', { hasText: 'Market' }).click();
+  await page.locator('.pinfo .btn', { hasText: 'Go' }).click();
   await page.waitForTimeout(150);
   await clearEvent();
-  await page.locator('.stcard', { hasText: 'Market stall' }).click();
+  await page.locator('.smenu .srow', { hasText: 'Market stall' }).click();
   await shot('11-stall');
-  await clickText('Buy');
+  await page.locator('.mstep button').nth(1).click();
+  await page.locator('.mstep button').nth(1).click();
+  await shot('11b-basket');
+  await clickText('Buy all');
+  await page.locator('.ib').first().click();
+  await page.waitForSelector('.icard');
+  await shot('11c-itemcard');
+  await page.keyboard.press('Escape');
   // Guild
   await ev(() => { const { gm } = window.__bl; gm.action('travel', { place: 'guild' }); });
   await draw();
-  await page.locator('.stcard', { hasText: 'receptionist' }).click();
+  await page.locator('.smenu .srow', { hasText: 'receptionist' }).click();
   await shot('12-reception');
-  await page.locator('.stcard', { hasText: 'Quest board' }).click();
+  await page.locator('.smenu .srow', { hasText: 'Quest board' }).click();
   await shot('13-quests');
+  await clickText('Give');
+  await shot('13b-give');
   // Outskirt
   await ev(() => { const { gm, ui } = window.__bl; gm.action('travel', { place: 'outskirt' }); ui.local.station = null; });
   await draw();
+  await page.locator('.smenu .srow', { hasText: 'Exploration' }).click();
   await clickText('Walk on');
   await page.waitForSelector('.card');
   await shot('14-spot');
   await clickText('Gather');
+  await clickText('End exploration');
+  await page.waitForSelector('.recap');
+  await shot('14b-recap');
+  await clickText('Stay');
   // Journal in Do
   await page.keyboard.press('j');
   await shot('15-journal');
@@ -89,7 +103,7 @@ async function run(w, hgt) {
     while (gm.state.cal.minute < 9 * 60) gm.action('shortBreak');
   });
   await draw();
-  await page.locator('.stcard', { hasText: 'Store' }).click();
+  await page.locator('.smenu .srow', { hasText: 'Store' }).click();
   await shot('18-store');
   await ev(() => { window.__bl.ui.local.fast = true; });
   await clickText('Open store');

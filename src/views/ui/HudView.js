@@ -36,7 +36,7 @@ export class HudView {
           h('span.row', { 'data-help': 'day', style: { gap: '8px' } }, Dom.icon('clock', 18), h('div.daybar', h('i', { style: { width: `${Math.max(0, Math.min(1, dayRatio)) * 100}%` } }))))),
       goal ? Dom.slim('goalcard', { 'data-help': 'todayGoal' }, Dom.medal(goal.icon, 36), h('div', h('small', 'TODAY'), goal.name), h('span.st', met ? Dom.icon('check', 22) : Dom.icon('clock', 20))) : null,
       st.phase === 'do' ? h('div.hright',
-        this.#rb('map', 'Map', L.map, () => ui.set({ map: !L.map, journal: false })),
+        this.#rb('map', 'Town', L.map, () => ui.set({ map: !L.map, journal: false })),
         this.#rb('journal', 'Journal', L.journal, () => ui.set({ journal: !L.journal, map: false }))) : null);
   }
 

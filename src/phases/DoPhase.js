@@ -23,6 +23,7 @@ export class DoPhase extends Phase {
     state.day = GameState.freshDay();
     state.explore = { spotsToday: 0, spot: null, found: [] };
     state.store.result = null;
+    sys.quests.deliver();
     sys.events.roll();
     bus.emit(MSG.DAY_STARTED, { ...state.cal });
   }

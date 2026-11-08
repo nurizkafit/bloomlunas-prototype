@@ -59,6 +59,42 @@ export class EconomySystem {
     return { ok: true, cost };
   }
 
+  /** Check a buy list: not empty, enough gold. @param {any[]} lines @param {(l:any)=>number} costOf */
+  checkLines(lines, costOf) {
+    const ok = lines.filter((l) => (l.qty ?? l.lots) > 0);
+    if (!ok.length) return 'empty';
+    return ok.reduce((s, l) => s + costOf(l), 0) > this.ctx.state.gold + 1e-9 ? 'gold' : null;
+  }
+
+  /** Buy many lines at once. @param {{item:string, variant:string, qty:number, unit:number, label:string}[]} lines */
+  buyLines(lines) {
+    let cost = 0;
+    for (const l of lines.filter((x) => x.qty > 0)) {
+      const r = this.buy(l.item, l.variant, l.qty, l.unit, l.label);
+      if (!r.ok) return r;
+      cost += r.cost;
+    }
+    return { ok: true, cost: round1(cost) };
+  }
+
+  /** Check a sell list against free stock. @param {{item:string, tier:string, qty:number}[]} lines */
+  checkSell(lines) {
+    const ok = lines.filter((l) => l.qty > 0);
+    if (!ok.length) return 'empty';
+    return ok.some((l) => this.freeStock(l.item, l.tier) < l.qty) ? 'stock' : null;
+  }
+
+  /** Sell many lines at once. */
+  sellLines(lines) {
+    let income = 0;
+    for (const l of lines.filter((x) => x.qty > 0)) {
+      const r = this.sell(l.item, l.tier, l.qty, l.unit, l.cat, l.label);
+      if (!r.ok) return r;
+      income += r.income;
+    }
+    return { ok: true, income: round1(income) };
+  }
+
   /** Sell products from stock (not from the shelf). @param {string} item @param {string} tier @param {number} qty @param {number} unit @param {string} cat */
   sell(item, tier, qty, unit, cat, label) {
     const { state } = this.ctx;

@@ -13,8 +13,9 @@ import { ExploreView } from './ExploreView.js';
 const h = Dom.h;
 
 /**
- * PlaceView: the Do screen at one place. Left: station cards (slim frames). Right: the open station
- * window (rattan main frame). With no station open, the 3D City View shows.
+ * PlaceView: the Do screen at one place, inside its 3D room (user decisions 8 Nov 2026).
+ * Left: one location header frame and a compact station menu (Interface Reference command list).
+ * In the room: a hotspot pill over each station. Right: the open station window (rattan main frame).
  */
 export class PlaceView {
   constructor(ui) {
@@ -28,28 +29,62 @@ export class PlaceView {
   render() {
     const ui = this.ui, st = ui.st, L = ui.local;
     const place = ui.c.get('places', st.place);
-    if (st.place === 'outskirt' && !L.station) L.station = 'explore';
     if (L.station && !place.stations.includes(L.station)) L.station = null;
-    const hrs = ui.sys.time.hoursToday(place);
     const open = ui.sys.time.isOpen(place);
+    const homeMin = ui.preview('travel', { place: 'home' }).min;
     const side = h('div.side',
-      Dom.slim('', Dom.medal(place.icon, 44), h('div', h('div', { style: { fontFamily: 'var(--head)', fontSize: '18px' } }, place.name),
-        h('div.row.small', Dom.icon(open ? 'clock' : 'lock', 14), hrs ? `${hrs[0]}–${hrs[1]}` : 'Closed'))),
-      ...place.stations.map((id) => this.#card(id, open)),
-      h('div.row', { style: { marginTop: '8px' } }, Dom.btn('Map', () => ui.set({ map: true }), { cls: 'alt.sm', icon: 'map' }),
-        st.place !== 'home' ? Dom.btn('Home', () => { L.station = null; ui.act('travel', { place: 'home' }); }, { cls: 'sm', icon: 'house', min: ui.preview('travel', { place: 'home' }).min }) : null));
-    const els = [h('div.stag', Dom.icon(place.icon, 24), place.name), side];
+      PlaceView.header(ui, place.icon, place.name, PlaceView.hoursChip(ui, place)),
+      Dom.slim('smenu',
+        ...place.stations.map((id) => this.#row(id, open)),
+        h('div.sdiv'),
+        h('button.srow', { onclick: () => ui.set({ map: true, station: null, pick: {} }), 'data-help': 'town' }, h('span.si', Dom.icon('map', 22)), h('span.t', 'Town'), h('span.m', h('i.key', 'M'))),
+        st.place !== 'home' ? h('button.srow', { onclick: () => { L.station = null; ui.act('travel', { place: 'home' }); } }, h('span.si', Dom.icon('house', 22)), h('span.t', 'Go home'), h('span.m', Dom.icon('clock', 14), Dom.mins(homeMin))) : null));
+    for (const id of L.station || L.recap ? [] : place.stations) {
+      const s = ui.c.get('stations', id);
+      const shut = !open && id !== 'store' && id !== 'rest';
+      ui.spot('station', id, h(`button.hot${L.station === id ? '.on' : ''}`, { onclick: () => ui.set({ station: L.station === id ? null : id, pick: {} }), disabled: shut }, Dom.icon(s.icon, 18), s.name));
+    }
+    const els = [side];
     if (L.station) els.push(this.stations[L.station].render());
+    if (L.recap) els.push(this.#recap(L.recap));
     return els;
   }
 
-  #card(id, open) {
+  /** One location header frame (icon, name, a chip). Used by the place and the town list. */
+  static header(ui, icon, name, chip) {
+    return Dom.slim('lochead', Dom.medal(icon, 40), h('div.t', name), chip);
+  }
+
+  /** Today's hours, tinted open or closed. */
+  static hoursChip(ui, place) {
+    const hrs = ui.sys.time.hoursToday(place), open = ui.sys.time.isOpen(place);
+    return h(`span.hchip${open ? '' : '.shut'}`, { 'data-help': 'hours' }, Dom.icon(open ? 'clock' : 'lock', 14), hrs ? (hrs[0] === 0 && hrs[1] === 24 ? 'Open' : `${hrs[0]}–${hrs[1]}`) : 'Closed');
+  }
+
+  #row(id, open) {
     const ui = this.ui, L = ui.local;
     const s = ui.c.get('stations', id);
-    const badge = this.#badge(id);
     const shut = !open && id !== 'store' && id !== 'rest';
-    return h(`button.stcard${L.station === id ? '.on' : ''}`, { onclick: () => ui.set({ station: L.station === id ? null : id, pick: {} }), disabled: shut, title: s.name },
-      Dom.slim(L.station === id ? 'on' : '', Dom.medal(s.icon, 40), h('span.t', s.name), h('span.m', badge)));
+    return h(`button.srow${L.station === id ? '.on' : ''}`, { onclick: () => ui.set({ station: L.station === id ? null : id, pick: {} }), disabled: shut, title: shut ? 'Closed now' : s.name },
+      h('span.si', Dom.icon(s.icon, 22)), h('span.t', s.name), h('span.m', this.#badge(id)));
+  }
+
+  /** Exploration recap (user feedback D10). */
+  #recap(r) {
+    const ui = this.ui;
+    const close = (map) => ui.set({ recap: null, map });
+    return h('div.veil', Dom.rattan('card.recap',
+      h('div.kick', 'Exploration recap'), h('h3', 'City outskirt'),
+      h('div.costrow', h('span', { title: 'Walks' }, Dom.icon('walk', 18), String(r.walks)), h('span', { title: 'Gathered' }, Dom.icon('leaf', 18), String(r.gathered)), h('span', { title: 'Skipped' }, Dom.icon('skip', 18), String(r.skipped))),
+      h('div', { style: { width: '100%' } },
+        r.items.length ? r.items.map((l) => { const it = ui.c.get('items', l.item); return h('div.ln.sm', ui.itemBtn(l.item, l.variant, null, 20), h('span', it.name), h('span.small.muted', l.variant), h('span.v.pos', `+${l.qty}`)); })
+          : h('div.small.muted', { style: { textAlign: 'center' } }, 'Nothing gathered.'),
+        h('div.ln.sm', Dom.icon('clock', 18), 'Time', h('span.v', Dom.mins(r.min))),
+        h('div.ln.sm', Dom.icon('energy', 18), 'Energy', h('span.v.neg', `-${r.energy}`)),
+        h('div.ln.sm', Dom.icon('earth', 18), 'Earth XP', h('span.v.pos', `+${r.xp}`))),
+      h('div.row', { style: { gap: '16px' } },
+        Dom.btn('Stay', () => close(false), { cls: 'alt', icon: 'back' }),
+        Dom.btn('Town', () => close(true), { cls: 'gold', icon: 'map' }))));
   }
 
   #badge(id) {

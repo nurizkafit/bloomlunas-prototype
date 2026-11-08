@@ -42,7 +42,7 @@ src/core/      GameManager, EventBus, ContentDB, SaveSystem, Rng
 src/model/     GameState, Calendar, Inventory
 src/systems/   ActionRunner, TimeSystem, EffectApplier, EconomySystem, StoreSystem, ProductionSystem, ExploreSystem, QuestSystem, DebtSystem, EventSystem, PlanSystem, SkillSystem, ObjectiveSystem, Ledger, ActivityLog
 src/phases/    Phase, PlanPhase, DoPhase, CheckPhase, ActPhase, RetroPhase
-src/views/ui/    UiRoot, Dom, Icons, Ornaments, theme.css, HudView, StartView, JournalView, CheckView, ActView, RetroView, TownMapView, PlaceView, station views, EventCardView
+src/views/ui/    UiRoot, Dom, Icons, Ornaments, theme.css, HudView, StartView, JournalView, CheckView, ActView, RetroView, TownMapView, PlaceView, ItemCardView, station views, EventCardView
 src/views/scene/ SceneView (3D City View)
 src/sim/       Bot, runMonths.js (headless CLI), loadDataNode, csv.js
 assets/models/kenney/<kit>/  used Kenney GLB files + Textures/colormap.png + License.txt (CC0)

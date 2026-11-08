@@ -101,6 +101,39 @@ export class Dom {
 
   static divider() { return Dom.raw('<svg class="divider" viewBox="0 0 400 20" preserveAspectRatio="xMidYMid meet"><use href="#divider"/></svg>'); }
 
+  /**
+   * Compact table list (Interface Reference style): header row + one-line rows with fixed columns.
+   * @param {string} cols CSS grid-template-columns
+   * @param {any[]} head header cells
+   * @param {{cells:any[], on?:boolean, onclick?:Function, disabled?:boolean, title?:string, cls?:string}[]} rows
+   * @param {string} [empty] text when there are no rows
+   */
+  static tlist(cols, head, rows, empty = '—') {
+    const row = (r) => Dom.h(`${r.onclick ? 'button' : 'div'}.tlr${r.on ? '.on' : ''}${r.cls ? '.' + r.cls : ''}`, { style: { gridTemplateColumns: cols }, onclick: r.onclick, disabled: r.disabled, title: r.title }, r.cells.map((c) => Dom.h('span', c)));
+    return Dom.h('div.tl',
+      Dom.h('div.tlh', { style: { gridTemplateColumns: cols } }, head.map((c) => Dom.h('span', c))),
+      Dom.h('div.tlb', rows.length ? rows.map(row) : Dom.h('div.small.muted', { style: { padding: '8px' } }, empty)));
+  }
+
+  /** Small - n + stepper for a list row. */
+  static mini(n, on, o = {}) {
+    const step = o.step ?? 1;
+    return Dom.h('span.mstep',
+      Dom.h('button', { onclick: (e) => { e.stopPropagation(); on(-step); }, disabled: n <= (o.min ?? 0), title: 'Less', html: Icons.svg('minus', 10) }),
+      Dom.h('b', String(n)),
+      Dom.h('button', { onclick: (e) => { e.stopPropagation(); on(step); }, disabled: o.max !== undefined && n >= o.max, title: 'More', html: Icons.svg('plus', 10) }));
+  }
+
+  /** Budget jar SVG filled to a ratio. @param {number} ratio @param {string} color @param {number} [size] */
+  static jarSvg(ratio, color, size = 40) {
+    const r = Math.max(0, Math.min(1, ratio)), y = 40 - r * 28, id = `j${color.slice(1)}${Math.round(r * 100)}`;
+    return `<svg width="${size}" height="${Math.round(size * 1.1)}" viewBox="0 0 40 44"><defs><clipPath id="${id}"><path d="M9 10h22l3 6v22a4 4 0 01-4 4H10a4 4 0 01-4-4V16z"/></clipPath></defs>
+      <path d="M9 10h22l3 6v22a4 4 0 01-4 4H10a4 4 0 01-4-4V16z" fill="#F4ECDB" stroke="#2D3B3A" stroke-width="2"/>
+      <rect x="0" y="${y}" width="40" height="44" fill="${color}" clip-path="url(#${id})" opacity=".9"/>
+      <path d="M9 10h22l3 6v22a4 4 0 01-4 4H10a4 4 0 01-4-4V16z" fill="none" stroke="#2D3B3A" stroke-width="2"/>
+      <rect x="8" y="4" width="24" height="6" rx="2" fill="#C8955A" stroke="#2D3B3A" stroke-width="1.6"/></svg>`;
+  }
+
   /** Quality stars for a tier. */
   static stars(n) { return Dom.h('span.tier', Array.from({ length: n }, () => Dom.icon('star', 11))); }
 }

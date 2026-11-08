@@ -57,6 +57,50 @@ export class QuestSystem {
     return { ok: true, reward: q.reward };
   }
 
+  /** Unit price of a posted request. @param {string} item @param {string} variant */
+  requestUnit(item, variant) {
+    return Math.round(this.ctx.sys.economy.buyPrice(item, variant) * this.ctx.content.num('REQUEST_PRICE_MULT') * 10) / 10;
+  }
+
+  /** Total cost of a request: items + fee. */
+  requestCost(item, variant, qty) {
+    return Math.round((this.requestUnit(item, variant) * qty + this.ctx.content.num('REQUEST_FEE')) * 10) / 10;
+  }
+
+  /** @returns {string|null} refusal reason */
+  postCheck(item, variant, qty) {
+    const { state, content } = this.ctx;
+    const it = content.find('items', item);
+    if (!it || it.kind !== 'material' || !it.variants.includes(variant)) return 'unknown';
+    if (!(qty > 0)) return 'qty';
+    if ((state.quests.requests ??= []).length >= content.num('REQUEST_MAX_OPEN')) return 'requests';
+    if (this.requestCost(item, variant, qty) > state.gold) return 'gold';
+    return null;
+  }
+
+  /** Post a request on the board: pay now (Store jar), the items come later. */
+  post(item, variant, qty) {
+    const { state, content, sys } = this.ctx;
+    const cost = this.requestCost(item, variant, qty);
+    sys.ledger.add(-cost, `Request: ${qty} ${item}`, 'store');
+    (state.quests.requests ??= []).push({ item, variant, qty, cost, day: sys.time.absDay(), readyDay: sys.time.absDay() + content.num('REQUEST_DAYS') });
+    return { ok: true, cost };
+  }
+
+  /** Day start: requests that are due go into stock. @returns {any[]} delivered */
+  deliver() {
+    const { state, sys } = this.ctx;
+    const today = sys.time.absDay();
+    const req = state.quests.requests ?? [];
+    const due = req.filter((r) => r.readyDay <= today);
+    for (const r of due) {
+      Inventory.add(state.inv, r.item, r.variant, r.qty);
+      sys.log.add('questboard', `Request arrived: ${r.qty} ${r.item}`, 'quest');
+    }
+    state.quests.requests = req.filter((r) => r.readyDay > today);
+    return due;
+  }
+
   /** Day end: drop late quests. */
   expire() {
     const { state, sys } = this.ctx;

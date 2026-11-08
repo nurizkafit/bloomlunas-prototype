@@ -3,10 +3,11 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { clone as cloneSkinned } from 'three/addons/utils/SkeletonUtils.js';
 
 /**
- * SceneView: the 3D City View backdrop (user decision: movement by town map; the city is a backdrop).
- * Builds the town from data/scene/town.json with Kenney CC0 placeholder models (assets/models/kenney/),
- * tints roofs and ground to the M2 town colours, moves the camera to the current place,
- * walks a few townsfolk along the roads and shifts the light from day to moon light.
+ * SceneView: the 3D City View and the interior rooms (user decisions: move by a place list over the 3D town;
+ * a 3D room for each building). Builds the town and the rooms from data/scene/town.json with Kenney CC0
+ * placeholder models (assets/models/kenney/), tints roofs and ground to the M2 town colours, moves the camera
+ * to the current place or into its room, walks a few townsfolk along the roads, shifts the light from day
+ * to moon light, and keeps DOM hotspots (stations, places) over their 3D anchors.
  * The watercolor look comes from the CSS filter and paper veil on top of the canvas.
  * It reads GameState only (through sync). Unity: the town scene + Cinemachine camera.
  */
@@ -24,6 +25,9 @@ export class SceneView {
     this.camGoal = new THREE.Vector3();
     this.ready = false;
     this.offsetX = 0;
+    this.rooms = new Map();
+    this.spots = [];
+    this.selected = null;
   }
 
   /** @param {HTMLElement} el */
@@ -58,12 +62,51 @@ export class SceneView {
   /** Called by UiRoot on each draw. @param {any} state @param {any} local */
   sync(state, local) {
     if (!this.data) return;
-    const inGame = local.screen === 'game';
-    this.focus = inGame && state.phase === 'do' && !local.map ? state.place : 'overview';
+    const inGame = local.screen === 'game', doing = inGame && state.phase === 'do';
+    const room = this.data.rooms?.[state.place];
+    this.focus = doing && !local.map ? (room ? `room:${state.place}` : state.place) : 'overview';
+    this.selected = doing && local.map ? local.pick?.place ?? null : null;
     this.minute = inGame ? state.cal.minute : 16 * 60;
     this.playerPlace = inGame ? state.place : null;
-    // Free view area: right of the station list when no window is open.
-    this.offsetX = inGame && state.phase === 'do' && !local.station && !local.map && !local.journal ? -150 : 0;
+    // Free view area: right of the station list or the place list when no window is open.
+    this.offsetX = doing && !local.station && !local.journal ? -150 : 0;
+  }
+
+  /**
+   * DOM hotspots kept over 3D anchors. kind 'station' uses the current room; kind 'place' uses the town.
+   * @param {{kind:'station'|'place', id:string, el:HTMLElement}[]} items
+   */
+  setSpots(items) {
+    this.spots = items.map((it) => ({ ...it, pos: this.#anchor(it.kind, it.id) })).filter((s) => s.pos);
+    this.#placeSpots();
+  }
+
+  #anchor(kind, id) {
+    const d = this.data;
+    if (!d) return null;
+    if (kind === 'place') {
+      const p = d.places[id];
+      return p ? new THREE.Vector3(p.x, id === 'outskirt' ? 1.2 : 2.6, p.z) : null;
+    }
+    const key = this.focus.startsWith('room:') ? this.focus.slice(5) : null;
+    const r = key && d.rooms[key];
+    const a = r?.stations?.[id];
+    if (r && a) return new THREE.Vector3(r.origin[0] + a[0], a[1], r.origin[1] + a[2]);
+    if (!key && id === 'explore' && d.places.outskirt) return new THREE.Vector3(d.places.outskirt.x, 1.0, d.places.outskirt.z);
+    return null;
+  }
+
+  #placeSpots() {
+    if (!this.camera || !this.spots.length) return;
+    const v = new THREE.Vector3();
+    for (const s of this.spots) {
+      v.copy(s.pos).project(this.camera);
+      const hide = !this.ready || v.z > 1 || Math.abs(v.x) > 1.05 || Math.abs(v.y) > 1.05 || ((v.x + 1) / 2) * 1280 < 340; // under the side panel
+      s.el.style.visibility = hide ? 'hidden' : 'visible';
+      const half = (s.el.offsetWidth || 0) / 2 + 8;
+      s.el.style.left = `${Math.min(1280 - half, Math.max(half, ((v.x + 1) / 2) * 1280))}px`;
+      s.el.style.top = `${((1 - v.y) / 2) * 720}px`;
+    }
   }
 
   /* ---------- build ---------- */
@@ -130,6 +173,10 @@ export class SceneView {
     }
     for (const w of d.walkers) names.add(w.m);
     names.add(d.player.m);
+    for (const r of this.#roomList()) {
+      for (const p of r.props) names.add(p.m);
+      for (const n of r.npc ?? []) names.add(n.m);
+    }
     const loader = new GLTFLoader();
     await Promise.all([...names].map((n) => loader.loadAsync(`${d.base}${n}.glb`).then((g) => this.cache.set(n, g)).catch((e) => console.warn('missing model', n, e))));
     for (const h of d.houses) this.#house(h);
@@ -144,6 +191,66 @@ export class SceneView {
     for (const w of d.walkers) this.#walker(w);
     this.player = this.#character(d.player.m, 'idle');
     if (this.player) this.scene.add(this.player.obj);
+    for (const [key, r] of Object.entries(d.rooms ?? {})) if (r && r.origin) this.#room(key, r);
+  }
+
+  #roomList() { return Object.values(this.data.rooms ?? {}).filter((r) => r && r.origin); }
+
+  /** One interior: floor, back and side walls (front open), beams, windows, boards, props and NPCs. */
+  #room(key, r) {
+    const g = new THREE.Group();
+    const mat = (c, extra = {}) => new THREE.MeshStandardMaterial({ color: c, roughness: 1, ...extra });
+    const box = (w, h, dd, x, y, z, m) => { const o = new THREE.Mesh(new THREE.BoxGeometry(w, h, dd), m); o.position.set(x, y, z); o.castShadow = true; o.receiveShadow = true; g.add(o); return o; };
+    const W = r.w, D = r.d, H = r.h, t = 0.12;
+    const wall = mat(r.wall), beam = mat(r.beam), floor = mat(r.floor);
+    box(W + 2 * t, 0.1, D + 0.6, 0, -0.05, 0.3, floor);
+    box(W + 2 * t, H, t, 0, H / 2, -D / 2 - t / 2, wall);
+    box(t, H, D, -W / 2 - t / 2, H / 2, 0, wall);
+    box(t, H, D, W / 2 + t / 2, H / 2, 0, wall);
+    // Skirting, top beam and posts in dark wood.
+    box(W, 0.12, 0.04, 0, 0.06, -D / 2 + 0.02, beam);
+    box(W + 2 * t, 0.14, t + 0.04, 0, H - 0.07, -D / 2 - t / 2, beam);
+    for (const x of [-W / 2, W / 2]) box(0.16, H, 0.16, x, H / 2, -D / 2, beam);
+    for (const x of [-W / 2 - t / 2, W / 2 + t / 2]) box(t + 0.04, 0.14, D, x, H - 0.07, 0, beam);
+    // Floor boards (lines).
+    for (let i = -W / 2 + 0.5; i < W / 2; i += 0.5) box(0.015, 0.005, D + 0.5, i, 0.003, 0.25, beam);
+    for (const [x, y] of r.windows ?? []) {
+      box(0.9, 0.7, 0.03, x, y, -D / 2 + 0.02, mat('#F6E7B8', { emissive: '#F6E7B8', emissiveIntensity: 0.55 }));
+      box(0.06, 0.78, 0.05, x, y, -D / 2 + 0.04, beam); box(0.98, 0.06, 0.05, x, y, -D / 2 + 0.04, beam);
+      box(1.02, 0.08, 0.1, x, y - 0.4, -D / 2 + 0.06, beam);
+    }
+    for (const b of r.boards ?? []) {
+      box(b.w + 0.12, b.h + 0.12, 0.05, b.x, b.y, b.z, beam);
+      box(b.w, b.h, 0.06, b.x, b.y, b.z + 0.01, mat('#C8A57A'));
+      for (let i = 0; i < b.notes; i++) {
+        const col = i % 4, row = Math.floor(i / 4);
+        const n = box(0.3, 0.36, 0.01, b.x - b.w / 2 + 0.3 + col * 0.42, b.y + b.h / 2 - 0.3 - row * 0.48, b.z + 0.05, mat(i % 3 ? '#F4ECDB' : '#EBD9A8'));
+        n.rotation.z = ((i * 37) % 9 - 4) * 0.03;
+      }
+    }
+    for (const p of r.props) {
+      const o = this.#inst(p.m);
+      if (!o) continue;
+      o.scale.setScalar(p.s ?? 1);
+      o.rotation.y = THREE.MathUtils.degToRad(p.r ?? 0);
+      o.updateMatrixWorld(true);
+      const bb = new THREE.Box3().setFromObject(o), c = bb.getCenter(new THREE.Vector3());
+      o.position.set(p.x - c.x, (p.y ?? 0) - bb.min.y, p.z - c.z);
+      g.add(o);
+    }
+    const lamp = new THREE.PointLight('#FFD9A0', 6, 9, 1.6);
+    lamp.position.set(0, H + 0.6, 0.6);
+    g.add(lamp);
+    for (const n of r.npc ?? []) {
+      const c = this.#character(n.m, 'idle');
+      if (!c) continue;
+      c.obj.position.set(n.x, 0, n.z);
+      c.obj.rotation.y = THREE.MathUtils.degToRad(n.r ?? 0);
+      g.add(c.obj);
+    }
+    g.position.set(r.origin[0], 0, r.origin[1]);
+    this.scene.add(g);
+    this.rooms.set(key, { g, r });
   }
 
   /** A clone of a loaded model, with matte materials and shadows. @param {string} name @param {string} [tint] */
@@ -228,13 +335,29 @@ export class SceneView {
     this.clock.update(); const dt = Math.min(0.05, this.clock.getDelta());
     const d = this.data;
     if (!d) return;
-    const place = d.places[this.focus] ?? d.places.overview;
-    this.target.lerp(new THREE.Vector3(place.x, 0.4, place.z), 1 - Math.pow(0.02, dt));
     const sway = Math.sin(this.clock.getElapsed() * 0.06) * 0.12;
-    const dir = new THREE.Vector3(Math.sin(0.62 + sway), 0.82, Math.cos(0.62 + sway)).normalize();
-    this.camGoal.copy(this.target).addScaledVector(dir, place.dist);
-    this.camera.position.lerp(this.camGoal, 1 - Math.pow(0.05, dt));
+    const roomKey = this.focus.startsWith('room:') ? this.focus.slice(5) : null;
+    const room = roomKey ? d.rooms[roomKey] : null;
+    let goal, dir, dist;
+    if (room) {
+      const c = room.cam;
+      goal = new THREE.Vector3(room.origin[0] + 0.2, 0.55, room.origin[1] + 0.1);
+      dir = new THREE.Vector3(Math.sin(c.yaw + sway * 0.4), c.pitch, Math.cos(c.yaw + sway * 0.4)).normalize();
+      dist = c.dist;
+    } else {
+      const place = d.places[this.focus] ?? d.places.overview;
+      goal = new THREE.Vector3(place.x, 0.4, place.z);
+      dir = new THREE.Vector3(Math.sin(0.62 + sway), 0.82, Math.cos(0.62 + sway)).normalize();
+      dist = place.dist;
+    }
+    // Cut (no long glide) when the camera goes in or out of a room.
+    const cut = this.lastRoom !== roomKey;
+    this.lastRoom = roomKey;
+    if (cut) this.target.copy(goal); else this.target.lerp(goal, 1 - Math.pow(0.02, dt));
+    this.camGoal.copy(this.target).addScaledVector(dir, dist);
+    if (cut) this.camera.position.copy(this.camGoal); else this.camera.position.lerp(this.camGoal, 1 - Math.pow(0.05, dt));
     this.camera.lookAt(this.target);
+    this.indoor = !!room;
     if (this.view?.x !== this.offsetX) this.#resize();
     for (const m of this.mixers) m.update(dt);
     for (const w of this.walkers) {
@@ -245,12 +368,19 @@ export class SceneView {
       w.obj.lookAt(ahead.x, 0, ahead.z);
     }
     if (this.player && this.playerPlace) {
-      const s = d.player.spots[this.playerPlace];
-      if (s) { this.player.obj.position.set(s[0], 0, s[1]); this.player.obj.rotation.y = 0.6; }
+      const rp = this.indoor && d.rooms[this.playerPlace]?.player;
+      if (rp) {
+        const o = d.rooms[this.playerPlace].origin;
+        this.player.obj.position.set(o[0] + rp[0], 0, o[1] + rp[1]); this.player.obj.rotation.y = THREE.MathUtils.degToRad(rp[2] ?? 0);
+      } else {
+        const s = d.player.spots[this.playerPlace];
+        if (s) { this.player.obj.position.set(s[0], 0, s[1]); this.player.obj.rotation.y = 0.6; }
+      }
       this.player.obj.visible = true;
     } else if (this.player) this.player.obj.visible = false;
     this.#light();
     this.renderer.render(this.scene, this.camera);
+    this.#placeSpots();
   }
 
   /** Day light to moon light by the clock. */
@@ -263,9 +393,10 @@ export class SceneView {
     this.sun.color.set(d.day).lerp(new THREE.Color(d.moon), k);
     this.sun.intensity = 2.4 - 1.5 * k;
     this.hemi.intensity = 1.8 - 0.9 * k;
-    const sky = new THREE.Color(d.sky).lerp(new THREE.Color(d.skyNight), k * 0.8);
+    const sky = this.indoor ? new THREE.Color(d.indoor ?? '#3B2F26').lerp(new THREE.Color('#1E1A1C'), k * 0.6) : new THREE.Color(d.sky).lerp(new THREE.Color(d.skyNight), k * 0.8);
     this.scene.background = sky;
     this.scene.fog.color.copy(sky);
+    if (this.indoor) { this.hemi.intensity = 1.5 - 0.5 * k; this.sun.intensity = 1.6 - 1.0 * k; }
     const a = THREE.MathUtils.mapLinear(Math.min(Math.max(h, 6), 22), 6, 22, -0.9, 0.9);
     this.sun.position.set(this.target.x + a * 14, 16, this.target.z + 10);
     this.sun.target.position.copy(this.target);
