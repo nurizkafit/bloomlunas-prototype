@@ -11,7 +11,8 @@
     "check": "vitest run && node src/sim/runMonths.js --runs 2 --quiet && vite build",
     "graph:update": "graphify update .",
     "graph:query": "graphify query",
-    "test:browser": "node tests/browser/run.mjs"
+    "test:browser": "node tests/browser/run.mjs",
+    "sheet": "node tests/browser/run.mjs sheet"
   },
   "dependencies": {
     "three": "0.187.0"

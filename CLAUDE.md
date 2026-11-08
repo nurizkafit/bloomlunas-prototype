@@ -44,6 +44,7 @@ src/systems/   ActionRunner, TimeSystem, EffectApplier, EconomySystem, StoreSyst
 src/phases/    Phase, PlanPhase, DoPhase, CheckPhase, ActPhase, RetroPhase
 src/views/ui/    UiRoot, Dom, Icons, Ornaments, theme.css, HudView, StartView, JournalView, CheckView, ActView, RetroView, TownMapView, PlaceView, ItemCardView, station views, EventCardView
 src/views/scene/ SceneView (3D City View)
+src/views/sheet/ InterfaceSheet + sheet.css (sheet.html: all UI components with IDs, for the art audit)
 src/sim/       Bot, runMonths.js (headless CLI), loadDataNode, csv.js
 assets/models/kenney/<kit>/  used Kenney GLB files + Textures/colormap.png + License.txt (CC0)
 tests/         *.test.js (Vitest, logic only), browser/ (Playwright flow test)
@@ -56,6 +57,7 @@ tests/         *.test.js (Vitest, logic only), browser/ (Playwright flow test)
 - `npm test`: Vitest (logic only).
 - `npm run check`: `npm test` + two headless runs + build.
 - `npm run test:browser`: Playwright browser tests in `tests/browser/` (starts Vite, screenshots in `out/browser/`). Run it at each milestone with a view.
+- `npm run sheet`: writes the interface sheet (`sheet.html`) to `out/browser/interface-sheet.png` and `.pdf`. When you add or change a UI component, add it to `src/views/sheet/InterfaceSheet.js` with the next free ID (never reuse an ID).
 
 ## Conventions
 

@@ -106,4 +106,7 @@ export class Icons {
   }
 
   static has(name) { return name in P; }
+
+  /** All icon names (interface sheet). */
+  static names() { return Object.keys(P); }
 }
