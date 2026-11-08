@@ -8,14 +8,17 @@ const KEY = /\{([A-Z_]+)%?\}/g;
 describe('story and tutorial text', () => {
   it('uses only known BalanceConfig numbers in story text', () => {
     const c = newContent();
-    const texts = [...c.get('story', 'premise').paragraphs, ...c.get('tutorial', 'tutorial').steps.flatMap((s) => s.lines)];
+    const texts = [...c.get('story', 'premise').paragraphs, ...c.get('tutorial', 'tutorial').steps.flatMap((s) => s.lines).map((l) => (typeof l === 'string' ? l : l.say ?? l.do))];
     for (const t of texts) for (const [, k] of t.matchAll(KEY)) expect(typeof c.num(k), k).toBe('number');
   });
 
   it('has unique tutorial steps, each with lines', () => {
     const steps = newContent().get('tutorial', 'tutorial').steps;
     expect(new Set(steps.map((s) => s.id)).size).toBe(steps.length);
-    for (const s of steps) expect(s.lines.length, s.id).toBeGreaterThan(0);
+    for (const s of steps) {
+      expect(s.lines.length, s.id).toBeGreaterThan(0);
+      for (const l of s.lines) expect(typeof l === 'string' || typeof (l.say ?? l.do) === 'string', s.id).toBe(true);
+    }
   });
 
   it('marks a tutorial step as seen, and can turn the guide off', () => {

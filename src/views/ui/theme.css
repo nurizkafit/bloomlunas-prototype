@@ -477,11 +477,28 @@ button.tlr:hover:not(:disabled) { background: rgba(95,163,154,.12); }
 .rf.tutor .who b { font-family: var(--head); font-weight: 400; font-size: 18px; margin-top: 4px; }
 .rf.tutor .who small { font-size: 12px; color: var(--fern); }
 .rf.tutor .say { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 12px; }
-.rf.tutor .say p { margin: 0; font-size: 17px; line-height: 1.45; min-height: 50px; }
+.rf.tutor .say .line p { margin: 0; font-size: 17px; line-height: 1.45; }
+.rf.tutor .say .line { min-height: 74px; }
+.rf.tutor .say .line.narr { display: grid; align-content: center; }
+.rf.tutor .say .line.narr p::before, .rf.tutor .say .line.narr p::after { display: none; }
+.rf.tutor .say .line.narr p { padding-left: 12px; border-left: 3px solid var(--rattan); }
 .rf.tutor .say .row { gap: 8px; }
 /* End scene (RetroView): story popups before the look-back book opens. */
 .endscene { z-index: 70; background: rgba(14,27,28,.72); }
 .rf.card.scene { width: 600px; }
 .rf.card.scene > .in { padding: 32px 48px 28px; }
 .rf.card.scene h3 { margin: 4px 0 0; }
-.rf.card.scene p { font-size: 18px; line-height: 1.55; text-align: center; min-height: 84px; margin: 8px 0; }
+.rf.card.scene .line { min-height: 124px; display: grid; align-content: center; width: 100%; margin: 8px 0; text-align: center; }
+.rf.card.scene .line p { font-size: 18px; line-height: 1.55; margin: 0; }
+/* Dialogue lines (Dom.line): speech = name tag + quoted upright text on a speech panel; narration = italic, no name, the portrait fades. */
+.line.speech { position: relative; padding: 10px 16px 12px; border-radius: 10px; background: rgba(255,250,238,.85); box-shadow: inset 0 0 0 1.5px var(--rattan); }
+.line.speech .speaker { display: inline-block; margin-bottom: 4px; padding: 1px 10px; border-radius: 10px; background: var(--teal); color: var(--cream); font-family: var(--head); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; }
+.line.speech p { color: var(--ink); font-style: normal; }
+.line.narr { padding: 10px 4px; }
+.line.narr p { font-style: italic; color: var(--fern); }
+.line.narr p::before, .line.narr p::after { content: "\00B7\00A0\00B7\00A0\00B7"; display: block; color: var(--rattan); font-style: normal; font-size: 14px; letter-spacing: .2em; }
+.rf.card.scene.narr .ico, .rf.tutor.narr .who .ico { opacity: .45; filter: saturate(.4); transition: opacity .2s; }
+.rf.card.scene.narr h3 { opacity: .5; }
+.rf.tutor.narr .who b, .rf.tutor.narr .who small { opacity: .5; }
+.rf.card.scene .line p { max-width: none; }
+.rf.card.scene .line.speech .speaker { display: none; }

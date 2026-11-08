@@ -66,6 +66,22 @@ export class Dom {
   }
 
   /** Dots row (filled count of total). */
+  /**
+   * One dialogue line (TutorialView, RetroView). Data gives a string or {say} (the speaker talks) or {do} (narration).
+   * Speech shows the speaker's name, quote marks and upright text; narration shows italic text with no name.
+   * @param {string|{say?:string, do?:string}} line @param {string} speaker @param {(t:string)=>string} [fill]
+   */
+  static line(line, speaker, fill = (t) => t) {
+    const narr = typeof line === 'object' && line.do != null;
+    const text = fill(typeof line === 'string' ? line : narr ? line.do : line.say ?? '');
+    return narr
+      ? Dom.h('div.line.narr', Dom.h('p', text))
+      : Dom.h('div.line.speech', Dom.h('span.speaker', speaker), Dom.h('p', `\u201C${text}\u201D`));
+  }
+
+  /** True when a dialogue line is narration. */
+  static isNarr(line) { return typeof line === 'object' && line?.do != null; }
+
   static dots(total, states) {
     return Dom.h('div.dots', Array.from({ length: total }, (_, i) => Dom.h(`i${states[i] ? '.' + states[i] : ''}`)));
   }

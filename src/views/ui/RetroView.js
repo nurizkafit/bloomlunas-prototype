@@ -67,12 +67,13 @@ export class RetroView {
     const sc = story.scenes[at.s];
     const lines = sc.lines ?? (r.endDebt < r.startDebt ? sc.down : sc.up);
     const nums = { paid: r.paid, interest: r.interest, debt: r.endDebt, startDebt: r.startDebt };
-    const text = lines[at.i].replace(/\{(\w+)\}/g, (m, k) => (k in nums ? Math.round(nums[k]).toLocaleString('en') : m));
+    const fill = (t) => t.replace(/\{(\w+)\}/g, (m, k) => (k in nums ? Math.round(nums[k]).toLocaleString('en') : m));
+    const narr = Dom.isNarr(lines[at.i]);
     const lastLine = at.i >= lines.length - 1, lastScene = at.s >= story.scenes.length - 1;
     const next = () => ui.set({ retroScene: !lastLine ? { s: at.s, i: at.i + 1 } : !lastScene ? { s: at.s + 1, i: 0 } : 'done' });
-    return h('div.veil.endscene', Dom.rattan('card.scene', ...Dom.corners(),
+    return h('div.veil.endscene', Dom.rattan(`card.scene${narr ? '.narr' : ''}`, ...Dom.corners(),
       h('div.kick', sc.role), Dom.medal(sc.icon, 96), h('h3', sc.speaker),
-      h('p', text),
+      Dom.line(lines[at.i], sc.speaker, fill),
       Dom.dots(lines.length, lines.map((_, k) => (k <= at.i ? 'f' : ''))),
       h('div.row', { style: { gap: '16px' } },
         Dom.btn('Skip', () => ui.set({ retroScene: 'done' }), { cls: 'alt.sm', icon: 'skip' }),

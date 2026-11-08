@@ -41,10 +41,11 @@ export class TutorialView {
     const i = Math.min(L.tut.i, step.lines.length - 1);
     const last = i >= step.lines.length - 1;
     const done = () => { L.tut = null; ui.send(MSG.INTENT_TUTORIAL_SEEN, { id: step.id }); };
-    return Dom.rattan('tutor',
+    const narr = Dom.isNarr(step.lines[i]);
+    return Dom.rattan(`tutor${narr ? '.narr' : ''}`,
       h('div.who', Dom.medal(sp.icon, 64), h('b', sp.name), h('small', sp.role)),
       h('div.say',
-        h('p', ui.fill(step.lines[i])),
+        Dom.line(step.lines[i], sp.name, (t) => ui.fill(t)),
         h('div.row',
           Dom.dots(step.lines.length, step.lines.map((_, k) => (k <= i ? 'f' : ''))),
           h('span.spacer'),

@@ -415,9 +415,11 @@ export class InterfaceSheet {
         { id: 'CRD-19', name: 'Guide dialogue', cls: '.rf.tutor (.who, .say)', used: 'First week: the neighbour guide at the bottom of the screen (TutorialView, data/tutorial/tutorial.json).', w: 800, bg: 'scene',
           vars: [[null, (() => { const t = this.c.get('tutorial', 'tutorial'), l = t.steps[0].lines; return Dom.rattan('tutor', { style: { position: 'relative', left: 'auto', bottom: 'auto', transform: 'none' } },
             h('div.who', Dom.medal(t.speaker.icon, 64), h('b', t.speaker.name), h('small', t.speaker.role)),
-            h('div.say', h('p', l[2]), h('div.row', Dom.dots(l.length, l.map((_, k) => (k <= 2 ? 'f' : ''))), h('span.spacer'), btn('Skip all tips', 'alt.sm'), btn('Skip', 'alt.sm', { icon: 'skip' }), btn('Next', 'gold.sm', { icon: 'next' })))); })()]] },
+            h('div.say', Dom.line(l[2], t.speaker.name), h('div.row', Dom.dots(l.length, l.map((_, k) => (k <= 2 ? 'f' : ''))), h('span.spacer'), btn('Skip all tips', 'alt.sm'), btn('Skip', 'alt.sm', { icon: 'skip' }), btn('Next', 'gold.sm', { icon: 'next' })))); })()]] },
+        { id: 'CRD-21', name: 'Dialogue line', cls: '.line.speech / .line.narr', used: 'Guide box and end scene. Speech: name tag and quoted text. Narration: italic, no name, the portrait fades.', w: 560, bg: 'page',
+          vars: [['speech', h('div', { style: { width: '480px' } }, Dom.line({ say: 'Pay at least 450 gold. If you can spare more, do it.' }, 'Mbok Sari'))], ['narration', h('div', { style: { width: '480px' } }, Dom.line({ do: 'Mbok Sari pours you a glass of water.' }, 'Mbok Sari'))]] },
         { id: 'CRD-20', name: 'End scene', cls: '.veil.endscene > .card.scene', used: 'Look-back screen: the clerk, then the neighbour, before the book opens (RetroView, data/story/retro.json).', w: 680, bg: 'teal',
-          vars: [[null, (() => { const sc = this.c.get('story', 'retro').scenes[1]; return Dom.rattan('card.scene', ...Dom.corners(), h('div.kick', sc.role), Dom.medal(sc.icon, 96), h('h3', sc.speaker), h('p', sc.up[1]), Dom.dots(3, ['f', 'f', '']), h('div.row', { style: { gap: '16px' } }, btn('Skip', 'alt.sm', { icon: 'skip' }), btn('Next', 'gold', { icon: 'next' }))); })()]] }
+          vars: [[null, (() => { const sc = this.c.get('story', 'retro').scenes[1]; return Dom.rattan('card.scene', ...Dom.corners(), h('div.kick', sc.role), Dom.medal(sc.icon, 96), h('h3', sc.speaker), Dom.line(sc.up[1], sc.speaker), Dom.dots(3, ['f', 'f', '']), h('div.row', { style: { gap: '16px' } }, btn('Skip', 'alt.sm', { icon: 'skip' }), btn('Next', 'gold', { icon: 'next' }))); })()]] }
       ] },
 
       /* ===== CHP: Chips, badges and pills ===== */

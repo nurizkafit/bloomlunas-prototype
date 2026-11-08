@@ -1,15 +1,27 @@
 {
   "id": "retro",
-  "_doc": "End scene: popups before the look-back book opens. A scene has 'lines', or 'down' (debt lower than at the start) and 'up' (debt not lower). {paid}, {interest}, {debt} and {startDebt} show numbers from the two months.",
+  "_doc": "End scene: popups before the look-back book opens. Each line is {\"say\": text} (the speaker talks) or {\"do\": text} (narration: what happens). A scene has 'lines', or 'down' (debt lower than at the start) and 'up' (debt not lower). {paid}, {interest}, {debt} and {startDebt} show numbers from the two months.",
   "scenes": [
     {
       "speaker": "Clerk of Accounts",
       "role": "Merchant Guild",
       "icon": "guild",
       "lines": [
-        "There's a knock, three sharp raps. The clerk in the grey coat comes in without waiting and sets a heavy ledger on your table.",
-        "He turns the pages slowly. \"Two months. You paid {paid} gold. Interest added {interest}. The balance now stands at {debt}.\"",
-        "He snaps the ledger shut. \"The guild will be back next month. And the month after that.\" The door closes behind him."
+        {
+          "do": "There's a knock, three sharp raps. The clerk in the grey coat comes in without waiting and sets a heavy ledger on your table."
+        },
+        {
+          "do": "He turns the pages slowly, one finger running down each column."
+        },
+        {
+          "say": "Two months. You paid {paid} gold. Interest added {interest}. The balance now stands at {debt}."
+        },
+        {
+          "say": "The guild will be back next month. And the month after that."
+        },
+        {
+          "do": "He snaps the ledger shut. The door closes behind him."
+        }
       ]
     },
     {
@@ -17,14 +29,26 @@
       "role": "Your neighbour",
       "icon": "neighbour",
       "down": [
-        "The clerk is barely down the street when Mbok Sari slips in with two cups of warm jamu.",
-        "\"It's smaller, you know. The debt. Not by much, but smaller than the day that letter came. Your parent would be proud of you.\"",
-        "\"Now drink that, and let's look at your books together.\""
+        {
+          "do": "The clerk is barely down the street when Mbok Sari slips in with two cups of warm jamu."
+        },
+        {
+          "say": "It's smaller, you know. The debt. Not by much, but smaller than the day that letter came."
+        },
+        {
+          "say": "Your parent would be proud of you. Now drink that, and let's look at your books together."
+        }
       ],
       "up": [
-        "The clerk is barely down the street when Mbok Sari slips in and presses a warm cup into your hands.",
-        "\"The debt grew. I know that's hard to look at. But you understand now how it grows, and that's where things start to change.\"",
-        "\"Come on. Drink that, and let's look at your books together.\""
+        {
+          "do": "The clerk is barely down the street when Mbok Sari slips in and presses a warm cup into your hands."
+        },
+        {
+          "say": "The debt grew. I know that's hard to look at."
+        },
+        {
+          "say": "But you understand now how it grows, and that's where things start to change. Come on, let's look at your books together."
+        }
       ]
     }
   ]

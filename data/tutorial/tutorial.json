@@ -1,6 +1,6 @@
 {
   "id": "tutorial",
-  "_doc": "First-week guide (user decision 8 Nov 2026). Each step shows once, the first time its 'when' matches. 'week' is the week of the game (1 = first week); 'month' is the month. The player can skip one step or all steps. {KEY} shows a BalanceConfig number.",
+  "_doc": "First-week guide (user decision 8 Nov 2026). Each step shows once, the first time its 'when' matches. 'week' is the week of the game (1 = first week); 'month' is the month. The player can skip one step or all steps. {KEY} shows a BalanceConfig number. Each line is a string or {\"say\": text} (the neighbour talks), or {\"do\": text} (narration: what happens).",
   "_placeholder": true,
   "speaker": {
     "name": "Mbok Sari",
@@ -15,12 +15,27 @@
         "week": 1
       },
       "lines": [
-        "Oh, dear. I saw that grey guild seal on your door this morning. Those letters never bring good news, do they?",
-        "Forgive me, I haven't even said who I am. I'm Mbok Sari. I sell jamu from the stall next door. Your parent and I were neighbours for twenty years.",
-        "That debt looks like a mountain, I know. But mountains get climbed one step at a time. We'll take it one week at a time.",
-        "This was your parent's planner book. Every week starts here, with a goal for each day. Drag a card onto a day, any day you like.",
-        "Then turn to the Store plan page. Decide what you want to sell, and split your gold between the three jars. The Buffer jar is for the guild. Try very hard not to touch it.",
-        "Once it all feels right, press Finish plan up at the top. And don't worry about getting it perfect. Nobody does, the first time."
+        {
+          "do": "Someone taps on the shop window. An older woman in a batik headscarf smiles and lets herself in."
+        },
+        {
+          "say": "Oh, dear. I saw that grey guild seal on your door this morning. Those letters never bring good news, do they?"
+        },
+        {
+          "say": "Forgive me, I haven't even said who I am. I'm Mbok Sari. I sell jamu from the stall next door. Your parent and I were neighbours for twenty years."
+        },
+        {
+          "say": "That debt looks like a mountain, I know. But mountains get climbed one step at a time. We'll take it one week at a time."
+        },
+        {
+          "say": "This was your parent's planner book. Every week starts here, with a goal for each day. Drag a card onto a day, any day you like."
+        },
+        {
+          "say": "Then turn to the Store plan page. Decide what you want to sell, and split your gold between the three jars. The Buffer jar is for the guild. Try very hard not to touch it."
+        },
+        {
+          "say": "Once it all feels right, press Finish plan up at the top. And don't worry about getting it perfect. Nobody does, the first time."
+        }
       ]
     },
     {
@@ -31,10 +46,21 @@
         "week": 1
       },
       "lines": [
-        "And so the week begins! It's strange seeing the lamps lit in here again.",
-        "The Crafting table is where the jamu and salep get made. Then you put them on the shelf, open the doors, and let the town come to you.",
-        "Mind your energy, though. That green ring around the clock is how much you have left in you. Every job takes a little.",
-        "Out of herbs? Press Town and walk over to the market, or to the guild."
+        {
+          "do": "Mbok Sari follows you inside and looks around the old shop."
+        },
+        {
+          "say": "And so the week begins! It's strange seeing the lamps lit in here again."
+        },
+        {
+          "say": "The Crafting table is where the jamu and salep get made. Then you put them on the shelf, open the doors, and let the town come to you."
+        },
+        {
+          "say": "Mind your energy, though. That green ring around the clock is how much you have left in you. Every job takes a little."
+        },
+        {
+          "say": "Out of herbs? Press Town and walk over to the market, or to the guild."
+        }
       ]
     },
     {
@@ -45,9 +71,18 @@
         "week": 1
       },
       "lines": [
-        "Ah, the market. Smell that? Ginger, lemongrass, a little smoke from the satay man.",
-        "Prices change every week here, so it's worth checking your planner book. At the stall, Fill from plan puts everything your plan still needs into the basket.",
-        "And buy yourself some meal packs, please. A hungry shopkeeper makes a long day even longer."
+        {
+          "do": "Mbok Sari takes your arm as you walk between the stalls."
+        },
+        {
+          "say": "Ah, the market. Smell that? Ginger, lemongrass, a little smoke from the satay man."
+        },
+        {
+          "say": "Prices change every week here, so it's worth checking your planner book. At the stall, Fill from plan puts everything your plan still needs into the basket."
+        },
+        {
+          "say": "And buy yourself some meal packs, please. A hungry shopkeeper makes a long day even longer."
+        }
       ]
     },
     {
@@ -58,8 +93,15 @@
         "week": 1
       },
       "lines": [
-        "Tired already? Sit down for a moment. A short break or a proper meal will bring your energy back.",
-        "When you sleep, the day ends. Don't stay up chasing a few more coins. Tomorrow needs you too."
+        {
+          "do": "Mbok Sari pours you a glass of water."
+        },
+        {
+          "say": "Tired already? Sit down for a moment. A short break or a proper meal will bring your energy back."
+        },
+        {
+          "say": "When you sleep, the day ends. Don't stay up chasing a few more coins. Tomorrow needs you too."
+        }
       ]
     },
     {
@@ -69,9 +111,18 @@
         "week": 1
       },
       "lines": [
-        "One whole week. Come, let's sit and look back at it. No blame, just honest eyes.",
-        "Here's what you planned, and here's what really happened. Where did the gold go? Did anything surprise you?",
-        "Pick one or two notes for next week. Small changes, made every week, add up to a lot."
+        {
+          "do": "At the end of the week, Mbok Sari knocks with a plate of fried bananas."
+        },
+        {
+          "say": "One whole week. Come, let's sit and look back at it. No blame, just honest eyes."
+        },
+        {
+          "say": "Here's what you planned, and here's what really happened. Where did the gold go? Did anything surprise you?"
+        },
+        {
+          "say": "Pick one or two notes for next week. Small changes, made every week, add up to a lot."
+        }
       ]
     },
     {
@@ -81,11 +132,24 @@
         "month": 1
       },
       "lines": [
-        "It's month end. The guild will want its payment today, and they never forget.",
-        "Pay at least {DEBT_MIN_PAYMENT} gold. If you can spare more, do it. Less debt now means less interest next month.",
-        "Pay the utilities too. Anything you leave unpaid gets piled onto the debt.",
-        "After that, you can book one appointment at the guild for next month. Choose something that helps the shop grow.",
-        "And look at you. A whole month, and you're still standing. That counts for something."
+        {
+          "do": "Mbok Sari waits with you at the door. Down the street, a grey coat is coming."
+        },
+        {
+          "say": "It's month end. The guild will want its payment today, and they never forget."
+        },
+        {
+          "say": "Pay at least {DEBT_MIN_PAYMENT} gold. If you can spare more, do it. Less debt now means less interest next month."
+        },
+        {
+          "say": "Pay the utilities too. Anything you leave unpaid gets piled onto the debt."
+        },
+        {
+          "say": "After that, you can book one appointment at the guild for next month. Choose something that helps the shop grow."
+        },
+        {
+          "say": "And look at you. A whole month, and you're still standing. That counts for something."
+        }
       ]
     }
   ]
