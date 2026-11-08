@@ -1,0 +1,16 @@
+{
+  "id": "objectives",
+  "_placeholder": true,
+  "list": [
+    { "id": "goals", "icon": "calendar", "text": "Set a goal for each day", "check": "allGoalsSet" },
+    { "id": "products", "icon": "jamu", "text": "Plan products to sell", "check": "productsPlanned" },
+    { "id": "jars", "icon": "jar", "text": "Fill the three budget jars", "check": "jarsFilled" },
+    { "id": "buy", "icon": "cart", "text": "Buy materials at the market or guild", "check": "boughtMaterials" },
+    { "id": "craft", "icon": "cauldron", "text": "Craft a product", "check": "crafted" },
+    { "id": "dry", "icon": "rack", "text": "Dry herbs on the rack", "check": "dried" },
+    { "id": "store", "icon": "store", "text": "Stock the shelf and open the store", "check": "openedStore" },
+    { "id": "explore", "icon": "explore", "text": "Gather at the City Outskirt", "check": "gathered" },
+    { "id": "quest", "icon": "quest", "text": "Finish a guild commission", "check": "questDone" },
+    { "id": "debt", "icon": "debt", "text": "Pay the minimum debt at month end", "check": "paidMinimum" }
+  ]
+}

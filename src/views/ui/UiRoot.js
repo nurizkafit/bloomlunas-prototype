@@ -23,7 +23,7 @@ export class UiRoot {
   constructor(host, gm, o) {
     this.gm = gm;
     this.o = o;
-    this.local = { screen: o.startScreen ?? 'start', station: null, journal: false, tab: 'plan', map: false, pick: {}, story: 0, storeRun: null };
+    this.local = { screen: o.startScreen ?? 'start', station: null, journal: false, tab: 'schedule', map: false, pick: {}, story: 0, storeRun: null };
     this.stage = h('div.stage');
     this.sceneLayer = h('div.layer.scene3d');
     this.hud = h('div.layer.pass');
@@ -31,7 +31,11 @@ export class UiRoot {
     this.modal = h('div.layer.pass');
     this.toasts = h('div.toasts');
     this.hint = h('div.hint');
-    this.stage.append(this.sceneLayer, h('div.paperveil'), h('div.vignette'), this.hud, this.screen, this.modal, this.toasts, this.hint);
+    this.pop = h('div.helppop');
+    this.stage.append(this.sceneLayer, h('div.paperveil'), h('div.vignette'), this.hud, this.screen, this.modal, this.toasts, this.hint, this.pop);
+    this.stage.addEventListener('mousemove', (e) => this.#hover(e.target));
+    this.stage.addEventListener('mouseleave', () => this.#hover(null));
+    this.stage.addEventListener('click', (e) => { if (e.target.closest?.('.helpq')) this.#hover(e.target); });
     host.append(this.stage);
     Ornaments.mount(this.stage);
     this.views = { hud: new HudView(this), start: new StartView(this), journal: new JournalView(this), map: new TownMapView(this), place: new PlaceView(this), event: new EventCardView(this), retro: new RetroView(this) };
@@ -67,7 +71,7 @@ export class UiRoot {
     b.on(MSG.CLOCK_CHANGED, redraw);
     b.on(MSG.PHASE_ENTERED, ({ phase }) => {
       this.local.journal = false; this.local.map = false; this.local.station = null;
-      this.local.tab = phase === 'plan' ? 'plan' : this.local.tab;
+      this.local.tab = phase === 'plan' ? 'schedule' : this.local.tab;
       if (phase !== 'plan' && this.local.screen === 'game') this.toast(phase === 'do' ? 'calendar' : phase === 'check' ? 'note' : phase === 'act' ? 'debt' : 'star', PHASE_TOAST[phase]);
       this.render();
     });
@@ -121,6 +125,7 @@ export class UiRoot {
       }
     }
     this.hint.replaceChildren(...hint.map(([k, t]) => h('span', h('i', k), t)));
+    if (this.#helpEl && !this.#helpEl.isConnected) { this.#helpEl = null; this.pop.classList.remove('on'); }
   }
 
   drawNow() { cancelAnimationFrame(this.#raf); this.#raf = 0; this.#draw(); }
@@ -131,6 +136,24 @@ export class UiRoot {
     else if (e.key === 'm' || e.key === 'M') this.set({ map: !this.local.map, journal: false });
     else if (e.key === 'Escape') this.set({ journal: false, map: false, station: null });
   }
+
+  /** Help popup: any element with data-help="<key>" shows the text from data/help/help.json. */
+  #hover(target) {
+    const el = target?.closest?.('[data-help]');
+    if (el === this.#helpEl && el?.isConnected) return;
+    this.#helpEl = el ?? null;
+    const item = el ? this.c.find('help', 'help')?.items?.[el.dataset.help] : null;
+    if (!item) { this.pop.classList.remove('on'); return; }
+    this.pop.replaceChildren(h('b', item.title), h('p', item.text));
+    const sr = this.stage.getBoundingClientRect(), r = el.getBoundingClientRect(), k = this.scale || 1;
+    const x = (r.left - sr.left) / k, y = (r.top - sr.top) / k, w = r.width / k, hh = r.height / k;
+    this.pop.classList.add('on');
+    const pw = this.pop.offsetWidth, ph = this.pop.offsetHeight;
+    const left = Math.max(16, Math.min(1280 - pw - 16, x + w / 2 - pw / 2));
+    const top = y + hh + 8 + ph > 704 ? y - ph - 8 : y + hh + 8;
+    Object.assign(this.pop.style, { left: `${left}px`, top: `${Math.max(8, top)}px` });
+  }
+  #helpEl = null;
 
   #fit() {
     const s = Math.min(innerWidth / 1280, innerHeight / 720);

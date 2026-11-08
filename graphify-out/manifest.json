@@ -138,9 +138,9 @@
     "semantic_hash": ""
   },
   "src/core/GameManager.js": {
-    "mtime": 1794067924.7521214,
-    "seen": 1794069605.8291824,
-    "ast_hash": "2d9d9aa71ee354cb4a2c1975c3dd8ac0",
+    "mtime": 1794096534.5651426,
+    "seen": 1794097220.2423503,
+    "ast_hash": "02873b001b0d4884e46f0f72fa36ad09",
     "semantic_hash": ""
   },
   "src/core/Rng.js": {
@@ -288,9 +288,9 @@
     "semantic_hash": ""
   },
   "src/views/ui/HudView.js": {
-    "mtime": 1794068300.490358,
-    "seen": 1794069605.829259,
-    "ast_hash": "81bf4071a4a5a7ce73bf57b333a1c317",
+    "mtime": 1794096666.3955026,
+    "seen": 1794097220.24239,
+    "ast_hash": "9b147b2369901548c47f7e72545f6945",
     "semantic_hash": ""
   },
   "tests/browser/run.mjs": {
@@ -318,9 +318,9 @@
     "semantic_hash": ""
   },
   "SPECS.md": {
-    "mtime": 1794069537.8238885,
-    "seen": 1794069605.8292863,
-    "ast_hash": "dbb3e5a7d631ebfb9d487e85476df402",
+    "mtime": 1794097213.539812,
+    "seen": 1794097220.2424102,
+    "ast_hash": "69ff890d477db603edb15324475d1f47",
     "semantic_hash": ""
   },
   "index.html": {
@@ -378,33 +378,33 @@
     "semantic_hash": ""
   },
   "data/goals/craft.json": {
-    "mtime": 1794067398.619491,
-    "seen": 1794069605.8290873,
-    "ast_hash": "2bd7adf92eededeff44b28775b7cbaa0",
+    "mtime": 1794096654.856478,
+    "seen": 1794097220.2422569,
+    "ast_hash": "300135c8cf12ef4cc329d85ccd749055",
     "semantic_hash": ""
   },
   "data/goals/explore.json": {
-    "mtime": 1794067398.6193442,
-    "seen": 1794069605.8290887,
-    "ast_hash": "ed1ce2f757a593649320b840e7409f8d",
+    "mtime": 1794096654.8566504,
+    "seen": 1794097220.2422585,
+    "ast_hash": "f8a138e2c3be4ac356a1b0c89f2c6571",
     "semantic_hash": ""
   },
   "data/goals/free.json": {
-    "mtime": 1794067398.6196215,
-    "seen": 1794069605.8290906,
-    "ast_hash": "e434065d6379e4074414a80b09cd70b0",
+    "mtime": 1794096654.8568103,
+    "seen": 1794097220.2422595,
+    "ast_hash": "2bd504d4895ce707adcd0981e232d1fa",
     "semantic_hash": ""
   },
   "data/goals/store.json": {
-    "mtime": 1794067398.6195366,
-    "seen": 1794069605.8290918,
-    "ast_hash": "3209bb1c1ead0c49fa2ed2ae5f964c68",
+    "mtime": 1794096654.8569615,
+    "seen": 1794097220.2422605,
+    "ast_hash": "1cc4df4850c4532ce536b4c91c1c792f",
     "semantic_hash": ""
   },
   "data/goals/trade.json": {
-    "mtime": 1794067398.6195855,
-    "seen": 1794069605.8290935,
-    "ast_hash": "3f0ebefee965306bba053cd5de753174",
+    "mtime": 1794096654.8571148,
+    "seen": 1794097220.2422614,
+    "ast_hash": "9e6a0b2d2a920dc37099299c2fe221c9",
     "semantic_hash": ""
   },
   "data/items/beras_kencur.json": {
@@ -702,9 +702,9 @@
     "semantic_hash": ""
   },
   "src/views/ui/Dom.js": {
-    "mtime": 1794068252.6637735,
-    "seen": 1794069605.8292515,
-    "ast_hash": "8436f60373114badb4ba7cdf60a90fee",
+    "mtime": 1794096997.0966635,
+    "seen": 1794097220.2423851,
+    "ast_hash": "98629138453055fd9f37837c6a838f97",
     "semantic_hash": ""
   },
   "src/views/ui/DryingView.js": {
@@ -732,9 +732,9 @@
     "semantic_hash": ""
   },
   "src/views/ui/JournalView.js": {
-    "mtime": 1794070359.7232769,
-    "seen": 1794070386.94919,
-    "ast_hash": "2dd7e5660e008cefa4b96b8c941e55e6",
+    "mtime": 1794097025.718025,
+    "seen": 1794097220.2423916,
+    "ast_hash": "7d88193710bc8fa4313106ea713738e0",
     "semantic_hash": ""
   },
   "src/views/ui/Ornaments.js": {
@@ -792,21 +792,45 @@
     "semantic_hash": ""
   },
   "src/views/ui/UiRoot.js": {
-    "mtime": 1794068837.291897,
-    "seen": 1794069605.8292766,
-    "ast_hash": "54921f7fd34a96dcd5990bd9bfc15939",
+    "mtime": 1794097025.7176588,
+    "seen": 1794097220.242403,
+    "ast_hash": "5f19afbb57dff0929f0ab5954bc78ffd",
     "semantic_hash": ""
   },
   "tests/browser/flow.cjs": {
-    "mtime": 1794069338.93501,
-    "seen": 1794069605.8292778,
-    "ast_hash": "de06334d2cd030f5dd2feeb8ebeb3433",
+    "mtime": 1794097030.59705,
+    "seen": 1794097220.2424037,
+    "ast_hash": "8b1779a7e4810bf287f7abdc55b00d71",
     "semantic_hash": ""
   },
   "tests/loop.test.js": {
     "mtime": 1794068793.3023477,
     "seen": 1794069605.829282,
     "ast_hash": "803a0b8b41e471279ed471e2ebb68255",
+    "semantic_hash": ""
+  },
+  "data/help/help.json": {
+    "mtime": 1794096534.5464432,
+    "seen": 1794097220.2422633,
+    "ast_hash": "774f08dd201e7a03ea114ffb3b936c8c",
+    "semantic_hash": ""
+  },
+  "data/objectives/objectives.json": {
+    "mtime": 1794096534.5481308,
+    "seen": 1794097220.2422802,
+    "ast_hash": "ce2477b3b9686339df228638facde5e5",
+    "semantic_hash": ""
+  },
+  "src/systems/ObjectiveSystem.js": {
+    "mtime": 1794096534.549948,
+    "seen": 1794097220.2423747,
+    "ast_hash": "843da75bc91560983b2a12242ffa9bd3",
+    "semantic_hash": ""
+  },
+  "tests/objectives.test.js": {
+    "mtime": 1794097043.2517688,
+    "seen": 1794097220.2424073,
+    "ast_hash": "912881b4a57a5c038e26e1f08ba30dbc",
     "semantic_hash": ""
   },
   "package-lock.json": {

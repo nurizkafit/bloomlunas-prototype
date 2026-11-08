@@ -60,7 +60,7 @@ After the Check of week 4: Act (Journal, month end) -> next month Plan. After mo
 
 ## 5. Data files
 
-`BalanceConfig.json`, `items/`, `recipes/`, `places/`, `stations/`, `goals/`, `skills/`, `spots/`, `quests/`, `services/`, `events/`, `debt/riba_loan.json`, `notes/notes.json`, `story/premise.json`, `start/start.json`, `scene/town.json` (3D layout: houses, props, roads, walkers, camera spots, tints; view data only).
+`BalanceConfig.json`, `items/`, `recipes/`, `places/`, `stations/`, `goals/`, `skills/`, `spots/`, `quests/`, `services/`, `events/`, `debt/riba_loan.json`, `notes/notes.json`, `help/help.json` (help popups), `objectives/objectives.json` (Journal objectives, mini tutorial; each names a check in `ObjectiveSystem`), `story/premise.json`, `start/start.json`, `scene/town.json` (3D layout: houses, props, roads, walkers, camera spots, tints; view data only).
 Field names map one to one to Unity ScriptableObjects.
 
 ## 6. EventBus messages (`MSG` in `src/core/EventBus.js`)
@@ -77,15 +77,16 @@ Visual style: approved style board v3 (project files `screens/overhaul-style/sty
 - Washed-out grunge watercolor on paper grain; thin rough ink lines. Cross-hatch only for shadow and effect.
 - Rattan cane only on big main frames (station windows, map window, large cards). Small parts use a slim wood frame.
 - Journal: night-teal bookcloth, gold tooling, Art Nouveau corners, die-cut tabs, purple ribbon. No rattan.
+- Help popup: any element with `data-help="<key>"` shows the text from `data/help/help.json` on hover. Headers carry a "?" mark.
 - Icon + number over words (user rule). Placeholder icons in `Icons.js`; the names stay when art replaces them.
 - Layout: stage 1280x720 scaled to the window; 8 px spacing scale; 12-column grid (margin 32, gutter 16). Station windows start at column 4; the station list uses columns 1-3.
 
 | Class | Screen |
 | --- | --- |
 | `UiRoot` | Stage, layers, phase routing, toasts, hint bar, keys (M map, J journal, Esc back) |
-| `HudView` | Day medal, gold, debt, food, energy bar, clock and day bar, today's goal, Map and Journal buttons |
+| `HudView` | Day medal (weekday + clock), calendar pill (month, week, day), gold, debt, food, energy bar, day bar, today's goal, Map and Journal buttons |
 | `StartView` | Start menu and story letter |
-| `JournalView` | Plan page (goals, store plan, jars, Review plan), Ledger, Market, Stock, Skills, Log tabs |
+| `JournalView` | Tabs in Scene & Flow order: Daily goals (drag goal cards onto days, or click a card then a day), Store plan (products to sell + materials needed; budget jars + plan check), Ledger and assets, Market (forecast range, trend, price now), Public schedule (opening hours, events, month-end bills), Skills (level and effects), Notes (last week's notes + objectives). Do adds Log. Review plan ribbon on every Plan tab. |
 | `CheckView`, `ActView`, `RetroView` | Weekly recap, month end, retrospective |
 | `TownMapView` | Town map menu with travel time, hours and Go |
 | `PlaceView` | Station list at the current place and the station window |
@@ -102,7 +103,7 @@ Visual style: approved style board v3 (project files `screens/overhaul-style/sty
 
 ## 9. Class catalog (JS -> Unity)
 
-`GameManager` (MonoBehaviour singleton), `EventBus` (C# events), `ContentDB` (Addressables lookup), `SaveSystem` (JSON save, version 2), `GameState` ([Serializable]). Systems as plain C# services: `TimeSystem`, `ActionRunner`, `EffectApplier`, `EconomySystem`, `StoreSystem`, `ProductionSystem`, `ExploreSystem`, `QuestSystem`, `DebtSystem`, `EventSystem`, `PlanSystem`, `SkillSystem`, `Ledger`, `ActivityLog`. Phases: `PlanPhase`, `DoPhase`, `CheckPhase`, `ActPhase`, `RetroPhase`.
+`GameManager` (MonoBehaviour singleton), `EventBus` (C# events), `ContentDB` (Addressables lookup), `SaveSystem` (JSON save, version 2), `GameState` ([Serializable]). Systems as plain C# services: `TimeSystem`, `ActionRunner`, `EffectApplier`, `EconomySystem`, `StoreSystem`, `ProductionSystem`, `ExploreSystem`, `QuestSystem`, `DebtSystem`, `EventSystem`, `PlanSystem`, `SkillSystem`, `ObjectiveSystem`, `Ledger`, `ActivityLog`. Phases: `PlanPhase`, `DoPhase`, `CheckPhase`, `ActPhase`, `RetroPhase`.
 
 ## 10. Open questions
 

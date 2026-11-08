@@ -14,7 +14,7 @@ export class Dom {
     for (const [k, v] of Object.entries(attrs ?? {})) {
       if (v === undefined || v === null || v === false) continue;
       if (k === 'html') el.innerHTML = v;
-      else if (k === 'style' && typeof v === 'object') Object.assign(el.style, v);
+      else if (k === 'style' && typeof v === 'object') for (const [sk, sv] of Object.entries(v)) { if (sk.startsWith('--')) el.style.setProperty(sk, sv); else el.style[sk] = sv; }
       else if (k.startsWith('on')) el.addEventListener(k.slice(2), v);
       else if (k === 'cls') el.className += ` ${v}`;
       else el.setAttribute(k, v === true ? '' : v);
@@ -42,9 +42,18 @@ export class Dom {
   static medal(name, size = 38) { return Dom.raw(Icons.medal(name, size)); }
 
   /** Rattan main frame (big windows and large cards only). */
-  static rattan(cls, ...kids) { return Dom.h(`div.rf${cls ? '.' + cls : ''}`, Dom.h('div.in', ...kids)); }
-  /** Slim wood frame (small parts). */
-  static slim(cls, ...kids) { return Dom.h(`div.sf${cls ? '.' + cls : ''}`, Dom.h('div.in', ...kids)); }
+  static rattan(cls, ...kids) { return Dom.#frame('rf', cls, kids); }
+  /** Slim wood frame (small parts). An optional attrs object can come first in kids. */
+  static slim(cls, ...kids) { return Dom.#frame('sf', cls, kids); }
+
+  static #frame(base, cls, kids) {
+    const first = kids[0];
+    const attrs = first && typeof first === 'object' && !(first instanceof Node) && !Array.isArray(first) ? kids.shift() : {};
+    return Dom.h(`div.${base}${cls ? '.' + cls : ''}`, attrs, Dom.h('div.in', ...kids));
+  }
+
+  /** Small "?" mark that opens the help popup for a key in data/help/help.json. */
+  static help(key) { return Dom.h('span.helpq', { 'data-help': key }, '?'); }
 
   /** Icon + number chip. @param {string} icon @param {any} n @param {string} [cls] */
   static chip(icon, n, cls = '') { return Dom.h(`span.qchip${cls ? '.' + cls : ''}`, Dom.icon(icon, 18), String(n)); }

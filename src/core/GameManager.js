@@ -15,6 +15,7 @@ import { EventSystem } from '../systems/EventSystem.js';
 import { PlanSystem } from '../systems/PlanSystem.js';
 import { ActivityLog } from '../systems/ActivityLog.js';
 import { ActionRunner } from '../systems/ActionRunner.js';
+import { ObjectiveSystem } from '../systems/ObjectiveSystem.js';
 import { PlanPhase } from '../phases/PlanPhase.js';
 import { DoPhase } from '../phases/DoPhase.js';
 import { CheckPhase } from '../phases/CheckPhase.js';
@@ -43,6 +44,7 @@ export class GameManager {
     s.economy = new EconomySystem(ctx); s.store = new StoreSystem(ctx); s.production = new ProductionSystem(ctx); s.explore = new ExploreSystem(ctx);
     s.quests = new QuestSystem(ctx); s.debt = new DebtSystem(ctx); s.events = new EventSystem(ctx); s.plan = new PlanSystem(ctx); s.log = new ActivityLog(ctx);
     s.actions = new ActionRunner(ctx);
+    s.objectives = new ObjectiveSystem(ctx);
     this.sys = s;
     this.phases = { plan: new PlanPhase(ctx), do: new DoPhase(ctx), check: new CheckPhase(ctx), act: new ActPhase(ctx), retro: new RetroPhase(ctx) };
     this.#wire();

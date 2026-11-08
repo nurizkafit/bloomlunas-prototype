@@ -36,11 +36,11 @@ Read these first:
 ```
 CLAUDE.md  SPECS.md  MILESTONES.md
 index.html  package.json  vite.config.js
-data/          BalanceConfig.json, items/, recipes/, places/, stations/, goals/, skills/, spots/, quests/, services/, events/, debt/, notes/, story/, start/, scene/town.json
+data/          BalanceConfig.json, items/, recipes/, places/, stations/, goals/, skills/, spots/, quests/, services/, events/, debt/, notes/, help/, objectives/, story/, start/, scene/town.json
 src/main.js    browser entry: builds GameManager, SceneView and UiRoot
 src/core/      GameManager, EventBus, ContentDB, SaveSystem, Rng
 src/model/     GameState, Calendar, Inventory
-src/systems/   ActionRunner, TimeSystem, EffectApplier, EconomySystem, StoreSystem, ProductionSystem, ExploreSystem, QuestSystem, DebtSystem, EventSystem, PlanSystem, SkillSystem, Ledger, ActivityLog
+src/systems/   ActionRunner, TimeSystem, EffectApplier, EconomySystem, StoreSystem, ProductionSystem, ExploreSystem, QuestSystem, DebtSystem, EventSystem, PlanSystem, SkillSystem, ObjectiveSystem, Ledger, ActivityLog
 src/phases/    Phase, PlanPhase, DoPhase, CheckPhase, ActPhase, RetroPhase
 src/views/ui/    UiRoot, Dom, Icons, Ornaments, theme.css, HudView, StartView, JournalView, CheckView, ActView, RetroView, TownMapView, PlaceView, station views, EventCardView
 src/views/scene/ SceneView (3D City View)

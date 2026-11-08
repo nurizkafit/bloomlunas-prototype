@@ -26,7 +26,9 @@ async function run(w, hgt) {
   await clickText('Open the Journal');
   await page.waitForSelector('.book');
   await shot('03-plan');
-  await page.locator('.goalpick button').nth(0).click();
+  await page.locator('.deck .gcard').nth(0).dragTo(page.locator('.drow').nth(0));
+  await page.locator('.deck .gcard').nth(1).click(); await page.locator('.drow').nth(1).click();
+  await page.locator('.tab[data-label="Store plan"]').click(); await shot('03b-store-plan');
   await page.locator('.ribbon').click();
   await page.waitForSelector('.veil');
   await shot('04-review');
@@ -70,9 +72,11 @@ async function run(w, hgt) {
   await clickText('Gather');
   // Journal in Do
   await page.keyboard.press('j');
-  await shot('15-journal-stock');
-  await page.locator('.tab[data-label="Stock"]').click(); await shot('16-stock');
+  await shot('15-journal');
+  await page.locator('.tab[data-label="Ledger and assets"]').click(); await shot('16-assets');
   await page.locator('.tab[data-label="Market"]').click(); await shot('17-market');
+  await page.locator('.tab[data-label="Public schedule"]').click(); await shot('17b-hours');
+  await page.locator('.tab[data-label="Notes"]').click(); await shot('17c-notes');
   await page.keyboard.press('j');
   // Store day: back home, craft, stock, open
   await ev(() => {

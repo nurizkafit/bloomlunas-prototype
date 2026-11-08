@@ -4,5 +4,6 @@
   "icon": "rest",
   "stations": [],
   "color": "#B98B57",
-  "order": 4
+  "order": 4,
+  "text": "Rest. Work 4 h or less."
 }
