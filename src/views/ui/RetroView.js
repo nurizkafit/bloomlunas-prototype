@@ -46,8 +46,8 @@ export class RetroView {
       h('div.row.end', { style: { marginTop: 'auto' } }, Dom.btn('New game', () => ui.o.onNewGame(), { cls: 'gold', icon: 'herb' }))
     ];
     return [
-      h('div.stag', { style: { top: '24px' } }, Dom.icon('guild', 24), 'Retrospective'),
-      h('div.book', { style: { top: '72px' } }, h('div.tool'), h('div.tool2'), h('div.spineband'),
+      h('div.phasebar', Dom.slim('plaque', Dom.medal('guild', 38), h('div', h('small', `MONTH ${ui.st.cal.month}`), h('b', 'Retrospective')))),
+      h('div.book', { style: { top: '84px' } }, h('div.tool'), h('div.tool2'), h('div.spineband'),
         h('div.pages', h('div.pg.l', ...left), h('div.pg.r', ...right)),
         ...Dom.corners().map((c) => { c.style.zIndex = 3; return c; }))
     ];

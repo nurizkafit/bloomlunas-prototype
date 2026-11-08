@@ -46,7 +46,6 @@ body.sheetpage { background: #DCD5C4; color: var(--ink); }
 .sheetpage .toast { animation: none; }
 .sheetpage .helppop { position: relative; opacity: 1; }
 .sheetpage .hint { position: relative; width: 560px; }
-.sheetpage .stag { position: relative; top: auto; left: auto; right: auto; margin: 0; }
 .sheetpage .phasebar { position: relative; top: auto; right: auto; }
 .sheetpage .side { position: relative; left: auto; top: auto; }
 .sheetpage .hud { position: relative; left: auto; right: auto; top: auto; width: 1180px; padding-top: 16px; }

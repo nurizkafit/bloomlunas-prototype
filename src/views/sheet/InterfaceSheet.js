@@ -16,15 +16,6 @@ const jarTag = (kind, left, ratio) => {
   return h(`span.jartag${left < 0 ? '.over' : ''}`, { style: { '--jc': color } },
     Dom.raw(Dom.jarSvg(ratio, color, 18)), h('b', kind === 'store' ? 'Store jar' : 'Personal jar'), h('span', `${left < 0 ? 'over' : 'left'} ${Math.abs(left)}`));
 };
-/** Journal jar graphic (JournalView #jarSvg, 48 px). */
-const bookJar = (ratio, color) => {
-  const y = 40 - ratio * 28;
-  return `<svg width="48" height="52" viewBox="0 0 40 44"><defs><clipPath id="sjc${color.slice(1)}"><path d="M9 10h22l3 6v22a4 4 0 01-4 4H10a4 4 0 01-4-4V16z"/></clipPath></defs>
-    <path d="M9 10h22l3 6v22a4 4 0 01-4 4H10a4 4 0 01-4-4V16z" fill="#F4ECDB" stroke="#2D3B3A" stroke-width="1.4"/>
-    <rect x="0" y="${y}" width="40" height="44" fill="${color}" clip-path="url(#sjc${color.slice(1)})" opacity=".85"/>
-    <path d="M9 10h22l3 6v22a4 4 0 01-4 4H10a4 4 0 01-4-4V16z" fill="none" stroke="#2D3B3A" stroke-width="1.4"/>
-    <rect x="8" y="4" width="24" height="6" rx="2" fill="#C8955A" stroke="#2D3B3A" stroke-width="1.2"/></svg>`;
-};
 /** A box that stands in for the stage area, for parts that use absolute positions. */
 const box = (w, ht, ...kids) => h('div', { style: { position: 'relative', width: `${w}px`, height: `${ht}px` } }, ...kids);
 /** Book page wrapper so .pg rules (h3, h4) apply. */
@@ -93,27 +84,27 @@ export class InterfaceSheet {
     const li = (ids, text) => h('li', h('b.ids', ids), ' ', text);
     return h('section.sh-notes', { id: 'notes' },
       h('div.sh-box',
-        h('h2', 'Look-alikes to check (candidates to unify)'),
+        h('h2', 'Style rules (unified 8 Nov 2026)'),
         h('ol',
-          li('HUD-08 / LST-03', 'Two key caps: the hint bar key is a cream pill, the station menu key is a teal square.'),
-          li('CHP-01 / CHP-02 / CHP-03 / CHP-06', 'Four rounded chips with icon + text. Same shape, different tints and heights (28, 24, 24, 32 px).'),
-          li('VAL-09', 'Two jar drawings: the Journal jar (48 px) and the jar in the jar badge (18 px) come from two copies of the same SVG.'),
-          li('BTN-14 / BTN-15', 'Two tab styles: die-cut book tabs on the Journal, and small buttons as mode tabs in station windows.'),
-          li('Selected state', 'Five selected looks: gold fill + gold left edge (LST-02, LST-03), gold ring (STN-02, CRD-07, CRD-13, LST-06), teal outline (BTN-16), purple ring (BTN-17), fern ring (LST-07 today).'),
-          li('VAL-06 / VAL-07 / CRD-11 / CRD-12 / LST-01 / VAL-02', 'Six big-number styles: 44, 30, 24, 22, 20 and 40 px.'),
-          li('BTN-16 / STN-06 / CHP-07', 'Price level Low / Fair / High has three looks: picker button, market page box, shelf slot tag.'),
-          li('ICN-01 / BTN-10 / BTN-12 / LST-03 / CRD-16', 'Five round icon holders: medallion, round HUD button, item button, station menu icon, toast icon.'),
-          li('TTL-01 / TTL-02 / TTL-03 / TTL-04', 'Four header shapes: phase plaque, window title plate, screen ribbon tag, location header.'),
-          li('FRM-03', 'The selected slim frame (.sf.on) has a style only inside the left side panel. On the Act page the booked card shows no highlight.'))),
+          li('Key cap (HUD-08)', 'One shape: rounded square. Cream on dark, teal on paper.'),
+          li('Chip (CHP-01, CHP-06)', 'One base: 28 px high, fully round. Tint = meaning: neutral (rattan), ok (green), missing or closed (red), open (teal). The jar badge keeps a ring in the jar colour.'),
+          li('Jar (VAL-09)', 'One drawing in code (Dom.jarSvg) at two sizes: 48 px in the jar box, 18 px in the jar badge.'),
+          li('Selected', 'A list row: gold fill + gold left edge (LST-02, LST-03). A tile, card, frame or picker button: gold ring (FRM-03, STN-02, CRD-07, BTN-16, BTN-17). Today or now: fern ring (LST-06, LST-07, CRD-13, STN-04).'),
+          li('Big numbers', 'Three sizes (CSS --num-xl / --num-l / --num-m): XL 40 px big total and big stepper; L 28 px basket total; M 22 px stat tile, jar box and total line.'),
+          li('Price level (BTN-16, CHP-07)', 'Picker look for the store buttons and the market page boxes. The shelf slot keeps a small tag in the same colours.'),
+          li('Round icon holder (ICN-01)', 'Medallion look (wood ring, paper inside) for item buttons, station menu icons and toast icons. The round HUD button (BTN-10) stays a button.'),
+          li('Header (TTL-01)', 'The phase plaque is the screen title in Plan, Do Journal, Check, Act and the Retrospective. The window title plate (TTL-02) and the location header (TTL-04) have other jobs and stay.'))),
       h('div.sh-box',
-        h('h2', 'Styles with no screen now'),
-        h('p', { style: { fontSize: '15px', marginBottom: '8px' } }, 'These classes are in theme.css, but no view uses them. They are not on this sheet.'),
+        h('h2', 'Retired IDs'),
+        h('p', { style: { fontSize: '15px', marginBottom: '8px' } }, 'A merged item keeps the lower ID. Do not use these IDs again.'),
         h('ul',
-          h('li', h('code', '.daymedal'), ' old HUD day medal (replaced by the day dial HUD-01)'),
-          h('li', h('code', '.mapwin .mapsvg .node .mapinfo'), ' old 2D town map window'),
-          h('li', h('code', '.stcard'), ' old station card list (replaced by the station menu LST-03)'),
-          h('li', h('code', '.pick'), ' old pick row (replaced by the compact table LST-02)'),
-          h('li', h('code', '.shadowhatch .clock .grid3 .day .ev'), ' small helpers with no use (.day itself is in use, its .ev child is not)')),
+          h('li', h('b.ids', 'TTL-03'), ' Screen ribbon tag: now TTL-01 Phase plaque.'),
+          h('li', h('b.ids', 'CHP-02'), ' Hours chip and ', h('b.ids', 'CHP-03'), ' Closed place mark: now variants of CHP-01 Chip.'),
+          h('li', h('b.ids', 'STN-06'), ' Price level box: now a variant of BTN-16 Price level picker.')),
+        h('h2', { style: { marginTop: '16px' } }, 'Different on purpose'),
+        h('ul',
+          h('li', h('b.ids', 'BTN-14 / BTN-15'), ' Book tabs change the Journal page. Mode tabs change the view inside one window.'),
+          h('li', h('b.ids', 'TTL-02 / TTL-04'), ' Window title plate names a window. Location header names the place.')),
         h('h2', { style: { marginTop: '16px' } }, 'How to update this sheet'),
         h('ul',
           h('li', 'Live page: ', h('code', 'npm run dev'), ', then open ', h('code', '/sheet.html'), '.'),
@@ -187,7 +178,7 @@ export class InterfaceSheet {
     ], o.empty);
     const hot = (icon, t, cls = '', o = {}) => h(`button.hot${cls}`, { disabled: o.disabled }, Dom.icon(icon, 18), t);
     const plaque = (icon, small, big) => Dom.slim('plaque', Dom.medal(icon, 38), h('div', h('small', small), h('b', big)));
-    const tab = (icon, on) => h(`button.tab${on ? '.on' : ''}`, Dom.icon(icon, 26));
+    const tab = (icon, on, label) => h(`button.tab${on ? '.on' : ''}`, Dom.icon(icon, 22), label ? h('span.tl', label) : null);
 
     return [
       /* ===== FRM: Frames and panels ===== */
@@ -196,9 +187,8 @@ export class InterfaceSheet {
           vars: [[null, Dom.rattan('', { style: { width: '300px', height: '170px' } }, h('div', { style: { padding: '24px', position: 'relative' } }, 'Cane weave border, paper inside.'))]] },
         { id: 'FRM-02', name: 'Slim wood frame', cls: '.sf > .in', used: 'Location header, station menu, place info, today goal, phase plaque, Rest and Act mini cards.', w: 380,
           vars: [[null, Dom.slim('', { style: { width: '300px', height: '120px' } }, h('div', { style: { padding: '16px', position: 'relative' } }, 'Thin wood border, paper inside.'))]] },
-        { id: 'FRM-03', name: 'Slim wood frame, selected', cls: '.side .sf.on', used: 'Station menu frame in the left panel. Act page: booked appointment card (no visible change there).', w: 380, bg: 'teal',
-          vars: [['in left panel', sideWrap(150, Dom.slim('on', h('span', { style: { padding: '8px' } }, 'Selected')))], ['on Act page', Dom.slim('on', { style: { width: '150px' } }, h('div', { style: { padding: '8px' } }, 'Booked'))]],
-          note: 'Outside the left panel .sf.on has no style.' },
+        { id: 'FRM-03', name: 'Slim wood frame, selected', cls: '.sf.on', used: 'Station menu frame in the left panel. Act page: booked appointment card.', w: 380, bg: 'teal',
+          vars: [['normal', Dom.slim('', { style: { width: '140px' } }, h('div', { style: { padding: '8px' } }, 'Normal'))], ['selected', Dom.slim('on', { style: { width: '140px' } }, h('div', { style: { padding: '8px' } }, 'Booked'))]] },
         { id: 'FRM-04', name: 'Station window', cls: '.win (rattan + .plate + .body + .foot + .close)', used: 'Every Do station: Store, Crafting, Drying rack, Grinding table, Rest, Market stall, Guild receptionist, Quest board, City outskirt.', w: 780, bg: 'teal',
           vars: [[null, box(720, 420, (() => {
             const w = PlaceView.win({ set: noop }, 'cauldron', 'Crafting', [h('div.col', h('div.small.muted', 'Left column (list)')), h('div', h('div.small.muted', 'Right column (detail)'))], [btn('Craft', 'gold', { icon: 'cauldron', min: 60, energy: 8 })]);
@@ -209,7 +199,7 @@ export class InterfaceSheet {
           vars: [[null, box(700, 360, (() => {
             const b = h('div.book', h('div.tool'), h('div.tool2'), h('div.spineband'),
               h('div.pages', h('div.pg.l', h('h3', Dom.icon('calendar', 28), 'Left page'), h('div.pageno', Dom.icon('moon', 14), '3')), h('div.pg.r', h('h3', Dom.icon('star', 28), 'Right page'), h('div.pageno', '4', Dom.icon('moon', 14)))),
-              h('div.tabs', tab('calendar', true), tab('store'), tab('ledger')),
+              h('div.tabs', tab('calendar', true, 'Goals'), tab('store', false, 'Store'), tab('ledger', false, 'Ledger')),
               ...Dom.corners().map((c) => { c.style.zIndex = 3; return c; }));
             Object.assign(b.style, { left: '0', width: '640px', top: '0', bottom: '0' });
             return b;
@@ -232,12 +222,10 @@ export class InterfaceSheet {
 
       /* ===== TTL: Plaques and titles ===== */
       { code: 'TTL', title: 'Plaques, labels and titles', items: [
-        { id: 'TTL-01', name: 'Phase plaque', cls: '.phasebar > .plaque', used: 'Top right in Plan, Check, Act and the Do Journal.', w: 560, bg: 'teal',
-          vars: [['Plan', plaque('calendar', 'WEEK 2', 'Plan')], ['Do (Journal)', plaque('journal', 'WEEK 2', 'Journal')], ['Check', plaque('note', 'WEEK 2', 'Check')], ['Act', plaque('debt', 'MONTH 1', 'Act')]] },
+        { id: 'TTL-01', name: 'Phase plaque', cls: '.phasebar > .plaque', used: 'Screen title, top right: Plan, Do Journal, Check, Act and the Retrospective.', w: 760, bg: 'teal',
+          vars: [['Plan', plaque('calendar', 'WEEK 2', 'Plan')], ['Do (Journal)', plaque('journal', 'WEEK 2', 'Journal')], ['Check', plaque('note', 'WEEK 2', 'Check')], ['Act', plaque('debt', 'MONTH 1', 'Act')], ['Retrospective', plaque('guild', 'MONTH 2', 'Retrospective')]] },
         { id: 'TTL-02', name: 'Window title plate', cls: '.win .plate', used: 'Top of every station window.', w: 380,
           vars: [[null, h('div.plate', { style: { width: '300px' } }, Dom.icon('store', 20), 'Store')]] },
-        { id: 'TTL-03', name: 'Screen ribbon tag', cls: '.stag', used: 'Retrospective screen title only.', w: 380, bg: 'teal',
-          vars: [[null, h('div.stag', Dom.icon('guild', 24), 'Retrospective')]] },
         { id: 'TTL-04', name: 'Location header', cls: '.lochead (+ .hchip)', used: 'Top of the left panel at a place, and the Town list.', w: 380, bg: 'teal',
           vars: [['place', sideWrap(292, PlaceView.header(null, home.icon, home.name, h('span.hchip', Dom.icon('clock', 14), 'Open')))], ['town list', sideWrap(292, PlaceView.header(null, 'map', 'Town', h('span.hchip', Dom.icon('clock', 14), '10:30')))]] },
         { id: 'TTL-05', name: 'Page title', cls: '.pg h3 (+ .aside, .helpq)', used: 'First line of each Journal page.', w: 460, bg: 'page',
@@ -281,11 +269,12 @@ export class InterfaceSheet {
         { id: 'BTN-13', name: 'Help mark', cls: '.helpq', used: 'After page titles. Hover shows the help popup (CRD-15).', w: 200, bg: 'page',
           vars: [[null, Dom.help('x')]] },
         { id: 'BTN-14', name: 'Book tab', cls: '.tabs > .tab / .tab.on', used: 'Right edge of the Planner Book: Daily goals, Store plan, Ledger, Market, Public schedule, Skills, Notes, Log.', w: 360, bg: 'teal',
-          vars: [['on', tab('calendar', true)], ['off', tab('store')], ['off', tab('ledger')], ['off', tab('log')]] },
+          vars: [['on', tab('calendar', true, 'Goals')], ['off', tab('store', false, 'Store')], ['off', tab('ledger', false, 'Ledger')], ['off', tab('log', false, 'Log')]] },
         { id: 'BTN-15', name: 'Mode tabs', cls: '.tabs2 (BTN-04 .sm = on, .alt.sm = off)', used: 'Station windows: Market stall (Buy, Food, Sell), Receptionist (Lots, Sell, Service), Quest board (Take, Give).', w: 420,
           vars: [[null, h('div.tabs2', { style: { marginBottom: 0 } }, btn('Buy', 'sm', { icon: 'cart' }), btn('Food', 'alt.sm', { icon: 'meal' }), btn('Sell', 'alt.sm', { icon: 'gold' }))]] },
-        { id: 'BTN-16', name: 'Price level picker', cls: '.lvpick button.lv-low / .lv-fair / .lv-high (.on)', used: 'Store window: price level of a shelf slot.', w: 460,
-          vars: [[null, h('div.lvpick', { style: { width: '400px' } }, ['low', 'fair', 'high'].map((k, i) => h(`button.lv-${k}${i === 1 ? '.on' : ''}`, k[0].toUpperCase() + k.slice(1), h('small.row', { style: { gap: '4px' } }, Dom.icon('gold', 12), String([8, 10, 13][i]), Dom.icon('customer', 12), '●'.repeat(3 - i)))))]] },
+        { id: 'BTN-16', name: 'Price level picker', cls: '.lvpick > button.lv-* (.on) / .lvpick > div.lv-*', used: 'Store window: price level of a shelf slot (buttons). Journal, Market page: price levels (no click).', w: 520,
+          vars: [['store, Fair picked', h('div.lvpick', { style: { width: '440px' } }, ['low', 'fair', 'high'].map((k, i) => h(`button.lv-${k}${i === 1 ? '.on' : ''}`, k[0].toUpperCase() + k.slice(1), h('small.row', { style: { gap: '4px' } }, Dom.icon('gold', 12), String([8, 10, 13][i]), Dom.icon('customer', 12), '●'.repeat(3 - i)))))],
+            ['market page', h('div.lvpick', { style: { width: '440px' } }, ['low', 'fair', 'high'].map((k) => h(`div.lv-${k}`, k[0].toUpperCase() + k.slice(1), h('small', `×${lvls[k].mult} · ${Math.round(lvls[k].demand * 100)}%`))))]] },
         { id: 'BTN-17', name: 'Note pick', cls: '.notepick button / button.on', used: 'Check page: note for next week.', w: 460, bg: 'page',
           vars: [[null, h('div.notepick', { style: { width: '400px' } }, h('button.on', Dom.icon(notes[0].icon, 20), notes[0].text), h('button', Dom.icon(notes[2].icon, 20), notes[2].text))]] }
       ] },
@@ -306,7 +295,7 @@ export class InterfaceSheet {
           vars: [['Do phase', this.hud({ minute: 10 * 60 + 30 })]] },
         { id: 'HUD-07', name: 'Hint bar', cls: '.hint', used: 'Bottom right: key help for the screen.', w: 640, bg: 'teal',
           vars: [[null, h('div.hint', h('span', h('i', 'M'), 'Town'), h('span', h('i', 'J'), 'Journal'), h('span', h('i', 'Esc'), 'Back'))]] },
-        { id: 'HUD-08', name: 'Key cap', cls: '.hint i / i.key', used: 'Hint bar key, and the key on station menu rows.', w: 300,
+        { id: 'HUD-08', name: 'Key cap', cls: '.hint i / i.key (one shape)', used: 'Hint bar key (cream on dark), and the key on station menu rows (teal on paper).', w: 300,
           vars: [['hint bar', h('div.hint', { style: { width: 'auto', background: '#1d3537', padding: '0 12px', borderRadius: '8px' } }, h('span', h('i', 'M'), 'Town'))], ['menu row', h('i.key', 'M')]] }
       ] },
 
@@ -342,7 +331,7 @@ export class InterfaceSheet {
             ...[['', 'empty'], ['', 'set'], ['.over', 'drop over'], ['.now', 'today (Do)'], ['.past', 'past / locked']].map(([cls, t], i) => h(`div.drow${cls}`,
               h('div.dn', h('b', ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'][i]), h('small', `D${i + 1}`)),
               i === 0 ? h('div.gslot', 'Drop a goal') : h('div.gcard.sm', { style: { '--gc': g(['', 'craft', 'store', 'explore', 'trade'][i]).color } }, Dom.icon(g(['', 'craft', 'store', 'explore', 'trade'][i]).icon, 22), h('b', g(['', 'craft', 'store', 'explore', 'trade'][i]).name)),
-              h('div.dnote', i === 1 ? h('span.qchip', Dom.icon('lantern', 16), h('span.small', this.c.get('events', 'ev_festival').title)) : null, i === 2 ? h('span.shut', Dom.icon('market', 16), Dom.icon('x', 10)) : null, h('span.small.muted', t)),
+              h('div.dnote', i === 1 ? h('span.qchip', Dom.icon('lantern', 16), h('span.small', this.c.get('events', 'ev_festival').title)) : null, i === 2 ? h('span.shut', Dom.icon('market', 16), h('span.small', 'Market shut')) : null, h('span.small.muted', t)),
               h('div.dmet', i === 4 ? Dom.icon('check', 18) : i === 3 ? Dom.icon('x', 16) : null)))))]] },
         { id: 'LST-08', name: 'Objective row', cls: '.obj / .obj.done', used: 'Journal, Notes page (objectives).', w: 460, bg: 'page',
           vars: [[null, page(400, h('div.obj', h('span.box'), Dom.icon(obj[1].icon, 20), h('span', obj[1].text)), h('div.obj.done', h('span.box', Dom.icon('check', 16)), Dom.icon(obj[0].icon, 20), h('span', obj[0].text)))]] },
@@ -353,7 +342,9 @@ export class InterfaceSheet {
             h('div.skill', { style: { marginTop: 0 } }, Dom.medal('moon', 48), h('div', { style: { flex: 1 } }, h('div.row', h('b.sname', 'Moon'), h('span.spacer'), h('span.lv', 'Lv 2')), Dom.bar(0.45, 'wis'), h('div.row.small.muted', { style: { marginTop: '4px' } }, h('span', 'Craft and process.'), h('span.spacer'), h('span', '45/100 XP')))),
             h('div.eff', h('div.row', Dom.medal('sun', 32), h('b', 'Sun: store customers')), h('div.ln.sm', h('span.muted', 'Now'), h('span.v', '+10% customers')), h('div.ln.sm', h('span.muted', 'Next'), h('span.v.muted', 'Lv 3: +20%'))))]] },
         { id: 'LST-11', name: 'Basket list', cls: '.tpanel .cart > .ln.sm', used: 'Trade panels: basket lines in Market stall and Receptionist.', w: 420,
-          vars: [[null, h('div.cart', { style: { width: '360px' } }, h('div.ln.sm', ib('leaf', 18), h('span', 'Lemongrass'), h('span.small.muted', '×4'), h('span.v', '14')), h('div.ln.sm', ib('sugar', 18), h('span', 'Palm sugar'), h('span.small.muted', '×2'), h('span.v', '12')))]] }
+          vars: [[null, h('div.cart', { style: { width: '360px' } }, h('div.ln.sm', ib('leaf', 18), h('span', 'Lemongrass'), h('span.small.muted', '×4'), h('span.v', '14')), h('div.ln.sm', ib('sugar', 18), h('span', 'Palm sugar'), h('span.small.muted', '×2'), h('span.v', '12')))]] },
+        { id: 'LST-12', name: 'Log box', cls: '.logbox + .logday + .ln.sm', used: 'Journal, Log page (Do): today, and earlier days grouped by day.', w: 460, bg: 'page',
+          vars: [[null, page(400, h('div.scroll.logbox', { style: { height: '150px', flex: 'none' } }, h('div.logday', 'Week 1 · Tue (D2)'), h('div.ln.sm', Dom.icon('cauldron', 18), h('span.small.muted.lt', '09:30'), h('span.small', 'Crafted 6')), h('div.ln.sm', Dom.icon('store', 18), h('span.small.muted.lt', '13:00'), h('span.small', 'Store open'))))]] }
       ] },
 
       /* ===== CRD: Cards and pop-ups ===== */
@@ -393,14 +384,14 @@ export class InterfaceSheet {
             ['Act', Dom.slim('', { style: { width: '220px' } }, h('div.mini', Dom.medal('rack', 56), h('h5', rack.name), h('div.small', rack.text), btn(String(rack.price), 'sm', { icon: 'gold' })))]] },
         { id: 'CRD-10', name: 'Place info card', cls: '.pinfo', used: 'Town list: the picked place, with Go.', w: 380, bg: 'teal',
           vars: [[null, sideWrap(292, Dom.slim('pinfo',
-            h('div.row', Dom.medal(market.icon, 36), h('b', market.name), h('span.spacer'), h('div.chipline', market.stations.map((id) => h('span.qchip', Dom.icon(this.c.get('stations', id).icon, 16))))),
-            h('div.costrow', { style: { justifyContent: 'flex-start' } }, h('span', Dom.icon('clock', 16), Dom.mins(market.travelMin)), h('span', Dom.icon('energy', 16), '4'), h('span', Dom.icon('walk', 16), '10:50')),
+            h('div.row', Dom.medal(market.icon, 36), h('b', market.name)), h('div.chipline', market.stations.map((id) => h('span.qchip.named', Dom.icon(this.c.get('stations', id).icon, 16), this.c.get('stations', id).name))),
+            h('div.costrow', { style: { justifyContent: 'flex-start' } }, h('span', Dom.icon('clock', 16), Dom.mins(market.travelMin)), h('span', Dom.icon('energy', 16), '-4'), h('span', Dom.icon('walk', 16), 'arrive 10:50')),
             btn('Go', 'gold.sm', { icon: 'walk' })))]] },
         { id: 'CRD-11', name: 'Stat tile', cls: '.statgrid > .stat', used: 'Check, Act and Retrospective pages.', w: 460, bg: 'page',
           vars: [[null, h('div.statgrid', { style: { width: '400px' } }, h('div.stat', h('span.k', Dom.icon('trend_up', 16), 'In'), h('span.v', '+420')), h('div.stat', h('span.k', Dom.icon('trend_down', 16), 'Out'), h('span.v', '-310')), h('div.stat', h('span.k', Dom.icon('gold', 16), 'Gold'), h('span.v', '1,360')))]] },
         { id: 'CRD-12', name: 'Jar box', cls: '.jars > .jarbox', used: 'Journal, Store plan: budget jars (Store, Personal, Buffer).', w: 460, bg: 'page',
-          vars: [['Plan (edit)', h('div.jarbox', Dom.raw(bookJar(0.4, '#5FA39A')), h('div.row', { style: { gap: '4px' } }, Dom.icon('cart', 16), h('b.small', 'Store')), Dom.stepper(300, noop, { step: 50 }))],
-            ['Do (read only)', h('div.jarbox', Dom.raw(bookJar(0.15, '#9C87C0')), h('div.row', { style: { gap: '4px' } }, Dom.icon('buffer', 16), h('b.small', 'Buffer')), h('div.v', '100'))]] },
+          vars: [['Plan (edit)', h('div.jarbox', Dom.raw(Dom.jarSvg(0.4, '#5FA39A', 48)), h('div.row', { style: { gap: '4px' } }, Dom.icon('cart', 16), h('b.small', 'Store')), Dom.stepper(300, noop, { step: 50 }))],
+            ['Do (read only)', h('div.jarbox', Dom.raw(Dom.jarSvg(0.15, '#9C87C0', 48)), h('div.row', { style: { gap: '4px' } }, Dom.icon('buffer', 16), h('b.small', 'Buffer')), h('div.v', '100'))]] },
         { id: 'CRD-13', name: 'Day cell', cls: '.days > .day + .goalchip / .goalchip.empty', used: 'Check page: goals met per day.', w: 460, bg: 'page',
           vars: [[null, h('div.days', { style: { width: '400px', gridTemplateColumns: 'repeat(4, 1fr)' } },
             h('div.day', { style: { minHeight: '96px' } }, h('span.dn', 'Mon'), h('div.goalchip', { style: { background: g('craft').color, height: '40px' } }, Dom.icon(g('craft').icon, 22)), Dom.icon('check', 18)),
@@ -416,17 +407,18 @@ export class InterfaceSheet {
         { id: 'CRD-15', name: 'Help popup', cls: '.helppop', used: 'Hover on any part with help (data-help).', w: 340, bg: 'teal',
           vars: [[null, h('div.helppop.on', h('b', help.title), h('p', help.text))]] },
         { id: 'CRD-16', name: 'Toast', cls: '.toast / .toast.bad', used: 'Bottom centre, 3 s: results and refusals.', w: 460, bg: 'teal',
-          vars: [['good', h('div.toast', h('span.ti', Dom.icon('cauldron', 20)), '+6 made')], ['refused', h('div.toast.bad', h('span.ti', Dom.icon('warn', 20)), REASON_TEXT.tired)]] }
+          vars: [['good', h('div.toast', h('span.ti', Dom.icon('cauldron', 20)), '+6 made')], ['refused', h('div.toast.bad', h('span.ti', Dom.icon('warn', 20)), REASON_TEXT.tired)]] },
+        { id: 'CRD-17', name: 'Sleep transition', cls: '.nightfx (.nf-sky .nf-moon .nf-sun .nf-t)', used: 'Full screen after Sleep: night falls, then the new day. Shown here at night.', w: 460, bg: 'teal',
+          vars: [[null, box(400, 260, h('div.nightfx', { style: { animation: 'none', borderRadius: '8px' } }, h('div.nf-sky', h('span.nf-moon', { style: { top: '-110px', animation: 'none' } })), h('div.nf-t', { style: { animation: 'none', marginTop: '90px' } }, h('small', 'A new day'), h('b', 'Day 4'), h('span', 'Thu · 07:00'))))]] },
+        { id: 'CRD-18', name: 'Walk banner', cls: '.walkbar', used: 'Bottom of the screen while the player walks to a place.', w: 460, bg: 'scene',
+          vars: [[null, h('div.walkbar', { style: { position: 'relative', left: 'auto', bottom: 'auto', transform: 'none' } }, Dom.medal('walk', 32), h('span', 'Walking to'), h('b', market.name))]] }
       ] },
 
       /* ===== CHP: Chips, badges and pills ===== */
       { code: 'CHP', title: 'Chips, badges and pills', items: [
-        { id: 'CHP-01', name: 'Quantity chip', cls: '.qchip / .qchip.ok / .qchip.miss', used: 'Have/need, effects, XP, counts, store result, event effects.', w: 360,
-          vars: [['neutral', Dom.chip('shelf', '12')], ['ok', Dom.chip('leaf', '6/4', 'ok')], ['missing', Dom.chip('root', '1/4', 'miss')]] },
-        { id: 'CHP-02', name: 'Hours chip', cls: '.hchip / .hchip.shut', used: 'Location header and Town list rows.', w: 300,
-          vars: [['open', h('span.hchip', Dom.icon('clock', 14), '8–16')], ['closed', h('span.hchip.shut', Dom.icon('lock', 14), 'Closed')]] },
-        { id: 'CHP-03', name: 'Closed place mark', cls: '.shut', used: 'Daily goals rows: a place that is closed that day.', w: 220, bg: 'page',
-          vars: [[null, h('span.shut', Dom.icon('market', 16), Dom.icon('x', 10))]] },
+        { id: 'CHP-01', name: 'Chip', cls: '.qchip (.ok .miss .named) / .hchip (.shut) / .shut', used: 'Have/need, effects, XP, counts, store result, hours today (location header, Town list), closed places (Daily goals), named places and items (item card, place info).', w: 780,
+          vars: [['neutral', Dom.chip('shelf', '12')], ['ok', Dom.chip('leaf', '6/4', 'ok')], ['missing', Dom.chip('root', '1/4', 'miss')], ['named', h('span.qchip.named', Dom.icon('stall', 16), this.c.get('stations', 'stall').name)],
+            ['open hours', h('span.hchip', Dom.icon('clock', 14), '7–17')], ['closed hours', h('span.hchip.shut', Dom.icon('lock', 14), 'Closed')], ['closed place', h('span.shut', Dom.icon('market', 16), h('span.small', 'Market shut'))]] },
         { id: 'CHP-04', name: 'Count badge', cls: '.badge / .badge.ok', used: 'Station menu (ready on rack), recipe "can make", quest "taken".', w: 300,
           vars: [['red', h('span.badge', '3')], ['green', h('span.badge.ok', '2')], ['text', h('span.badge.ok', 'taken')]] },
         { id: 'CHP-05', name: 'Level chip', cls: '.lv', used: 'Skills page.', w: 200, bg: 'page',
@@ -461,9 +453,8 @@ export class InterfaceSheet {
           vars: [['cost', h('div.tpanel', h('span.tot.neg', Dom.icon('gold', 26), '-42'))], ['income', h('div.tpanel', h('span.tot.pos', Dom.icon('gold', 26), '+96'))], ['zero', h('div.tpanel', h('span.tot', Dom.icon('gold', 26), '0'))]] },
         { id: 'VAL-08', name: 'Cost row', cls: '.costrow', used: 'Craft, Grind, Rest cards, spot card, recap, place info, service.', w: 360,
           vars: [[null, h('div.costrow', h('span', Dom.icon('jamu', 18), '+6'), h('span', Dom.icon('clock', 18), '1h 30'), h('span', Dom.icon('energy', 18), '8'))]] },
-        { id: 'VAL-09', name: 'Budget jar graphic', cls: 'JournalView #jarSvg / Dom.jarSvg', used: 'Jar box (48 px) and jar badge (18 px). Fill = gold left.', w: 360,
-          vars: [['Journal 48 px', Dom.raw(bookJar(0.6, '#5FA39A'))], ['badge 18 px', Dom.raw(Dom.jarSvg(0.6, '#5FA39A', 18))], ['badge, scaled', Dom.raw(Dom.jarSvg(0.6, '#D9A326', 48))]],
-          note: 'Two copies of the same drawing in code.' },
+        { id: 'VAL-09', name: 'Budget jar graphic', cls: 'Dom.jarSvg(ratio, colour, size)', used: 'Jar box (48 px) and jar badge (18 px). Fill = gold left.', w: 360,
+          vars: [['jar box 48 px', Dom.raw(Dom.jarSvg(0.6, '#5FA39A', 48))], ['jar badge 18 px', Dom.raw(Dom.jarSvg(0.6, '#D9A326', 18))]] },
         { id: 'VAL-10', name: 'Line chart', cls: '.chart (svg)', used: 'Retrospective: gold and debt per week.', w: 520, bg: 'page',
           vars: [[null, Dom.raw(`<svg class="chart" viewBox="0 0 440 160" style="width:440px"><line x1="32" x2="408" y1="128" y2="128" stroke="#B9AE8E" stroke-dasharray="3 4"/><line x1="32" x2="408" y1="80" y2="80" stroke="#B9AE8E" stroke-dasharray="3 4"/><line x1="32" x2="408" y1="32" y2="32" stroke="#B9AE8E" stroke-dasharray="3 4"/><polyline points="32,40 126,46 220,52 314,60 408,66" fill="none" stroke="#B5523B" stroke-width="2.4"/><polyline points="32,110 126,104 220,96 314,100 408,88" fill="none" stroke="#D9A326" stroke-width="2.4"/></svg>`)]] }
       ] },
@@ -483,9 +474,6 @@ export class InterfaceSheet {
           vars: [[null, h('div.trail', { style: { width: '560px', height: '84px' } },
             Dom.raw('<svg viewBox="0 0 800 160" preserveAspectRatio="none"><rect width="800" height="160" fill="#F1E8D4"/><g style="mix-blend-mode:multiply"><ellipse cx="400" cy="140" rx="520" ry="80" fill="#6E9A6A" fill-opacity=".45" filter="url(#wc)"/></g><path d="M0 120 C160 100 260 130 400 112 C540 96 640 124 800 108" stroke="#2D3B3A" stroke-width="1.2" stroke-dasharray="5 7" fill="none"/><g opacity=".85"><use href="#tree" x="40" y="30" width="44" height="55"/><use href="#tree" x="520" y="26" width="46" height="58"/></g></svg>'),
             h('div.walker', { style: { left: '30%' } }, Dom.medal('walk', 38)))]] },
-        { id: 'STN-06', name: 'Price level box', cls: 'div.lv-low / .lv-fair / .lv-high (inline style)', used: 'Journal, Market page: price levels.', w: 460, bg: 'page',
-          vars: [[null, h('div.lvpick', { style: { width: '400px' } }, ['low', 'fair', 'high'].map((k, i) => h(`div.lv-${k}`, { style: { height: '56px', borderRadius: '8px', color: '#fff', display: 'grid', placeItems: 'center', alignContent: 'center', fontFamily: 'var(--head)' } }, k[0].toUpperCase() + k.slice(1), h('small', `×${lvls[k].mult} · ${Math.round(lvls[k].demand * 100)}%`))))]],
-          note: 'Same colours as BTN-16, but not a button.' }
       ] },
 
       /* ===== ICN: Icons ===== */

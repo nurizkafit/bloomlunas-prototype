@@ -29,8 +29,6 @@
   "27": "make_test_glb.py",
   "28": "QuestSystem",
   "29": "ExploreSystem",
-  "30": "run.mjs",
   "31": ".mcp.json",
-  "32": "EventBus",
-  "33": "Ledger"
+  "32": "EventBus"
 }

@@ -148,7 +148,7 @@ export class JournalView {
     const b = st.plan.budget;
     const tier = sys.skills.tier();
     const jar = (k, icon, color, label) => h('div.jarbox', { 'data-help': `jar${label}` },
-      Dom.raw(this.#jarSvg(st.gold ? b[k] / st.gold : 0, color)),
+      Dom.raw(Dom.jarSvg(st.gold ? b[k] / st.gold : 0, color, 48)),
       h('div.row', { style: { gap: '4px' } }, Dom.icon(icon, 16), h('b.small', label)),
       edit ? Dom.stepper(b[k], (d) => ui.send(MSG.INTENT_SET_BUDGET, { [k]: Math.max(0, b[k] + d) }), { step: bstep }) : h('div.v', String(b[k])));
     const jarsTotal = b.store + b.personal + b.buffer;
@@ -188,16 +188,6 @@ export class JournalView {
         : h('div.warn.ok', Dom.icon('check', 18), 'The plan looks fine.')
     ];
     return [left, right];
-  }
-
-  #jarSvg(ratio, color) {
-    const r = Math.max(0, Math.min(1, ratio));
-    const y = 40 - r * 28;
-    return `<svg width="48" height="52" viewBox="0 0 40 44"><defs><clipPath id="jc${color.slice(1)}"><path d="M9 10h22l3 6v22a4 4 0 01-4 4H10a4 4 0 01-4-4V16z"/></clipPath></defs>
-      <path d="M9 10h22l3 6v22a4 4 0 01-4 4H10a4 4 0 01-4-4V16z" fill="#F4ECDB" stroke="#2D3B3A" stroke-width="1.4"/>
-      <rect x="0" y="${y}" width="40" height="44" fill="${color}" clip-path="url(#jc${color.slice(1)})" opacity=".85"/>
-      <path d="M9 10h22l3 6v22a4 4 0 01-4 4H10a4 4 0 01-4-4V16z" fill="none" stroke="#2D3B3A" stroke-width="1.4"/>
-      <rect x="8" y="4" width="24" height="6" rx="2" fill="#C8955A" stroke="#2D3B3A" stroke-width="1.2"/></svg>`;
   }
 
   #review() {
@@ -272,7 +262,7 @@ export class JournalView {
     return [
       [h('h3', Dom.icon('chart', 28), 'Products', Dom.help('tabMarket')), head, ...items.filter((i) => i.kind === 'product').map(row),
         h('h4', Dom.icon('lantern', 18), 'Price levels'),
-        h('div.lvpick', ['low', 'fair', 'high'].map((k) => { const lv = ui.num('PRICE_LEVELS')[k]; return h(`div.lv-${k}`, { style: { height: '56px', borderRadius: '8px', color: '#fff', display: 'grid', placeItems: 'center', alignContent: 'center', fontFamily: 'var(--head)' } }, k[0].toUpperCase() + k.slice(1), h('small', `×${lv.mult} · ${Math.round(lv.demand * 100)}%`)); }))],
+        h('div.lvpick', ['low', 'fair', 'high'].map((k) => { const lv = ui.num('PRICE_LEVELS')[k]; return h(`div.lv-${k}`, k[0].toUpperCase() + k.slice(1), h('small', `×${lv.mult} · ${Math.round(lv.demand * 100)}%`)); }))],
       [h('h3', Dom.icon('cart', 28), 'Materials', Dom.help('priceRange')), head.cloneNode(true), ...items.filter((i) => i.kind === 'material').map(row)]
     ];
   }
