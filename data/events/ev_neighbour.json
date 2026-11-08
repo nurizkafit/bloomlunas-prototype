@@ -3,7 +3,7 @@
   "type": "random",
   "title": "Mbok Sari is sick",
   "icon": "people",
-  "text": "Your neighbour has a fever. She cannot open her stall today. She asks for two cups of kunyit asam.",
+  "text": "Mbok Sari's stall stays shut this morning. She calls weakly through the window: a fever, nothing serious, but could you spare two cups of kunyit asam?",
   "responses": [
     {
       "label": "Bring her 2 kunyit asam",

@@ -11,7 +11,6 @@ export class RetroView {
 
   render() {
     const ui = this.ui, r = ui.gm.phases.retro.summary();
-    const story = ui.c.find('story', 'retro');
     const pct = (x) => `${Math.round(x * 100)}%`;
     const weeks = r.weekList;
     const gold = [r.startGold, ...weeks.map((w) => w.endGold)];
@@ -44,15 +43,40 @@ export class RetroView {
       h('div.ln', Dom.icon('gold', 20), 'Gold', h('span.v', `${r.startGold} → ${Math.round(r.endGold)}`)),
       h('div.ln', Dom.icon('debt', 20), 'Debt', h('span.v.neg', `${r.startDebt} → ${Math.round(r.endDebt)}`)),
       r.carried ? h('div.ln', Dom.icon('house', 20), 'Unpaid bills', h('span.v.neg', `+${Math.round(r.carried)}`)) : null,
-      story ? h('div.retrostory', h('p', story.clerk), h('p', r.endDebt < r.startDebt ? story.down : story.up)) : null,
       h('div.row.end', { style: { marginTop: 'auto' } }, Dom.btn('New game', () => ui.o.onNewGame(), { cls: 'gold', icon: 'herb' }))
     ];
+    const scene = this.#scene(r);
     return [
       h('div.phasebar', Dom.slim('plaque', Dom.medal('guild', 38), h('div', h('small', `MONTH ${ui.st.cal.month}`), h('b', 'The clerk reads your books')))),
       h('div.book', { style: { top: '84px' } }, h('div.tool'), h('div.tool2'), h('div.spineband'),
         h('div.pages', h('div.pg.l', ...left), h('div.pg.r', ...right)),
-        ...Dom.corners().map((c) => { c.style.zIndex = 3; return c; }))
+        ...Dom.corners().map((c) => { c.style.zIndex = 3; return c; })),
+      scene
     ];
+  }
+
+  /**
+   * End scene (user feedback 8 Nov 2026): popups before the book opens. The guild clerk reads the books, then the
+   * neighbour talks; her lines depend on the debt (data/story/retro.json). Next shows the next line.
+   * The scene step is view-only state (ui.local.retroScene); 'done' shows the book.
+   */
+  #scene(r) {
+    const ui = this.ui, L = ui.local, story = ui.c.find('story', 'retro');
+    if (!story?.scenes?.length || L.retroScene === 'done') return null;
+    const at = L.retroScene ?? { s: 0, i: 0 };
+    const sc = story.scenes[at.s];
+    const lines = sc.lines ?? (r.endDebt < r.startDebt ? sc.down : sc.up);
+    const nums = { paid: r.paid, interest: r.interest, debt: r.endDebt, startDebt: r.startDebt };
+    const text = lines[at.i].replace(/\{(\w+)\}/g, (m, k) => (k in nums ? Math.round(nums[k]).toLocaleString('en') : m));
+    const lastLine = at.i >= lines.length - 1, lastScene = at.s >= story.scenes.length - 1;
+    const next = () => ui.set({ retroScene: !lastLine ? { s: at.s, i: at.i + 1 } : !lastScene ? { s: at.s + 1, i: 0 } : 'done' });
+    return h('div.veil.endscene', Dom.rattan('card.scene', ...Dom.corners(),
+      h('div.kick', sc.role), Dom.medal(sc.icon, 96), h('h3', sc.speaker),
+      h('p', text),
+      Dom.dots(lines.length, lines.map((_, k) => (k <= at.i ? 'f' : ''))),
+      h('div.row', { style: { gap: '16px' } },
+        Dom.btn('Skip', () => ui.set({ retroScene: 'done' }), { cls: 'alt.sm', icon: 'skip' }),
+        Dom.btn(lastLine && lastScene ? 'Open your books' : 'Next', next, { cls: 'gold', icon: lastLine && lastScene ? 'journal' : 'next' }))));
   }
 
   #chart(gold, debt) {

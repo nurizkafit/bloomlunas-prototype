@@ -3,7 +3,7 @@
   "type": "random",
   "title": "A trader at the door",
   "icon": "cart",
-  "text": "A tired trader knocks. She wants to sell her last beeswax cheap before the long road home.",
+  "text": "A dusty trader knocks. She has a long road home and wants to sell her last beeswax cheap before she goes.",
   "responses": [
     {
       "label": "Buy 2 beeswax",

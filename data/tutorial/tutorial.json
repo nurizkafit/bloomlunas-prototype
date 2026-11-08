@@ -10,61 +10,82 @@
   "steps": [
     {
       "id": "plan",
-      "when": { "phase": "plan", "week": 1 },
+      "when": {
+        "phase": "plan",
+        "week": 1
+      },
       "lines": [
-        "I saw the guild clerk at your door. That grey seal never brings good news.",
-        "I am Mbok Sari, from the jamu stall next door. Your parent and I shared this street for twenty years.",
-        "The debt is heavy. But it is not the end. We take it one week at a time.",
-        "This is your parent's planner book. Every week starts here. Put a goal card on each day.",
-        "On the Store plan page, choose what to sell. Then share your gold into three jars. The Buffer jar is for the debt, so try not to touch it.",
-        "When the plan feels right, press Finish plan at the top."
+        "Oh, dear. I saw that grey guild seal on your door this morning. Those letters never bring good news, do they?",
+        "Forgive me, I haven't even said who I am. I'm Mbok Sari. I sell jamu from the stall next door. Your parent and I were neighbours for twenty years.",
+        "That debt looks like a mountain, I know. But mountains get climbed one step at a time. We'll take it one week at a time.",
+        "This was your parent's planner book. Every week starts here, with a goal for each day. Drag a card onto a day, any day you like.",
+        "Then turn to the Store plan page. Decide what you want to sell, and split your gold between the three jars. The Buffer jar is for the guild. Try very hard not to touch it.",
+        "Once it all feels right, press Finish plan up at the top. And don't worry about getting it perfect. Nobody does, the first time."
       ]
     },
     {
       "id": "home",
-      "when": { "phase": "do", "place": "home", "week": 1 },
+      "when": {
+        "phase": "do",
+        "place": "home",
+        "week": 1
+      },
       "lines": [
-        "The week has started. This is your home and your shop.",
-        "Make products at the Crafting table. Put them on the shelf in the Store, then open the doors.",
-        "Every task takes time and energy. The green ring around the clock is your energy.",
-        "No herbs? Press Town and walk to the market or the guild."
+        "And so the week begins! It's strange seeing the lamps lit in here again.",
+        "The Crafting table is where the jamu and salep get made. Then you put them on the shelf, open the doors, and let the town come to you.",
+        "Mind your energy, though. That green ring around the clock is how much you have left in you. Every job takes a little.",
+        "Out of herbs? Press Town and walk over to the market, or to the guild."
       ]
     },
     {
       "id": "market",
-      "when": { "phase": "do", "place": "market", "week": 1 },
+      "when": {
+        "phase": "do",
+        "place": "market",
+        "week": 1
+      },
       "lines": [
-        "Ah, the market. Prices change every week. Your planner book shows them.",
-        "At the stall, Fill from plan puts what your plan needs in the basket.",
-        "Buy some meal packs too. Working hungry makes a long day longer."
+        "Ah, the market. Smell that? Ginger, lemongrass, a little smoke from the satay man.",
+        "Prices change every week here, so it's worth checking your planner book. At the stall, Fill from plan puts everything your plan still needs into the basket.",
+        "And buy yourself some meal packs, please. A hungry shopkeeper makes a long day even longer."
       ]
     },
     {
       "id": "rest",
-      "when": { "phase": "do", "station": "rest", "week": 1 },
+      "when": {
+        "phase": "do",
+        "station": "rest",
+        "week": 1
+      },
       "lines": [
-        "Tired already? A short break or a meal gives you energy back.",
-        "Sleep ends the day. Do not stay up for a few more coins. Tomorrow needs you too."
+        "Tired already? Sit down for a moment. A short break or a proper meal will bring your energy back.",
+        "When you sleep, the day ends. Don't stay up chasing a few more coins. Tomorrow needs you too."
       ]
     },
     {
       "id": "check",
-      "when": { "phase": "check", "week": 1 },
+      "when": {
+        "phase": "check",
+        "week": 1
+      },
       "lines": [
-        "One week done. Let us look back, without blame.",
-        "Compare your plan with what really happened. Where did the gold go?",
-        "Then pick one or two notes for next week. Small changes add up."
+        "One whole week. Come, let's sit and look back at it. No blame, just honest eyes.",
+        "Here's what you planned, and here's what really happened. Where did the gold go? Did anything surprise you?",
+        "Pick one or two notes for next week. Small changes, made every week, add up to a lot."
       ]
     },
     {
       "id": "act",
-      "when": { "phase": "act", "month": 1 },
+      "when": {
+        "phase": "act",
+        "month": 1
+      },
       "lines": [
-        "Month end. The guild wants its payment today.",
-        "Pay at least {DEBT_MIN_PAYMENT} gold. If you can pay more, next month's interest is smaller.",
-        "Pay the utilities too. Unpaid bills go onto the debt.",
-        "Then you can book one guild appointment for next month.",
-        "You made it through a whole month. That counts for something."
+        "It's month end. The guild will want its payment today, and they never forget.",
+        "Pay at least {DEBT_MIN_PAYMENT} gold. If you can spare more, do it. Less debt now means less interest next month.",
+        "Pay the utilities too. Anything you leave unpaid gets piled onto the debt.",
+        "After that, you can book one appointment at the guild for next month. Choose something that helps the shop grow.",
+        "And look at you. A whole month, and you're still standing. That counts for something."
       ]
     }
   ]

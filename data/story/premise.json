@@ -3,12 +3,12 @@
   "title": "Notice of unpaid debt",
   "from": "Merchant Guild · Office of Accounts",
   "paragraphs": [
-    "To the new owner of the herb shop.",
-    "Your parent signed a loan with this guild. Your parent left on an expedition and did not return. By town law, the shop and its debt now pass to you.",
-    "The balance is {DEBT_START} gold. Interest of {DEBT_INTEREST_RATE%} is added to it at the end of each month.",
-    "Pay at least {DEBT_MIN_PAYMENT} gold at each month end. A short payment adds a late fee of {HIDDEN_FEE_LATE} gold. The guild does not give more time.",
-    "In two months, a clerk will come to read your books. Keep them in order.",
-    "No reply is needed."
+    "To the new owner of the herb shop,",
+    "We write about the loan your parent signed with this guild. We understand your parent left on an expedition and has not come back. Under town law, the shop is now yours, and so is everything it owes.",
+    "The balance stands at {DEBT_START} gold. Interest of {DEBT_INTEREST_RATE%} is added at the close of every month.",
+    "You will pay no less than {DEBT_MIN_PAYMENT} gold at each month end. If you pay less, a late fee of {HIDDEN_FEE_LATE} gold goes onto the balance. We do not give extensions.",
+    "In two months, a clerk will call on you to read your books. We suggest you keep them in order.",
+    "No reply is necessary."
   ],
   "sign": "Clerk of Accounts, Merchant Guild",
   "button": "Fold the letter",

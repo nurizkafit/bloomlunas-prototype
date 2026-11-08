@@ -3,7 +3,7 @@
   "type": "random",
   "title": "Heavy rain",
   "icon": "rain",
-  "text": "Rain falls all morning. Only a few people walk to the shops.",
+  "text": "Rain drums on the roof all morning. The street is empty except for a few people running for cover.",
   "responses": [
     {
       "label": "Stay in and craft",

@@ -147,6 +147,9 @@ async function run(w, hgt) {
   await ev(() => { const { gm } = window.__bl; gm.state.cal.month = 2; gm.finishAct(); });
   await draw();
   await page.waitForSelector('text=The clerk reads your books');
+  await page.waitForSelector('.endscene');
+  await shot('23a-end-scene');
+  await page.locator('.endscene .btn', { hasText: 'Skip' }).click();
   await shot('23-retro');
   // Event card
   await ev(() => { const { gm } = window.__bl; gm.state.phase = 'do'; gm.state.pendingEvent = gm.content.all('events')[0].id; window.__bl.ui.local.station = null; });

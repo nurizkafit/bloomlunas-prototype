@@ -1,7 +1,31 @@
 {
   "id": "retro",
-  "_doc": "Closing lines on the look-back screen. 'down' when the debt is lower than at the start, 'up' when it is not.",
-  "clerk": "The clerk closes your books. \"The guild will come back next month.\"",
-  "down": "Mbok Sari smiles at the door. \"The debt is smaller than when you started. Your parent would be proud.\"",
-  "up": "Mbok Sari puts a warm cup in your hands. \"The debt grew, but now you know how it grows. That is where change starts.\""
+  "_doc": "End scene: popups before the look-back book opens. A scene has 'lines', or 'down' (debt lower than at the start) and 'up' (debt not lower). {paid}, {interest}, {debt} and {startDebt} show numbers from the two months.",
+  "scenes": [
+    {
+      "speaker": "Clerk of Accounts",
+      "role": "Merchant Guild",
+      "icon": "guild",
+      "lines": [
+        "There's a knock, three sharp raps. The clerk in the grey coat comes in without waiting and sets a heavy ledger on your table.",
+        "He turns the pages slowly. \"Two months. You paid {paid} gold. Interest added {interest}. The balance now stands at {debt}.\"",
+        "He snaps the ledger shut. \"The guild will be back next month. And the month after that.\" The door closes behind him."
+      ]
+    },
+    {
+      "speaker": "Mbok Sari",
+      "role": "Your neighbour",
+      "icon": "neighbour",
+      "down": [
+        "The clerk is barely down the street when Mbok Sari slips in with two cups of warm jamu.",
+        "\"It's smaller, you know. The debt. Not by much, but smaller than the day that letter came. Your parent would be proud of you.\"",
+        "\"Now drink that, and let's look at your books together.\""
+      ],
+      "up": [
+        "The clerk is barely down the street when Mbok Sari slips in and presses a warm cup into your hands.",
+        "\"The debt grew. I know that's hard to look at. But you understand now how it grows, and that's where things start to change.\"",
+        "\"Come on. Drink that, and let's look at your books together.\""
+      ]
+    }
+  ]
 }

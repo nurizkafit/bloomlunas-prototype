@@ -7,10 +7,10 @@
   },
   "title": "Lantern Festival",
   "icon": "lantern",
-  "text": "Lanterns hang over every street tonight. Crowds walk the town, and they spend more than usual.",
+  "text": "Paper lanterns hang over every street tonight. The whole town is out walking, and people are in a mood to spend.",
   "responses": [
     {
-      "label": "Open the shop for the crowds",
+      "label": "Keep the shop open for the crowds",
       "icon": "store",
       "effects": [
         {
@@ -21,7 +21,7 @@
       ]
     },
     {
-      "label": "Take the evening off",
+      "label": "Close up and enjoy the night",
       "icon": "heart",
       "effects": [
         {

@@ -479,5 +479,9 @@ button.tlr:hover:not(:disabled) { background: rgba(95,163,154,.12); }
 .rf.tutor .say { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 12px; }
 .rf.tutor .say p { margin: 0; font-size: 17px; line-height: 1.45; min-height: 50px; }
 .rf.tutor .say .row { gap: 8px; }
-.retrostory { margin-top: 12px; display: flex; flex-direction: column; gap: 6px; font-size: 14px; line-height: 1.4; font-style: italic; color: var(--fern); }
-.retrostory p { margin: 0; }
+/* End scene (RetroView): story popups before the look-back book opens. */
+.endscene { z-index: 70; background: rgba(14,27,28,.72); }
+.rf.card.scene { width: 600px; }
+.rf.card.scene > .in { padding: 32px 48px 28px; }
+.rf.card.scene h3 { margin: 4px 0 0; }
+.rf.card.scene p { font-size: 18px; line-height: 1.55; text-align: center; min-height: 84px; margin: 8px 0; }

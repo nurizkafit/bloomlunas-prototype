@@ -7,7 +7,7 @@
   },
   "title": "Guild inspection",
   "icon": "guild",
-  "text": "A guild inspector in a grey coat walks in. Every shop pays a small fee today. He does not smile.",
+  "text": "A guild inspector in a grey coat steps in, writes something in a small book, and holds out his hand. Every shop pays a fee today.",
   "responses": [
     {
       "label": "Pay the fee now",
@@ -22,7 +22,7 @@
       ]
     },
     {
-      "label": "Add it to the debt",
+      "label": "Put it on the debt",
       "icon": "debt",
       "effects": [
         {
