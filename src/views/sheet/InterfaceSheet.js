@@ -3,6 +3,7 @@ import { Icons } from '../ui/Icons.js';
 import { Ornaments } from '../ui/Ornaments.js';
 import { HudView } from '../ui/HudView.js';
 import { PlaceView } from '../ui/PlaceView.js';
+import { TutorialView } from '../ui/TutorialView.js';
 import { REASON_TEXT } from '../../systems/ActionRunner.js';
 
 const h = Dom.h;
@@ -38,7 +39,46 @@ export class InterfaceSheet {
     Ornaments.mount(document.body);
     const secs = this.sections();
     root.append(this.header(secs), ...secs.map((s) => this.section(s)), this.notes());
+    InterfaceSheet.fit();
+    addEventListener('resize', () => InterfaceSheet.fit());
+    document.fonts?.ready?.then(() => InterfaceSheet.fit());
     document.body.dataset.ready = '1';
+  }
+
+  /** Scale down a specimen that is wider than its card, so the page never scrolls sideways. */
+  static fit() {
+    for (const v of document.querySelectorAll('.sh-var')) {
+      const el = v.firstElementChild;
+      if (!el || el.classList.contains('sh-tag')) continue;
+      el.style.zoom = '';
+      const stage = v.parentElement, cs = getComputedStyle(stage);
+      const room = stage.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+      const w = el.getBoundingClientRect().width;
+      if (w > room + 0.5) el.style.zoom = String(Math.floor((room / w) * 1000) / 1000);
+    }
+  }
+
+  /** The guide dialogue box, drawn by the real TutorialView at one line of a step. */
+  tutor(stepId, i) {
+    const t = this.c.get('tutorial', 'tutorial'), step = t.steps.find((x) => x.id === stepId) ?? t.steps[0];
+    const ui = { c: { get: (a, b) => this.c.get(a, b) }, local: { tut: { id: step.id, i } }, fill: (x) => x, set: noop, send: noop };
+    const el = new TutorialView(ui).render(step);
+    Object.assign(el.style, { position: 'relative', left: 'auto', bottom: 'auto', transform: 'none', width: '760px' });
+    return el;
+  }
+
+  /** The end scene card, as RetroView draws it, at one line of a scene. */
+  scene(si, li) {
+    const sc = this.c.get('story', 'retro').scenes[si];
+    const lines = sc.lines ?? sc.down;
+    const nums = { paid: 900, interest: 124, debt: 2350, startDebt: 3000 };
+    const fill = (t) => t.replace(/\{(\w+)\}/g, (m, k) => (k in nums ? nums[k].toLocaleString('en') : m));
+    const line = lines[Math.min(li, lines.length - 1)];
+    return Dom.rattan(`card.scene${Dom.isNarr(line) ? '.narr' : ''}`, ...Dom.corners(),
+      h('div.kick', sc.role), Dom.medal(sc.icon, 96), h('h3', sc.speaker),
+      Dom.line(line, sc.speaker, fill),
+      Dom.dots(lines.length, lines.map((_, k) => (k <= li ? 'f' : ''))),
+      h('div.row', { style: { gap: '16px' } }, Dom.btn('Skip', noop, { cls: 'alt.sm', icon: 'skip' }), Dom.btn('Next', noop, { cls: 'gold', icon: 'next' })));
   }
 
   /* ---------- page parts ---------- */
@@ -162,6 +202,8 @@ export class InterfaceSheet {
     const story = this.c.get('story', 'premise'), rack = this.c.get('services', 'svc_rack');
     const notes = this.c.get('notes', 'notes').options, obj = this.c.get('objectives', 'objectives').list;
     const rain = this.c.get('events', 'ev_rain'), neighbour = this.c.get('events', 'ev_neighbour');
+    const tsp = this.c.get('tutorial', 'tutorial').speaker, tlines = this.c.get('tutorial', 'tutorial').steps.flatMap((x) => x.lines);
+    const tsay = tlines.find((l) => !Dom.isNarr(l)), tdo = tlines.find((l) => Dom.isNarr(l));
     const help = this.c.get('help', 'help').items.jarStore, tiers = this.c.num('QUALITY_TIERS'), lvls = this.c.num('PRICE_LEVELS');
     const ln = (icon, label, v, vcls = '') => h('div.ln', Dom.icon(icon, 20), label, h(`span.v${vcls}`, v));
     const lnSm = (icon, label, v, vcls = '') => h('div.ln.sm', Dom.icon(icon, 18), label, h(`span.v${vcls}`, v));
@@ -482,6 +524,16 @@ export class InterfaceSheet {
           vars: [[null, h('div.trail', { style: { width: '560px', height: '84px' } },
             Dom.raw('<svg viewBox="0 0 800 160" preserveAspectRatio="none"><rect width="800" height="160" fill="#F1E8D4"/><g style="mix-blend-mode:multiply"><ellipse cx="400" cy="140" rx="520" ry="80" fill="#6E9A6A" fill-opacity=".45" filter="url(#wc)"/></g><path d="M0 120 C160 100 260 130 400 112 C540 96 640 124 800 108" stroke="#2D3B3A" stroke-width="1.2" stroke-dasharray="5 7" fill="none"/><g opacity=".85"><use href="#tree" x="40" y="30" width="44" height="55"/><use href="#tree" x="520" y="26" width="46" height="58"/></g></svg>'),
             h('div.walker', { style: { left: '30%' } }, Dom.medal('walk', 38)))]] },
+      ] },
+
+      /* ===== DLG: Dialogue ===== */
+      { code: 'DLG', title: 'Dialogue', sub: 'Lines from data/tutorial and data/story', items: [
+        { id: 'DLG-01', name: 'Dialogue line', cls: 'Dom.line: .line.speech (.speaker + quoted text) / .line.narr (italic, dot rules)', used: 'Inside the guide box (DLG-02) and the end scene card (DLG-03). Speech = a person talks. Narration = what happens.', w: 820,
+          vars: [['speech', h('div', { style: { width: '360px' } }, Dom.line(tsay, tsp.name))], ['narration', h('div', { style: { width: '360px' } }, Dom.line(tdo, tsp.name))]] },
+        { id: 'DLG-02', name: 'Guide dialogue box', cls: '.rf.tutor (.who + .say) / .rf.tutor.narr', used: 'First-week guide: the neighbour talks at the bottom of the screen the first time you see a screen. Next, Skip, Skip all tips.', w: 1660, bg: 'scene',
+          vars: [['speech', this.tutor('plan', 1)], ['narration (portrait fades)', this.tutor('plan', 0)]] },
+        { id: 'DLG-03', name: 'End scene card', cls: '.veil.endscene > .rf.card.scene (.narr)', used: 'Retrospective: the guild clerk and the neighbour talk before the look-back book opens.', w: 1340, bg: 'teal',
+          vars: [['speech', this.scene(0, 2)], ['narration', this.scene(0, 0)]] }
       ] },
 
       /* ===== ICN: Icons ===== */

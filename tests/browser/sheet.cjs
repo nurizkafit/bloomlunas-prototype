@@ -23,8 +23,26 @@ const URL = 'http://localhost:5173/sheet.html';
   const pdf = await browser.newPage();
   await pdf.setContent(`<style>@page{margin:0}html,body{margin:0}img{display:block;width:${size.w}px}</style><img src="data:image/png;base64,${png}">`);
   await pdf.pdf({ path: `${out}/interface-sheet.pdf`, width: `${size.w}px`, height: `${size.h}px`, printBackground: true, pageRanges: '1' });
+  // No sideways overflow (user, 9 Nov 2026): no card wider than the page, no specimen wider than its card.
+  const wide = [];
+  for (const w of [2400, 1280, 390]) {
+    await page.setViewportSize({ width: w, height: 900 });
+    await page.waitForTimeout(300);
+    const bad = await page.evaluate(() => {
+      const out = [];
+      const vw = document.documentElement.clientWidth;
+      for (const c of document.querySelectorAll('.sh-card')) if (c.getBoundingClientRect().right > vw + 1) out.push(`card ${c.id}`);
+      for (const v of document.querySelectorAll('.sh-var')) {
+        const st = v.parentElement.getBoundingClientRect(), r = v.firstElementChild.getBoundingClientRect();
+        if (r.right > st.right + 1 || r.left < st.left - 1) out.push(`specimen in ${v.closest('.sh-card').id}`);
+      }
+      return out;
+    });
+    if (bad.length) wide.push(`${w}px: ${[...new Set(bad)].join(', ')}`);
+  }
   await browser.close();
   console.log(`sheet: ${n} components, ${size.w}x${size.h}`);
+  if (wide.length) { console.error(`sheet: overflow\n${wide.join('\n')}`); process.exit(1); }
   if (errors.length) { console.error(errors.join('\n')); process.exit(1); }
   if (n < 50) { console.error('sheet: too few components'); process.exit(1); }
 })();
