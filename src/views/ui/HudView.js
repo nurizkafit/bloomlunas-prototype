@@ -29,7 +29,7 @@ export class HudView {
         goal ? Dom.slim('goalcard', { 'data-help': 'todayGoal' }, Dom.medal(goal.icon, 26), h('small', 'TODAY'), h('span.gn', goal.name), h('span.st', met ? Dom.icon('check', 18) : Dom.icon('clock', 16))) : null),
       st.phase === 'do' ? h('div.hright',
         this.#rb('map', 'Town', L.map, () => ui.set({ map: !L.map, journal: false })),
-        this.#rb('journal', 'Journal', L.journal, () => ui.set({ journal: !L.journal, map: false }))) : null);
+        this.#rb('journal', 'Journal', L.journal, () => ui.set({ journal: !L.journal, map: false }), ui.sys.notices.unread())) : null);
   }
 
   /**
@@ -71,7 +71,8 @@ export class HudView {
       Dom.raw(svg),
       h('div.dt', h('small', wd.toUpperCase()), h('b', Calendar.clock(m)), h('i', ampm)),
       h('span.ph', Dom.medal(phaseIcon, 30)),
-      h(`span.en${low ? '.low' : ''}`, { 'data-help': 'energy' }, Dom.icon('energy', 14), String(Math.round(st.energy))));
+      h(`span.en${low ? '.low' : ''}`, { 'data-help': 'energy' }, Dom.icon('energy', 14), String(Math.round(st.energy)),
+        st.energy < 0 ? h('small.tm', `Tomorrow: -${Math.round(-st.energy * this.ui.num('ENERGY_DEBT_MULT'))}`) : null));
   }
 
   /** Sky colour at an hour: dawn gold, day sky, dusk amber, night blue. */
@@ -89,7 +90,7 @@ export class HudView {
     return this.ui.st.inv['meal|pack|'] ?? 0;
   }
 
-  #rb(icon, label, on, onclick) {
-    return h(`button.rb${on ? '.on' : ''}`, { onclick, title: label }, h('i', Dom.icon(icon, 26)), h('span', label));
+  #rb(icon, label, on, onclick, dot = false) {
+    return h(`button.rb${on ? '.on' : ''}`, { onclick, title: label }, h('i', Dom.icon(icon, 26)), h('span', label), dot ? h('b.dot', { title: 'New' }) : null);
   }
 }

@@ -24,7 +24,7 @@ export class EffectApplier {
           break;
         }
         case 'xp': sys.skills.add(e.target, e.amount); break;
-        case 'energy': state.energy = clamp(state.energy + e.amount, 0, state.energyMax); break;
+        case 'energy': state.energy = clamp(state.energy + e.amount, content.num('ENERGY_MIN'), state.energyMax); break;
         case 'time': sys.time.advance(e.amount, true); break;
         case 'debt': state.debt.balance = round2(state.debt.balance + e.amount); state.debt.carriedTotal += Math.max(0, e.amount); break;
         case 'demand': state.market.demandMod = e.amount; state.market.demandUntil = sys.time.absDay() + (e.days ?? 1) - 1; break;

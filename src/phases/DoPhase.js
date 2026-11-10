@@ -40,8 +40,10 @@ export class DoPhase extends Phase {
       sys.skills.add(st?.skill ?? 'sun', content.num('GOAL_XP'));
     }
     sys.quests.expire();
+    const debt = sys.time.energyDebt();
     state.energyMax = state.day.meals > 0 ? content.num('ENERGY_MAX') : content.num('ENERGY_HUNGRY_MAX');
-    state.energy = state.energyMax;
+    state.energy = Math.max(0, state.energyMax - debt);
+    state.energyDebt = debt;
     state.history.push({ day: sys.time.absDay(), gold: state.gold, debt: state.debt.balance, goal: state.plan.goals[d], met: state.week.goalsMet[d], meals: state.day.meals, workMin: state.day.workMin, food: Inventory.count(state.inv, 'meal', 'pack', '') });
     bus.emit(MSG.DAY_ENDED, { day: state.cal.day, met: state.week.goalsMet[d] });
     if (state.cal.day >= content.num('DAYS_PER_WEEK')) return 'weekDone';

@@ -26,16 +26,21 @@ export class TimeSystem {
   check(min, energy) {
     const { state } = this.ctx;
     if (state.cal.minute + min > this.endMinute) return 'late';
-    if (energy > 0 && state.energy < energy) return 'tired';
+    if (energy > 0 && state.energy - energy < this.ctx.content.num('ENERGY_MIN')) return 'tired';
     return null;
   }
 
   /** Use time and energy. @param {number} min @param {number} energy @param {boolean} [work] counts as work time */
   spend(min, energy, work = true) {
     const { state } = this.ctx;
-    state.energy = Math.max(0, Math.min(state.energyMax, state.energy - energy));
+    state.energy = Math.max(this.ctx.content.num('ENERGY_MIN'), Math.min(state.energyMax, state.energy - energy));
     this.advance(min, false);
     if (work) state.day.workMin += min;
+  }
+
+  /** Energy lost from the next day start: negative energy at sleep times ENERGY_DEBT_MULT. */
+  energyDebt() {
+    return Math.max(0, -this.ctx.state.energy) * this.ctx.content.num('ENERGY_DEBT_MULT');
   }
 
   /** Move the clock. An event may push past the day end: clamp. @param {number} min @param {boolean} [clampToEnd] */

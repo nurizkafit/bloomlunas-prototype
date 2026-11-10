@@ -19,6 +19,7 @@ export const MSG = Object.freeze({
   INTENT_BOOK_SERVICE: 'intent.bookService',
   INTENT_FINISH_ACT: 'intent.finishAct',
   INTENT_TUTORIAL_SEEN: 'intent.tutorialSeen',
+  INTENT_READ_NOTICES: 'intent.readNotices',
   PHASE_ENTERED: 'phase.entered',
   PHASE_EXITED: 'phase.exited',
   STATE_CHANGED: 'state.changed',
@@ -31,6 +32,7 @@ export const MSG = Object.freeze({
   EVENT_FIRED: 'event.fired',
   EVENT_RESOLVED: 'event.resolved',
   PLAN_VALIDATED: 'plan.validated',
+  NOTICE_ADDED: 'notice.added',
   GAME_FINISHED: 'game.finished'
 });
 

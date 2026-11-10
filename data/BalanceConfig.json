@@ -80,6 +80,18 @@
     "source": "user decision 7 Nov 2026 (jam overhaul) [Proposal]",
     "_placeholder": true
   },
+  "ENERGY_MIN": {
+    "value": -50,
+    "unit": "points; lowest energy. An action that goes lower is refused",
+    "source": "user decision 10 Nov 2026",
+    "_placeholder": true
+  },
+  "ENERGY_DEBT_MULT": {
+    "value": 2,
+    "unit": "x; negative energy at sleep is taken from the next day start, times this",
+    "source": "user decision 10 Nov 2026",
+    "_placeholder": true
+  },
   "TRAVEL_ENERGY": {
     "value": 5,
     "unit": "points per trip",

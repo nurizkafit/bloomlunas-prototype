@@ -31,6 +31,8 @@ Reduce: crafting, processing, economics, NPC interaction and exploration.
 - `src/systems/`, `src/phases/`, `src/core/`: logic. No DOM, no three.js. Runs headless (`npm run sim`).
 - `src/views/`: DOM (`ui/`) and three.js (`scene/`). Views read `GameState` and send intents on the `EventBus`. A view never changes `GameState`.
 - `GameManager` builds the context `{content, bus, rng, sys, state}`, the systems and the phases, and handles intents.
+- Negative energy (user decision, 10 Nov 2026): low energy does not lock actions. Energy can go down to `ENERGY_MIN` (-50); an action that goes lower is refused (`tired`). At sleep, negative energy times `ENERGY_DEBT_MULT` (2) is taken from the next day start: `max(0, (ENERGY_MAX or ENERGY_HUNGRY_MAX) - debt)`. Example: -10 at sleep, with a meal: next day 100 - 20 = 80. Meals and breaks still add energy before sleep. `TimeSystem.energyDebt()`; `GameState.energyDebt` keeps the last value.
+- `NoticeSystem` (user decision, 10 Nov 2026): sends `notice.added` {icon, text, tab} once when an objective is done, when a taken commission has enough products to deliver, and when a posted request arrives. It marks the Journal tab (`notes` or `quests`) unread in `GameState.notices`; `intent.readNotices` {tab} clears it when the tab opens. View: toast (`.toast.news`, 4.5 s) and a red dot on the Journal button and the tab.
 - `ActionRunner` is the one door for every Do action: it checks phase, open event, place, opening hours, time and energy, runs the system call, spends time and energy, writes station minutes (daily goals) and the log.
 
 ## 3. Phase flow (Scene & Flow)
@@ -41,7 +43,7 @@ After the Check of week 4: Act (Journal, month end) -> next month Plan. After mo
 | Phase | Class | What happens |
 | --- | --- | --- |
 | Plan | `PlanPhase` | Rolls weekly prices, trends and the quest board. The player sets a daily goal per day, the store plan (products to sell -> materials) and three budget jars (Store, Personal, Buffer). "Review plan" shows the forecast and warnings (never blocks), then "Start week" locks the plan. |
-| Do | `DoPhase` | Seven days. A day can start with an event card: scheduled events on their day, random events on `EVENTS_PER_WEEK` (1 to 2) random days, never two days in a row, never the same random event twice in a row. Day 06:00-22:00. Sleep ends the day (works anywhere: the player walks home). Day end: goal check (+XP), quests expire, energy restore (lower max with no meal). |
+| Do | `DoPhase` | Seven days. A day can start with an event card: scheduled events on their day, random events on `EVENTS_PER_WEEK` (1 to 2) random days, never two days in a row, never the same random event twice in a row. Day 06:00-22:00. Sleep ends the day (works anywhere: the player walks home). Day end: goal check (+XP), quests expire, energy restore (lower max with no meal, minus the energy debt). |
 | Check | `CheckPhase` | Pays the weekly living cost (unpaid -> debt). Recap: goals per day, sold vs store goal, income and costs, jars vs actual, XP. The player picks up to two notes for next week. |
 | Act | `ActPhase` | Month end: pay the debt (minimum or more) and utilities, book one guild appointment for next month. Close month: unpaid utilities -> debt, interest, late fee if the minimum is not paid. |
 | Retro | `RetroPhase` | Gold and debt per week, goal rate, store goal rate, buffer habit, sales, quests, interest, fees, carried bills, skills. |
@@ -86,9 +88,9 @@ Visual style: approved style board v3 (project files `screens/overhaul-style/sty
 | Class | Screen |
 | --- | --- |
 | `UiRoot` | Stage, layers, phase routing, toasts, hint bar, keys (M town, J journal, Esc back), hotspot layer over the 3D view, jar badge (`jarTag`), item buttons (`itemBtn`) |
-| `HudView` | Phase plaque (phase + week) and the phase action (Review plan, Next week, Close month) as a gold button at top right (user decision, 8 Nov 2026). Day dial (user decision, 8 Nov 2026): the day from `DAY_START_HOUR` to `DAY_END_HOUR` on a 270 degree dial with a moving sun or moon, sky colour by the hour, weekday and time in the centre, energy ring around it with the energy number. Calendar pill (month, week, day), gold, debt, food, today's goal, Town and Journal buttons |
+| `HudView` | Phase plaque (phase + week) and the phase action (Review plan, Next week, Close month) as a gold button at top right (user decision, 8 Nov 2026). Day dial (user decision, 8 Nov 2026): the day from `DAY_START_HOUR` to `DAY_END_HOUR` on a 270 degree dial with a moving sun or moon, sky colour by the hour, weekday and time in the centre, energy ring around it with the energy number (red below zero, with "Tomorrow: -N"). Calendar pill (month, week, day), gold, debt, food, today's goal, Town and Journal buttons |
 | `StartView` | Start menu and story letter |
-| `JournalView` | Tabs in Scene & Flow order: Daily goals (drag goal cards onto days, or click a card then a day), Store plan (products to sell + materials needed; budget jars + plan check), Ledger and assets, Market (forecast range, trend, price now), Public schedule (opening hours, events, month-end bills), Skills (level and effects), Notes (last week's notes + objectives). Do adds Log. Review plan ribbon on every Plan tab. |
+| `JournalView` | Tabs in Scene & Flow order: Daily goals (drag goal cards onto days, or click a card then a day), Store plan (products to sell + materials needed; budget jars + plan check), Ledger and assets, Market (forecast range, trend, price now), Public schedule (opening hours, events, month-end bills), Skills (level and effects), Notes (last week's notes + objectives), Quests (taken commissions: have/need, reward, days left, ready mark, finished and missed; posted requests: item, qty, cost, arrival day, arrived). Do adds Log. Review plan ribbon on every Plan tab. |
 | `CheckView`, `ActView`, `RetroView` | Weekly recap, month end, retrospective |
 | `TownMapView` | Place list over the 3D town (travel time, hours), card of the picked place with Go, name pills over the places |
 | `PlaceView` | One location header frame, station list (with Town and Go home), station hotspots in the room, station window, exploration recap |
@@ -108,7 +110,7 @@ Visual style: approved style board v3 (project files `screens/overhaul-style/sty
 
 ## 9. Class catalog (JS -> Unity)
 
-`GameManager` (MonoBehaviour singleton), `EventBus` (C# events), `ContentDB` (Addressables lookup), `SaveSystem` (JSON save, version 2), `GameState` ([Serializable]). Systems as plain C# services: `TimeSystem`, `ActionRunner`, `EffectApplier`, `EconomySystem`, `StoreSystem`, `ProductionSystem`, `ExploreSystem`, `QuestSystem`, `DebtSystem`, `EventSystem`, `PlanSystem`, `SkillSystem`, `ObjectiveSystem`, `Ledger`, `ActivityLog`. Phases: `PlanPhase`, `DoPhase`, `CheckPhase`, `ActPhase`, `RetroPhase`.
+`GameManager` (MonoBehaviour singleton), `EventBus` (C# events), `ContentDB` (Addressables lookup), `SaveSystem` (JSON save, version 2), `GameState` ([Serializable]). Systems as plain C# services: `TimeSystem`, `ActionRunner`, `EffectApplier`, `EconomySystem`, `StoreSystem`, `ProductionSystem`, `ExploreSystem`, `QuestSystem`, `DebtSystem`, `EventSystem`, `PlanSystem`, `SkillSystem`, `ObjectiveSystem`, `NoticeSystem`, `Ledger`, `ActivityLog`. Phases: `PlanPhase`, `DoPhase`, `CheckPhase`, `ActPhase`, `RetroPhase`.
 
 ## 10. Open questions
 

@@ -132,6 +132,7 @@ export class UiRoot {
     });
     b.on(MSG.ACTION_REFUSED, (r) => { if (!this.local.storeRun || r.id !== 'storeHour') this.toast('warn', r.text, true); });
     b.on(MSG.ACTION_DONE, (r) => this.#done(r));
+    b.on(MSG.NOTICE_ADDED, (n) => { if (this.local.screen === 'game') this.toast(n.icon, n.text, false, true); });
   }
 
   #done(r) {
@@ -161,11 +162,11 @@ export class UiRoot {
   }
 
   /** Show a short toast: icon + few words. */
-  toast(icon, text, bad = false) {
-    const t = h(`div.toast${bad ? '.bad' : ''}`, h('span.ti', Dom.icon(icon, 20)), text);
+  toast(icon, text, bad = false, news = false) {
+    const t = h(`div.toast${bad ? '.bad' : ''}${news ? '.news' : ''}`, h('span.ti', Dom.icon(icon, 20)), text);
     this.toasts.append(t);
     while (this.toasts.children.length > 3) this.toasts.firstElementChild.remove();
-    setTimeout(() => t.remove(), 3000);
+    setTimeout(() => t.remove(), news ? 4500 : 3000);
   }
 
   render() {

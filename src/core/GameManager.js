@@ -16,6 +16,7 @@ import { PlanSystem } from '../systems/PlanSystem.js';
 import { ActivityLog } from '../systems/ActivityLog.js';
 import { ActionRunner } from '../systems/ActionRunner.js';
 import { ObjectiveSystem } from '../systems/ObjectiveSystem.js';
+import { NoticeSystem } from '../systems/NoticeSystem.js';
 import { PlanPhase } from '../phases/PlanPhase.js';
 import { DoPhase } from '../phases/DoPhase.js';
 import { CheckPhase } from '../phases/CheckPhase.js';
@@ -45,6 +46,8 @@ export class GameManager {
     s.quests = new QuestSystem(ctx); s.debt = new DebtSystem(ctx); s.events = new EventSystem(ctx); s.plan = new PlanSystem(ctx); s.log = new ActivityLog(ctx);
     s.actions = new ActionRunner(ctx);
     s.objectives = new ObjectiveSystem(ctx);
+    s.notices = new NoticeSystem(ctx);
+    s.notices.unread(); // old save: set up the notice state
     this.sys = s;
     this.phases = { plan: new PlanPhase(ctx), do: new DoPhase(ctx), check: new CheckPhase(ctx), act: new ActPhase(ctx), retro: new RetroPhase(ctx) };
     this.#wire();
@@ -63,6 +66,7 @@ export class GameManager {
     b.on(MSG.INTENT_PAY_UTILITIES, () => { s.debt.payUtilities(); this.#changed(); });
     b.on(MSG.INTENT_BOOK_SERVICE, ({ id }) => { this.phases.act.book(id); this.#changed(); });
     b.on(MSG.INTENT_FINISH_ACT, () => this.finishAct());
+    b.on(MSG.INTENT_READ_NOTICES, ({ tab }) => { if (s.notices.read(tab)) this.#changed(); });
     b.on(MSG.INTENT_TUTORIAL_SEEN, ({ id, all }) => {
       const st = this.state;
       st.tutorialSeen ??= [];
@@ -72,7 +76,7 @@ export class GameManager {
     });
   }
 
-  #changed() { this.bus.emit(MSG.STATE_CHANGED, {}); }
+  #changed() { this.sys.notices.scan(); this.bus.emit(MSG.STATE_CHANGED, {}); }
 
   /** Start a new game, or resume the saved phase. */
   start() {
@@ -102,6 +106,7 @@ export class GameManager {
   /** @param {string} id @param {any} [params] */
   action(id, params) {
     const r = this.sys.actions.run(id, params);
+    if (r.ok && this.sys.notices.scan()) this.#changed();
     if (r.ok && r.endDay) {
       const next = this.phases.do.endDay();
       if (next === 'weekDone') this.#enter('check');

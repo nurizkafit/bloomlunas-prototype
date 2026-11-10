@@ -216,7 +216,7 @@ export class ActionRunner {
 
 export const REASON_TEXT = {
   phase: 'Not now.', event: 'Something needs your answer first.', place: 'Walk there first.', closed: 'It is closed at this hour.',
-  late: 'There is not enough time left today.', tired: 'You are too tired. Rest or eat first.', here: 'You are already here.', meals: 'You cannot eat more today.',
+  late: 'There is not enough time left today.', tired: 'You are too tired. Energy cannot go below the limit. Rest or eat first.', here: 'You are already here.', meals: 'You cannot eat more today.',
   food: 'You have no food. Buy meal packs at the market.', materials: 'Some herbs or materials are missing.', stock: 'You do not have enough.', rack: 'The rack is full.',
   none: 'There is nothing to do here.', qty: 'Choose how many.', open: 'The shop is open.', shelf: 'The shelf is empty.',
   storeHours: 'Shop hours are over.', notOpen: 'The shop is closed.', soldOut: 'Sold out.', closing: 'Closing time.',

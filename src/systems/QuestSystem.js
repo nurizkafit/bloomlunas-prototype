@@ -96,6 +96,8 @@ export class QuestSystem {
     for (const r of due) {
       Inventory.add(state.inv, r.item, r.variant, r.qty);
       sys.log.add('questboard', `Request arrived: ${r.qty} ${r.item}`, 'quest');
+      const it = this.ctx.content.find('items', r.item);
+      sys.notices?.add({ icon: 'quest', text: `Your request arrived: ${r.qty} ${it?.name ?? r.item}. It is in your stock.`, tab: 'quests' });
     }
     state.quests.requests = req.filter((r) => r.readyDay > today);
     return due;

@@ -155,14 +155,14 @@ export class InterfaceSheet {
   /* ---------- HUD with the real HudView ---------- */
 
   /** A fake UiRoot for HudView: real numbers and goals from the data, a hand-made state. */
-  hudUi({ minute = 8 * 60, phase = 'do', energy = 80, goal = 'craft', met = false, gold = 1250, debt = 5000, food = 6, rb = false, map = false } = {}) {
+  hudUi({ minute = 8 * 60, phase = 'do', energy = 80, goal = 'craft', met = false, gold = 1250, debt = 5000, food = 6, rb = false, map = false, news = false } = {}) {
     const c = this.c;
     return {
       st: { cal: { month: 1, week: 2, day: 3, minute }, phase, energy, energyMax: 100, plan: { goals: [null, null, goal] }, day: {}, gold, debt: { balance: debt }, inv: { 'meal|pack|': food } },
       local: { map, journal: false },
       num: (k) => c.num(k),
       c: { get: (t, id) => c.get(t, id) },
-      sys: { plan: { goalMet: () => met } },
+      sys: { plan: { goalMet: () => met }, notices: { unread: () => news } },
       set: noop,
       rb
     };
@@ -328,7 +328,7 @@ export class InterfaceSheet {
         { id: 'HUD-02', name: 'Phase medal', cls: '.daydial .ph (medal)', used: 'Top right of the day dial. Icon per phase.', w: 420, bg: 'teal',
           vars: [['Plan', Dom.medal('calendar', 30)], ['Do', Dom.medal('walk', 30)], ['Check', Dom.medal('note', 30)], ['Act', Dom.medal('debt', 30)]] },
         { id: 'HUD-03', name: 'Energy badge', cls: '.daydial .en / .en.low', used: 'Under the day dial.', w: 300, bg: 'teal',
-          vars: [['normal', this.enBadge(80)], ['low (under 25%)', this.enBadge(15)]] },
+          vars: [['normal', this.enBadge(80)], ['low (under 25%)', this.enBadge(15)], ['negative + tomorrow penalty', this.enBadge(-10)]] },
         { id: 'HUD-04', name: 'Stat pill', cls: '.pill / .pill.cal / .pill.debt', used: 'HUD row: calendar, gold, debt, food packs.', w: 640, bg: 'teal',
           vars: [...this.hud().querySelectorAll('.prow > .pill')].map((p, i) => [['calendar', 'gold', 'debt (red)', 'food'][i], p]) },
         { id: 'HUD-05', name: 'Today goal card', cls: '.goalcard (slim frame)', used: 'HUD, under the pills.', w: 520, bg: 'teal',
@@ -448,8 +448,9 @@ export class InterfaceSheet {
             h('div.row.end', btn('Buy', 'gold', { icon: 'cart', min: 15 })))]] },
         { id: 'CRD-15', name: 'Help popup', cls: '.helppop', used: 'Hover on any part with help (data-help).', w: 340, bg: 'teal',
           vars: [[null, h('div.helppop.on', h('b', help.title), h('p', help.text))]] },
-        { id: 'CRD-16', name: 'Toast', cls: '.toast / .toast.bad', used: 'Bottom centre, 3 s: results and refusals.', w: 460, bg: 'teal',
-          vars: [['good', h('div.toast', h('span.ti', Dom.icon('cauldron', 20)), '+6 made')], ['refused', h('div.toast.bad', h('span.ti', Dom.icon('warn', 20)), REASON_TEXT.tired)]] },
+        { id: 'CRD-16', name: 'Toast', cls: '.toast / .toast.bad / .toast.news', used: 'Bottom centre, 3 s: results and refusals. News (objective done, commission ready, request arrived) stays 4.5 s.', w: 460, bg: 'teal',
+          vars: [['good', h('div.toast', h('span.ti', Dom.icon('cauldron', 20)), '+6 made')], ['refused', h('div.toast.bad', h('span.ti', Dom.icon('warn', 20)), REASON_TEXT.tired)],
+            ['news (4.5 s, gold ring)', h('div.toast.news', { style: { animation: 'none' } }, h('span.ti', Dom.icon('quest', 20)), 'Ready to deliver: Salep for the clinic. Go to the quest board.')]] },
         { id: 'CRD-17', name: 'Sleep transition', cls: '.nightfx (.nf-sky .nf-moon .nf-sun .nf-t)', used: 'Full screen after Sleep: night falls, then the new day. Shown here at night.', w: 460, bg: 'teal',
           vars: [[null, box(400, 260, h('div.nightfx', { style: { animation: 'none', borderRadius: '8px' } }, h('div.nf-sky', h('span.nf-moon', { style: { top: '-110px', animation: 'none' } })), h('div.nf-t', { style: { animation: 'none', marginTop: '90px' } }, h('small', 'A new day'), h('b', 'Day 4'), h('span', 'Thu · 07:00'))))]] },
         { id: 'CRD-18', name: 'Walk banner', cls: '.walkbar', used: 'Bottom of the screen while the player walks to a place.', w: 460, bg: 'scene',
@@ -482,7 +483,9 @@ export class InterfaceSheet {
         { id: 'CHP-09', name: 'Hotspot pill', cls: '.hot (.on .here :disabled .place)', used: 'Over a station in the 3D room, over a place in the 3D town.', w: 780, bg: 'scene',
           vars: [['station', hot('cauldron', 'Crafting')], ['hover', (() => { const b = hot('cauldron', 'Crafting'); b.style.transform = 'scale(1.06)'; return b; })()], ['open', hot('store', 'Store', '.on')], ['closed', hot('stall', this.c.get('stations', 'stall').name, '', { disabled: true })], ['place, you are here', hot(home.icon, home.name, '.place.here')]] },
         { id: 'CHP-10', name: 'Chart legend', cls: '.legend', used: 'Retrospective chart.', w: 260, bg: 'page',
-          vars: [[null, h('div.legend', h('span', h('i', { style: { background: '#D9A326' } }), 'Gold'), h('span', h('i', { style: { background: '#B5523B' } }), 'Debt'))]] }
+          vars: [[null, h('div.legend', h('span', h('i', { style: { background: '#D9A326' } }), 'Gold'), h('span', h('i', { style: { background: '#B5523B' } }), 'Debt'))]] },
+        { id: 'CHP-11', name: 'News dot', cls: '.rb > .dot / .tab > .dot', used: 'Journal button (BTN-10) and book tab (BTN-14) when a notice is not read yet (objective done, commission ready, request arrived).', w: 420, bg: 'teal', stage: { paddingBottom: '36px' },
+          vars: [['HUD button', h('button.rb', h('i', Dom.icon('journal', 26)), h('span', 'Journal'), h('b.dot'))], ['book tab', h('button.tab', { style: { position: 'relative' } }, Dom.icon('quest', 22), h('span.tl', 'Quests'), h('b.dot'))]] }
       ] },
 
       /* ===== VAL: Values and inputs ===== */

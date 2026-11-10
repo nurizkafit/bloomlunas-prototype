@@ -15,6 +15,7 @@ const TABS = [
   { id: 'hours', icon: 'clock', label: 'Public schedule', short: 'Hours', help: 'tabHours' },
   { id: 'skills', icon: 'skills', label: 'Skills', help: 'tabSkills' },
   { id: 'notes', icon: 'note', label: 'Notes', help: 'tabNotes' },
+  { id: 'quests', icon: 'quest', label: 'Quests', help: 'tabQuests' },
   { id: 'log', icon: 'log', label: 'Log', help: 'tabLog' }
 ];
 const trendIcon = (t) => (t === 'high' ? 'trend_up' : t === 'low' ? 'trend_down' : 'trend_flat');
@@ -43,9 +44,10 @@ export class JournalView {
       if (!tabs.some((t) => t.id === L.tab)) L.tab = 'schedule';
       const page = {
         schedule: () => this.#schedule(mode), store: () => this.#store(mode), ledger: () => this.#ledger(),
-        market: () => this.#market(), hours: () => this.#hours(mode), skills: () => this.#skills(), notes: () => this.#notes(), log: () => this.#log()
+        market: () => this.#market(), hours: () => this.#hours(mode), skills: () => this.#skills(), notes: () => this.#notes(), quests: () => this.#quests(), log: () => this.#log()
       };
       pages = page[L.tab]();
+      if (ui.sys.notices.unread(L.tab)) { const tab = L.tab; queueMicrotask(() => ui.send(MSG.INTENT_READ_NOTICES, { tab })); }
       if (mode === 'plan') { ribbon = Dom.btn('Finish plan', () => ui.set({ review: true }), { cls: 'gold.ribbon', icon: 'check' }); ribbon.dataset.help = 'reviewPlan'; }
     }
     const n = (ui.st.cal.month - 1) * ui.num('WEEKS_PER_MONTH') + ui.st.cal.week;
@@ -59,7 +61,7 @@ export class JournalView {
         h('div.pages',
           h('div.pg.l', ...pages[0], h('div.pageno', Dom.icon('moon', 14), String(n * 2 - 1))),
           h('div.pg.r', ...pages[1], h('div.pageno', String(n * 2), Dom.icon('moon', 14)))),
-        tabs.length ? h('div.tabs', tabs.map((t) => h(`button.tab${L.tab === t.id ? '.on' : ''}`, { 'data-label': t.label, 'data-help': t.help, onclick: () => ui.set({ tab: t.id }) }, Dom.icon(t.icon, 22), h('span.tl', t.short ?? t.label)))) : null,
+        tabs.length ? h('div.tabs', tabs.map((t) => h(`button.tab${L.tab === t.id ? '.on' : ''}`, { 'data-label': t.label, 'data-help': t.help, onclick: () => ui.set({ tab: t.id }) }, Dom.icon(t.icon, 22), h('span.tl', t.short ?? t.label), ui.sys.notices.unread(t.id) ? h('b.dot', { title: 'New' }) : null))) : null,
         ...Dom.corners().map((c) => { c.style.zIndex = 3; return c; }),
         mode === 'do' ? h('button.iconbtn.close', { style: { right: '-12px', top: '-12px' }, title: 'Close', onclick: () => ui.set({ journal: false }), html: Icons.svg('x', 16) }) : null)
     ];
@@ -351,6 +353,35 @@ export class JournalView {
       [h('h3', Dom.icon('quest', 28), 'First steps', Dom.help('objectives'), h('span.aside', Dom.icon('check', 16), `${done}/${obj.length}`)),
         h('div.scroll', { style: { flex: 1, minHeight: 0 } }, obj.map((o) => h(`div.obj${o.done ? '.done' : ''}`,
           h('span.box', o.done ? Dom.icon('check', 16) : null), Dom.icon(o.icon, 20), h('span', o.text))))]
+    ];
+  }
+
+  /* ---------- Quests: taken commissions and posted requests (user request 10 Nov 2026) ---------- */
+  #quests() {
+    const ui = this.ui, st = ui.st, q = ui.sys.quests, today = ui.sys.time.absDay();
+    const qd = (id) => ui.c.get('quests', id);
+    const active = st.quests.active.map((a) => {
+      const d = qd(a.id), it = ui.c.get('items', d.item), have = q.have(a.id), ready = have >= d.qty;
+      return { cells: [Dom.icon(it.icon, 20), h('span', d.name), h(`span${ready ? '.pos' : ''}`, `${have}/${d.qty}`), `+${d.reward}`, `${Math.max(0, a.due - today)}d`, ready ? h('span.badge.ok', 'ready') : ''] };
+    });
+    const recent = [...st.quests.done.map((x) => ({ ...x, ok: true })), ...st.quests.missed.map((x) => ({ ...x, ok: false }))].sort((a, b) => b.day - a.day).slice(0, 4);
+    const reqs = (st.quests.requests ?? []).map((r) => {
+      const it = ui.c.find('items', r.item);
+      const days = r.readyDay - today;
+      return { cells: [Dom.icon(it?.icon ?? 'leaf', 20), h('span', `${it?.name ?? r.item} (${r.variant})`), String(r.qty), String(r.cost), days <= 0 ? 'today' : `${days}d`] };
+    });
+    const arrived = st.log.filter((l) => l.station === 'questboard' && l.text.startsWith('Request arrived')).slice(-3).reverse();
+    return [
+      [h('h3', Dom.icon('quest', 28), 'Taken commissions', Dom.help('tabQuests'), h('span.aside', Dom.icon('quest', 16), `${st.quests.active.length}/${ui.num('QUEST_MAX_ACTIVE')}`)),
+        Dom.tlist('28px 1fr 48px 44px 36px 52px', ['', 'Commission', 'Have', h('span', Dom.icon('gold', 12)), Dom.icon('calendar', 12), ''], active, 'You have no commission. Take one at the Guild quest board.'),
+        h('div.small.muted.qnote', 'Ready: you have enough products. Deliver at the quest board before the days run out.'),
+        recent.length ? h('h4', Dom.icon('log', 18), 'Finished') : null,
+        ...recent.map((x) => h('div.ln.sm', Dom.icon(x.ok ? 'check' : 'x', 18), qd(x.id).name, h(`span.v${x.ok ? '.pos' : ''}`, x.ok ? `+${qd(x.id).reward}` : 'missed')))],
+      [h('h3', Dom.icon('note', 28), 'Your requests', h('span.aside', Dom.icon('note', 16), `${reqs.length}/${ui.num('REQUEST_MAX_OPEN')}`)),
+        Dom.tlist('28px 1fr 40px 48px 52px', ['', 'Item', 'Qty', h('span', Dom.icon('gold', 12)), 'Arrives'], reqs, 'You have no open request. Post one at the Guild quest board.'),
+        h('div.small.muted.qnote', 'A request arrives in your stock in the morning of its day.'),
+        arrived.length ? h('h4', Dom.icon('check', 18), 'Arrived') : null,
+        ...arrived.map((l) => h('div.ln.sm', Dom.icon('quest', 18), l.text.replace('Request arrived: ', '')))]
     ];
   }
 

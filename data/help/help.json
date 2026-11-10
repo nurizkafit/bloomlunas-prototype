@@ -24,7 +24,7 @@
     },
     "energy": {
       "title": "Energy",
-      "text": "Work makes you tired. A break, a meal and a night of sleep give your energy back."
+      "text": "Work makes you tired. A break, a meal and a night of sleep give your energy back. You can still work when your energy is low, down to -50. Negative energy at sleep counts double: -10 tonight means 20 less energy tomorrow."
     },
     "todayGoal": {
       "title": "Today's goal",
@@ -57,6 +57,10 @@
     "tabNotes": {
       "title": "Notes",
       "text": "The notes you wrote to yourself, and small steps to learn the shop."
+    },
+    "tabQuests": {
+      "title": "Quests",
+      "text": "Commissions you took from the Guild quest board, and requests you posted there. A red dot means news."
     },
     "tabLog": {
       "title": "Log",
