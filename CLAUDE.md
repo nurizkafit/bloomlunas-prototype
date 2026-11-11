@@ -44,7 +44,7 @@ src/systems/   ActionRunner, TimeSystem, EffectApplier, EconomySystem, StoreSyst
 src/phases/    Phase, PlanPhase, DoPhase, CheckPhase, ActPhase, RetroPhase
 src/views/ui/    UiRoot, Dom, Icons, Ornaments, theme.css, HudView, StartView, JournalView, CheckView, ActView, RetroView, TownMapView, PlaceView, ItemCardView, station views, EventCardView, TutorialView
 src/views/scene/ SceneView (3D City View)
-src/views/sheet/ InterfaceSheet, UnityAssets, SpriteMap (sprite to sheet part links), SheetDownloads, ZipWriter + sheet.css, unity.css (sheet.html: all UI components with IDs, for the art audit; unity.html: text-free Unity sprites; both with PNG downloads)
+src/views/sheet/ InterfaceSheet, UnityAssets, SpriteMap (sprite to sheet part links), HoverPreview (hover popup with the other page PNGs), SheetDownloads, ZipWriter + sheet.css, unity.css (sheet.html: all UI components with IDs, for the art audit; unity.html: text-free Unity sprites; both with PNG downloads)
 assets/ui-export/ PNG placeholders + manifest from npm run export:ui (committed)
 assets/unity-export/ Unity sprites (9-slice) + manifest from npm run export:unity (committed)
 src/sim/       Bot, runMonths.js (headless CLI), loadDataNode, csv.js

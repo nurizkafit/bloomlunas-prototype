@@ -85,3 +85,13 @@ body.sheetpage { background: #DCD5C4; color: var(--ink); }
 /* A linked card flashes when you arrive from the other page. */
 .sh-card:target { box-shadow: 0 0 0 3px var(--tur), 0 2px 6px rgba(0,0,0,.12); }
 .sh-card { scroll-margin-top: 96px; }
+
+/* Hover preview (HoverPreview): the PNGs of the other page, so you do not need to switch pages. */
+.sh-pop { position: fixed; z-index: 200; left: 0; top: 0; max-width: min(640px, calc(100vw - 16px)); max-height: calc(100vh - 16px); overflow: hidden; padding: 10px 12px 12px; border-radius: 10px; background: #F7F3EA; color: var(--ink); box-shadow: 0 0 0 1.5px var(--teal), 0 10px 24px rgba(0,0,0,.3); pointer-events: none; opacity: 0; visibility: hidden; transition: opacity .1s; }
+.sh-pop.on { opacity: 1; visibility: visible; }
+.sh-pop-t { display: block; font-family: var(--head); font-weight: 400; font-size: 17px; color: var(--teal); }
+.sh-pop-m { font-size: 12px; opacity: .8; margin-top: 2px; }
+.sh-pop-g { display: flex; flex-wrap: wrap; gap: 10px 12px; margin-top: 8px; align-items: flex-end; }
+.sh-pop-g figure { display: flex; flex-direction: column; align-items: center; gap: 3px; margin: 0; max-width: 100%; }
+.sh-pop-g img { display: block; max-width: 100%; height: auto; background: repeating-conic-gradient(#e6dfcf 0 25%, #f6f2e9 0 50%) 0 0 / 10px 10px; border-radius: 4px; }
+.sh-pop-g figcaption { font-size: 11px; font-weight: 700; color: var(--fern); }

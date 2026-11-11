@@ -7,6 +7,7 @@ import { TutorialView } from '../ui/TutorialView.js';
 import { REASON_TEXT } from '../../systems/ActionRunner.js';
 import { SheetDownloads } from './SheetDownloads.js';
 import { SpriteMap } from './SpriteMap.js';
+import { HoverPreview } from './HoverPreview.js';
 
 const h = Dom.h;
 const noop = () => {};
@@ -55,6 +56,15 @@ export class InterfaceSheet {
     root.append(this.header(secs), this.downloads.bar(), ...secs.map((s) => this.section(s)), this.notes());
     this.downloads.mount();
     this.thumbs();
+    // Hover a Unity code: popup with that sprite and its states, from the Unity export (no page switch).
+    const nine = (n) => (n ? `9-slice L ${n.left} R ${n.right} T ${n.top} B ${n.bottom}` : 'no 9-slice');
+    new HoverPreview({
+      manifest: './unity-export/manifest.json', base: './unity-export/', key: (r) => r.card, max: 30,
+      title: (k, rows) => `${k === 'IC' ? `IC-01 to ${rows.at(-1)?.code ?? 'IC-nn'}` : k} ${rows[0]?.name ?? ''} (Unity sprite)`,
+      meta: (rows) => `${rows[0].mode} · ${nine(rows[0].nineSlice)} · ${rows.length} PNG${rows.length > 1 ? 's' : ''}. Click to open it on the Unity page.`,
+      tag: (r) => (r.card === 'IC' ? `${r.code} ${r.variant}` : r.variant),
+      missing: 'No PNG yet. Run npm run export:unity.'
+    }).attach('.sh-sp', (el) => el.dataset.key);
     const ids = new Set(secs.flatMap((s) => s.items.map((it) => it.id)));
     const bad = [...new Set(Object.values(SpriteMap.USES).flatMap((u) => u.sheet))].filter((id) => !ids.has(id));
     if (bad.length) console.error(`SpriteMap: unknown sheet IDs ${bad.join(', ')}`);
@@ -147,7 +157,7 @@ export class InterfaceSheet {
     const list = SpriteMap.sprites(id);
     if (!list.length) return h('div.sh-unity', h('b', 'Unity sprites: '), h('span.sh-none', 'none. Text only (TextMeshPro) or drawn in code.'));
     return h('div.sh-unity', h('b', 'Unity sprites: '),
-      h('div.sh-sprites', list.map((s) => h('a.sh-sp', { href: `./unity.html#${SpriteMap.anchor(s.code)}`, title: `${s.code} ${s.name}: open on the Unity assets page`, 'data-key': s.code },
+      h('div.sh-sprites', list.map((s) => h('a.sh-sp', { href: `./unity.html#${SpriteMap.anchor(s.code)}`, 'data-key': s.code },
         h('img', { alt: '', loading: 'lazy' }), h('span', h('b', s.code === 'IC' ? 'IC-nn' : s.code), ' ', s.name)))));
   }
 

@@ -18,13 +18,12 @@
   "16": "DebtSystem",
   "17": "InterfaceSheet",
   "18": "UiRoot",
+  "19": "HudView",
   "20": "SkillSystem",
   "21": "GameState",
   "22": "TimeSystem",
-  "23": "main.js",
   "25": "NoticeSystem",
   "27": "make_test_glb.py",
-  "28": "DoPhase",
   "29": "ExploreSystem",
   "31": ".mcp.json"
 }

@@ -4,6 +4,7 @@ import { Ornaments } from '../ui/Ornaments.js';
 import { InterfaceSheet } from './InterfaceSheet.js';
 import { SheetDownloads } from './SheetDownloads.js';
 import { SpriteMap } from './SpriteMap.js';
+import { HoverPreview } from './HoverPreview.js';
 
 const h = Dom.h;
 
@@ -36,6 +37,13 @@ export class UnityAssets {
     this.measure();
     document.fonts?.ready?.then(() => this.measure());
     this.downloads.mount();
+    // Hover a sheet ID: popup with that sheet part and its variants, from the sheet export (no page switch).
+    new HoverPreview({
+      manifest: './ui-export/manifest.json', base: './ui-export/', key: (r) => r.id,
+      title: (k, rows) => `${k} ${rows[0]?.name ?? ''} (interface sheet)`,
+      meta: (rows) => `${rows[0].css} · ${rows.length} variant${rows.length > 1 ? 's' : ''}. Click to open it on the sheet.`,
+      missing: 'No PNG for this part yet. Run npm run export:ui.'
+    }).attach('.sh-links a', (el) => el.dataset.sheet);
     document.body.dataset.ready = '1';
   }
 
@@ -155,7 +163,7 @@ export class UnityAssets {
         h('div.sh-id', h('code.u-code', label), h('b', it.name)),
         h('div.sh-cls', `${it.mode} · ${w} x ${ht} · ${nine}`),
         h('div.sh-used', h('b', 'Use for: '), it.used),
-        h('div.sh-links', h('b', 'Used by (sheet): '), uses.map((id) => h('a', { href: `./sheet.html#${id}`, title: `Open ${id} on the interface sheet` }, id))),
+        h('div.sh-links', h('b', 'Used by (sheet): '), uses.map((id) => h('a', { href: `./sheet.html#${id}`, 'data-sheet': id }, id))),
         it.note ? h('div.sh-note', it.note) : null));
   }
 
