@@ -58,6 +58,7 @@ tests/         *.test.js (Vitest, logic only), browser/ (Playwright flow test)
 - `npm run check`: `npm test` + two headless runs + build.
 - `npm run test:browser`: Playwright browser tests in `tests/browser/` (starts Vite, screenshots in `out/browser/`). Run it at each milestone with a view.
 - `npm run sheet`: writes the interface sheet (`sheet.html`) to `out/browser/interface-sheet.png` and `.pdf`. When you add or change a UI component, add it to `src/views/sheet/InterfaceSheet.js` with the next free ID (never reuse an ID).
+- `npm run export:ui`: cuts every sheet variant into its own PNG (2x, transparent) for Unity placeholders: `out/export/png/<ID>_<name>_<variant>.png` + `manifest.json` / `manifest.csv` (size, 9-slice borders). PNG only (user, 11 Nov 2026); `EXPORT_SVG=vector` or `embed` adds SVG, `EXPORT_SCALE` sets the scale.
 
 ## Conventions
 

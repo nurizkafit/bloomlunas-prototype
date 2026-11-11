@@ -110,7 +110,8 @@ export class InterfaceSheet {
    */
   card(it) {
     this.count += 1;
-    const vars = it.vars.map(([tag, el]) => h('div.sh-var', el, tag ? h('span.sh-tag', tag) : null));
+    // data-* on each variant: the export (npm run export:ui) cuts one PNG/SVG per variant and names it from these.
+    const vars = it.vars.map(([tag, el]) => h('div.sh-var', { 'data-id': it.id, 'data-name': it.name, 'data-variant': tag ?? '', 'data-cls': it.cls }, el, tag ? h('span.sh-tag', tag) : null));
     return h('div.sh-card', { style: { width: `${Math.max(300, it.w ?? 360)}px` }, id: it.id },
       h(`div.sh-stage.bg-${it.bg ?? 'paper'}`, { style: it.stage ?? {} }, vars),
       h('div.sh-meta',

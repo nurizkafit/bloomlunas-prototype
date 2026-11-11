@@ -12,7 +12,8 @@
     "graph:update": "graphify update .",
     "graph:query": "graphify query",
     "test:browser": "node tests/browser/run.mjs",
-    "sheet": "node tests/browser/run.mjs sheet"
+    "sheet": "node tests/browser/run.mjs sheet",
+    "export:ui": "node tests/browser/run.mjs export"
   },
   "dependencies": {
     "three": "0.187.0"
