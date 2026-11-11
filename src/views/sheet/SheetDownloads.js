@@ -123,7 +123,7 @@ export class SheetDownloads {
    */
   static csv(rows, cols = SheetDownloads.COLS) {
     const q = (x) => `"${String(x ?? '').replace(/"/g, '""')}"`;
-    const get = (r, path) => path.split('.').reduce((o, k) => o?.[k], r);
+    const get = (r, path) => { const v = path.split('.').reduce((o, k) => o?.[k], r); return Array.isArray(v) ? v.join(' ') : v; };
     return [cols.map((c) => c[0]).join(','), ...rows.map((r) => cols.map((c) => q(get(r, c[1]))).join(','))].join('\n');
   }
 

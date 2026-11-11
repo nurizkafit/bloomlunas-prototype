@@ -14,3 +14,5 @@
 .sh-key b { font-family: var(--head); font-weight: 400; color: var(--teal); }
 .u-big { zoom: 2; }
 i.u-tgt, span.u-tgt { display: block; }
+.u-code { background: var(--ribbon) !important; }
+.sh-sec > h2 code { background: var(--ribbon); }

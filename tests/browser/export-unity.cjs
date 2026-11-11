@@ -38,31 +38,32 @@ const SCALE = Number(process.env.EXPORT_SCALE || 2);
     // Borders from the PNG edge: the 9-slice border of the skin + the room around it.
     // The room is a whole number of px on each side, so all states of a part get the same borders.
     const off = { l: pl, r: pr, t: pt, b: pb };
-    return { k, file: v.dataset.file, id: v.dataset.id, name: v.dataset.name, variant: v.dataset.variant, mode: v.dataset.mode, box: { x, y, w, h },
+    return { k, file: v.dataset.file, id: v.dataset.id, card: v.dataset.card, sheet: v.dataset.sheet, name: v.dataset.name, variant: v.dataset.variant, mode: v.dataset.mode, box: { x, y, w, h },
       nine: nine && { left: nine[0] + off.l, right: nine[1] + off.r, top: nine[2] ? nine[2] + off.t : 0, bottom: nine[3] ? nine[3] + off.b : 0 } };
   }));
 
   const rows = [];
+  // Unity codes (SK skin, OR ornament, IC icon) are not the sheet codes; sheet = the sheet parts (BTN-03 ...) that use the sprite.
   for (const p of parts) {
     await page.evaluate((k) => { document.body.classList.add('cut'); document.querySelectorAll('.sh-var[data-file]').forEach((v, j) => v.classList.toggle('cur', j === k)); }, p.k);
     const png = await page.screenshot({ clip: { x: p.box.x, y: p.box.y, width: p.box.w, height: p.box.h }, omitBackground: true, fullPage: true });
     fs.writeFileSync(path.join(OUT, 'png', `${p.file}.png`), png);
     const r1 = (n) => Math.round(n * 2) / 2, px = (n) => Math.round(n * SCALE);
     const nine = p.nine && { left: r1(p.nine.left), right: r1(p.nine.right), top: r1(p.nine.top), bottom: r1(p.nine.bottom) };
-    rows.push({ id: p.id, name: p.name, variant: p.variant, png: `png/${p.file}.png`, mode: p.mode, width: p.box.w, height: p.box.h, scale: SCALE,
+    rows.push({ code: p.id, card: p.card, sheet: p.sheet.split(' '), name: p.name, variant: p.variant, png: `png/${p.file}.png`, mode: p.mode, width: p.box.w, height: p.box.h, scale: SCALE,
       nineSlice: nine, nineSlicePx: p.nine && { left: px(p.nine.left), right: px(p.nine.right), top: px(p.nine.top), bottom: px(p.nine.bottom) } });
   }
   await browser.close();
 
-  const columns = [['id', 'id'], ['name', 'name'], ['variant', 'variant'], ['png', 'png'], ['mode', 'mode'], ['width', 'width'], ['height', 'height'], ['scale', 'scale'],
+  const columns = [['code', 'code'], ['card', 'card'], ['sheet_ids', 'sheet'], ['name', 'name'], ['variant', 'variant'], ['png', 'png'], ['mode', 'mode'], ['width', 'width'], ['height', 'height'], ['scale', 'scale'],
     ['nine_left', 'nineSlice.left'], ['nine_right', 'nineSlice.right'], ['nine_top', 'nineSlice.top'], ['nine_bottom', 'nineSlice.bottom'],
     ['nine_left_px', 'nineSlicePx.left'], ['nine_right_px', 'nineSlicePx.right'], ['nine_top_px', 'nineSlicePx.top'], ['nine_bottom_px', 'nineSlicePx.bottom']];
   fs.writeFileSync(path.join(OUT, 'manifest.json'), JSON.stringify({
-    note: 'Unity sprites from the BloomLunas prototype (unity.html). No text. Width and height are 1x px; PNG pixels = size x scale. '
+    note: 'Unity sprites from the BloomLunas prototype (unity.html). No text. code = Unity sprite code (SK skin, OR ornament, IC icon), card = its card on unity.html, sheet = interface sheet parts that use it. Width and height are 1x px; PNG pixels = size x scale. '
       + 'nineSlicePx = Sprite Editor border in PNG pixels (left, right, top, bottom). mode = Unity Image Type (Sliced, Tiled, Simple). Pixels Per Unit = 100 x scale.',
     scale: SCALE, count: rows.length, columns, parts: rows }, null, 1));
   const q = (x) => `"${String(x ?? '').replace(/"/g, '""')}"`;
-  const get = (r, p) => p.split('.').reduce((o, k) => o?.[k], r);
+  const get = (r, p) => { const v = p.split('.').reduce((o, k) => o?.[k], r); return Array.isArray(v) ? v.join(' ') : v; };
   fs.writeFileSync(path.join(OUT, 'manifest.csv'), [columns.map((c) => c[0]).join(','), ...rows.map((r) => columns.map((c) => q(get(r, c[1]))).join(','))].join('\n'));
   console.log(`export:unity: ${rows.length} sprites at ${SCALE}x, ${rows.filter((r) => r.nineSlice).length} with 9-slice -> ${OUT}`);
   if (errors.length) { console.error(errors.join('\n')); process.exit(1); }

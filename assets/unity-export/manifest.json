@@ -1,11 +1,19 @@
 {
- "note": "Unity sprites from the BloomLunas prototype (unity.html). No text. Width and height are 1x px; PNG pixels = size x scale. nineSlicePx = Sprite Editor border in PNG pixels (left, right, top, bottom). mode = Unity Image Type (Sliced, Tiled, Simple). Pixels Per Unit = 100 x scale.",
+ "note": "Unity sprites from the BloomLunas prototype (unity.html). No text. code = Unity sprite code (SK skin, OR ornament, IC icon), card = its card on unity.html, sheet = interface sheet parts that use it. Width and height are 1x px; PNG pixels = size x scale. nineSlicePx = Sprite Editor border in PNG pixels (left, right, top, bottom). mode = Unity Image Type (Sliced, Tiled, Simple). Pixels Per Unit = 100 x scale.",
  "scale": 2,
  "count": 213,
  "columns": [
   [
-   "id",
-   "id"
+   "code",
+   "code"
+  ],
+  [
+   "card",
+   "card"
+  ],
+  [
+   "sheet_ids",
+   "sheet"
   ],
   [
    "name",
@@ -70,10 +78,25 @@
  ],
  "parts": [
   {
-   "id": "FRM-01",
+   "code": "SK-01",
+   "card": "SK-01",
+   "sheet": [
+    "FRM-01",
+    "FRM-04",
+    "CRD-01",
+    "CRD-02",
+    "CRD-03",
+    "CRD-04",
+    "CRD-05",
+    "CRD-06",
+    "CRD-19",
+    "CRD-20",
+    "DLG-02",
+    "DLG-03"
+   ],
    "name": "Rattan frame skin",
    "variant": "default",
-   "png": "png/FRM-01_rattan-frame-skin_default.png",
+   "png": "png/ui_sk01_rattan_frame.png",
    "mode": "Tiled",
    "width": 80,
    "height": 80,
@@ -92,10 +115,21 @@
    }
   },
   {
-   "id": "FRM-02",
+   "code": "SK-02",
+   "card": "SK-02",
+   "sheet": [
+    "FRM-02",
+    "FRM-03",
+    "TTL-01",
+    "TTL-04",
+    "HUD-05",
+    "LST-03",
+    "CRD-09",
+    "CRD-10"
+   ],
    "name": "Slim frame skin",
    "variant": "default",
-   "png": "png/FRM-02_slim-frame-skin_default.png",
+   "png": "png/ui_sk02_slim_frame.png",
    "mode": "Sliced",
    "width": 54,
    "height": 54,
@@ -114,10 +148,21 @@
    }
   },
   {
-   "id": "FRM-02",
+   "code": "SK-02",
+   "card": "SK-02",
+   "sheet": [
+    "FRM-02",
+    "FRM-03",
+    "TTL-01",
+    "TTL-04",
+    "HUD-05",
+    "LST-03",
+    "CRD-09",
+    "CRD-10"
+   ],
    "name": "Slim frame skin",
    "variant": "selected",
-   "png": "png/FRM-02_slim-frame-skin_selected.png",
+   "png": "png/ui_sk02_slim_frame_selected.png",
    "mode": "Sliced",
    "width": 54,
    "height": 54,
@@ -136,10 +181,14 @@
    }
   },
   {
-   "id": "FRM-05",
+   "code": "SK-03",
+   "card": "SK-03",
+   "sheet": [
+    "FRM-05"
+   ],
    "name": "Planner Book cover",
    "variant": "default",
-   "png": "png/FRM-05_planner-book-cover_default.png",
+   "png": "png/ui_sk03_planner_book_cover.png",
    "mode": "Sliced",
    "width": 104,
    "height": 104,
@@ -158,10 +207,14 @@
    }
   },
   {
-   "id": "FRM-05",
+   "code": "SK-04",
+   "card": "SK-04",
+   "sheet": [
+    "FRM-05"
+   ],
    "name": "Planner Book spine",
    "variant": "default",
-   "png": "png/FRM-05_planner-book-spine_default.png",
+   "png": "png/ui_sk04_planner_book_spine.png",
    "mode": "Simple",
    "width": 44,
    "height": 36,
@@ -170,10 +223,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "FRM-05",
+   "code": "SK-05",
+   "card": "SK-05",
+   "sheet": [
+    "FRM-05"
+   ],
    "name": "Planner Book page",
    "variant": "left",
-   "png": "png/FRM-05_planner-book-page_left.png",
+   "png": "png/ui_sk05_planner_book_page_left.png",
    "mode": "Sliced",
    "width": 106,
    "height": 78,
@@ -192,10 +249,14 @@
    }
   },
   {
-   "id": "FRM-05",
+   "code": "SK-05",
+   "card": "SK-05",
+   "sheet": [
+    "FRM-05"
+   ],
    "name": "Planner Book page",
    "variant": "right",
-   "png": "png/FRM-05_planner-book-page_right.png",
+   "png": "png/ui_sk05_planner_book_page_right.png",
    "mode": "Sliced",
    "width": 106,
    "height": 78,
@@ -214,10 +275,18 @@
    }
   },
   {
-   "id": "FRM-07",
+   "code": "SK-06",
+   "card": "SK-06",
+   "sheet": [
+    "FRM-07",
+    "CRD-11",
+    "CRD-12",
+    "CRD-13",
+    "LST-10"
+   ],
    "name": "Inset panel",
    "variant": "default",
-   "png": "png/FRM-07_inset-panel_default.png",
+   "png": "png/ui_sk06_inset_panel.png",
    "mode": "Sliced",
    "width": 32,
    "height": 32,
@@ -236,10 +305,14 @@
    }
   },
   {
-   "id": "LST-02",
+   "code": "SK-07",
+   "card": "SK-07",
+   "sheet": [
+    "LST-02"
+   ],
    "name": "Table frame",
    "variant": "default",
-   "png": "png/LST-02_table-frame_default.png",
+   "png": "png/ui_sk07_table_frame.png",
    "mode": "Sliced",
    "width": 32,
    "height": 32,
@@ -258,10 +331,14 @@
    }
   },
   {
-   "id": "LST-12",
+   "code": "SK-08",
+   "card": "SK-08",
+   "sheet": [
+    "LST-12"
+   ],
    "name": "Log box",
    "variant": "default",
-   "png": "png/LST-12_log-box_default.png",
+   "png": "png/ui_sk08_log_box.png",
    "mode": "Sliced",
    "width": 32,
    "height": 32,
@@ -280,10 +357,15 @@
    }
   },
   {
-   "id": "STN-01",
+   "code": "SK-09",
+   "card": "SK-09",
+   "sheet": [
+    "STN-01",
+    "STN-03"
+   ],
    "name": "Shelf board",
    "variant": "default",
-   "png": "png/STN-01_shelf-board_default.png",
+   "png": "png/ui_sk09_shelf_board.png",
    "mode": "Sliced",
    "width": 36,
    "height": 36,
@@ -302,10 +384,14 @@
    }
   },
   {
-   "id": "STN-05",
+   "code": "SK-10",
+   "card": "SK-10",
+   "sheet": [
+    "STN-05"
+   ],
    "name": "Trail panel",
    "variant": "default",
-   "png": "png/STN-05_trail-panel_default.png",
+   "png": "png/ui_sk10_trail_panel.png",
    "mode": "Sliced",
    "width": 32,
    "height": 32,
@@ -324,10 +410,20 @@
    }
   },
   {
-   "id": "ORN-01",
+   "code": "OR-01",
+   "card": "OR-01",
+   "sheet": [
+    "ORN-01",
+    "FRM-05",
+    "CRD-02",
+    "CRD-03",
+    "CRD-06",
+    "CRD-20",
+    "DLG-03"
+   ],
    "name": "Corner ornament",
    "variant": "tl",
-   "png": "png/ORN-01_corner-ornament_tl.png",
+   "png": "png/ui_or01_corner_ornament_tl.png",
    "mode": "Simple",
    "width": 76,
    "height": 76,
@@ -336,10 +432,20 @@
    "nineSlicePx": null
   },
   {
-   "id": "ORN-01",
+   "code": "OR-01",
+   "card": "OR-01",
+   "sheet": [
+    "ORN-01",
+    "FRM-05",
+    "CRD-02",
+    "CRD-03",
+    "CRD-06",
+    "CRD-20",
+    "DLG-03"
+   ],
    "name": "Corner ornament",
    "variant": "tr",
-   "png": "png/ORN-01_corner-ornament_tr.png",
+   "png": "png/ui_or01_corner_ornament_tr.png",
    "mode": "Simple",
    "width": 76,
    "height": 76,
@@ -348,10 +454,20 @@
    "nineSlicePx": null
   },
   {
-   "id": "ORN-01",
+   "code": "OR-01",
+   "card": "OR-01",
+   "sheet": [
+    "ORN-01",
+    "FRM-05",
+    "CRD-02",
+    "CRD-03",
+    "CRD-06",
+    "CRD-20",
+    "DLG-03"
+   ],
    "name": "Corner ornament",
    "variant": "bl",
-   "png": "png/ORN-01_corner-ornament_bl.png",
+   "png": "png/ui_or01_corner_ornament_bl.png",
    "mode": "Simple",
    "width": 76,
    "height": 76,
@@ -360,10 +476,20 @@
    "nineSlicePx": null
   },
   {
-   "id": "ORN-01",
+   "code": "OR-01",
+   "card": "OR-01",
+   "sheet": [
+    "ORN-01",
+    "FRM-05",
+    "CRD-02",
+    "CRD-03",
+    "CRD-06",
+    "CRD-20",
+    "DLG-03"
+   ],
    "name": "Corner ornament",
    "variant": "br",
-   "png": "png/ORN-01_corner-ornament_br.png",
+   "png": "png/ui_or01_corner_ornament_br.png",
    "mode": "Simple",
    "width": 76,
    "height": 76,
@@ -372,10 +498,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ORN-02",
+   "code": "OR-02",
+   "card": "OR-02",
+   "sheet": [
+    "ORN-02"
+   ],
    "name": "Divider",
    "variant": "default",
-   "png": "png/ORN-02_divider_default.png",
+   "png": "png/ui_or02_divider.png",
    "mode": "Simple",
    "width": 404,
    "height": 22,
@@ -384,10 +514,15 @@
    "nineSlicePx": null
   },
   {
-   "id": "TTL-02",
+   "code": "SK-11",
+   "card": "SK-11",
+   "sheet": [
+    "TTL-02",
+    "FRM-04"
+   ],
    "name": "Window title plate",
    "variant": "default",
-   "png": "png/TTL-02_window-title-plate_default.png",
+   "png": "png/ui_sk11_window_title_plate.png",
    "mode": "Sliced",
    "width": 140,
    "height": 36,
@@ -406,10 +541,14 @@
    }
   },
   {
-   "id": "LST-02",
+   "code": "SK-12",
+   "card": "SK-12",
+   "sheet": [
+    "LST-02"
+   ],
    "name": "Table header bar",
    "variant": "default",
-   "png": "png/LST-02_table-header-bar_default.png",
+   "png": "png/ui_sk12_table_header_bar.png",
    "mode": "Simple",
    "width": 36,
    "height": 32,
@@ -418,10 +557,16 @@
    "nineSlicePx": null
   },
   {
-   "id": "BTN-01",
+   "code": "SK-13",
+   "card": "SK-13",
+   "sheet": [
+    "BTN-01",
+    "BTN-06",
+    "BTN-08"
+   ],
    "name": "Teal button skin",
    "variant": "normal",
-   "png": "png/BTN-01_teal-button-skin_normal.png",
+   "png": "png/ui_sk13_teal_button_normal.png",
    "mode": "Sliced",
    "width": 68,
    "height": 55,
@@ -440,10 +585,16 @@
    }
   },
   {
-   "id": "BTN-01",
+   "code": "SK-13",
+   "card": "SK-13",
+   "sheet": [
+    "BTN-01",
+    "BTN-06",
+    "BTN-08"
+   ],
    "name": "Teal button skin",
    "variant": "hover",
-   "png": "png/BTN-01_teal-button-skin_hover.png",
+   "png": "png/ui_sk13_teal_button_hover.png",
    "mode": "Sliced",
    "width": 68,
    "height": 55,
@@ -462,10 +613,16 @@
    }
   },
   {
-   "id": "BTN-01",
+   "code": "SK-13",
+   "card": "SK-13",
+   "sheet": [
+    "BTN-01",
+    "BTN-06",
+    "BTN-08"
+   ],
    "name": "Teal button skin",
    "variant": "pressed",
-   "png": "png/BTN-01_teal-button-skin_pressed.png",
+   "png": "png/ui_sk13_teal_button_pressed.png",
    "mode": "Sliced",
    "width": 68,
    "height": 55,
@@ -484,10 +641,16 @@
    }
   },
   {
-   "id": "BTN-01",
+   "code": "SK-13",
+   "card": "SK-13",
+   "sheet": [
+    "BTN-01",
+    "BTN-06",
+    "BTN-08"
+   ],
    "name": "Teal button skin",
    "variant": "disabled",
-   "png": "png/BTN-01_teal-button-skin_disabled.png",
+   "png": "png/ui_sk13_teal_button_disabled.png",
    "mode": "Sliced",
    "width": 68,
    "height": 55,
@@ -506,10 +669,15 @@
    }
   },
   {
-   "id": "BTN-02",
+   "code": "SK-14",
+   "card": "SK-14",
+   "sheet": [
+    "BTN-02",
+    "BTN-09"
+   ],
    "name": "Paper button skin",
    "variant": "normal",
-   "png": "png/BTN-02_paper-button-skin_normal.png",
+   "png": "png/ui_sk14_paper_button_normal.png",
    "mode": "Sliced",
    "width": 68,
    "height": 55,
@@ -528,10 +696,15 @@
    }
   },
   {
-   "id": "BTN-02",
+   "code": "SK-14",
+   "card": "SK-14",
+   "sheet": [
+    "BTN-02",
+    "BTN-09"
+   ],
    "name": "Paper button skin",
    "variant": "hover",
-   "png": "png/BTN-02_paper-button-skin_hover.png",
+   "png": "png/ui_sk14_paper_button_hover.png",
    "mode": "Sliced",
    "width": 68,
    "height": 55,
@@ -550,10 +723,15 @@
    }
   },
   {
-   "id": "BTN-02",
+   "code": "SK-14",
+   "card": "SK-14",
+   "sheet": [
+    "BTN-02",
+    "BTN-09"
+   ],
    "name": "Paper button skin",
    "variant": "pressed",
-   "png": "png/BTN-02_paper-button-skin_pressed.png",
+   "png": "png/ui_sk14_paper_button_pressed.png",
    "mode": "Sliced",
    "width": 68,
    "height": 55,
@@ -572,10 +750,15 @@
    }
   },
   {
-   "id": "BTN-02",
+   "code": "SK-14",
+   "card": "SK-14",
+   "sheet": [
+    "BTN-02",
+    "BTN-09"
+   ],
    "name": "Paper button skin",
    "variant": "disabled",
-   "png": "png/BTN-02_paper-button-skin_disabled.png",
+   "png": "png/ui_sk14_paper_button_disabled.png",
    "mode": "Sliced",
    "width": 68,
    "height": 55,
@@ -594,10 +777,16 @@
    }
   },
   {
-   "id": "BTN-03",
+   "code": "SK-15",
+   "card": "SK-15",
+   "sheet": [
+    "BTN-03",
+    "BTN-06",
+    "BTN-07"
+   ],
    "name": "Gold button skin",
    "variant": "normal",
-   "png": "png/BTN-03_gold-button-skin_normal.png",
+   "png": "png/ui_sk15_gold_button_normal.png",
    "mode": "Sliced",
    "width": 68,
    "height": 55,
@@ -616,10 +805,16 @@
    }
   },
   {
-   "id": "BTN-03",
+   "code": "SK-15",
+   "card": "SK-15",
+   "sheet": [
+    "BTN-03",
+    "BTN-06",
+    "BTN-07"
+   ],
    "name": "Gold button skin",
    "variant": "hover",
-   "png": "png/BTN-03_gold-button-skin_hover.png",
+   "png": "png/ui_sk15_gold_button_hover.png",
    "mode": "Sliced",
    "width": 68,
    "height": 55,
@@ -638,10 +833,16 @@
    }
   },
   {
-   "id": "BTN-03",
+   "code": "SK-15",
+   "card": "SK-15",
+   "sheet": [
+    "BTN-03",
+    "BTN-06",
+    "BTN-07"
+   ],
    "name": "Gold button skin",
    "variant": "pressed",
-   "png": "png/BTN-03_gold-button-skin_pressed.png",
+   "png": "png/ui_sk15_gold_button_pressed.png",
    "mode": "Sliced",
    "width": 68,
    "height": 55,
@@ -660,10 +861,16 @@
    }
   },
   {
-   "id": "BTN-03",
+   "code": "SK-15",
+   "card": "SK-15",
+   "sheet": [
+    "BTN-03",
+    "BTN-06",
+    "BTN-07"
+   ],
    "name": "Gold button skin",
    "variant": "disabled",
-   "png": "png/BTN-03_gold-button-skin_disabled.png",
+   "png": "png/ui_sk15_gold_button_disabled.png",
    "mode": "Sliced",
    "width": 68,
    "height": 55,
@@ -682,10 +889,15 @@
    }
   },
   {
-   "id": "BTN-04",
+   "code": "SK-16",
+   "card": "SK-16",
+   "sheet": [
+    "BTN-04",
+    "BTN-15"
+   ],
    "name": "Small teal button skin",
    "variant": "normal",
-   "png": "png/BTN-04_small-teal-button-skin_normal.png",
+   "png": "png/ui_sk16_small_teal_button_normal.png",
    "mode": "Sliced",
    "width": 52,
    "height": 47,
@@ -704,10 +916,15 @@
    }
   },
   {
-   "id": "BTN-04",
+   "code": "SK-16",
+   "card": "SK-16",
+   "sheet": [
+    "BTN-04",
+    "BTN-15"
+   ],
    "name": "Small teal button skin",
    "variant": "hover",
-   "png": "png/BTN-04_small-teal-button-skin_hover.png",
+   "png": "png/ui_sk16_small_teal_button_hover.png",
    "mode": "Sliced",
    "width": 52,
    "height": 47,
@@ -726,10 +943,15 @@
    }
   },
   {
-   "id": "BTN-04",
+   "code": "SK-16",
+   "card": "SK-16",
+   "sheet": [
+    "BTN-04",
+    "BTN-15"
+   ],
    "name": "Small teal button skin",
    "variant": "pressed",
-   "png": "png/BTN-04_small-teal-button-skin_pressed.png",
+   "png": "png/ui_sk16_small_teal_button_pressed.png",
    "mode": "Sliced",
    "width": 52,
    "height": 47,
@@ -748,10 +970,15 @@
    }
   },
   {
-   "id": "BTN-04",
+   "code": "SK-16",
+   "card": "SK-16",
+   "sheet": [
+    "BTN-04",
+    "BTN-15"
+   ],
    "name": "Small teal button skin",
    "variant": "disabled",
-   "png": "png/BTN-04_small-teal-button-skin_disabled.png",
+   "png": "png/ui_sk16_small_teal_button_disabled.png",
    "mode": "Sliced",
    "width": 52,
    "height": 47,
@@ -770,10 +997,16 @@
    }
   },
   {
-   "id": "BTN-04",
+   "code": "SK-17",
+   "card": "SK-17",
+   "sheet": [
+    "BTN-04",
+    "BTN-05",
+    "BTN-15"
+   ],
    "name": "Small paper button skin",
    "variant": "normal",
-   "png": "png/BTN-04_small-paper-button-skin_normal.png",
+   "png": "png/ui_sk17_small_paper_button_normal.png",
    "mode": "Sliced",
    "width": 52,
    "height": 47,
@@ -792,10 +1025,16 @@
    }
   },
   {
-   "id": "BTN-04",
+   "code": "SK-17",
+   "card": "SK-17",
+   "sheet": [
+    "BTN-04",
+    "BTN-05",
+    "BTN-15"
+   ],
    "name": "Small paper button skin",
    "variant": "hover",
-   "png": "png/BTN-04_small-paper-button-skin_hover.png",
+   "png": "png/ui_sk17_small_paper_button_hover.png",
    "mode": "Sliced",
    "width": 52,
    "height": 47,
@@ -814,10 +1053,16 @@
    }
   },
   {
-   "id": "BTN-04",
+   "code": "SK-17",
+   "card": "SK-17",
+   "sheet": [
+    "BTN-04",
+    "BTN-05",
+    "BTN-15"
+   ],
    "name": "Small paper button skin",
    "variant": "pressed",
-   "png": "png/BTN-04_small-paper-button-skin_pressed.png",
+   "png": "png/ui_sk17_small_paper_button_pressed.png",
    "mode": "Sliced",
    "width": 52,
    "height": 47,
@@ -836,10 +1081,16 @@
    }
   },
   {
-   "id": "BTN-04",
+   "code": "SK-17",
+   "card": "SK-17",
+   "sheet": [
+    "BTN-04",
+    "BTN-05",
+    "BTN-15"
+   ],
    "name": "Small paper button skin",
    "variant": "disabled",
-   "png": "png/BTN-04_small-paper-button-skin_disabled.png",
+   "png": "png/ui_sk17_small_paper_button_disabled.png",
    "mode": "Sliced",
    "width": 52,
    "height": 47,
@@ -858,10 +1109,15 @@
    }
   },
   {
-   "id": "BTN-04",
+   "code": "SK-18",
+   "card": "SK-18",
+   "sheet": [
+    "BTN-04",
+    "BTN-15"
+   ],
    "name": "Small gold button skin",
    "variant": "normal",
-   "png": "png/BTN-04_small-gold-button-skin_normal.png",
+   "png": "png/ui_sk18_small_gold_button_normal.png",
    "mode": "Sliced",
    "width": 52,
    "height": 47,
@@ -880,10 +1136,15 @@
    }
   },
   {
-   "id": "BTN-04",
+   "code": "SK-18",
+   "card": "SK-18",
+   "sheet": [
+    "BTN-04",
+    "BTN-15"
+   ],
    "name": "Small gold button skin",
    "variant": "hover",
-   "png": "png/BTN-04_small-gold-button-skin_hover.png",
+   "png": "png/ui_sk18_small_gold_button_hover.png",
    "mode": "Sliced",
    "width": 52,
    "height": 47,
@@ -902,10 +1163,15 @@
    }
   },
   {
-   "id": "BTN-04",
+   "code": "SK-18",
+   "card": "SK-18",
+   "sheet": [
+    "BTN-04",
+    "BTN-15"
+   ],
    "name": "Small gold button skin",
    "variant": "pressed",
-   "png": "png/BTN-04_small-gold-button-skin_pressed.png",
+   "png": "png/ui_sk18_small_gold_button_pressed.png",
    "mode": "Sliced",
    "width": 52,
    "height": 47,
@@ -924,10 +1190,15 @@
    }
   },
   {
-   "id": "BTN-04",
+   "code": "SK-18",
+   "card": "SK-18",
+   "sheet": [
+    "BTN-04",
+    "BTN-15"
+   ],
    "name": "Small gold button skin",
    "variant": "disabled",
-   "png": "png/BTN-04_small-gold-button-skin_disabled.png",
+   "png": "png/ui_sk18_small_gold_button_disabled.png",
    "mode": "Sliced",
    "width": 52,
    "height": 47,
@@ -946,10 +1217,15 @@
    }
   },
   {
-   "id": "BTN-10",
+   "code": "SK-19",
+   "card": "SK-19",
+   "sheet": [
+    "BTN-10",
+    "HUD-06"
+   ],
    "name": "Round HUD button",
    "variant": "normal",
-   "png": "png/BTN-10_round-hud-button_normal.png",
+   "png": "png/ui_sk19_round_hud_button_normal.png",
    "mode": "Simple",
    "width": 66,
    "height": 66,
@@ -958,10 +1234,15 @@
    "nineSlicePx": null
   },
   {
-   "id": "BTN-10",
+   "code": "SK-19",
+   "card": "SK-19",
+   "sheet": [
+    "BTN-10",
+    "HUD-06"
+   ],
    "name": "Round HUD button",
    "variant": "on",
-   "png": "png/BTN-10_round-hud-button_on.png",
+   "png": "png/ui_sk19_round_hud_button_on.png",
    "mode": "Simple",
    "width": 66,
    "height": 66,
@@ -970,10 +1251,18 @@
    "nineSlicePx": null
   },
   {
-   "id": "BTN-11",
+   "code": "SK-20",
+   "card": "SK-20",
+   "sheet": [
+    "BTN-11",
+    "VAL-01",
+    "VAL-02",
+    "FRM-04",
+    "CRD-05"
+   ],
    "name": "Round icon button",
    "variant": "normal",
-   "png": "png/BTN-11_round-icon-button_normal.png",
+   "png": "png/ui_sk20_round_icon_button_normal.png",
    "mode": "Simple",
    "width": 44,
    "height": 44,
@@ -982,10 +1271,18 @@
    "nineSlicePx": null
   },
   {
-   "id": "BTN-11",
+   "code": "SK-20",
+   "card": "SK-20",
+   "sheet": [
+    "BTN-11",
+    "VAL-01",
+    "VAL-02",
+    "FRM-04",
+    "CRD-05"
+   ],
    "name": "Round icon button",
    "variant": "disabled",
-   "png": "png/BTN-11_round-icon-button_disabled.png",
+   "png": "png/ui_sk20_round_icon_button_disabled.png",
    "mode": "Simple",
    "width": 44,
    "height": 44,
@@ -994,10 +1291,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "VAL-03",
+   "code": "SK-21",
+   "card": "SK-21",
+   "sheet": [
+    "VAL-03"
+   ],
    "name": "Mini round button",
    "variant": "normal",
-   "png": "png/VAL-03_mini-round-button_normal.png",
+   "png": "png/ui_sk21_mini_round_button_normal.png",
    "mode": "Simple",
    "width": 24,
    "height": 24,
@@ -1006,10 +1307,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "VAL-03",
+   "code": "SK-21",
+   "card": "SK-21",
+   "sheet": [
+    "VAL-03"
+   ],
    "name": "Mini round button",
    "variant": "disabled",
-   "png": "png/VAL-03_mini-round-button_disabled.png",
+   "png": "png/ui_sk21_mini_round_button_disabled.png",
    "mode": "Simple",
    "width": 24,
    "height": 24,
@@ -1018,10 +1323,16 @@
    "nineSlicePx": null
   },
   {
-   "id": "BTN-12",
+   "code": "SK-22",
+   "card": "SK-22",
+   "sheet": [
+    "BTN-12",
+    "LST-03",
+    "CRD-16"
+   ],
    "name": "Item icon ring",
    "variant": "normal",
-   "png": "png/BTN-12_item-icon-ring_normal.png",
+   "png": "png/ui_sk22_item_icon_ring_normal.png",
    "mode": "Simple",
    "width": 36,
    "height": 36,
@@ -1030,10 +1341,16 @@
    "nineSlicePx": null
   },
   {
-   "id": "BTN-12",
+   "code": "SK-22",
+   "card": "SK-22",
+   "sheet": [
+    "BTN-12",
+    "LST-03",
+    "CRD-16"
+   ],
    "name": "Item icon ring",
    "variant": "hover",
-   "png": "png/BTN-12_item-icon-ring_hover.png",
+   "png": "png/ui_sk22_item_icon_ring_hover.png",
    "mode": "Simple",
    "width": 36,
    "height": 36,
@@ -1042,10 +1359,15 @@
    "nineSlicePx": null
   },
   {
-   "id": "BTN-13",
+   "code": "SK-23",
+   "card": "SK-23",
+   "sheet": [
+    "BTN-13",
+    "TTL-05"
+   ],
    "name": "Help mark disc",
    "variant": "default",
-   "png": "png/BTN-13_help-mark-disc_default.png",
+   "png": "png/ui_sk23_help_mark_disc.png",
    "mode": "Simple",
    "width": 24,
    "height": 24,
@@ -1054,10 +1376,15 @@
    "nineSlicePx": null
   },
   {
-   "id": "BTN-14",
+   "code": "SK-24",
+   "card": "SK-24",
+   "sheet": [
+    "BTN-14",
+    "FRM-05"
+   ],
    "name": "Book tab",
    "variant": "normal",
-   "png": "png/BTN-14_book-tab_normal.png",
+   "png": "png/ui_sk24_book_tab_normal.png",
    "mode": "Simple",
    "width": 68,
    "height": 58,
@@ -1066,10 +1393,15 @@
    "nineSlicePx": null
   },
   {
-   "id": "BTN-14",
+   "code": "SK-24",
+   "card": "SK-24",
+   "sheet": [
+    "BTN-14",
+    "FRM-05"
+   ],
    "name": "Book tab",
    "variant": "on",
-   "png": "png/BTN-14_book-tab_on.png",
+   "png": "png/ui_sk24_book_tab_on.png",
    "mode": "Simple",
    "width": 68,
    "height": 58,
@@ -1078,10 +1410,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "BTN-16",
+   "code": "SK-25",
+   "card": "SK-25",
+   "sheet": [
+    "BTN-16"
+   ],
    "name": "Price level button",
    "variant": "low",
-   "png": "png/BTN-16_price-level-button_low.png",
+   "png": "png/ui_sk25_price_level_button_low.png",
    "mode": "Sliced",
    "width": 46,
    "height": 46,
@@ -1100,10 +1436,14 @@
    }
   },
   {
-   "id": "BTN-16",
+   "code": "SK-25",
+   "card": "SK-25",
+   "sheet": [
+    "BTN-16"
+   ],
    "name": "Price level button",
    "variant": "low on",
-   "png": "png/BTN-16_price-level-button_low-on.png",
+   "png": "png/ui_sk25_price_level_button_low_on.png",
    "mode": "Sliced",
    "width": 46,
    "height": 46,
@@ -1122,10 +1462,14 @@
    }
   },
   {
-   "id": "BTN-16",
+   "code": "SK-25",
+   "card": "SK-25",
+   "sheet": [
+    "BTN-16"
+   ],
    "name": "Price level button",
    "variant": "fair",
-   "png": "png/BTN-16_price-level-button_fair.png",
+   "png": "png/ui_sk25_price_level_button_fair.png",
    "mode": "Sliced",
    "width": 46,
    "height": 46,
@@ -1144,10 +1488,14 @@
    }
   },
   {
-   "id": "BTN-16",
+   "code": "SK-25",
+   "card": "SK-25",
+   "sheet": [
+    "BTN-16"
+   ],
    "name": "Price level button",
    "variant": "fair on",
-   "png": "png/BTN-16_price-level-button_fair-on.png",
+   "png": "png/ui_sk25_price_level_button_fair_on.png",
    "mode": "Sliced",
    "width": 46,
    "height": 46,
@@ -1166,10 +1514,14 @@
    }
   },
   {
-   "id": "BTN-16",
+   "code": "SK-25",
+   "card": "SK-25",
+   "sheet": [
+    "BTN-16"
+   ],
    "name": "Price level button",
    "variant": "high",
-   "png": "png/BTN-16_price-level-button_high.png",
+   "png": "png/ui_sk25_price_level_button_high.png",
    "mode": "Sliced",
    "width": 46,
    "height": 46,
@@ -1188,10 +1540,14 @@
    }
   },
   {
-   "id": "BTN-16",
+   "code": "SK-25",
+   "card": "SK-25",
+   "sheet": [
+    "BTN-16"
+   ],
    "name": "Price level button",
    "variant": "high on",
-   "png": "png/BTN-16_price-level-button_high-on.png",
+   "png": "png/ui_sk25_price_level_button_high_on.png",
    "mode": "Sliced",
    "width": 46,
    "height": 46,
@@ -1210,10 +1566,14 @@
    }
   },
   {
-   "id": "BTN-17",
+   "code": "SK-26",
+   "card": "SK-26",
+   "sheet": [
+    "BTN-17"
+   ],
    "name": "Note pick skin",
    "variant": "normal",
-   "png": "png/BTN-17_note-pick-skin_normal.png",
+   "png": "png/ui_sk26_note_pick_normal.png",
    "mode": "Sliced",
    "width": 42,
    "height": 42,
@@ -1232,10 +1592,14 @@
    }
   },
   {
-   "id": "BTN-17",
+   "code": "SK-26",
+   "card": "SK-26",
+   "sheet": [
+    "BTN-17"
+   ],
    "name": "Note pick skin",
    "variant": "on",
-   "png": "png/BTN-17_note-pick-skin_on.png",
+   "png": "png/ui_sk26_note_pick_on.png",
    "mode": "Sliced",
    "width": 42,
    "height": 42,
@@ -1254,58 +1618,83 @@
    }
   },
   {
-   "id": "HUD-01",
+   "code": "SK-27",
+   "card": "SK-27",
+   "sheet": [
+    "HUD-01",
+    "HUD-06"
+   ],
    "name": "Day dial sample",
    "variant": "morning",
-   "png": "png/HUD-01_day-dial-sample_morning.png",
+   "png": "png/ui_sk27_day_dial_sample_morning.png",
    "mode": "Simple",
    "width": 666,
-   "height": 3478,
+   "height": 3696,
    "scale": 2,
    "nineSlice": null,
    "nineSlicePx": null
   },
   {
-   "id": "HUD-01",
+   "code": "SK-27",
+   "card": "SK-27",
+   "sheet": [
+    "HUD-01",
+    "HUD-06"
+   ],
    "name": "Day dial sample",
    "variant": "day",
-   "png": "png/HUD-01_day-dial-sample_day.png",
+   "png": "png/ui_sk27_day_dial_sample_day.png",
    "mode": "Simple",
    "width": 666,
-   "height": 3478,
+   "height": 3696,
    "scale": 2,
    "nineSlice": null,
    "nineSlicePx": null
   },
   {
-   "id": "HUD-01",
+   "code": "SK-27",
+   "card": "SK-27",
+   "sheet": [
+    "HUD-01",
+    "HUD-06"
+   ],
    "name": "Day dial sample",
    "variant": "dusk",
-   "png": "png/HUD-01_day-dial-sample_dusk.png",
+   "png": "png/ui_sk27_day_dial_sample_dusk.png",
    "mode": "Simple",
    "width": 666,
-   "height": 3478,
+   "height": 3696,
    "scale": 2,
    "nineSlice": null,
    "nineSlicePx": null
   },
   {
-   "id": "HUD-01",
+   "code": "SK-27",
+   "card": "SK-27",
+   "sheet": [
+    "HUD-01",
+    "HUD-06"
+   ],
    "name": "Day dial sample",
    "variant": "night",
-   "png": "png/HUD-01_day-dial-sample_night.png",
+   "png": "png/ui_sk27_day_dial_sample_night.png",
    "mode": "Simple",
    "width": 666,
-   "height": 3478,
+   "height": 3696,
    "scale": 2,
    "nineSlice": null,
    "nineSlicePx": null
   },
   {
-   "id": "HUD-03",
+   "code": "SK-28",
+   "card": "SK-28",
+   "sheet": [
+    "HUD-03",
+    "HUD-01"
+   ],
    "name": "Energy badge skin",
    "variant": "normal",
-   "png": "png/HUD-03_energy-badge-skin_normal.png",
+   "png": "png/ui_sk28_energy_badge_normal.png",
    "mode": "Sliced",
    "width": 36,
    "height": 28,
@@ -1324,10 +1713,15 @@
    }
   },
   {
-   "id": "HUD-03",
+   "code": "SK-28",
+   "card": "SK-28",
+   "sheet": [
+    "HUD-03",
+    "HUD-01"
+   ],
    "name": "Energy badge skin",
    "variant": "low",
-   "png": "png/HUD-03_energy-badge-skin_low.png",
+   "png": "png/ui_sk28_energy_badge_low.png",
    "mode": "Sliced",
    "width": 36,
    "height": 28,
@@ -1346,10 +1740,15 @@
    }
   },
   {
-   "id": "HUD-04",
+   "code": "SK-29",
+   "card": "SK-29",
+   "sheet": [
+    "HUD-04",
+    "HUD-06"
+   ],
    "name": "Stat pill skin",
    "variant": "default",
-   "png": "png/HUD-04_stat-pill-skin_default.png",
+   "png": "png/ui_sk29_stat_pill.png",
    "mode": "Sliced",
    "width": 52,
    "height": 44,
@@ -1368,10 +1767,14 @@
    }
   },
   {
-   "id": "HUD-07",
+   "code": "SK-30",
+   "card": "SK-30",
+   "sheet": [
+    "HUD-07"
+   ],
    "name": "Hint bar",
    "variant": "default",
-   "png": "png/HUD-07_hint-bar_default.png",
+   "png": "png/ui_sk30_hint_bar.png",
    "mode": "Simple",
    "width": 100,
    "height": 36,
@@ -1380,10 +1783,16 @@
    "nineSlicePx": null
   },
   {
-   "id": "HUD-08",
+   "code": "SK-31",
+   "card": "SK-31",
+   "sheet": [
+    "HUD-08",
+    "HUD-07",
+    "LST-03"
+   ],
    "name": "Key cap",
    "variant": "cream",
-   "png": "png/HUD-08_key-cap_cream.png",
+   "png": "png/ui_sk31_key_cap_cream.png",
    "mode": "Sliced",
    "width": 564,
    "height": 24,
@@ -1402,10 +1811,16 @@
    }
   },
   {
-   "id": "HUD-08",
+   "code": "SK-31",
+   "card": "SK-31",
+   "sheet": [
+    "HUD-08",
+    "HUD-07",
+    "LST-03"
+   ],
    "name": "Key cap",
    "variant": "teal",
-   "png": "png/HUD-08_key-cap_teal.png",
+   "png": "png/ui_sk31_key_cap_teal.png",
    "mode": "Sliced",
    "width": 564,
    "height": 24,
@@ -1424,10 +1839,14 @@
    }
   },
   {
-   "id": "LST-02",
+   "code": "SK-32",
+   "card": "SK-32",
+   "sheet": [
+    "LST-02"
+   ],
    "name": "Table row",
    "variant": "normal",
-   "png": "png/LST-02_table-row_normal.png",
+   "png": "png/ui_sk32_table_row_normal.png",
    "mode": "Sliced",
    "width": 28,
    "height": 40,
@@ -1446,10 +1865,14 @@
    }
   },
   {
-   "id": "LST-02",
+   "code": "SK-32",
+   "card": "SK-32",
+   "sheet": [
+    "LST-02"
+   ],
    "name": "Table row",
    "variant": "selected",
-   "png": "png/LST-02_table-row_selected.png",
+   "png": "png/ui_sk32_table_row_selected.png",
    "mode": "Sliced",
    "width": 28,
    "height": 40,
@@ -1468,10 +1891,14 @@
    }
   },
   {
-   "id": "LST-02",
+   "code": "SK-32",
+   "card": "SK-32",
+   "sheet": [
+    "LST-02"
+   ],
    "name": "Table row",
    "variant": "has",
-   "png": "png/LST-02_table-row_has.png",
+   "png": "png/ui_sk32_table_row_has.png",
    "mode": "Sliced",
    "width": 28,
    "height": 40,
@@ -1490,10 +1917,14 @@
    }
   },
   {
-   "id": "LST-03",
+   "code": "SK-33",
+   "card": "SK-33",
+   "sheet": [
+    "LST-03"
+   ],
    "name": "Station menu row",
    "variant": "hover",
-   "png": "png/LST-03_station-menu-row_hover.png",
+   "png": "png/ui_sk33_station_menu_row_hover.png",
    "mode": "Sliced",
    "width": 32,
    "height": 32,
@@ -1512,10 +1943,14 @@
    }
   },
   {
-   "id": "LST-03",
+   "code": "SK-33",
+   "card": "SK-33",
+   "sheet": [
+    "LST-03"
+   ],
    "name": "Station menu row",
    "variant": "selected",
-   "png": "png/LST-03_station-menu-row_selected.png",
+   "png": "png/ui_sk33_station_menu_row_selected.png",
    "mode": "Sliced",
    "width": 32,
    "height": 32,
@@ -1534,10 +1969,14 @@
    }
   },
   {
-   "id": "LST-07",
+   "code": "SK-34",
+   "card": "SK-34",
+   "sheet": [
+    "LST-07"
+   ],
    "name": "Day goal row",
    "variant": "normal",
-   "png": "png/LST-07_day-goal-row_normal.png",
+   "png": "png/ui_sk34_day_goal_row_normal.png",
    "mode": "Sliced",
    "width": 32,
    "height": 32,
@@ -1556,10 +1995,14 @@
    }
   },
   {
-   "id": "LST-07",
+   "code": "SK-34",
+   "card": "SK-34",
+   "sheet": [
+    "LST-07"
+   ],
    "name": "Day goal row",
    "variant": "today",
-   "png": "png/LST-07_day-goal-row_today.png",
+   "png": "png/ui_sk34_day_goal_row_today.png",
    "mode": "Sliced",
    "width": 32,
    "height": 32,
@@ -1578,10 +2021,14 @@
    }
   },
   {
-   "id": "LST-07",
+   "code": "SK-34",
+   "card": "SK-34",
+   "sheet": [
+    "LST-07"
+   ],
    "name": "Day goal row",
    "variant": "drop here",
-   "png": "png/LST-07_day-goal-row_drop-here.png",
+   "png": "png/ui_sk34_day_goal_row_drop_here.png",
    "mode": "Sliced",
    "width": 32,
    "height": 32,
@@ -1600,10 +2047,14 @@
    }
   },
   {
-   "id": "LST-09",
+   "code": "SK-35",
+   "card": "SK-35",
+   "sheet": [
+    "LST-09"
+   ],
    "name": "Warning line",
    "variant": "warn",
-   "png": "png/LST-09_warning-line_warn.png",
+   "png": "png/ui_sk35_warning_line_warn.png",
    "mode": "Sliced",
    "width": 24,
    "height": 24,
@@ -1622,10 +2073,14 @@
    }
   },
   {
-   "id": "LST-09",
+   "code": "SK-35",
+   "card": "SK-35",
+   "sheet": [
+    "LST-09"
+   ],
    "name": "Warning line",
    "variant": "ok",
-   "png": "png/LST-09_warning-line_ok.png",
+   "png": "png/ui_sk35_warning_line_ok.png",
    "mode": "Sliced",
    "width": 24,
    "height": 24,
@@ -1644,10 +2099,14 @@
    }
   },
   {
-   "id": "CRD-07",
+   "code": "SK-36",
+   "card": "SK-36",
+   "sheet": [
+    "CRD-07"
+   ],
    "name": "Goal card skin",
    "variant": "normal",
-   "png": "png/CRD-07_goal-card-skin_normal.png",
+   "png": "png/ui_sk36_goal_card_normal.png",
    "mode": "Sliced",
    "width": 96,
    "height": 46,
@@ -1666,10 +2125,14 @@
    }
   },
   {
-   "id": "CRD-07",
+   "code": "SK-36",
+   "card": "SK-36",
+   "sheet": [
+    "CRD-07"
+   ],
    "name": "Goal card skin",
    "variant": "selected",
-   "png": "png/CRD-07_goal-card-skin_selected.png",
+   "png": "png/ui_sk36_goal_card_selected.png",
    "mode": "Sliced",
    "width": 96,
    "height": 46,
@@ -1688,10 +2151,15 @@
    }
   },
   {
-   "id": "CRD-08",
+   "code": "SK-37",
+   "card": "SK-37",
+   "sheet": [
+    "CRD-08",
+    "LST-07"
+   ],
    "name": "Small goal card skin",
    "variant": "default",
-   "png": "png/CRD-08_small-goal-card-skin_default.png",
+   "png": "png/ui_sk37_small_goal_card.png",
    "mode": "Sliced",
    "width": 34,
    "height": 34,
@@ -1710,10 +2178,14 @@
    }
   },
   {
-   "id": "CRD-13",
+   "code": "SK-38",
+   "card": "SK-38",
+   "sheet": [
+    "CRD-13"
+   ],
    "name": "Goal chip skin",
    "variant": "filled",
-   "png": "png/CRD-13_goal-chip-skin_filled.png",
+   "png": "png/ui_sk38_goal_chip_filled.png",
    "mode": "Sliced",
    "width": 32,
    "height": 32,
@@ -1732,10 +2204,14 @@
    }
   },
   {
-   "id": "CRD-13",
+   "code": "SK-38",
+   "card": "SK-38",
+   "sheet": [
+    "CRD-13"
+   ],
    "name": "Goal chip skin",
    "variant": "empty",
-   "png": "png/CRD-13_goal-chip-skin_empty.png",
+   "png": "png/ui_sk38_goal_chip_empty.png",
    "mode": "Sliced",
    "width": 32,
    "height": 32,
@@ -1754,10 +2230,14 @@
    }
   },
   {
-   "id": "CRD-07",
+   "code": "SK-39",
+   "card": "SK-39",
+   "sheet": [
+    "CRD-07"
+   ],
    "name": "Deck over limit",
    "variant": "default",
-   "png": "png/CRD-07_deck-over-limit_default.png",
+   "png": "png/ui_sk39_deck_over_limit.png",
    "mode": "Sliced",
    "width": 32,
    "height": 32,
@@ -1776,10 +2256,14 @@
    }
   },
   {
-   "id": "CRD-15",
+   "code": "SK-40",
+   "card": "SK-40",
+   "sheet": [
+    "CRD-15"
+   ],
    "name": "Help popup skin",
    "variant": "default",
-   "png": "png/CRD-15_help-popup-skin_default.png",
+   "png": "png/ui_sk40_help_popup.png",
    "mode": "Sliced",
    "width": 36,
    "height": 36,
@@ -1798,10 +2282,14 @@
    }
   },
   {
-   "id": "CRD-16",
+   "code": "SK-41",
+   "card": "SK-41",
+   "sheet": [
+    "CRD-16"
+   ],
    "name": "Toast skin",
    "variant": "normal",
-   "png": "png/CRD-16_toast-skin_normal.png",
+   "png": "png/ui_sk41_toast_normal.png",
    "mode": "Sliced",
    "width": 56,
    "height": 52,
@@ -1820,10 +2308,14 @@
    }
   },
   {
-   "id": "CRD-16",
+   "code": "SK-41",
+   "card": "SK-41",
+   "sheet": [
+    "CRD-16"
+   ],
    "name": "Toast skin",
    "variant": "refusal",
-   "png": "png/CRD-16_toast-skin_refusal.png",
+   "png": "png/ui_sk41_toast_refusal.png",
    "mode": "Sliced",
    "width": 56,
    "height": 52,
@@ -1842,10 +2334,14 @@
    }
   },
   {
-   "id": "CRD-16",
+   "code": "SK-41",
+   "card": "SK-41",
+   "sheet": [
+    "CRD-16"
+   ],
    "name": "Toast skin",
    "variant": "news",
-   "png": "png/CRD-16_toast-skin_news.png",
+   "png": "png/ui_sk41_toast_news.png",
    "mode": "Sliced",
    "width": 56,
    "height": 52,
@@ -1864,10 +2360,14 @@
    }
   },
   {
-   "id": "CRD-18",
+   "code": "SK-42",
+   "card": "SK-42",
+   "sheet": [
+    "CRD-18"
+   ],
    "name": "Walk banner skin",
    "variant": "default",
-   "png": "png/CRD-18_walk-banner-skin_default.png",
+   "png": "png/ui_sk42_walk_banner.png",
    "mode": "Sliced",
    "width": 68,
    "height": 60,
@@ -1886,10 +2386,19 @@
    }
   },
   {
-   "id": "DLG-01",
+   "code": "SK-43",
+   "card": "SK-43",
+   "sheet": [
+    "DLG-01",
+    "CRD-21",
+    "CRD-19",
+    "CRD-20",
+    "DLG-02",
+    "DLG-03"
+   ],
    "name": "Speech bubble",
    "variant": "default",
-   "png": "png/DLG-01_speech-bubble_default.png",
+   "png": "png/ui_sk43_speech_bubble.png",
    "mode": "Sliced",
    "width": 36,
    "height": 32,
@@ -1908,10 +2417,19 @@
    }
   },
   {
-   "id": "DLG-01",
+   "code": "SK-44",
+   "card": "SK-44",
+   "sheet": [
+    "DLG-01",
+    "CRD-21",
+    "CRD-19",
+    "CRD-20",
+    "DLG-02",
+    "DLG-03"
+   ],
    "name": "Speaker tag",
    "variant": "default",
-   "png": "png/DLG-01_speaker-tag_default.png",
+   "png": "png/ui_sk44_speaker_tag.png",
    "mode": "Sliced",
    "width": 28,
    "height": 24,
@@ -1930,10 +2448,17 @@
    }
   },
   {
-   "id": "CHP-01",
+   "code": "SK-45",
+   "card": "SK-45",
+   "sheet": [
+    "CHP-01",
+    "TTL-04",
+    "BTN-09",
+    "LST-07"
+   ],
    "name": "Chip skin",
    "variant": "normal",
-   "png": "png/CHP-01_chip-skin_normal.png",
+   "png": "png/ui_sk45_chip_normal.png",
    "mode": "Sliced",
    "width": 40,
    "height": 32,
@@ -1952,10 +2477,17 @@
    }
   },
   {
-   "id": "CHP-01",
+   "code": "SK-45",
+   "card": "SK-45",
+   "sheet": [
+    "CHP-01",
+    "TTL-04",
+    "BTN-09",
+    "LST-07"
+   ],
    "name": "Chip skin",
    "variant": "ok",
-   "png": "png/CHP-01_chip-skin_ok.png",
+   "png": "png/ui_sk45_chip_ok.png",
    "mode": "Sliced",
    "width": 40,
    "height": 32,
@@ -1974,10 +2506,17 @@
    }
   },
   {
-   "id": "CHP-01",
+   "code": "SK-45",
+   "card": "SK-45",
+   "sheet": [
+    "CHP-01",
+    "TTL-04",
+    "BTN-09",
+    "LST-07"
+   ],
    "name": "Chip skin",
    "variant": "missing",
-   "png": "png/CHP-01_chip-skin_missing.png",
+   "png": "png/ui_sk45_chip_missing.png",
    "mode": "Sliced",
    "width": 40,
    "height": 32,
@@ -1996,10 +2535,17 @@
    }
   },
   {
-   "id": "CHP-01",
+   "code": "SK-45",
+   "card": "SK-45",
+   "sheet": [
+    "CHP-01",
+    "TTL-04",
+    "BTN-09",
+    "LST-07"
+   ],
    "name": "Chip skin",
    "variant": "hours",
-   "png": "png/CHP-01_chip-skin_hours.png",
+   "png": "png/ui_sk45_chip_hours.png",
    "mode": "Sliced",
    "width": 40,
    "height": 32,
@@ -2018,10 +2564,17 @@
    }
   },
   {
-   "id": "CHP-01",
+   "code": "SK-45",
+   "card": "SK-45",
+   "sheet": [
+    "CHP-01",
+    "TTL-04",
+    "BTN-09",
+    "LST-07"
+   ],
    "name": "Chip skin",
    "variant": "closed",
-   "png": "png/CHP-01_chip-skin_closed.png",
+   "png": "png/ui_sk45_chip_closed.png",
    "mode": "Sliced",
    "width": 40,
    "height": 32,
@@ -2040,10 +2593,15 @@
    }
   },
   {
-   "id": "CHP-04",
+   "code": "SK-46",
+   "card": "SK-46",
+   "sheet": [
+    "CHP-04",
+    "LST-03"
+   ],
    "name": "Count badge skin",
    "variant": "red",
-   "png": "png/CHP-04_count-badge-skin_red.png",
+   "png": "png/ui_sk46_count_badge_red.png",
    "mode": "Sliced",
    "width": 32,
    "height": 24,
@@ -2062,10 +2620,15 @@
    }
   },
   {
-   "id": "CHP-04",
+   "code": "SK-46",
+   "card": "SK-46",
+   "sheet": [
+    "CHP-04",
+    "LST-03"
+   ],
    "name": "Count badge skin",
    "variant": "ok",
-   "png": "png/CHP-04_count-badge-skin_ok.png",
+   "png": "png/ui_sk46_count_badge_ok.png",
    "mode": "Sliced",
    "width": 32,
    "height": 24,
@@ -2084,10 +2647,15 @@
    }
   },
   {
-   "id": "CHP-05",
+   "code": "SK-47",
+   "card": "SK-47",
+   "sheet": [
+    "CHP-05",
+    "LST-10"
+   ],
    "name": "Level chip skin",
    "variant": "default",
-   "png": "png/CHP-05_level-chip-skin_default.png",
+   "png": "png/ui_sk47_level_chip.png",
    "mode": "Sliced",
    "width": 36,
    "height": 28,
@@ -2106,10 +2674,14 @@
    }
   },
   {
-   "id": "CHP-06",
+   "code": "SK-48",
+   "card": "SK-48",
+   "sheet": [
+    "CHP-06"
+   ],
    "name": "Jar badge skin",
    "variant": "store",
-   "png": "png/CHP-06_jar-badge-skin_store.png",
+   "png": "png/ui_sk48_jar_badge_store.png",
    "mode": "Sliced",
    "width": 40,
    "height": 32,
@@ -2128,10 +2700,14 @@
    }
   },
   {
-   "id": "CHP-06",
+   "code": "SK-48",
+   "card": "SK-48",
+   "sheet": [
+    "CHP-06"
+   ],
    "name": "Jar badge skin",
    "variant": "personal",
-   "png": "png/CHP-06_jar-badge-skin_personal.png",
+   "png": "png/ui_sk48_jar_badge_personal.png",
    "mode": "Sliced",
    "width": 40,
    "height": 32,
@@ -2150,10 +2726,14 @@
    }
   },
   {
-   "id": "CHP-06",
+   "code": "SK-48",
+   "card": "SK-48",
+   "sheet": [
+    "CHP-06"
+   ],
    "name": "Jar badge skin",
    "variant": "over",
-   "png": "png/CHP-06_jar-badge-skin_over.png",
+   "png": "png/ui_sk48_jar_badge_over.png",
    "mode": "Sliced",
    "width": 40,
    "height": 32,
@@ -2172,10 +2752,15 @@
    }
   },
   {
-   "id": "CHP-07",
+   "code": "SK-49",
+   "card": "SK-49",
+   "sheet": [
+    "CHP-07",
+    "STN-02"
+   ],
    "name": "Price level tag",
    "variant": "low",
-   "png": "png/CHP-07_price-level-tag_low.png",
+   "png": "png/ui_sk49_price_level_tag_low.png",
    "mode": "Sliced",
    "width": 20,
    "height": 18,
@@ -2194,10 +2779,15 @@
    }
   },
   {
-   "id": "CHP-07",
+   "code": "SK-49",
+   "card": "SK-49",
+   "sheet": [
+    "CHP-07",
+    "STN-02"
+   ],
    "name": "Price level tag",
    "variant": "fair",
-   "png": "png/CHP-07_price-level-tag_fair.png",
+   "png": "png/ui_sk49_price_level_tag_fair.png",
    "mode": "Sliced",
    "width": 20,
    "height": 18,
@@ -2216,10 +2806,15 @@
    }
   },
   {
-   "id": "CHP-07",
+   "code": "SK-49",
+   "card": "SK-49",
+   "sheet": [
+    "CHP-07",
+    "STN-02"
+   ],
    "name": "Price level tag",
    "variant": "high",
-   "png": "png/CHP-07_price-level-tag_high.png",
+   "png": "png/ui_sk49_price_level_tag_high.png",
    "mode": "Sliced",
    "width": 20,
    "height": 18,
@@ -2238,10 +2833,14 @@
    }
   },
   {
-   "id": "CHP-09",
+   "code": "SK-50",
+   "card": "SK-50",
+   "sheet": [
+    "CHP-09"
+   ],
    "name": "Hotspot pill skin",
    "variant": "normal",
-   "png": "png/CHP-09_hotspot-pill-skin_normal.png",
+   "png": "png/ui_sk50_hotspot_pill_normal.png",
    "mode": "Sliced",
    "width": 44,
    "height": 38,
@@ -2260,10 +2859,14 @@
    }
   },
   {
-   "id": "CHP-09",
+   "code": "SK-50",
+   "card": "SK-50",
+   "sheet": [
+    "CHP-09"
+   ],
    "name": "Hotspot pill skin",
    "variant": "open",
-   "png": "png/CHP-09_hotspot-pill-skin_open.png",
+   "png": "png/ui_sk50_hotspot_pill_open.png",
    "mode": "Sliced",
    "width": 44,
    "height": 38,
@@ -2282,10 +2885,14 @@
    }
   },
   {
-   "id": "CHP-09",
+   "code": "SK-50",
+   "card": "SK-50",
+   "sheet": [
+    "CHP-09"
+   ],
    "name": "Hotspot pill skin",
    "variant": "you are here",
-   "png": "png/CHP-09_hotspot-pill-skin_you-are-here.png",
+   "png": "png/ui_sk50_hotspot_pill_you_are_here.png",
    "mode": "Sliced",
    "width": 44,
    "height": 38,
@@ -2304,10 +2911,14 @@
    }
   },
   {
-   "id": "CHP-09",
+   "code": "SK-50",
+   "card": "SK-50",
+   "sheet": [
+    "CHP-09"
+   ],
    "name": "Hotspot pill skin",
    "variant": "closed",
-   "png": "png/CHP-09_hotspot-pill-skin_closed.png",
+   "png": "png/ui_sk50_hotspot_pill_closed.png",
    "mode": "Sliced",
    "width": 44,
    "height": 38,
@@ -2326,10 +2937,14 @@
    }
   },
   {
-   "id": "CHP-09",
+   "code": "SK-51",
+   "card": "SK-51",
+   "sheet": [
+    "CHP-09"
+   ],
    "name": "Hotspot arrow",
    "variant": "default",
-   "png": "png/CHP-09_hotspot-arrow_default.png",
+   "png": "png/ui_sk51_hotspot_arrow.png",
    "mode": "Simple",
    "width": 21,
    "height": 21,
@@ -2338,10 +2953,16 @@
    "nineSlicePx": null
   },
   {
-   "id": "CHP-11",
+   "code": "SK-52",
+   "card": "SK-52",
+   "sheet": [
+    "CHP-11",
+    "BTN-10",
+    "BTN-14"
+   ],
    "name": "News dot",
    "variant": "default",
-   "png": "png/CHP-11_news-dot_default.png",
+   "png": "png/ui_sk52_news_dot.png",
    "mode": "Simple",
    "width": 22,
    "height": 22,
@@ -2350,10 +2971,15 @@
    "nineSlicePx": null
   },
   {
-   "id": "VAL-01",
+   "code": "SK-53",
+   "card": "SK-53",
+   "sheet": [
+    "VAL-01",
+    "VAL-02"
+   ],
    "name": "Number box",
    "variant": "default",
-   "png": "png/VAL-01_number-box_default.png",
+   "png": "png/ui_sk53_number_box.png",
    "mode": "Sliced",
    "width": 32,
    "height": 32,
@@ -2372,10 +2998,15 @@
    }
   },
   {
-   "id": "VAL-04",
+   "code": "SK-54",
+   "card": "SK-54",
+   "sheet": [
+    "VAL-04",
+    "LST-10"
+   ],
    "name": "Bar track",
    "variant": "default",
-   "png": "png/VAL-04_bar-track_default.png",
+   "png": "png/ui_sk54_bar_track.png",
    "mode": "Sliced",
    "width": 24,
    "height": 16,
@@ -2394,10 +3025,15 @@
    }
   },
   {
-   "id": "VAL-04",
+   "code": "SK-55",
+   "card": "SK-55",
+   "sheet": [
+    "VAL-04",
+    "LST-10"
+   ],
    "name": "Bar fill",
    "variant": "green",
-   "png": "png/VAL-04_bar-fill_green.png",
+   "png": "png/ui_sk55_bar_fill_green.png",
    "mode": "Tiled",
    "width": 20,
    "height": 16,
@@ -2406,10 +3042,15 @@
    "nineSlicePx": null
   },
   {
-   "id": "VAL-04",
+   "code": "SK-55",
+   "card": "SK-55",
+   "sheet": [
+    "VAL-04",
+    "LST-10"
+   ],
    "name": "Bar fill",
    "variant": "low",
-   "png": "png/VAL-04_bar-fill_low.png",
+   "png": "png/ui_sk55_bar_fill_low.png",
    "mode": "Tiled",
    "width": 20,
    "height": 16,
@@ -2418,10 +3059,15 @@
    "nineSlicePx": null
   },
   {
-   "id": "VAL-04",
+   "code": "SK-55",
+   "card": "SK-55",
+   "sheet": [
+    "VAL-04",
+    "LST-10"
+   ],
    "name": "Bar fill",
    "variant": "gold",
-   "png": "png/VAL-04_bar-fill_gold.png",
+   "png": "png/ui_sk55_bar_fill_gold.png",
    "mode": "Tiled",
    "width": 20,
    "height": 16,
@@ -2430,10 +3076,15 @@
    "nineSlicePx": null
   },
   {
-   "id": "VAL-04",
+   "code": "SK-55",
+   "card": "SK-55",
+   "sheet": [
+    "VAL-04",
+    "LST-10"
+   ],
    "name": "Bar fill",
    "variant": "wis",
-   "png": "png/VAL-04_bar-fill_wis.png",
+   "png": "png/ui_sk55_bar_fill_wis.png",
    "mode": "Tiled",
    "width": 20,
    "height": 16,
@@ -2442,10 +3093,15 @@
    "nineSlicePx": null
   },
   {
-   "id": "VAL-04",
+   "code": "SK-55",
+   "card": "SK-55",
+   "sheet": [
+    "VAL-04",
+    "LST-10"
+   ],
    "name": "Bar fill",
    "variant": "ver",
-   "png": "png/VAL-04_bar-fill_ver.png",
+   "png": "png/ui_sk55_bar_fill_ver.png",
    "mode": "Tiled",
    "width": 20,
    "height": 16,
@@ -2454,10 +3110,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "VAL-05",
+   "code": "SK-56",
+   "card": "SK-56",
+   "sheet": [
+    "VAL-05"
+   ],
    "name": "Dot",
    "variant": "empty",
-   "png": "png/VAL-05_dot_empty.png",
+   "png": "png/ui_sk56_dot_empty.png",
    "mode": "Simple",
    "width": 16,
    "height": 16,
@@ -2466,10 +3126,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "VAL-05",
+   "code": "SK-56",
+   "card": "SK-56",
+   "sheet": [
+    "VAL-05"
+   ],
    "name": "Dot",
    "variant": "filled",
-   "png": "png/VAL-05_dot_filled.png",
+   "png": "png/ui_sk56_dot_filled.png",
    "mode": "Simple",
    "width": 16,
    "height": 16,
@@ -2478,10 +3142,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "VAL-05",
+   "code": "SK-56",
+   "card": "SK-56",
+   "sheet": [
+    "VAL-05"
+   ],
    "name": "Dot",
    "variant": "ok",
-   "png": "png/VAL-05_dot_ok.png",
+   "png": "png/ui_sk56_dot_ok.png",
    "mode": "Simple",
    "width": 16,
    "height": 16,
@@ -2490,10 +3158,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "VAL-05",
+   "code": "SK-56",
+   "card": "SK-56",
+   "sheet": [
+    "VAL-05"
+   ],
    "name": "Dot",
    "variant": "missed",
-   "png": "png/VAL-05_dot_missed.png",
+   "png": "png/ui_sk56_dot_missed.png",
    "mode": "Simple",
    "width": 16,
    "height": 16,
@@ -2502,10 +3174,16 @@
    "nineSlicePx": null
   },
   {
-   "id": "VAL-09",
+   "code": "SK-57",
+   "card": "SK-57",
+   "sheet": [
+    "VAL-09",
+    "CRD-12",
+    "CHP-06"
+   ],
    "name": "Budget jar",
    "variant": "empty",
-   "png": "png/VAL-09_budget-jar_empty.png",
+   "png": "png/ui_sk57_budget_jar_empty.png",
    "mode": "Simple",
    "width": 52,
    "height": 105,
@@ -2514,10 +3192,16 @@
    "nineSlicePx": null
   },
   {
-   "id": "VAL-09",
+   "code": "SK-57",
+   "card": "SK-57",
+   "sheet": [
+    "VAL-09",
+    "CRD-12",
+    "CHP-06"
+   ],
    "name": "Budget jar",
    "variant": "full store",
-   "png": "png/VAL-09_budget-jar_full-store.png",
+   "png": "png/ui_sk57_budget_jar_full_store.png",
    "mode": "Simple",
    "width": 52,
    "height": 105,
@@ -2526,10 +3210,16 @@
    "nineSlicePx": null
   },
   {
-   "id": "VAL-09",
+   "code": "SK-57",
+   "card": "SK-57",
+   "sheet": [
+    "VAL-09",
+    "CRD-12",
+    "CHP-06"
+   ],
    "name": "Budget jar",
    "variant": "full personal",
-   "png": "png/VAL-09_budget-jar_full-personal.png",
+   "png": "png/ui_sk57_budget_jar_full_personal.png",
    "mode": "Simple",
    "width": 52,
    "height": 105,
@@ -2538,10 +3228,15 @@
    "nineSlicePx": null
   },
   {
-   "id": "STN-02",
+   "code": "SK-58",
+   "card": "SK-58",
+   "sheet": [
+    "STN-02",
+    "STN-03"
+   ],
    "name": "Shelf slot skin",
    "variant": "normal",
-   "png": "png/STN-02_shelf-slot-skin_normal.png",
+   "png": "png/ui_sk58_shelf_slot_normal.png",
    "mode": "Sliced",
    "width": 42,
    "height": 42,
@@ -2560,10 +3255,15 @@
    }
   },
   {
-   "id": "STN-02",
+   "code": "SK-58",
+   "card": "SK-58",
+   "sheet": [
+    "STN-02",
+    "STN-03"
+   ],
    "name": "Shelf slot skin",
    "variant": "selected",
-   "png": "png/STN-02_shelf-slot-skin_selected.png",
+   "png": "png/ui_sk58_shelf_slot_selected.png",
    "mode": "Sliced",
    "width": 42,
    "height": 42,
@@ -2582,10 +3282,14 @@
    }
   },
   {
-   "id": "STN-04",
+   "code": "SK-59",
+   "card": "SK-59",
+   "sheet": [
+    "STN-04"
+   ],
    "name": "Hour bar",
    "variant": "normal",
-   "png": "png/STN-04_hour-bar_normal.png",
+   "png": "png/ui_sk59_hour_bar_normal.png",
    "mode": "Sliced",
    "width": 24,
    "height": 24,
@@ -2604,10 +3308,14 @@
    }
   },
   {
-   "id": "STN-04",
+   "code": "SK-59",
+   "card": "SK-59",
+   "sheet": [
+    "STN-04"
+   ],
    "name": "Hour bar",
    "variant": "now",
-   "png": "png/STN-04_hour-bar_now.png",
+   "png": "png/ui_sk59_hour_bar_now.png",
    "mode": "Sliced",
    "width": 24,
    "height": 24,
@@ -2626,10 +3334,14 @@
    }
   },
   {
-   "id": "STN-04",
+   "code": "SK-60",
+   "card": "SK-60",
+   "sheet": [
+    "STN-04"
+   ],
    "name": "Hour bar block",
    "variant": "default",
-   "png": "png/STN-04_hour-bar-block_default.png",
+   "png": "png/ui_sk60_hour_bar_block.png",
    "mode": "Sliced",
    "width": 20,
    "height": 12,
@@ -2648,10 +3360,23 @@
    }
   },
   {
-   "id": "ICN-01",
+   "code": "SK-61",
+   "card": "SK-61",
+   "sheet": [
+    "ICN-01",
+    "HUD-02",
+    "TTL-01",
+    "TTL-04",
+    "CRD-02",
+    "CRD-05",
+    "CRD-07",
+    "CRD-20",
+    "DLG-03",
+    "LST-10"
+   ],
    "name": "Medallion",
    "variant": "default",
-   "png": "png/ICN-01_medallion_default.png",
+   "png": "png/ui_sk61_medallion.png",
    "mode": "Simple",
    "width": 104,
    "height": 104,
@@ -2660,10 +3385,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-01",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "gold",
-   "png": "png/ICN-02_icon_gold.png",
+   "png": "png/ui_ic01_gold.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -2672,10 +3401,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-02",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "debt",
-   "png": "png/ICN-02_icon_debt.png",
+   "png": "png/ui_ic02_debt.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -2684,10 +3417,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-03",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "energy",
-   "png": "png/ICN-02_icon_energy.png",
+   "png": "png/ui_ic03_energy.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -2696,10 +3433,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-04",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "clock",
-   "png": "png/ICN-02_icon_clock.png",
+   "png": "png/ui_ic04_clock.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -2708,10 +3449,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-05",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "time",
-   "png": "png/ICN-02_icon_time.png",
+   "png": "png/ui_ic05_time.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -2720,10 +3465,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-06",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "calendar",
-   "png": "png/ICN-02_icon_calendar.png",
+   "png": "png/ui_ic06_calendar.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -2732,10 +3481,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-07",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "house",
-   "png": "png/ICN-02_icon_house.png",
+   "png": "png/ui_ic07_house.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -2744,10 +3497,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-08",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "store",
-   "png": "png/ICN-02_icon_store.png",
+   "png": "png/ui_ic08_store.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -2756,10 +3513,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-09",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "market",
-   "png": "png/ICN-02_icon_market.png",
+   "png": "png/ui_ic09_market.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -2768,10 +3529,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-10",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "stall",
-   "png": "png/ICN-02_icon_stall.png",
+   "png": "png/ui_ic10_stall.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -2780,10 +3545,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-11",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "guild",
-   "png": "png/ICN-02_icon_guild.png",
+   "png": "png/ui_ic11_guild.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -2792,10 +3561,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-12",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "outskirt",
-   "png": "png/ICN-02_icon_outskirt.png",
+   "png": "png/ui_ic12_outskirt.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -2804,10 +3577,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-13",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "explore",
-   "png": "png/ICN-02_icon_explore.png",
+   "png": "png/ui_ic13_explore.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -2816,10 +3593,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-14",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "map",
-   "png": "png/ICN-02_icon_map.png",
+   "png": "png/ui_ic14_map.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -2828,10 +3609,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-15",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "journal",
-   "png": "png/ICN-02_icon_journal.png",
+   "png": "png/ui_ic15_journal.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -2840,10 +3625,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-16",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "bag",
-   "png": "png/ICN-02_icon_bag.png",
+   "png": "png/ui_ic16_bag.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -2852,10 +3641,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-17",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "cauldron",
-   "png": "png/ICN-02_icon_cauldron.png",
+   "png": "png/ui_ic17_cauldron.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -2864,10 +3657,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-18",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "rack",
-   "png": "png/ICN-02_icon_rack.png",
+   "png": "png/ui_ic18_rack.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -2876,10 +3673,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-19",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "grinder",
-   "png": "png/ICN-02_icon_grinder.png",
+   "png": "png/ui_ic19_grinder.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -2888,10 +3689,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-20",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "bed",
-   "png": "png/ICN-02_icon_bed.png",
+   "png": "png/ui_ic20_bed.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -2900,10 +3705,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-21",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "rest",
-   "png": "png/ICN-02_icon_rest.png",
+   "png": "png/ui_ic21_rest.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -2912,10 +3721,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-22",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "meal",
-   "png": "png/ICN-02_icon_meal.png",
+   "png": "png/ui_ic22_meal.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -2924,10 +3737,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-23",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "food",
-   "png": "png/ICN-02_icon_food.png",
+   "png": "png/ui_ic23_food.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -2936,10 +3753,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-24",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "cart",
-   "png": "png/ICN-02_icon_cart.png",
+   "png": "png/ui_ic24_cart.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -2948,10 +3769,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-25",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "quest",
-   "png": "png/ICN-02_icon_quest.png",
+   "png": "png/ui_ic25_quest.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -2960,10 +3785,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-26",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "desk",
-   "png": "png/ICN-02_icon_desk.png",
+   "png": "png/ui_ic26_desk.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -2972,10 +3801,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-27",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "people",
-   "png": "png/ICN-02_icon_people.png",
+   "png": "png/ui_ic27_people.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -2984,10 +3817,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-28",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "customer",
-   "png": "png/ICN-02_icon_customer.png",
+   "png": "png/ui_ic28_customer.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -2996,10 +3833,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-29",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "neighbour",
-   "png": "png/ICN-02_icon_neighbour.png",
+   "png": "png/ui_ic29_neighbour.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -3008,10 +3849,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-30",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "root",
-   "png": "png/ICN-02_icon_root.png",
+   "png": "png/ui_ic30_root.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -3020,10 +3865,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-31",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "leaf",
-   "png": "png/ICN-02_icon_leaf.png",
+   "png": "png/ui_ic31_leaf.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -3032,10 +3881,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-32",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "herb",
-   "png": "png/ICN-02_icon_herb.png",
+   "png": "png/ui_ic32_herb.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -3044,10 +3897,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-33",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "fruit",
-   "png": "png/ICN-02_icon_fruit.png",
+   "png": "png/ui_ic33_fruit.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -3056,10 +3913,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-34",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "sugar",
-   "png": "png/ICN-02_icon_sugar.png",
+   "png": "png/ui_ic34_sugar.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -3068,10 +3929,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-35",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "grain",
-   "png": "png/ICN-02_icon_grain.png",
+   "png": "png/ui_ic35_grain.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -3080,10 +3945,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-36",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "oil",
-   "png": "png/ICN-02_icon_oil.png",
+   "png": "png/ui_ic36_oil.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -3092,10 +3961,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-37",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "wax",
-   "png": "png/ICN-02_icon_wax.png",
+   "png": "png/ui_ic37_wax.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -3104,10 +3977,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-38",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "jamu",
-   "png": "png/ICN-02_icon_jamu.png",
+   "png": "png/ui_ic38_jamu.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -3116,10 +3993,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-39",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "salep",
-   "png": "png/ICN-02_icon_salep.png",
+   "png": "png/ui_ic39_salep.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -3128,10 +4009,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-40",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "jar",
-   "png": "png/ICN-02_icon_jar.png",
+   "png": "png/ui_ic40_jar.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -3140,10 +4025,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-41",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "heart",
-   "png": "png/ICN-02_icon_heart.png",
+   "png": "png/ui_ic41_heart.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -3152,10 +4041,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-42",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "cross",
-   "png": "png/ICN-02_icon_cross.png",
+   "png": "png/ui_ic42_cross.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -3164,10 +4057,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-43",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "trend_up",
-   "png": "png/ICN-02_icon_trend-up.png",
+   "png": "png/ui_ic43_trend_up.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -3176,10 +4073,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-44",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "trend_down",
-   "png": "png/ICN-02_icon_trend-down.png",
+   "png": "png/ui_ic44_trend_down.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -3188,10 +4089,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-45",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "trend_flat",
-   "png": "png/ICN-02_icon_trend-flat.png",
+   "png": "png/ui_ic45_trend_flat.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -3200,10 +4105,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-46",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "sun",
-   "png": "png/ICN-02_icon_sun.png",
+   "png": "png/ui_ic46_sun.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -3212,10 +4121,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-47",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "moon",
-   "png": "png/ICN-02_icon_moon.png",
+   "png": "png/ui_ic47_moon.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -3224,10 +4137,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-48",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "earth",
-   "png": "png/ICN-02_icon_earth.png",
+   "png": "png/ui_ic48_earth.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -3236,10 +4153,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-49",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "rain",
-   "png": "png/ICN-02_icon_rain.png",
+   "png": "png/ui_ic49_rain.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -3248,10 +4169,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-50",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "lantern",
-   "png": "png/ICN-02_icon_lantern.png",
+   "png": "png/ui_ic50_lantern.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -3260,10 +4185,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-51",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "star",
-   "png": "png/ICN-02_icon_star.png",
+   "png": "png/ui_ic51_star.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -3272,10 +4201,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-52",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "check",
-   "png": "png/ICN-02_icon_check.png",
+   "png": "png/ui_ic52_check.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -3284,10 +4217,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-53",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "x",
-   "png": "png/ICN-02_icon_x.png",
+   "png": "png/ui_ic53_x.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -3296,10 +4233,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-54",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "plus",
-   "png": "png/ICN-02_icon_plus.png",
+   "png": "png/ui_ic54_plus.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -3308,10 +4249,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-55",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "minus",
-   "png": "png/ICN-02_icon_minus.png",
+   "png": "png/ui_ic55_minus.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -3320,10 +4265,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-56",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "back",
-   "png": "png/ICN-02_icon_back.png",
+   "png": "png/ui_ic56_back.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -3332,10 +4281,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-57",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "next",
-   "png": "png/ICN-02_icon_next.png",
+   "png": "png/ui_ic57_next.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -3344,10 +4297,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-58",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "lock",
-   "png": "png/ICN-02_icon_lock.png",
+   "png": "png/ui_ic58_lock.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -3356,10 +4313,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-59",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "note",
-   "png": "png/ICN-02_icon_note.png",
+   "png": "png/ui_ic59_note.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -3368,10 +4329,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-60",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "ledger",
-   "png": "png/ICN-02_icon_ledger.png",
+   "png": "png/ui_ic60_ledger.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -3380,10 +4345,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-61",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "chart",
-   "png": "png/ICN-02_icon_chart.png",
+   "png": "png/ui_ic61_chart.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -3392,10 +4361,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-62",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "skills",
-   "png": "png/ICN-02_icon_skills.png",
+   "png": "png/ui_ic62_skills.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -3404,10 +4377,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-63",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "log",
-   "png": "png/ICN-02_icon_log.png",
+   "png": "png/ui_ic63_log.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -3416,10 +4393,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-64",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "settings",
-   "png": "png/ICN-02_icon_settings.png",
+   "png": "png/ui_ic64_settings.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -3428,10 +4409,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-65",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "shelf",
-   "png": "png/ICN-02_icon_shelf.png",
+   "png": "png/ui_ic65_shelf.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -3440,10 +4425,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-66",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "tag",
-   "png": "png/ICN-02_icon_tag.png",
+   "png": "png/ui_ic66_tag.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -3452,10 +4441,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-67",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "walk",
-   "png": "png/ICN-02_icon_walk.png",
+   "png": "png/ui_ic67_walk.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -3464,10 +4457,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-68",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "skip",
-   "png": "png/ICN-02_icon_skip.png",
+   "png": "png/ui_ic68_skip.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -3476,10 +4473,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-69",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "dried",
-   "png": "png/ICN-02_icon_dried.png",
+   "png": "png/ui_ic69_dried.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -3488,10 +4489,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-70",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "powder",
-   "png": "png/ICN-02_icon_powder.png",
+   "png": "png/ui_ic70_powder.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -3500,10 +4505,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-71",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "sleep",
-   "png": "png/ICN-02_icon_sleep.png",
+   "png": "png/ui_ic71_sleep.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -3512,10 +4521,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-72",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "festival",
-   "png": "png/ICN-02_icon_festival.png",
+   "png": "png/ui_ic72_festival.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -3524,10 +4537,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-73",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "sign",
-   "png": "png/ICN-02_icon_sign.png",
+   "png": "png/ui_ic73_sign.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -3536,10 +4553,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-74",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "lesson",
-   "png": "png/ICN-02_icon_lesson.png",
+   "png": "png/ui_ic74_lesson.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -3548,10 +4569,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-75",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "trade",
-   "png": "png/ICN-02_icon_trade.png",
+   "png": "png/ui_ic75_trade.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -3560,10 +4585,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-76",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "info",
-   "png": "png/ICN-02_icon_info.png",
+   "png": "png/ui_ic76_info.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -3572,10 +4601,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-77",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "warn",
-   "png": "png/ICN-02_icon_warn.png",
+   "png": "png/ui_ic77_warn.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,
@@ -3584,10 +4617,14 @@
    "nineSlicePx": null
   },
   {
-   "id": "ICN-02",
+   "code": "IC-78",
+   "card": "IC",
+   "sheet": [
+    "ICN-02"
+   ],
    "name": "Icon",
    "variant": "buffer",
-   "png": "png/ICN-02_icon_buffer.png",
+   "png": "png/ui_ic78_buffer.png",
    "mode": "Simple",
    "width": 52,
    "height": 52,

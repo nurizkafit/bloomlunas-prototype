@@ -858,9 +858,9 @@
     "semantic_hash": ""
   },
   "src/views/sheet/InterfaceSheet.js": {
-    "mtime": 1794376699.1322005,
-    "seen": 1794376740.1375515,
-    "ast_hash": "1b7a2c711e74e68295ed370568babf96",
+    "mtime": 1794379647.587803,
+    "seen": 1794379685.138475,
+    "ast_hash": "9b74b65f05c01e84a824e446497c9dff",
     "semantic_hash": ""
   },
   "tests/browser/sheet.cjs": {
@@ -924,9 +924,9 @@
     "semantic_hash": ""
   },
   "src/views/sheet/SheetDownloads.js": {
-    "mtime": 1794372346.1102715,
-    "seen": 1794372567.1533604,
-    "ast_hash": "9216817da707357e9efa940a700e7503",
+    "mtime": 1794379581.1437478,
+    "seen": 1794379685.1384783,
+    "ast_hash": "b57ae870ffc38d7b7cc92c45cf49e324",
     "semantic_hash": ""
   },
   "src/views/sheet/ZipWriter.js": {
@@ -942,15 +942,15 @@
     "semantic_hash": ""
   },
   "src/views/sheet/UnityAssets.js": {
-    "mtime": 1794376690.2108605,
-    "seen": 1794376740.1375568,
-    "ast_hash": "804579f55ce717a07dfc0288bf00c356",
+    "mtime": 1794379614.8075023,
+    "seen": 1794379685.1384833,
+    "ast_hash": "a0294b5b2f725733af3a6aae06b09c41",
     "semantic_hash": ""
   },
   "tests/browser/export-unity.cjs": {
-    "mtime": 1794372510.43381,
-    "seen": 1794372567.1533957,
-    "ast_hash": "8ea4566999bb55e36255253b7f0191f6",
+    "mtime": 1794379577.535495,
+    "seen": 1794379685.1385477,
+    "ast_hash": "97298716774a4a3ad2ed7b0dc06a20ca",
     "semantic_hash": ""
   },
   "unity.html": {
@@ -960,9 +960,9 @@
     "semantic_hash": ""
   },
   "src/views/sheet/SpriteMap.js": {
-    "mtime": 1794376667.4517028,
-    "seen": 1794376740.137555,
-    "ast_hash": "d57401c69c1ce706efe7198eed62f63b",
+    "mtime": 1794379537.874908,
+    "seen": 1794379685.138481,
+    "ast_hash": "cd0cdc65b2b8000ad1ff631eca00ff98",
     "semantic_hash": ""
   },
   "package-lock.json": {

@@ -56,7 +56,7 @@ export class InterfaceSheet {
     this.downloads.mount();
     this.thumbs();
     const ids = new Set(secs.flatMap((s) => s.items.map((it) => it.id)));
-    const bad = [...new Set(Object.values(SpriteMap.USES).flat())].filter((id) => !ids.has(id));
+    const bad = [...new Set(Object.values(SpriteMap.USES).flatMap((u) => u.sheet))].filter((id) => !ids.has(id));
     if (bad.length) console.error(`SpriteMap: unknown sheet IDs ${bad.join(', ')}`);
     InterfaceSheet.fit();
     addEventListener('resize', () => InterfaceSheet.fit());
@@ -147,8 +147,8 @@ export class InterfaceSheet {
     const list = SpriteMap.sprites(id);
     if (!list.length) return h('div.sh-unity', h('b', 'Unity sprites: '), h('span.sh-none', 'none. Text only (TextMeshPro) or drawn in code.'));
     return h('div.sh-unity', h('b', 'Unity sprites: '),
-      h('div.sh-sprites', list.map((s) => h('a.sh-sp', { href: `./unity.html#${SpriteMap.anchor(s.id, s.name)}`, title: `${s.id} ${s.name}: open on the Unity assets page`, 'data-key': `${s.id}|${s.name}` },
-        h('img', { alt: '', loading: 'lazy' }), h('span', h('b', s.id), ' ', s.name)))));
+      h('div.sh-sprites', list.map((s) => h('a.sh-sp', { href: `./unity.html#${SpriteMap.anchor(s.code)}`, title: `${s.code} ${s.name}: open on the Unity assets page`, 'data-key': s.code },
+        h('img', { alt: '', loading: 'lazy' }), h('span', h('b', s.code === 'IC' ? 'IC-nn' : s.code), ' ', s.name)))));
   }
 
   /** Fill the sprite images from the Unity export manifest (npm run export:unity). No manifest: the links stay, with no image. */
@@ -160,7 +160,7 @@ export class InterfaceSheet {
     } catch { /* no export yet */ }
     const first = new Map();
     for (const p of parts) {
-      const k = `${p.id}|${p.name}`;
+      const k = p.card;
       if (!first.has(k) || /^(normal|default)$/.test(p.variant)) first.set(k, p);
     }
     for (const a of document.querySelectorAll('.sh-sp')) {

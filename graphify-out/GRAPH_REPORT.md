@@ -1,17 +1,17 @@
 # Graph Report - bloomlunas-prototype  (2026-11-11)
 
 ## Corpus Check
-- 158 files · ~68,348 words
+- 158 files · ~68,996 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 7 file(s) not represented in the graph (top: .css 3, (none) 2, .glb 1)
 
 ## Summary
-- 673 nodes · 1731 edges · 28 communities (14 shown, 14 thin omitted)
-- Extraction: 95% EXTRACTED · 5% INFERRED · 0% AMBIGUOUS · INFERRED: 90 edges (avg confidence: 0.92)
+- 673 nodes · 1729 edges · 28 communities (14 shown, 14 thin omitted)
+- Extraction: 95% EXTRACTED · 5% INFERRED · 0% AMBIGUOUS · INFERRED: 89 edges (avg confidence: 0.92)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `dd338c68`
+- Built from commit: `8567ccc6`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -85,7 +85,7 @@
 
 ### Community 0 - "Dom"
 Cohesion: 0.07
-Nodes (30): 7. Views (DOM, `src/views/ui/`), Calendar, WEEKDAYS, Inventory, REASON_TEXT, box(), page(), CraftView (+22 more)
+Nodes (31): 7. Views (DOM, `src/views/ui/`), Calendar, WEEKDAYS, Inventory, REASON_TEXT, box(), page(), SpriteMap (+23 more)
 
 ### Community 1 - "SceneView"
 Cohesion: 0.08
@@ -96,8 +96,8 @@ Cohesion: 0.06
 Nodes (7): 6. EventBus messages (`MSG` in `src/core/EventBus.js`), Bot, EconomySystem, round1(), PlanSystem, ProductionSystem, sleep()
 
 ### Community 3 - "9. Class catalog (JS -> Unity)"
-Cohesion: 0.16
-Nodes (4): 9. Class catalog (JS -> Unity), ActPhase, ActivityLog, Ledger
+Cohesion: 0.11
+Nodes (8): 3. Phase flow (Scene & Flow), 9. Class catalog (JS -> Unity), ActPhase, PlanPhase, RetroPhase, ActivityLog, EffectApplier, Ledger
 
 ### Community 6 - "runMonths.js"
 Cohesion: 0.06
@@ -115,24 +115,24 @@ Nodes (9): ib(), jarTag(), noop(), ActView, CheckView, JournalView, trendIcon(),
 Cohesion: 0.29
 Nodes (6): J1 Jam rules, logic and headless bot, J2 Jam screens (style board v3), J3 3D City View with Kenney placeholders, J4 Playtest, balance targets, polish, J5 Jam build and handoff, Milestones (game jam overhaul)
 
-### Community 14 - "Phase"
-Cohesion: 0.18
-Nodes (5): 3. Phase flow (Scene & Flow), CheckPhase, Phase, PlanPhase, RetroPhase
-
 ### Community 16 - "DebtSystem"
-Cohesion: 0.19
-Nodes (5): DebtSystem, clamp(), EffectApplier, round2(), tiersLowFirst()
+Cohesion: 0.22
+Nodes (4): DebtSystem, clamp(), round2(), tiersLowFirst()
 
 ### Community 17 - "InterfaceSheet"
-Cohesion: 0.07
-Nodes (7): InterfaceSheet, h(), SheetDownloads, SpriteMap, UnityAssets, ZipWriter, HudView
+Cohesion: 0.09
+Nodes (5): InterfaceSheet, h(), SheetDownloads, UnityAssets, ZipWriter
+
+### Community 18 - "UiRoot"
+Cohesion: 0.09
+Nodes (3): HudView, StartView, UiRoot
 
 ### Community 23 - "main.js"
 Cohesion: 0.07
 Nodes (15): ContentDB, SaveSystem, app, content, files, gm, q, save (+7 more)
 
 ### Community 25 - "NoticeSystem"
-Cohesion: 0.19
+Cohesion: 0.21
 Nodes (3): 2. Architecture, EventBus, NoticeSystem
 
 ### Community 29 - "ExploreSystem"
@@ -150,7 +150,7 @@ _Questions this graph is uniquely positioned to answer:_
 - **Are the 26 inferred relationships involving `9. Class catalog (JS -> Unity)` (e.g. with `ContentDB` and `EventBus`) actually correct?**
   _`9. Class catalog (JS -> Unity)` has 26 INFERRED edges - model-reasoned connections that need verification._
 - **Should `Dom` be split into smaller, more focused modules?**
-  _Cohesion score 0.06827309236947791 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.06750700280112044 - nodes in this community are weakly interconnected._
 - **Why does `SceneView` connect `SceneView` to `SceneView`, `main.js`?**
   _High betweenness centrality (0.066) - this node is a cross-community bridge._
 - **Should `SceneView` be split into smaller, more focused modules?**
