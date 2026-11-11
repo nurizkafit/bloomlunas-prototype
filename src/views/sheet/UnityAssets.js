@@ -3,6 +3,7 @@ import { Icons } from '../ui/Icons.js';
 import { Ornaments } from '../ui/Ornaments.js';
 import { InterfaceSheet } from './InterfaceSheet.js';
 import { SheetDownloads } from './SheetDownloads.js';
+import { SpriteMap } from './SpriteMap.js';
 
 const h = Dom.h;
 
@@ -142,13 +143,15 @@ export class UnityAssets {
         'data-file': this.sheet.fileName(it.id, it.name, tag) }, wrap, h('span.sh-tag', tag));
     });
     const nine = it.nine ? `9-slice L ${it.nine[0]} R ${it.nine[1]} T ${it.nine[2]} B ${it.nine[3]} (1x px)` : 'No 9-slice';
-    this.ids = (this.ids ?? 0) + 1;
-    return h('div.sh-card', { style: { width: `${Math.max(260, it.w ?? 320)}px` }, id: `U${this.ids}-${it.id}` },
+    // Links to the sheet parts that use this sprite (SpriteMap). The sheet links back to this card by its anchor.
+    const uses = SpriteMap.uses(it.id, it.name);
+    return h('div.sh-card', { style: { width: `${Math.max(260, it.w ?? 320)}px` }, id: SpriteMap.anchor(it.id, it.name) },
       h(`div.sh-stage.bg-${it.bg ?? 'paper'}`, vars),
       h('div.sh-meta',
         h('div.sh-id', h('code', it.id), h('b', it.name)),
         h('div.sh-cls', `${it.mode} · ${w} x ${ht} · ${nine}`),
         h('div.sh-used', h('b', 'Use for: '), it.used),
+        h('div.sh-links', h('b', 'Used by (sheet): '), uses.map((id) => h('a', { href: `./sheet.html#${id}`, title: `Open ${id} on the interface sheet` }, id))),
         it.note ? h('div.sh-note', it.note) : null));
   }
 

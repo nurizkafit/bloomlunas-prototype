@@ -44,7 +44,7 @@ src/systems/   ActionRunner, TimeSystem, EffectApplier, EconomySystem, StoreSyst
 src/phases/    Phase, PlanPhase, DoPhase, CheckPhase, ActPhase, RetroPhase
 src/views/ui/    UiRoot, Dom, Icons, Ornaments, theme.css, HudView, StartView, JournalView, CheckView, ActView, RetroView, TownMapView, PlaceView, ItemCardView, station views, EventCardView, TutorialView
 src/views/scene/ SceneView (3D City View)
-src/views/sheet/ InterfaceSheet, UnityAssets, SheetDownloads, ZipWriter + sheet.css, unity.css (sheet.html: all UI components with IDs, for the art audit; unity.html: text-free Unity sprites; both with PNG downloads)
+src/views/sheet/ InterfaceSheet, UnityAssets, SpriteMap (sprite to sheet part links), SheetDownloads, ZipWriter + sheet.css, unity.css (sheet.html: all UI components with IDs, for the art audit; unity.html: text-free Unity sprites; both with PNG downloads)
 assets/ui-export/ PNG placeholders + manifest from npm run export:ui (committed)
 assets/unity-export/ Unity sprites (9-slice) + manifest from npm run export:unity (committed)
 src/sim/       Bot, runMonths.js (headless CLI), loadDataNode, csv.js
@@ -61,7 +61,7 @@ tests/         *.test.js (Vitest, logic only), browser/ (Playwright flow test)
 - `npm run test:browser`: Playwright browser tests in `tests/browser/` (starts Vite, screenshots in `out/browser/`). Run it at each milestone with a view.
 - `npm run sheet`: writes the interface sheet (`sheet.html`) to `out/browser/interface-sheet.png` and `.pdf`. When you add or change a UI component, add it to `src/views/sheet/InterfaceSheet.js` with the next free ID (never reuse an ID).
 - `npm run export:ui`: cuts every sheet variant into its own PNG (2x, transparent) for Unity placeholders: `assets/ui-export/png/<ID>_<name>_<variant>.png` + `manifest.json` / `manifest.csv` (size, 9-slice borders). PNG only (user, 11 Nov 2026); `EXPORT_SVG=vector` or `embed` adds SVG, `EXPORT_SCALE` sets the scale. `sheet.html` links each variant to its PNG and zips a selection (`SheetDownloads`). The PNGs are committed (user, 11 Nov 2026): run the export again and commit `assets/ui-export/` after you change a UI component.
-- `npm run export:unity`: cuts every sprite of `unity.html` (Unity assets page, user 11 Nov 2026) into a PNG (2x, transparent, no text): skins as compact 9-slice sprites, one sprite per button state, ornaments, icons. Writes `assets/unity-export/png/` + `manifest.json` / `manifest.csv` (Unity Image Type, 9-slice borders in 1x and PNG px). Soft drop shadows are left out. Add a new skin to `src/views/sheet/UnityAssets.js` (size, nine, mode), run the export again and commit `assets/unity-export/`.
+- `npm run export:unity`: cuts every sprite of `unity.html` (Unity assets page, user 11 Nov 2026) into a PNG (2x, transparent, no text): skins as compact 9-slice sprites, one sprite per button state, ornaments, icons. Writes `assets/unity-export/png/` + `manifest.json` / `manifest.csv` (Unity Image Type, 9-slice borders in 1x and PNG px). Soft drop shadows are left out. Add a new skin to `src/views/sheet/UnityAssets.js` (size, nine, mode) and to `SpriteMap.js` (the sheet IDs it builds; both pages link through it), run the export again and commit `assets/unity-export/`.
 
 ## Conventions
 

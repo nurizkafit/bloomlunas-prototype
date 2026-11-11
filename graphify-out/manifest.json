@@ -858,9 +858,9 @@
     "semantic_hash": ""
   },
   "src/views/sheet/InterfaceSheet.js": {
-    "mtime": 1794372560.7397275,
-    "seen": 1794372567.153359,
-    "ast_hash": "f581af54490335d7e450a04b2ba2643b",
+    "mtime": 1794376699.1322005,
+    "seen": 1794376740.1375515,
+    "ast_hash": "1b7a2c711e74e68295ed370568babf96",
     "semantic_hash": ""
   },
   "tests/browser/sheet.cjs": {
@@ -942,9 +942,9 @@
     "semantic_hash": ""
   },
   "src/views/sheet/UnityAssets.js": {
-    "mtime": 1794372441.763084,
-    "seen": 1794372567.1533616,
-    "ast_hash": "e475d620096692d963c7b338d0abff04",
+    "mtime": 1794376690.2108605,
+    "seen": 1794376740.1375568,
+    "ast_hash": "804579f55ce717a07dfc0288bf00c356",
     "semantic_hash": ""
   },
   "tests/browser/export-unity.cjs": {
@@ -957,6 +957,12 @@
     "mtime": 1794372264.182366,
     "seen": 1794372567.153418,
     "ast_hash": "ddb7e976e021a1748ba1aa53c40cf6cd",
+    "semantic_hash": ""
+  },
+  "src/views/sheet/SpriteMap.js": {
+    "mtime": 1794376667.4517028,
+    "seen": 1794376740.137555,
+    "ast_hash": "d57401c69c1ce706efe7198eed62f63b",
     "semantic_hash": ""
   },
   "package-lock.json": {

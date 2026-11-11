@@ -6,6 +6,7 @@ import { PlaceView } from '../ui/PlaceView.js';
 import { TutorialView } from '../ui/TutorialView.js';
 import { REASON_TEXT } from '../../systems/ActionRunner.js';
 import { SheetDownloads } from './SheetDownloads.js';
+import { SpriteMap } from './SpriteMap.js';
 
 const h = Dom.h;
 const noop = () => {};
@@ -53,6 +54,10 @@ export class InterfaceSheet {
     const secs = this.sections();
     root.append(this.header(secs), this.downloads.bar(), ...secs.map((s) => this.section(s)), this.notes());
     this.downloads.mount();
+    this.thumbs();
+    const ids = new Set(secs.flatMap((s) => s.items.map((it) => it.id)));
+    const bad = [...new Set(Object.values(SpriteMap.USES).flat())].filter((id) => !ids.has(id));
+    if (bad.length) console.error(`SpriteMap: unknown sheet IDs ${bad.join(', ')}`);
     InterfaceSheet.fit();
     addEventListener('resize', () => InterfaceSheet.fit());
     document.fonts?.ready?.then(() => InterfaceSheet.fit());
@@ -133,7 +138,36 @@ export class InterfaceSheet {
         h('div.sh-id', h('code', it.id), h('b', it.name)),
         h('div.sh-cls', it.cls),
         h('div.sh-used', h('b', 'Used in: '), it.used),
+        this.unityLinks(it.id),
         it.note ? h('div.sh-note', it.note) : null));
+  }
+
+  /** The Unity sprites that build this part (SpriteMap), as small images that link to unity.html. */
+  unityLinks(id) {
+    const list = SpriteMap.sprites(id);
+    if (!list.length) return h('div.sh-unity', h('b', 'Unity sprites: '), h('span.sh-none', 'none. Text only (TextMeshPro) or drawn in code.'));
+    return h('div.sh-unity', h('b', 'Unity sprites: '),
+      h('div.sh-sprites', list.map((s) => h('a.sh-sp', { href: `./unity.html#${SpriteMap.anchor(s.id, s.name)}`, title: `${s.id} ${s.name}: open on the Unity assets page`, 'data-key': `${s.id}|${s.name}` },
+        h('img', { alt: '', loading: 'lazy' }), h('span', h('b', s.id), ' ', s.name)))));
+  }
+
+  /** Fill the sprite images from the Unity export manifest (npm run export:unity). No manifest: the links stay, with no image. */
+  async thumbs() {
+    let parts = [];
+    try {
+      const r = await fetch('./unity-export/manifest.json');
+      if (r.ok && /json/.test(r.headers.get('content-type') ?? '')) parts = (await r.json()).parts;
+    } catch { /* no export yet */ }
+    const first = new Map();
+    for (const p of parts) {
+      const k = `${p.id}|${p.name}`;
+      if (!first.has(k) || /^(normal|default)$/.test(p.variant)) first.set(k, p);
+    }
+    for (const a of document.querySelectorAll('.sh-sp')) {
+      const p = first.get(a.dataset.key), img = a.querySelector('img');
+      if (p) img.src = `./unity-export/${p.png}`; else img.remove();
+    }
+    document.body.dataset.thumbs = String(first.size);
   }
 
   notes() {
