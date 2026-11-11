@@ -5,6 +5,7 @@ import { HudView } from '../ui/HudView.js';
 import { PlaceView } from '../ui/PlaceView.js';
 import { TutorialView } from '../ui/TutorialView.js';
 import { REASON_TEXT } from '../../systems/ActionRunner.js';
+import { SheetDownloads } from './SheetDownloads.js';
 
 const h = Dom.h;
 const noop = () => {};
@@ -32,13 +33,26 @@ export class InterfaceSheet {
   constructor(content) {
     this.c = content;
     this.count = 0;
+    /** @type {Map<string, number>} export file names used so far (a name used twice gets -2, -3) */
+    this.files = new Map();
+    this.downloads = new SheetDownloads();
+  }
+
+  /** Export file name (no extension) of a variant: <ID>_<name>_<variant>. npm run export:ui uses it as is. */
+  fileName(id, name, variant) {
+    const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'default';
+    const base = `${id}_${slug(name)}_${slug(variant)}`;
+    const n = (this.files.get(base) ?? 0) + 1;
+    this.files.set(base, n);
+    return n > 1 ? `${base}-${n}` : base;
   }
 
   /** @param {HTMLElement} root */
   mount(root) {
     Ornaments.mount(document.body);
     const secs = this.sections();
-    root.append(this.header(secs), ...secs.map((s) => this.section(s)), this.notes());
+    root.append(this.header(secs), this.downloads.bar(), ...secs.map((s) => this.section(s)), this.notes());
+    this.downloads.mount();
     InterfaceSheet.fit();
     addEventListener('resize', () => InterfaceSheet.fit());
     document.fonts?.ready?.then(() => InterfaceSheet.fit());
@@ -110,8 +124,9 @@ export class InterfaceSheet {
    */
   card(it) {
     this.count += 1;
-    // data-* on each variant: the export (npm run export:ui) cuts one PNG/SVG per variant and names it from these.
-    const vars = it.vars.map(([tag, el]) => h('div.sh-var', { 'data-id': it.id, 'data-name': it.name, 'data-variant': tag ?? '', 'data-cls': it.cls }, el, tag ? h('span.sh-tag', tag) : null));
+    // data-* on each variant: the export (npm run export:ui) cuts one PNG/SVG per variant, names it data-file
+    // and writes the manifest from the other fields. SheetDownloads links each variant to its PNG.
+    const vars = it.vars.map(([tag, el]) => h('div.sh-var', { 'data-id': it.id, 'data-name': it.name, 'data-variant': tag ?? '', 'data-cls': it.cls, 'data-file': this.fileName(it.id, it.name, tag ?? '') }, el, tag ? h('span.sh-tag', tag) : null));
     return h('div.sh-card', { style: { width: `${Math.max(300, it.w ?? 360)}px` }, id: it.id },
       h(`div.sh-stage.bg-${it.bg ?? 'paper'}`, { style: it.stage ?? {} }, vars),
       h('div.sh-meta',
