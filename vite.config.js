@@ -6,7 +6,7 @@ export default defineConfig({
   // assets/ is served as is: assets/models/<slot id>.glb -> ./models/<slot id>.glb (dev and build).
   publicDir: 'assets',
   base: './',
-  // sheet.html: the interface sheet (all UI components, for the art audit).
-  build: { outDir: 'dist', chunkSizeWarningLimit: 1000, rollupOptions: { input: { main: 'index.html', sheet: 'sheet.html' } } },
+  // sheet.html: the interface sheet (all UI components, for the art audit). unity.html: the Unity sprites (9-slice skins, icons).
+  build: { outDir: 'dist', chunkSizeWarningLimit: 1000, rollupOptions: { input: { main: 'index.html', sheet: 'sheet.html', unity: 'unity.html' } } },
   test: { include: ['tests/**/*.test.js'] }
 });

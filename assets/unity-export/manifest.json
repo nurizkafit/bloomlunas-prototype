@@ -1,0 +1,3599 @@
+{
+ "note": "Unity sprites from the BloomLunas prototype (unity.html). No text. Width and height are 1x px; PNG pixels = size x scale. nineSlicePx = Sprite Editor border in PNG pixels (left, right, top, bottom). mode = Unity Image Type (Sliced, Tiled, Simple). Pixels Per Unit = 100 x scale.",
+ "scale": 2,
+ "count": 213,
+ "columns": [
+  [
+   "id",
+   "id"
+  ],
+  [
+   "name",
+   "name"
+  ],
+  [
+   "variant",
+   "variant"
+  ],
+  [
+   "png",
+   "png"
+  ],
+  [
+   "mode",
+   "mode"
+  ],
+  [
+   "width",
+   "width"
+  ],
+  [
+   "height",
+   "height"
+  ],
+  [
+   "scale",
+   "scale"
+  ],
+  [
+   "nine_left",
+   "nineSlice.left"
+  ],
+  [
+   "nine_right",
+   "nineSlice.right"
+  ],
+  [
+   "nine_top",
+   "nineSlice.top"
+  ],
+  [
+   "nine_bottom",
+   "nineSlice.bottom"
+  ],
+  [
+   "nine_left_px",
+   "nineSlicePx.left"
+  ],
+  [
+   "nine_right_px",
+   "nineSlicePx.right"
+  ],
+  [
+   "nine_top_px",
+   "nineSlicePx.top"
+  ],
+  [
+   "nine_bottom_px",
+   "nineSlicePx.bottom"
+  ]
+ ],
+ "parts": [
+  {
+   "id": "FRM-01",
+   "name": "Rattan frame skin",
+   "variant": "default",
+   "png": "png/FRM-01_rattan-frame-skin_default.png",
+   "mode": "Tiled",
+   "width": 80,
+   "height": 80,
+   "scale": 2,
+   "nineSlice": {
+    "left": 32,
+    "right": 32,
+    "top": 32,
+    "bottom": 32
+   },
+   "nineSlicePx": {
+    "left": 64,
+    "right": 64,
+    "top": 64,
+    "bottom": 64
+   }
+  },
+  {
+   "id": "FRM-02",
+   "name": "Slim frame skin",
+   "variant": "default",
+   "png": "png/FRM-02_slim-frame-skin_default.png",
+   "mode": "Sliced",
+   "width": 54,
+   "height": 54,
+   "scale": 2,
+   "nineSlice": {
+    "left": 23,
+    "right": 23,
+    "top": 23,
+    "bottom": 23
+   },
+   "nineSlicePx": {
+    "left": 46,
+    "right": 46,
+    "top": 46,
+    "bottom": 46
+   }
+  },
+  {
+   "id": "FRM-02",
+   "name": "Slim frame skin",
+   "variant": "selected",
+   "png": "png/FRM-02_slim-frame-skin_selected.png",
+   "mode": "Sliced",
+   "width": 54,
+   "height": 54,
+   "scale": 2,
+   "nineSlice": {
+    "left": 23,
+    "right": 23,
+    "top": 23,
+    "bottom": 23
+   },
+   "nineSlicePx": {
+    "left": 46,
+    "right": 46,
+    "top": 46,
+    "bottom": 46
+   }
+  },
+  {
+   "id": "FRM-05",
+   "name": "Planner Book cover",
+   "variant": "default",
+   "png": "png/FRM-05_planner-book-cover_default.png",
+   "mode": "Sliced",
+   "width": 104,
+   "height": 104,
+   "scale": 2,
+   "nineSlice": {
+    "left": 36,
+    "right": 36,
+    "top": 36,
+    "bottom": 36
+   },
+   "nineSlicePx": {
+    "left": 72,
+    "right": 72,
+    "top": 72,
+    "bottom": 72
+   }
+  },
+  {
+   "id": "FRM-05",
+   "name": "Planner Book spine",
+   "variant": "default",
+   "png": "png/FRM-05_planner-book-spine_default.png",
+   "mode": "Simple",
+   "width": 44,
+   "height": 36,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "FRM-05",
+   "name": "Planner Book page",
+   "variant": "left",
+   "png": "png/FRM-05_planner-book-page_left.png",
+   "mode": "Sliced",
+   "width": 106,
+   "height": 78,
+   "scale": 2,
+   "nineSlice": {
+    "left": 15,
+    "right": 51,
+    "top": 15,
+    "bottom": 15
+   },
+   "nineSlicePx": {
+    "left": 30,
+    "right": 102,
+    "top": 30,
+    "bottom": 30
+   }
+  },
+  {
+   "id": "FRM-05",
+   "name": "Planner Book page",
+   "variant": "right",
+   "png": "png/FRM-05_planner-book-page_right.png",
+   "mode": "Sliced",
+   "width": 106,
+   "height": 78,
+   "scale": 2,
+   "nineSlice": {
+    "left": 15,
+    "right": 51,
+    "top": 15,
+    "bottom": 15
+   },
+   "nineSlicePx": {
+    "left": 30,
+    "right": 102,
+    "top": 30,
+    "bottom": 30
+   }
+  },
+  {
+   "id": "FRM-07",
+   "name": "Inset panel",
+   "variant": "default",
+   "png": "png/FRM-07_inset-panel_default.png",
+   "mode": "Sliced",
+   "width": 32,
+   "height": 32,
+   "scale": 2,
+   "nineSlice": {
+    "left": 13,
+    "right": 13,
+    "top": 13,
+    "bottom": 13
+   },
+   "nineSlicePx": {
+    "left": 26,
+    "right": 26,
+    "top": 26,
+    "bottom": 26
+   }
+  },
+  {
+   "id": "LST-02",
+   "name": "Table frame",
+   "variant": "default",
+   "png": "png/LST-02_table-frame_default.png",
+   "mode": "Sliced",
+   "width": 32,
+   "height": 32,
+   "scale": 2,
+   "nineSlice": {
+    "left": 12,
+    "right": 12,
+    "top": 12,
+    "bottom": 12
+   },
+   "nineSlicePx": {
+    "left": 24,
+    "right": 24,
+    "top": 24,
+    "bottom": 24
+   }
+  },
+  {
+   "id": "LST-12",
+   "name": "Log box",
+   "variant": "default",
+   "png": "png/LST-12_log-box_default.png",
+   "mode": "Sliced",
+   "width": 32,
+   "height": 32,
+   "scale": 2,
+   "nineSlice": {
+    "left": 12,
+    "right": 12,
+    "top": 12,
+    "bottom": 12
+   },
+   "nineSlicePx": {
+    "left": 24,
+    "right": 24,
+    "top": 24,
+    "bottom": 24
+   }
+  },
+  {
+   "id": "STN-01",
+   "name": "Shelf board",
+   "variant": "default",
+   "png": "png/STN-01_shelf-board_default.png",
+   "mode": "Sliced",
+   "width": 36,
+   "height": 36,
+   "scale": 2,
+   "nineSlice": {
+    "left": 15,
+    "right": 15,
+    "top": 15,
+    "bottom": 15
+   },
+   "nineSlicePx": {
+    "left": 30,
+    "right": 30,
+    "top": 30,
+    "bottom": 30
+   }
+  },
+  {
+   "id": "STN-05",
+   "name": "Trail panel",
+   "variant": "default",
+   "png": "png/STN-05_trail-panel_default.png",
+   "mode": "Sliced",
+   "width": 32,
+   "height": 32,
+   "scale": 2,
+   "nineSlice": {
+    "left": 13,
+    "right": 13,
+    "top": 13,
+    "bottom": 13
+   },
+   "nineSlicePx": {
+    "left": 26,
+    "right": 26,
+    "top": 26,
+    "bottom": 26
+   }
+  },
+  {
+   "id": "ORN-01",
+   "name": "Corner ornament",
+   "variant": "tl",
+   "png": "png/ORN-01_corner-ornament_tl.png",
+   "mode": "Simple",
+   "width": 76,
+   "height": 76,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ORN-01",
+   "name": "Corner ornament",
+   "variant": "tr",
+   "png": "png/ORN-01_corner-ornament_tr.png",
+   "mode": "Simple",
+   "width": 76,
+   "height": 76,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ORN-01",
+   "name": "Corner ornament",
+   "variant": "bl",
+   "png": "png/ORN-01_corner-ornament_bl.png",
+   "mode": "Simple",
+   "width": 76,
+   "height": 76,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ORN-01",
+   "name": "Corner ornament",
+   "variant": "br",
+   "png": "png/ORN-01_corner-ornament_br.png",
+   "mode": "Simple",
+   "width": 76,
+   "height": 76,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ORN-02",
+   "name": "Divider",
+   "variant": "default",
+   "png": "png/ORN-02_divider_default.png",
+   "mode": "Simple",
+   "width": 404,
+   "height": 22,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "TTL-02",
+   "name": "Window title plate",
+   "variant": "default",
+   "png": "png/TTL-02_window-title-plate_default.png",
+   "mode": "Sliced",
+   "width": 140,
+   "height": 36,
+   "scale": 2,
+   "nineSlice": {
+    "left": 62,
+    "right": 62,
+    "top": 0,
+    "bottom": 0
+   },
+   "nineSlicePx": {
+    "left": 124,
+    "right": 124,
+    "top": 0,
+    "bottom": 0
+   }
+  },
+  {
+   "id": "LST-02",
+   "name": "Table header bar",
+   "variant": "default",
+   "png": "png/LST-02_table-header-bar_default.png",
+   "mode": "Simple",
+   "width": 36,
+   "height": 32,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "BTN-01",
+   "name": "Teal button skin",
+   "variant": "normal",
+   "png": "png/BTN-01_teal-button-skin_normal.png",
+   "mode": "Sliced",
+   "width": 68,
+   "height": 55,
+   "scale": 2,
+   "nineSlice": {
+    "left": 26,
+    "right": 26,
+    "top": 25,
+    "bottom": 26
+   },
+   "nineSlicePx": {
+    "left": 52,
+    "right": 52,
+    "top": 50,
+    "bottom": 52
+   }
+  },
+  {
+   "id": "BTN-01",
+   "name": "Teal button skin",
+   "variant": "hover",
+   "png": "png/BTN-01_teal-button-skin_hover.png",
+   "mode": "Sliced",
+   "width": 68,
+   "height": 55,
+   "scale": 2,
+   "nineSlice": {
+    "left": 26,
+    "right": 26,
+    "top": 25,
+    "bottom": 26
+   },
+   "nineSlicePx": {
+    "left": 52,
+    "right": 52,
+    "top": 50,
+    "bottom": 52
+   }
+  },
+  {
+   "id": "BTN-01",
+   "name": "Teal button skin",
+   "variant": "pressed",
+   "png": "png/BTN-01_teal-button-skin_pressed.png",
+   "mode": "Sliced",
+   "width": 68,
+   "height": 55,
+   "scale": 2,
+   "nineSlice": {
+    "left": 26,
+    "right": 26,
+    "top": 25,
+    "bottom": 26
+   },
+   "nineSlicePx": {
+    "left": 52,
+    "right": 52,
+    "top": 50,
+    "bottom": 52
+   }
+  },
+  {
+   "id": "BTN-01",
+   "name": "Teal button skin",
+   "variant": "disabled",
+   "png": "png/BTN-01_teal-button-skin_disabled.png",
+   "mode": "Sliced",
+   "width": 68,
+   "height": 55,
+   "scale": 2,
+   "nineSlice": {
+    "left": 26,
+    "right": 26,
+    "top": 25,
+    "bottom": 26
+   },
+   "nineSlicePx": {
+    "left": 52,
+    "right": 52,
+    "top": 50,
+    "bottom": 52
+   }
+  },
+  {
+   "id": "BTN-02",
+   "name": "Paper button skin",
+   "variant": "normal",
+   "png": "png/BTN-02_paper-button-skin_normal.png",
+   "mode": "Sliced",
+   "width": 68,
+   "height": 55,
+   "scale": 2,
+   "nineSlice": {
+    "left": 26,
+    "right": 26,
+    "top": 25,
+    "bottom": 26
+   },
+   "nineSlicePx": {
+    "left": 52,
+    "right": 52,
+    "top": 50,
+    "bottom": 52
+   }
+  },
+  {
+   "id": "BTN-02",
+   "name": "Paper button skin",
+   "variant": "hover",
+   "png": "png/BTN-02_paper-button-skin_hover.png",
+   "mode": "Sliced",
+   "width": 68,
+   "height": 55,
+   "scale": 2,
+   "nineSlice": {
+    "left": 26,
+    "right": 26,
+    "top": 25,
+    "bottom": 26
+   },
+   "nineSlicePx": {
+    "left": 52,
+    "right": 52,
+    "top": 50,
+    "bottom": 52
+   }
+  },
+  {
+   "id": "BTN-02",
+   "name": "Paper button skin",
+   "variant": "pressed",
+   "png": "png/BTN-02_paper-button-skin_pressed.png",
+   "mode": "Sliced",
+   "width": 68,
+   "height": 55,
+   "scale": 2,
+   "nineSlice": {
+    "left": 26,
+    "right": 26,
+    "top": 25,
+    "bottom": 26
+   },
+   "nineSlicePx": {
+    "left": 52,
+    "right": 52,
+    "top": 50,
+    "bottom": 52
+   }
+  },
+  {
+   "id": "BTN-02",
+   "name": "Paper button skin",
+   "variant": "disabled",
+   "png": "png/BTN-02_paper-button-skin_disabled.png",
+   "mode": "Sliced",
+   "width": 68,
+   "height": 55,
+   "scale": 2,
+   "nineSlice": {
+    "left": 26,
+    "right": 26,
+    "top": 25,
+    "bottom": 26
+   },
+   "nineSlicePx": {
+    "left": 52,
+    "right": 52,
+    "top": 50,
+    "bottom": 52
+   }
+  },
+  {
+   "id": "BTN-03",
+   "name": "Gold button skin",
+   "variant": "normal",
+   "png": "png/BTN-03_gold-button-skin_normal.png",
+   "mode": "Sliced",
+   "width": 68,
+   "height": 55,
+   "scale": 2,
+   "nineSlice": {
+    "left": 26,
+    "right": 26,
+    "top": 25,
+    "bottom": 26
+   },
+   "nineSlicePx": {
+    "left": 52,
+    "right": 52,
+    "top": 50,
+    "bottom": 52
+   }
+  },
+  {
+   "id": "BTN-03",
+   "name": "Gold button skin",
+   "variant": "hover",
+   "png": "png/BTN-03_gold-button-skin_hover.png",
+   "mode": "Sliced",
+   "width": 68,
+   "height": 55,
+   "scale": 2,
+   "nineSlice": {
+    "left": 26,
+    "right": 26,
+    "top": 25,
+    "bottom": 26
+   },
+   "nineSlicePx": {
+    "left": 52,
+    "right": 52,
+    "top": 50,
+    "bottom": 52
+   }
+  },
+  {
+   "id": "BTN-03",
+   "name": "Gold button skin",
+   "variant": "pressed",
+   "png": "png/BTN-03_gold-button-skin_pressed.png",
+   "mode": "Sliced",
+   "width": 68,
+   "height": 55,
+   "scale": 2,
+   "nineSlice": {
+    "left": 26,
+    "right": 26,
+    "top": 25,
+    "bottom": 26
+   },
+   "nineSlicePx": {
+    "left": 52,
+    "right": 52,
+    "top": 50,
+    "bottom": 52
+   }
+  },
+  {
+   "id": "BTN-03",
+   "name": "Gold button skin",
+   "variant": "disabled",
+   "png": "png/BTN-03_gold-button-skin_disabled.png",
+   "mode": "Sliced",
+   "width": 68,
+   "height": 55,
+   "scale": 2,
+   "nineSlice": {
+    "left": 26,
+    "right": 26,
+    "top": 25,
+    "bottom": 26
+   },
+   "nineSlicePx": {
+    "left": 52,
+    "right": 52,
+    "top": 50,
+    "bottom": 52
+   }
+  },
+  {
+   "id": "BTN-04",
+   "name": "Small teal button skin",
+   "variant": "normal",
+   "png": "png/BTN-04_small-teal-button-skin_normal.png",
+   "mode": "Sliced",
+   "width": 52,
+   "height": 47,
+   "scale": 2,
+   "nineSlice": {
+    "left": 22,
+    "right": 22,
+    "top": 21,
+    "bottom": 22
+   },
+   "nineSlicePx": {
+    "left": 44,
+    "right": 44,
+    "top": 42,
+    "bottom": 44
+   }
+  },
+  {
+   "id": "BTN-04",
+   "name": "Small teal button skin",
+   "variant": "hover",
+   "png": "png/BTN-04_small-teal-button-skin_hover.png",
+   "mode": "Sliced",
+   "width": 52,
+   "height": 47,
+   "scale": 2,
+   "nineSlice": {
+    "left": 22,
+    "right": 22,
+    "top": 21,
+    "bottom": 22
+   },
+   "nineSlicePx": {
+    "left": 44,
+    "right": 44,
+    "top": 42,
+    "bottom": 44
+   }
+  },
+  {
+   "id": "BTN-04",
+   "name": "Small teal button skin",
+   "variant": "pressed",
+   "png": "png/BTN-04_small-teal-button-skin_pressed.png",
+   "mode": "Sliced",
+   "width": 52,
+   "height": 47,
+   "scale": 2,
+   "nineSlice": {
+    "left": 22,
+    "right": 22,
+    "top": 21,
+    "bottom": 22
+   },
+   "nineSlicePx": {
+    "left": 44,
+    "right": 44,
+    "top": 42,
+    "bottom": 44
+   }
+  },
+  {
+   "id": "BTN-04",
+   "name": "Small teal button skin",
+   "variant": "disabled",
+   "png": "png/BTN-04_small-teal-button-skin_disabled.png",
+   "mode": "Sliced",
+   "width": 52,
+   "height": 47,
+   "scale": 2,
+   "nineSlice": {
+    "left": 22,
+    "right": 22,
+    "top": 21,
+    "bottom": 22
+   },
+   "nineSlicePx": {
+    "left": 44,
+    "right": 44,
+    "top": 42,
+    "bottom": 44
+   }
+  },
+  {
+   "id": "BTN-04",
+   "name": "Small paper button skin",
+   "variant": "normal",
+   "png": "png/BTN-04_small-paper-button-skin_normal.png",
+   "mode": "Sliced",
+   "width": 52,
+   "height": 47,
+   "scale": 2,
+   "nineSlice": {
+    "left": 22,
+    "right": 22,
+    "top": 21,
+    "bottom": 22
+   },
+   "nineSlicePx": {
+    "left": 44,
+    "right": 44,
+    "top": 42,
+    "bottom": 44
+   }
+  },
+  {
+   "id": "BTN-04",
+   "name": "Small paper button skin",
+   "variant": "hover",
+   "png": "png/BTN-04_small-paper-button-skin_hover.png",
+   "mode": "Sliced",
+   "width": 52,
+   "height": 47,
+   "scale": 2,
+   "nineSlice": {
+    "left": 22,
+    "right": 22,
+    "top": 21,
+    "bottom": 22
+   },
+   "nineSlicePx": {
+    "left": 44,
+    "right": 44,
+    "top": 42,
+    "bottom": 44
+   }
+  },
+  {
+   "id": "BTN-04",
+   "name": "Small paper button skin",
+   "variant": "pressed",
+   "png": "png/BTN-04_small-paper-button-skin_pressed.png",
+   "mode": "Sliced",
+   "width": 52,
+   "height": 47,
+   "scale": 2,
+   "nineSlice": {
+    "left": 22,
+    "right": 22,
+    "top": 21,
+    "bottom": 22
+   },
+   "nineSlicePx": {
+    "left": 44,
+    "right": 44,
+    "top": 42,
+    "bottom": 44
+   }
+  },
+  {
+   "id": "BTN-04",
+   "name": "Small paper button skin",
+   "variant": "disabled",
+   "png": "png/BTN-04_small-paper-button-skin_disabled.png",
+   "mode": "Sliced",
+   "width": 52,
+   "height": 47,
+   "scale": 2,
+   "nineSlice": {
+    "left": 22,
+    "right": 22,
+    "top": 21,
+    "bottom": 22
+   },
+   "nineSlicePx": {
+    "left": 44,
+    "right": 44,
+    "top": 42,
+    "bottom": 44
+   }
+  },
+  {
+   "id": "BTN-04",
+   "name": "Small gold button skin",
+   "variant": "normal",
+   "png": "png/BTN-04_small-gold-button-skin_normal.png",
+   "mode": "Sliced",
+   "width": 52,
+   "height": 47,
+   "scale": 2,
+   "nineSlice": {
+    "left": 22,
+    "right": 22,
+    "top": 21,
+    "bottom": 22
+   },
+   "nineSlicePx": {
+    "left": 44,
+    "right": 44,
+    "top": 42,
+    "bottom": 44
+   }
+  },
+  {
+   "id": "BTN-04",
+   "name": "Small gold button skin",
+   "variant": "hover",
+   "png": "png/BTN-04_small-gold-button-skin_hover.png",
+   "mode": "Sliced",
+   "width": 52,
+   "height": 47,
+   "scale": 2,
+   "nineSlice": {
+    "left": 22,
+    "right": 22,
+    "top": 21,
+    "bottom": 22
+   },
+   "nineSlicePx": {
+    "left": 44,
+    "right": 44,
+    "top": 42,
+    "bottom": 44
+   }
+  },
+  {
+   "id": "BTN-04",
+   "name": "Small gold button skin",
+   "variant": "pressed",
+   "png": "png/BTN-04_small-gold-button-skin_pressed.png",
+   "mode": "Sliced",
+   "width": 52,
+   "height": 47,
+   "scale": 2,
+   "nineSlice": {
+    "left": 22,
+    "right": 22,
+    "top": 21,
+    "bottom": 22
+   },
+   "nineSlicePx": {
+    "left": 44,
+    "right": 44,
+    "top": 42,
+    "bottom": 44
+   }
+  },
+  {
+   "id": "BTN-04",
+   "name": "Small gold button skin",
+   "variant": "disabled",
+   "png": "png/BTN-04_small-gold-button-skin_disabled.png",
+   "mode": "Sliced",
+   "width": 52,
+   "height": 47,
+   "scale": 2,
+   "nineSlice": {
+    "left": 22,
+    "right": 22,
+    "top": 21,
+    "bottom": 22
+   },
+   "nineSlicePx": {
+    "left": 44,
+    "right": 44,
+    "top": 42,
+    "bottom": 44
+   }
+  },
+  {
+   "id": "BTN-10",
+   "name": "Round HUD button",
+   "variant": "normal",
+   "png": "png/BTN-10_round-hud-button_normal.png",
+   "mode": "Simple",
+   "width": 66,
+   "height": 66,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "BTN-10",
+   "name": "Round HUD button",
+   "variant": "on",
+   "png": "png/BTN-10_round-hud-button_on.png",
+   "mode": "Simple",
+   "width": 66,
+   "height": 66,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "BTN-11",
+   "name": "Round icon button",
+   "variant": "normal",
+   "png": "png/BTN-11_round-icon-button_normal.png",
+   "mode": "Simple",
+   "width": 44,
+   "height": 44,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "BTN-11",
+   "name": "Round icon button",
+   "variant": "disabled",
+   "png": "png/BTN-11_round-icon-button_disabled.png",
+   "mode": "Simple",
+   "width": 44,
+   "height": 44,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "VAL-03",
+   "name": "Mini round button",
+   "variant": "normal",
+   "png": "png/VAL-03_mini-round-button_normal.png",
+   "mode": "Simple",
+   "width": 24,
+   "height": 24,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "VAL-03",
+   "name": "Mini round button",
+   "variant": "disabled",
+   "png": "png/VAL-03_mini-round-button_disabled.png",
+   "mode": "Simple",
+   "width": 24,
+   "height": 24,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "BTN-12",
+   "name": "Item icon ring",
+   "variant": "normal",
+   "png": "png/BTN-12_item-icon-ring_normal.png",
+   "mode": "Simple",
+   "width": 36,
+   "height": 36,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "BTN-12",
+   "name": "Item icon ring",
+   "variant": "hover",
+   "png": "png/BTN-12_item-icon-ring_hover.png",
+   "mode": "Simple",
+   "width": 36,
+   "height": 36,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "BTN-13",
+   "name": "Help mark disc",
+   "variant": "default",
+   "png": "png/BTN-13_help-mark-disc_default.png",
+   "mode": "Simple",
+   "width": 24,
+   "height": 24,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "BTN-14",
+   "name": "Book tab",
+   "variant": "normal",
+   "png": "png/BTN-14_book-tab_normal.png",
+   "mode": "Simple",
+   "width": 68,
+   "height": 58,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "BTN-14",
+   "name": "Book tab",
+   "variant": "on",
+   "png": "png/BTN-14_book-tab_on.png",
+   "mode": "Simple",
+   "width": 68,
+   "height": 58,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "BTN-16",
+   "name": "Price level button",
+   "variant": "low",
+   "png": "png/BTN-16_price-level-button_low.png",
+   "mode": "Sliced",
+   "width": 46,
+   "height": 46,
+   "scale": 2,
+   "nineSlice": {
+    "left": 17,
+    "right": 17,
+    "top": 17,
+    "bottom": 17
+   },
+   "nineSlicePx": {
+    "left": 34,
+    "right": 34,
+    "top": 34,
+    "bottom": 34
+   }
+  },
+  {
+   "id": "BTN-16",
+   "name": "Price level button",
+   "variant": "low on",
+   "png": "png/BTN-16_price-level-button_low-on.png",
+   "mode": "Sliced",
+   "width": 46,
+   "height": 46,
+   "scale": 2,
+   "nineSlice": {
+    "left": 17,
+    "right": 17,
+    "top": 17,
+    "bottom": 17
+   },
+   "nineSlicePx": {
+    "left": 34,
+    "right": 34,
+    "top": 34,
+    "bottom": 34
+   }
+  },
+  {
+   "id": "BTN-16",
+   "name": "Price level button",
+   "variant": "fair",
+   "png": "png/BTN-16_price-level-button_fair.png",
+   "mode": "Sliced",
+   "width": 46,
+   "height": 46,
+   "scale": 2,
+   "nineSlice": {
+    "left": 17,
+    "right": 17,
+    "top": 17,
+    "bottom": 17
+   },
+   "nineSlicePx": {
+    "left": 34,
+    "right": 34,
+    "top": 34,
+    "bottom": 34
+   }
+  },
+  {
+   "id": "BTN-16",
+   "name": "Price level button",
+   "variant": "fair on",
+   "png": "png/BTN-16_price-level-button_fair-on.png",
+   "mode": "Sliced",
+   "width": 46,
+   "height": 46,
+   "scale": 2,
+   "nineSlice": {
+    "left": 17,
+    "right": 17,
+    "top": 17,
+    "bottom": 17
+   },
+   "nineSlicePx": {
+    "left": 34,
+    "right": 34,
+    "top": 34,
+    "bottom": 34
+   }
+  },
+  {
+   "id": "BTN-16",
+   "name": "Price level button",
+   "variant": "high",
+   "png": "png/BTN-16_price-level-button_high.png",
+   "mode": "Sliced",
+   "width": 46,
+   "height": 46,
+   "scale": 2,
+   "nineSlice": {
+    "left": 17,
+    "right": 17,
+    "top": 17,
+    "bottom": 17
+   },
+   "nineSlicePx": {
+    "left": 34,
+    "right": 34,
+    "top": 34,
+    "bottom": 34
+   }
+  },
+  {
+   "id": "BTN-16",
+   "name": "Price level button",
+   "variant": "high on",
+   "png": "png/BTN-16_price-level-button_high-on.png",
+   "mode": "Sliced",
+   "width": 46,
+   "height": 46,
+   "scale": 2,
+   "nineSlice": {
+    "left": 17,
+    "right": 17,
+    "top": 17,
+    "bottom": 17
+   },
+   "nineSlicePx": {
+    "left": 34,
+    "right": 34,
+    "top": 34,
+    "bottom": 34
+   }
+  },
+  {
+   "id": "BTN-17",
+   "name": "Note pick skin",
+   "variant": "normal",
+   "png": "png/BTN-17_note-pick-skin_normal.png",
+   "mode": "Sliced",
+   "width": 42,
+   "height": 42,
+   "scale": 2,
+   "nineSlice": {
+    "left": 17,
+    "right": 17,
+    "top": 17,
+    "bottom": 17
+   },
+   "nineSlicePx": {
+    "left": 34,
+    "right": 34,
+    "top": 34,
+    "bottom": 34
+   }
+  },
+  {
+   "id": "BTN-17",
+   "name": "Note pick skin",
+   "variant": "on",
+   "png": "png/BTN-17_note-pick-skin_on.png",
+   "mode": "Sliced",
+   "width": 42,
+   "height": 42,
+   "scale": 2,
+   "nineSlice": {
+    "left": 17,
+    "right": 17,
+    "top": 17,
+    "bottom": 17
+   },
+   "nineSlicePx": {
+    "left": 34,
+    "right": 34,
+    "top": 34,
+    "bottom": 34
+   }
+  },
+  {
+   "id": "HUD-01",
+   "name": "Day dial sample",
+   "variant": "morning",
+   "png": "png/HUD-01_day-dial-sample_morning.png",
+   "mode": "Simple",
+   "width": 666,
+   "height": 3478,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "HUD-01",
+   "name": "Day dial sample",
+   "variant": "day",
+   "png": "png/HUD-01_day-dial-sample_day.png",
+   "mode": "Simple",
+   "width": 666,
+   "height": 3478,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "HUD-01",
+   "name": "Day dial sample",
+   "variant": "dusk",
+   "png": "png/HUD-01_day-dial-sample_dusk.png",
+   "mode": "Simple",
+   "width": 666,
+   "height": 3478,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "HUD-01",
+   "name": "Day dial sample",
+   "variant": "night",
+   "png": "png/HUD-01_day-dial-sample_night.png",
+   "mode": "Simple",
+   "width": 666,
+   "height": 3478,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "HUD-03",
+   "name": "Energy badge skin",
+   "variant": "normal",
+   "png": "png/HUD-03_energy-badge-skin_normal.png",
+   "mode": "Sliced",
+   "width": 36,
+   "height": 28,
+   "scale": 2,
+   "nineSlice": {
+    "left": 14,
+    "right": 14,
+    "top": 13,
+    "bottom": 13
+   },
+   "nineSlicePx": {
+    "left": 28,
+    "right": 28,
+    "top": 26,
+    "bottom": 26
+   }
+  },
+  {
+   "id": "HUD-03",
+   "name": "Energy badge skin",
+   "variant": "low",
+   "png": "png/HUD-03_energy-badge-skin_low.png",
+   "mode": "Sliced",
+   "width": 36,
+   "height": 28,
+   "scale": 2,
+   "nineSlice": {
+    "left": 14,
+    "right": 14,
+    "top": 13,
+    "bottom": 13
+   },
+   "nineSlicePx": {
+    "left": 28,
+    "right": 28,
+    "top": 26,
+    "bottom": 26
+   }
+  },
+  {
+   "id": "HUD-04",
+   "name": "Stat pill skin",
+   "variant": "default",
+   "png": "png/HUD-04_stat-pill-skin_default.png",
+   "mode": "Sliced",
+   "width": 52,
+   "height": 44,
+   "scale": 2,
+   "nineSlice": {
+    "left": 22,
+    "right": 22,
+    "top": 21,
+    "bottom": 21
+   },
+   "nineSlicePx": {
+    "left": 44,
+    "right": 44,
+    "top": 42,
+    "bottom": 42
+   }
+  },
+  {
+   "id": "HUD-07",
+   "name": "Hint bar",
+   "variant": "default",
+   "png": "png/HUD-07_hint-bar_default.png",
+   "mode": "Simple",
+   "width": 100,
+   "height": 36,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "HUD-08",
+   "name": "Key cap",
+   "variant": "cream",
+   "png": "png/HUD-08_key-cap_cream.png",
+   "mode": "Sliced",
+   "width": 564,
+   "height": 24,
+   "scale": 2,
+   "nineSlice": {
+    "left": 8,
+    "right": 548,
+    "top": 8,
+    "bottom": 8
+   },
+   "nineSlicePx": {
+    "left": 16,
+    "right": 1096,
+    "top": 16,
+    "bottom": 16
+   }
+  },
+  {
+   "id": "HUD-08",
+   "name": "Key cap",
+   "variant": "teal",
+   "png": "png/HUD-08_key-cap_teal.png",
+   "mode": "Sliced",
+   "width": 564,
+   "height": 24,
+   "scale": 2,
+   "nineSlice": {
+    "left": 8,
+    "right": 548,
+    "top": 8,
+    "bottom": 8
+   },
+   "nineSlicePx": {
+    "left": 16,
+    "right": 1096,
+    "top": 16,
+    "bottom": 16
+   }
+  },
+  {
+   "id": "LST-02",
+   "name": "Table row",
+   "variant": "normal",
+   "png": "png/LST-02_table-row_normal.png",
+   "mode": "Sliced",
+   "width": 28,
+   "height": 40,
+   "scale": 2,
+   "nineSlice": {
+    "left": 8,
+    "right": 8,
+    "top": 0,
+    "bottom": 0
+   },
+   "nineSlicePx": {
+    "left": 16,
+    "right": 16,
+    "top": 0,
+    "bottom": 0
+   }
+  },
+  {
+   "id": "LST-02",
+   "name": "Table row",
+   "variant": "selected",
+   "png": "png/LST-02_table-row_selected.png",
+   "mode": "Sliced",
+   "width": 28,
+   "height": 40,
+   "scale": 2,
+   "nineSlice": {
+    "left": 8,
+    "right": 8,
+    "top": 0,
+    "bottom": 0
+   },
+   "nineSlicePx": {
+    "left": 16,
+    "right": 16,
+    "top": 0,
+    "bottom": 0
+   }
+  },
+  {
+   "id": "LST-02",
+   "name": "Table row",
+   "variant": "has",
+   "png": "png/LST-02_table-row_has.png",
+   "mode": "Sliced",
+   "width": 28,
+   "height": 40,
+   "scale": 2,
+   "nineSlice": {
+    "left": 8,
+    "right": 8,
+    "top": 0,
+    "bottom": 0
+   },
+   "nineSlicePx": {
+    "left": 16,
+    "right": 16,
+    "top": 0,
+    "bottom": 0
+   }
+  },
+  {
+   "id": "LST-03",
+   "name": "Station menu row",
+   "variant": "hover",
+   "png": "png/LST-03_station-menu-row_hover.png",
+   "mode": "Sliced",
+   "width": 32,
+   "height": 32,
+   "scale": 2,
+   "nineSlice": {
+    "left": 12,
+    "right": 12,
+    "top": 12,
+    "bottom": 12
+   },
+   "nineSlicePx": {
+    "left": 24,
+    "right": 24,
+    "top": 24,
+    "bottom": 24
+   }
+  },
+  {
+   "id": "LST-03",
+   "name": "Station menu row",
+   "variant": "selected",
+   "png": "png/LST-03_station-menu-row_selected.png",
+   "mode": "Sliced",
+   "width": 32,
+   "height": 32,
+   "scale": 2,
+   "nineSlice": {
+    "left": 12,
+    "right": 12,
+    "top": 12,
+    "bottom": 12
+   },
+   "nineSlicePx": {
+    "left": 24,
+    "right": 24,
+    "top": 24,
+    "bottom": 24
+   }
+  },
+  {
+   "id": "LST-07",
+   "name": "Day goal row",
+   "variant": "normal",
+   "png": "png/LST-07_day-goal-row_normal.png",
+   "mode": "Sliced",
+   "width": 32,
+   "height": 32,
+   "scale": 2,
+   "nineSlice": {
+    "left": 12,
+    "right": 12,
+    "top": 12,
+    "bottom": 12
+   },
+   "nineSlicePx": {
+    "left": 24,
+    "right": 24,
+    "top": 24,
+    "bottom": 24
+   }
+  },
+  {
+   "id": "LST-07",
+   "name": "Day goal row",
+   "variant": "today",
+   "png": "png/LST-07_day-goal-row_today.png",
+   "mode": "Sliced",
+   "width": 32,
+   "height": 32,
+   "scale": 2,
+   "nineSlice": {
+    "left": 12,
+    "right": 12,
+    "top": 12,
+    "bottom": 12
+   },
+   "nineSlicePx": {
+    "left": 24,
+    "right": 24,
+    "top": 24,
+    "bottom": 24
+   }
+  },
+  {
+   "id": "LST-07",
+   "name": "Day goal row",
+   "variant": "drop here",
+   "png": "png/LST-07_day-goal-row_drop-here.png",
+   "mode": "Sliced",
+   "width": 32,
+   "height": 32,
+   "scale": 2,
+   "nineSlice": {
+    "left": 12,
+    "right": 12,
+    "top": 12,
+    "bottom": 12
+   },
+   "nineSlicePx": {
+    "left": 24,
+    "right": 24,
+    "top": 24,
+    "bottom": 24
+   }
+  },
+  {
+   "id": "LST-09",
+   "name": "Warning line",
+   "variant": "warn",
+   "png": "png/LST-09_warning-line_warn.png",
+   "mode": "Sliced",
+   "width": 24,
+   "height": 24,
+   "scale": 2,
+   "nineSlice": {
+    "left": 9,
+    "right": 9,
+    "top": 9,
+    "bottom": 9
+   },
+   "nineSlicePx": {
+    "left": 18,
+    "right": 18,
+    "top": 18,
+    "bottom": 18
+   }
+  },
+  {
+   "id": "LST-09",
+   "name": "Warning line",
+   "variant": "ok",
+   "png": "png/LST-09_warning-line_ok.png",
+   "mode": "Sliced",
+   "width": 24,
+   "height": 24,
+   "scale": 2,
+   "nineSlice": {
+    "left": 9,
+    "right": 9,
+    "top": 9,
+    "bottom": 9
+   },
+   "nineSlicePx": {
+    "left": 18,
+    "right": 18,
+    "top": 18,
+    "bottom": 18
+   }
+  },
+  {
+   "id": "CRD-07",
+   "name": "Goal card skin",
+   "variant": "normal",
+   "png": "png/CRD-07_goal-card-skin_normal.png",
+   "mode": "Sliced",
+   "width": 96,
+   "height": 46,
+   "scale": 2,
+   "nineSlice": {
+    "left": 69,
+    "right": 19,
+    "top": 19,
+    "bottom": 19
+   },
+   "nineSlicePx": {
+    "left": 138,
+    "right": 38,
+    "top": 38,
+    "bottom": 38
+   }
+  },
+  {
+   "id": "CRD-07",
+   "name": "Goal card skin",
+   "variant": "selected",
+   "png": "png/CRD-07_goal-card-skin_selected.png",
+   "mode": "Sliced",
+   "width": 96,
+   "height": 46,
+   "scale": 2,
+   "nineSlice": {
+    "left": 69,
+    "right": 19,
+    "top": 19,
+    "bottom": 19
+   },
+   "nineSlicePx": {
+    "left": 138,
+    "right": 38,
+    "top": 38,
+    "bottom": 38
+   }
+  },
+  {
+   "id": "CRD-08",
+   "name": "Small goal card skin",
+   "variant": "default",
+   "png": "png/CRD-08_small-goal-card-skin_default.png",
+   "mode": "Sliced",
+   "width": 34,
+   "height": 34,
+   "scale": 2,
+   "nineSlice": {
+    "left": 13,
+    "right": 13,
+    "top": 13,
+    "bottom": 13
+   },
+   "nineSlicePx": {
+    "left": 26,
+    "right": 26,
+    "top": 26,
+    "bottom": 26
+   }
+  },
+  {
+   "id": "CRD-13",
+   "name": "Goal chip skin",
+   "variant": "filled",
+   "png": "png/CRD-13_goal-chip-skin_filled.png",
+   "mode": "Sliced",
+   "width": 32,
+   "height": 32,
+   "scale": 2,
+   "nineSlice": {
+    "left": 12,
+    "right": 12,
+    "top": 12,
+    "bottom": 12
+   },
+   "nineSlicePx": {
+    "left": 24,
+    "right": 24,
+    "top": 24,
+    "bottom": 24
+   }
+  },
+  {
+   "id": "CRD-13",
+   "name": "Goal chip skin",
+   "variant": "empty",
+   "png": "png/CRD-13_goal-chip-skin_empty.png",
+   "mode": "Sliced",
+   "width": 32,
+   "height": 32,
+   "scale": 2,
+   "nineSlice": {
+    "left": 12,
+    "right": 12,
+    "top": 12,
+    "bottom": 12
+   },
+   "nineSlicePx": {
+    "left": 24,
+    "right": 24,
+    "top": 24,
+    "bottom": 24
+   }
+  },
+  {
+   "id": "CRD-07",
+   "name": "Deck over limit",
+   "variant": "default",
+   "png": "png/CRD-07_deck-over-limit_default.png",
+   "mode": "Sliced",
+   "width": 32,
+   "height": 32,
+   "scale": 2,
+   "nineSlice": {
+    "left": 13,
+    "right": 13,
+    "top": 13,
+    "bottom": 13
+   },
+   "nineSlicePx": {
+    "left": 26,
+    "right": 26,
+    "top": 26,
+    "bottom": 26
+   }
+  },
+  {
+   "id": "CRD-15",
+   "name": "Help popup skin",
+   "variant": "default",
+   "png": "png/CRD-15_help-popup-skin_default.png",
+   "mode": "Sliced",
+   "width": 36,
+   "height": 36,
+   "scale": 2,
+   "nineSlice": {
+    "left": 14,
+    "right": 14,
+    "top": 14,
+    "bottom": 14
+   },
+   "nineSlicePx": {
+    "left": 28,
+    "right": 28,
+    "top": 28,
+    "bottom": 28
+   }
+  },
+  {
+   "id": "CRD-16",
+   "name": "Toast skin",
+   "variant": "normal",
+   "png": "png/CRD-16_toast-skin_normal.png",
+   "mode": "Sliced",
+   "width": 56,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": {
+    "left": 25,
+    "right": 25,
+    "top": 24,
+    "bottom": 24
+   },
+   "nineSlicePx": {
+    "left": 50,
+    "right": 50,
+    "top": 48,
+    "bottom": 48
+   }
+  },
+  {
+   "id": "CRD-16",
+   "name": "Toast skin",
+   "variant": "refusal",
+   "png": "png/CRD-16_toast-skin_refusal.png",
+   "mode": "Sliced",
+   "width": 56,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": {
+    "left": 25,
+    "right": 25,
+    "top": 24,
+    "bottom": 24
+   },
+   "nineSlicePx": {
+    "left": 50,
+    "right": 50,
+    "top": 48,
+    "bottom": 48
+   }
+  },
+  {
+   "id": "CRD-16",
+   "name": "Toast skin",
+   "variant": "news",
+   "png": "png/CRD-16_toast-skin_news.png",
+   "mode": "Sliced",
+   "width": 56,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": {
+    "left": 25,
+    "right": 25,
+    "top": 24,
+    "bottom": 24
+   },
+   "nineSlicePx": {
+    "left": 50,
+    "right": 50,
+    "top": 48,
+    "bottom": 48
+   }
+  },
+  {
+   "id": "CRD-18",
+   "name": "Walk banner skin",
+   "variant": "default",
+   "png": "png/CRD-18_walk-banner-skin_default.png",
+   "mode": "Sliced",
+   "width": 68,
+   "height": 60,
+   "scale": 2,
+   "nineSlice": {
+    "left": 30,
+    "right": 30,
+    "top": 28,
+    "bottom": 28
+   },
+   "nineSlicePx": {
+    "left": 60,
+    "right": 60,
+    "top": 56,
+    "bottom": 56
+   }
+  },
+  {
+   "id": "DLG-01",
+   "name": "Speech bubble",
+   "variant": "default",
+   "png": "png/DLG-01_speech-bubble_default.png",
+   "mode": "Sliced",
+   "width": 36,
+   "height": 32,
+   "scale": 2,
+   "nineSlice": {
+    "left": 13,
+    "right": 17,
+    "top": 13,
+    "bottom": 13
+   },
+   "nineSlicePx": {
+    "left": 26,
+    "right": 34,
+    "top": 26,
+    "bottom": 26
+   }
+  },
+  {
+   "id": "DLG-01",
+   "name": "Speaker tag",
+   "variant": "default",
+   "png": "png/DLG-01_speaker-tag_default.png",
+   "mode": "Sliced",
+   "width": 28,
+   "height": 24,
+   "scale": 2,
+   "nineSlice": {
+    "left": 12,
+    "right": 12,
+    "top": 11,
+    "bottom": 11
+   },
+   "nineSlicePx": {
+    "left": 24,
+    "right": 24,
+    "top": 22,
+    "bottom": 22
+   }
+  },
+  {
+   "id": "CHP-01",
+   "name": "Chip skin",
+   "variant": "normal",
+   "png": "png/CHP-01_chip-skin_normal.png",
+   "mode": "Sliced",
+   "width": 40,
+   "height": 32,
+   "scale": 2,
+   "nineSlice": {
+    "left": 16,
+    "right": 16,
+    "top": 15,
+    "bottom": 15
+   },
+   "nineSlicePx": {
+    "left": 32,
+    "right": 32,
+    "top": 30,
+    "bottom": 30
+   }
+  },
+  {
+   "id": "CHP-01",
+   "name": "Chip skin",
+   "variant": "ok",
+   "png": "png/CHP-01_chip-skin_ok.png",
+   "mode": "Sliced",
+   "width": 40,
+   "height": 32,
+   "scale": 2,
+   "nineSlice": {
+    "left": 16,
+    "right": 16,
+    "top": 15,
+    "bottom": 15
+   },
+   "nineSlicePx": {
+    "left": 32,
+    "right": 32,
+    "top": 30,
+    "bottom": 30
+   }
+  },
+  {
+   "id": "CHP-01",
+   "name": "Chip skin",
+   "variant": "missing",
+   "png": "png/CHP-01_chip-skin_missing.png",
+   "mode": "Sliced",
+   "width": 40,
+   "height": 32,
+   "scale": 2,
+   "nineSlice": {
+    "left": 16,
+    "right": 16,
+    "top": 15,
+    "bottom": 15
+   },
+   "nineSlicePx": {
+    "left": 32,
+    "right": 32,
+    "top": 30,
+    "bottom": 30
+   }
+  },
+  {
+   "id": "CHP-01",
+   "name": "Chip skin",
+   "variant": "hours",
+   "png": "png/CHP-01_chip-skin_hours.png",
+   "mode": "Sliced",
+   "width": 40,
+   "height": 32,
+   "scale": 2,
+   "nineSlice": {
+    "left": 16,
+    "right": 16,
+    "top": 15,
+    "bottom": 15
+   },
+   "nineSlicePx": {
+    "left": 32,
+    "right": 32,
+    "top": 30,
+    "bottom": 30
+   }
+  },
+  {
+   "id": "CHP-01",
+   "name": "Chip skin",
+   "variant": "closed",
+   "png": "png/CHP-01_chip-skin_closed.png",
+   "mode": "Sliced",
+   "width": 40,
+   "height": 32,
+   "scale": 2,
+   "nineSlice": {
+    "left": 16,
+    "right": 16,
+    "top": 15,
+    "bottom": 15
+   },
+   "nineSlicePx": {
+    "left": 32,
+    "right": 32,
+    "top": 30,
+    "bottom": 30
+   }
+  },
+  {
+   "id": "CHP-04",
+   "name": "Count badge skin",
+   "variant": "red",
+   "png": "png/CHP-04_count-badge-skin_red.png",
+   "mode": "Sliced",
+   "width": 32,
+   "height": 24,
+   "scale": 2,
+   "nineSlice": {
+    "left": 12,
+    "right": 12,
+    "top": 11,
+    "bottom": 11
+   },
+   "nineSlicePx": {
+    "left": 24,
+    "right": 24,
+    "top": 22,
+    "bottom": 22
+   }
+  },
+  {
+   "id": "CHP-04",
+   "name": "Count badge skin",
+   "variant": "ok",
+   "png": "png/CHP-04_count-badge-skin_ok.png",
+   "mode": "Sliced",
+   "width": 32,
+   "height": 24,
+   "scale": 2,
+   "nineSlice": {
+    "left": 12,
+    "right": 12,
+    "top": 11,
+    "bottom": 11
+   },
+   "nineSlicePx": {
+    "left": 24,
+    "right": 24,
+    "top": 22,
+    "bottom": 22
+   }
+  },
+  {
+   "id": "CHP-05",
+   "name": "Level chip skin",
+   "variant": "default",
+   "png": "png/CHP-05_level-chip-skin_default.png",
+   "mode": "Sliced",
+   "width": 36,
+   "height": 28,
+   "scale": 2,
+   "nineSlice": {
+    "left": 14,
+    "right": 14,
+    "top": 13,
+    "bottom": 13
+   },
+   "nineSlicePx": {
+    "left": 28,
+    "right": 28,
+    "top": 26,
+    "bottom": 26
+   }
+  },
+  {
+   "id": "CHP-06",
+   "name": "Jar badge skin",
+   "variant": "store",
+   "png": "png/CHP-06_jar-badge-skin_store.png",
+   "mode": "Sliced",
+   "width": 40,
+   "height": 32,
+   "scale": 2,
+   "nineSlice": {
+    "left": 16,
+    "right": 16,
+    "top": 15,
+    "bottom": 15
+   },
+   "nineSlicePx": {
+    "left": 32,
+    "right": 32,
+    "top": 30,
+    "bottom": 30
+   }
+  },
+  {
+   "id": "CHP-06",
+   "name": "Jar badge skin",
+   "variant": "personal",
+   "png": "png/CHP-06_jar-badge-skin_personal.png",
+   "mode": "Sliced",
+   "width": 40,
+   "height": 32,
+   "scale": 2,
+   "nineSlice": {
+    "left": 16,
+    "right": 16,
+    "top": 15,
+    "bottom": 15
+   },
+   "nineSlicePx": {
+    "left": 32,
+    "right": 32,
+    "top": 30,
+    "bottom": 30
+   }
+  },
+  {
+   "id": "CHP-06",
+   "name": "Jar badge skin",
+   "variant": "over",
+   "png": "png/CHP-06_jar-badge-skin_over.png",
+   "mode": "Sliced",
+   "width": 40,
+   "height": 32,
+   "scale": 2,
+   "nineSlice": {
+    "left": 16,
+    "right": 16,
+    "top": 15,
+    "bottom": 15
+   },
+   "nineSlicePx": {
+    "left": 32,
+    "right": 32,
+    "top": 30,
+    "bottom": 30
+   }
+  },
+  {
+   "id": "CHP-07",
+   "name": "Price level tag",
+   "variant": "low",
+   "png": "png/CHP-07_price-level-tag_low.png",
+   "mode": "Sliced",
+   "width": 20,
+   "height": 18,
+   "scale": 2,
+   "nineSlice": {
+    "left": 7,
+    "right": 7,
+    "top": 7,
+    "bottom": 7
+   },
+   "nineSlicePx": {
+    "left": 14,
+    "right": 14,
+    "top": 14,
+    "bottom": 14
+   }
+  },
+  {
+   "id": "CHP-07",
+   "name": "Price level tag",
+   "variant": "fair",
+   "png": "png/CHP-07_price-level-tag_fair.png",
+   "mode": "Sliced",
+   "width": 20,
+   "height": 18,
+   "scale": 2,
+   "nineSlice": {
+    "left": 7,
+    "right": 7,
+    "top": 7,
+    "bottom": 7
+   },
+   "nineSlicePx": {
+    "left": 14,
+    "right": 14,
+    "top": 14,
+    "bottom": 14
+   }
+  },
+  {
+   "id": "CHP-07",
+   "name": "Price level tag",
+   "variant": "high",
+   "png": "png/CHP-07_price-level-tag_high.png",
+   "mode": "Sliced",
+   "width": 20,
+   "height": 18,
+   "scale": 2,
+   "nineSlice": {
+    "left": 7,
+    "right": 7,
+    "top": 7,
+    "bottom": 7
+   },
+   "nineSlicePx": {
+    "left": 14,
+    "right": 14,
+    "top": 14,
+    "bottom": 14
+   }
+  },
+  {
+   "id": "CHP-09",
+   "name": "Hotspot pill skin",
+   "variant": "normal",
+   "png": "png/CHP-09_hotspot-pill-skin_normal.png",
+   "mode": "Sliced",
+   "width": 44,
+   "height": 38,
+   "scale": 2,
+   "nineSlice": {
+    "left": 19,
+    "right": 19,
+    "top": 18,
+    "bottom": 18
+   },
+   "nineSlicePx": {
+    "left": 38,
+    "right": 38,
+    "top": 36,
+    "bottom": 36
+   }
+  },
+  {
+   "id": "CHP-09",
+   "name": "Hotspot pill skin",
+   "variant": "open",
+   "png": "png/CHP-09_hotspot-pill-skin_open.png",
+   "mode": "Sliced",
+   "width": 44,
+   "height": 38,
+   "scale": 2,
+   "nineSlice": {
+    "left": 19,
+    "right": 19,
+    "top": 18,
+    "bottom": 18
+   },
+   "nineSlicePx": {
+    "left": 38,
+    "right": 38,
+    "top": 36,
+    "bottom": 36
+   }
+  },
+  {
+   "id": "CHP-09",
+   "name": "Hotspot pill skin",
+   "variant": "you are here",
+   "png": "png/CHP-09_hotspot-pill-skin_you-are-here.png",
+   "mode": "Sliced",
+   "width": 44,
+   "height": 38,
+   "scale": 2,
+   "nineSlice": {
+    "left": 19,
+    "right": 19,
+    "top": 18,
+    "bottom": 18
+   },
+   "nineSlicePx": {
+    "left": 38,
+    "right": 38,
+    "top": 36,
+    "bottom": 36
+   }
+  },
+  {
+   "id": "CHP-09",
+   "name": "Hotspot pill skin",
+   "variant": "closed",
+   "png": "png/CHP-09_hotspot-pill-skin_closed.png",
+   "mode": "Sliced",
+   "width": 44,
+   "height": 38,
+   "scale": 2,
+   "nineSlice": {
+    "left": 19,
+    "right": 19,
+    "top": 18,
+    "bottom": 18
+   },
+   "nineSlicePx": {
+    "left": 38,
+    "right": 38,
+    "top": 36,
+    "bottom": 36
+   }
+  },
+  {
+   "id": "CHP-09",
+   "name": "Hotspot arrow",
+   "variant": "default",
+   "png": "png/CHP-09_hotspot-arrow_default.png",
+   "mode": "Simple",
+   "width": 21,
+   "height": 21,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "CHP-11",
+   "name": "News dot",
+   "variant": "default",
+   "png": "png/CHP-11_news-dot_default.png",
+   "mode": "Simple",
+   "width": 22,
+   "height": 22,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "VAL-01",
+   "name": "Number box",
+   "variant": "default",
+   "png": "png/VAL-01_number-box_default.png",
+   "mode": "Sliced",
+   "width": 32,
+   "height": 32,
+   "scale": 2,
+   "nineSlice": {
+    "left": 11,
+    "right": 11,
+    "top": 11,
+    "bottom": 11
+   },
+   "nineSlicePx": {
+    "left": 22,
+    "right": 22,
+    "top": 22,
+    "bottom": 22
+   }
+  },
+  {
+   "id": "VAL-04",
+   "name": "Bar track",
+   "variant": "default",
+   "png": "png/VAL-04_bar-track_default.png",
+   "mode": "Sliced",
+   "width": 24,
+   "height": 16,
+   "scale": 2,
+   "nineSlice": {
+    "left": 8,
+    "right": 8,
+    "top": 7,
+    "bottom": 7
+   },
+   "nineSlicePx": {
+    "left": 16,
+    "right": 16,
+    "top": 14,
+    "bottom": 14
+   }
+  },
+  {
+   "id": "VAL-04",
+   "name": "Bar fill",
+   "variant": "green",
+   "png": "png/VAL-04_bar-fill_green.png",
+   "mode": "Tiled",
+   "width": 20,
+   "height": 16,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "VAL-04",
+   "name": "Bar fill",
+   "variant": "low",
+   "png": "png/VAL-04_bar-fill_low.png",
+   "mode": "Tiled",
+   "width": 20,
+   "height": 16,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "VAL-04",
+   "name": "Bar fill",
+   "variant": "gold",
+   "png": "png/VAL-04_bar-fill_gold.png",
+   "mode": "Tiled",
+   "width": 20,
+   "height": 16,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "VAL-04",
+   "name": "Bar fill",
+   "variant": "wis",
+   "png": "png/VAL-04_bar-fill_wis.png",
+   "mode": "Tiled",
+   "width": 20,
+   "height": 16,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "VAL-04",
+   "name": "Bar fill",
+   "variant": "ver",
+   "png": "png/VAL-04_bar-fill_ver.png",
+   "mode": "Tiled",
+   "width": 20,
+   "height": 16,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "VAL-05",
+   "name": "Dot",
+   "variant": "empty",
+   "png": "png/VAL-05_dot_empty.png",
+   "mode": "Simple",
+   "width": 16,
+   "height": 16,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "VAL-05",
+   "name": "Dot",
+   "variant": "filled",
+   "png": "png/VAL-05_dot_filled.png",
+   "mode": "Simple",
+   "width": 16,
+   "height": 16,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "VAL-05",
+   "name": "Dot",
+   "variant": "ok",
+   "png": "png/VAL-05_dot_ok.png",
+   "mode": "Simple",
+   "width": 16,
+   "height": 16,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "VAL-05",
+   "name": "Dot",
+   "variant": "missed",
+   "png": "png/VAL-05_dot_missed.png",
+   "mode": "Simple",
+   "width": 16,
+   "height": 16,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "VAL-09",
+   "name": "Budget jar",
+   "variant": "empty",
+   "png": "png/VAL-09_budget-jar_empty.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 105,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "VAL-09",
+   "name": "Budget jar",
+   "variant": "full store",
+   "png": "png/VAL-09_budget-jar_full-store.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 105,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "VAL-09",
+   "name": "Budget jar",
+   "variant": "full personal",
+   "png": "png/VAL-09_budget-jar_full-personal.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 105,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "STN-02",
+   "name": "Shelf slot skin",
+   "variant": "normal",
+   "png": "png/STN-02_shelf-slot-skin_normal.png",
+   "mode": "Sliced",
+   "width": 42,
+   "height": 42,
+   "scale": 2,
+   "nineSlice": {
+    "left": 16,
+    "right": 16,
+    "top": 16,
+    "bottom": 16
+   },
+   "nineSlicePx": {
+    "left": 32,
+    "right": 32,
+    "top": 32,
+    "bottom": 32
+   }
+  },
+  {
+   "id": "STN-02",
+   "name": "Shelf slot skin",
+   "variant": "selected",
+   "png": "png/STN-02_shelf-slot-skin_selected.png",
+   "mode": "Sliced",
+   "width": 42,
+   "height": 42,
+   "scale": 2,
+   "nineSlice": {
+    "left": 16,
+    "right": 16,
+    "top": 16,
+    "bottom": 16
+   },
+   "nineSlicePx": {
+    "left": 32,
+    "right": 32,
+    "top": 32,
+    "bottom": 32
+   }
+  },
+  {
+   "id": "STN-04",
+   "name": "Hour bar",
+   "variant": "normal",
+   "png": "png/STN-04_hour-bar_normal.png",
+   "mode": "Sliced",
+   "width": 24,
+   "height": 24,
+   "scale": 2,
+   "nineSlice": {
+    "left": 8,
+    "right": 8,
+    "top": 8,
+    "bottom": 5
+   },
+   "nineSlicePx": {
+    "left": 16,
+    "right": 16,
+    "top": 16,
+    "bottom": 10
+   }
+  },
+  {
+   "id": "STN-04",
+   "name": "Hour bar",
+   "variant": "now",
+   "png": "png/STN-04_hour-bar_now.png",
+   "mode": "Sliced",
+   "width": 24,
+   "height": 24,
+   "scale": 2,
+   "nineSlice": {
+    "left": 8,
+    "right": 8,
+    "top": 8,
+    "bottom": 5
+   },
+   "nineSlicePx": {
+    "left": 16,
+    "right": 16,
+    "top": 16,
+    "bottom": 10
+   }
+  },
+  {
+   "id": "STN-04",
+   "name": "Hour bar block",
+   "variant": "default",
+   "png": "png/STN-04_hour-bar-block_default.png",
+   "mode": "Sliced",
+   "width": 20,
+   "height": 12,
+   "scale": 2,
+   "nineSlice": {
+    "left": 5,
+    "right": 5,
+    "top": 5,
+    "bottom": 5
+   },
+   "nineSlicePx": {
+    "left": 10,
+    "right": 10,
+    "top": 10,
+    "bottom": 10
+   }
+  },
+  {
+   "id": "ICN-01",
+   "name": "Medallion",
+   "variant": "default",
+   "png": "png/ICN-01_medallion_default.png",
+   "mode": "Simple",
+   "width": 104,
+   "height": 104,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "gold",
+   "png": "png/ICN-02_icon_gold.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "debt",
+   "png": "png/ICN-02_icon_debt.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "energy",
+   "png": "png/ICN-02_icon_energy.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "clock",
+   "png": "png/ICN-02_icon_clock.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "time",
+   "png": "png/ICN-02_icon_time.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "calendar",
+   "png": "png/ICN-02_icon_calendar.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "house",
+   "png": "png/ICN-02_icon_house.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "store",
+   "png": "png/ICN-02_icon_store.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "market",
+   "png": "png/ICN-02_icon_market.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "stall",
+   "png": "png/ICN-02_icon_stall.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "guild",
+   "png": "png/ICN-02_icon_guild.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "outskirt",
+   "png": "png/ICN-02_icon_outskirt.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "explore",
+   "png": "png/ICN-02_icon_explore.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "map",
+   "png": "png/ICN-02_icon_map.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "journal",
+   "png": "png/ICN-02_icon_journal.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "bag",
+   "png": "png/ICN-02_icon_bag.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "cauldron",
+   "png": "png/ICN-02_icon_cauldron.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "rack",
+   "png": "png/ICN-02_icon_rack.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "grinder",
+   "png": "png/ICN-02_icon_grinder.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "bed",
+   "png": "png/ICN-02_icon_bed.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "rest",
+   "png": "png/ICN-02_icon_rest.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "meal",
+   "png": "png/ICN-02_icon_meal.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "food",
+   "png": "png/ICN-02_icon_food.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "cart",
+   "png": "png/ICN-02_icon_cart.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "quest",
+   "png": "png/ICN-02_icon_quest.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "desk",
+   "png": "png/ICN-02_icon_desk.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "people",
+   "png": "png/ICN-02_icon_people.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "customer",
+   "png": "png/ICN-02_icon_customer.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "neighbour",
+   "png": "png/ICN-02_icon_neighbour.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "root",
+   "png": "png/ICN-02_icon_root.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "leaf",
+   "png": "png/ICN-02_icon_leaf.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "herb",
+   "png": "png/ICN-02_icon_herb.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "fruit",
+   "png": "png/ICN-02_icon_fruit.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "sugar",
+   "png": "png/ICN-02_icon_sugar.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "grain",
+   "png": "png/ICN-02_icon_grain.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "oil",
+   "png": "png/ICN-02_icon_oil.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "wax",
+   "png": "png/ICN-02_icon_wax.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "jamu",
+   "png": "png/ICN-02_icon_jamu.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "salep",
+   "png": "png/ICN-02_icon_salep.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "jar",
+   "png": "png/ICN-02_icon_jar.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "heart",
+   "png": "png/ICN-02_icon_heart.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "cross",
+   "png": "png/ICN-02_icon_cross.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "trend_up",
+   "png": "png/ICN-02_icon_trend-up.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "trend_down",
+   "png": "png/ICN-02_icon_trend-down.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "trend_flat",
+   "png": "png/ICN-02_icon_trend-flat.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "sun",
+   "png": "png/ICN-02_icon_sun.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "moon",
+   "png": "png/ICN-02_icon_moon.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "earth",
+   "png": "png/ICN-02_icon_earth.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "rain",
+   "png": "png/ICN-02_icon_rain.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "lantern",
+   "png": "png/ICN-02_icon_lantern.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "star",
+   "png": "png/ICN-02_icon_star.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "check",
+   "png": "png/ICN-02_icon_check.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "x",
+   "png": "png/ICN-02_icon_x.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "plus",
+   "png": "png/ICN-02_icon_plus.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "minus",
+   "png": "png/ICN-02_icon_minus.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "back",
+   "png": "png/ICN-02_icon_back.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "next",
+   "png": "png/ICN-02_icon_next.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "lock",
+   "png": "png/ICN-02_icon_lock.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "note",
+   "png": "png/ICN-02_icon_note.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "ledger",
+   "png": "png/ICN-02_icon_ledger.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "chart",
+   "png": "png/ICN-02_icon_chart.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "skills",
+   "png": "png/ICN-02_icon_skills.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "log",
+   "png": "png/ICN-02_icon_log.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "settings",
+   "png": "png/ICN-02_icon_settings.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "shelf",
+   "png": "png/ICN-02_icon_shelf.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "tag",
+   "png": "png/ICN-02_icon_tag.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "walk",
+   "png": "png/ICN-02_icon_walk.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "skip",
+   "png": "png/ICN-02_icon_skip.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "dried",
+   "png": "png/ICN-02_icon_dried.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "powder",
+   "png": "png/ICN-02_icon_powder.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "sleep",
+   "png": "png/ICN-02_icon_sleep.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "festival",
+   "png": "png/ICN-02_icon_festival.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "sign",
+   "png": "png/ICN-02_icon_sign.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "lesson",
+   "png": "png/ICN-02_icon_lesson.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "trade",
+   "png": "png/ICN-02_icon_trade.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "info",
+   "png": "png/ICN-02_icon_info.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "warn",
+   "png": "png/ICN-02_icon_warn.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  },
+  {
+   "id": "ICN-02",
+   "name": "Icon",
+   "variant": "buffer",
+   "png": "png/ICN-02_icon_buffer.png",
+   "mode": "Simple",
+   "width": 52,
+   "height": 52,
+   "scale": 2,
+   "nineSlice": null,
+   "nineSlicePx": null
+  }
+ ]
+}

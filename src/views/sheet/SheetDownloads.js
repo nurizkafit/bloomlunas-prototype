@@ -15,8 +15,12 @@ const h = (tag, props = {}, ...kids) => {
  * Each variant gets a check box and a PNG link. The bar downloads the selected parts, or all parts, as one zip with its manifest.
  */
 export class SheetDownloads {
-  constructor(base = './ui-export/') {
+  /** @param {{base?: string, zipName?: string, cmd?: string, intro?: string}} [o] */
+  constructor({ base = './ui-export/', zipName = 'bloomlunas-ui', cmd = 'npm run export:ui', intro = 'PNG at 2x, clear background. Tick the parts you want, or use the PNG link under a part.' } = {}) {
     this.base = base;
+    this.zipName = zipName;
+    this.cmd = cmd;
+    this.intro = intro;
     /** @type {Map<string, any>} manifest row by file name (without .png) */
     this.rows = new Map();
     this.manifest = null;
@@ -31,7 +35,7 @@ export class SheetDownloads {
   /** The bar at the top of the sheet. */
   bar() {
     return h('div.sh-dlbar', {},
-      h('span', {}, h('b', {}, 'Unity placeholders: '), 'PNG at 2x, clear background. Tick the parts you want, or use the PNG link under a part.'),
+      h('span', {}, h('b', {}, 'Downloads: '), this.intro),
       h('span.sh-dlsel', {}, this.count, ' selected'), this.btnSel, this.btnClr, this.btnAll, this.links, this.status);
   }
 
@@ -52,7 +56,7 @@ export class SheetDownloads {
       if (!r.ok || !/json/.test(r.headers.get('content-type') ?? '')) throw new Error('no manifest');
       this.manifest = await r.json();
     } catch {
-      this.status.textContent = 'No PNG files yet. Run npm run export:ui, then reload.';
+      this.status.textContent = `No PNG files yet. Run ${this.cmd}, then reload.`;
       this.status.classList.add('bad');
       return;
     }
@@ -60,13 +64,13 @@ export class SheetDownloads {
     let stale = 0;
     for (const v of document.querySelectorAll('.sh-var[data-file]')) {
       const f = v.dataset.file, a = v.querySelector('.sh-get'), box = v.querySelector('.sh-pick');
-      if (!this.rows.has(f)) { stale += 1; a.title = 'No PNG for this part. Run npm run export:ui again.'; a.classList.add('off'); continue; }
+      if (!this.rows.has(f)) { stale += 1; a.title = `No PNG for this part. Run ${this.cmd} again.`; a.classList.add('off'); continue; }
       a.href = `${this.base}png/${f}.png`; a.download = `${f}.png`; a.removeAttribute('aria-disabled');
       box.disabled = false;
     }
     this.links.append(h('a', { href: `${this.base}manifest.json`, download: 'manifest.json' }, 'manifest.json'), h('a', { href: `${this.base}manifest.csv`, download: 'manifest.csv' }, 'manifest.csv'));
     this.btnAll.disabled = this.rows.size === 0;
-    this.status.textContent = `${this.rows.size} PNG files.${stale ? ` ${stale} parts have no PNG: run npm run export:ui again.` : ''}`;
+    this.status.textContent = `${this.rows.size} PNG files.${stale ? ` ${stale} parts have no PNG: run ${this.cmd} again.` : ''}`;
     this.status.classList.toggle('bad', stale > 0);
     document.body.dataset.downloads = String(this.rows.size);
   }
@@ -100,8 +104,8 @@ export class SheetDownloads {
       }
       const enc = (s) => new TextEncoder().encode(s);
       zip.add('manifest.json', enc(JSON.stringify({ ...this.manifest, count: rows.length, parts: rows }, null, 1)));
-      zip.add('manifest.csv', enc(SheetDownloads.csv(rows)));
-      const a = h('a', { href: URL.createObjectURL(zip.blob()), download: `bloomlunas-ui-${tag}-${rows.length}.zip` });
+      zip.add('manifest.csv', enc(SheetDownloads.csv(rows, this.manifest.columns)));
+      const a = h('a', { href: URL.createObjectURL(zip.blob()), download: `${this.zipName}-${tag}-${rows.length}.zip` });
       document.body.append(a); a.click(); a.remove();
       setTimeout(() => URL.revokeObjectURL(a.href), 10000);
       this.status.textContent = `Saved ${rows.length} PNG files in one zip.`;
@@ -113,10 +117,16 @@ export class SheetDownloads {
     }
   }
 
-  /** Same columns as manifest.csv from the export. */
-  static csv(rows) {
+  /**
+   * Same columns as manifest.csv from the export. A manifest can name its own columns: [[header, field path], ...].
+   * @param {any[]} rows @param {[string, string][]} [cols]
+   */
+  static csv(rows, cols = SheetDownloads.COLS) {
     const q = (x) => `"${String(x ?? '').replace(/"/g, '""')}"`;
-    return ['id,name,variant,png,svg,svg_type,width,height,scale,nine_left,nine_right,nine_top,nine_bottom,css',
-      ...rows.map((r) => [r.id, r.name, r.variant, r.png, r.svg, r.svgType, r.width, r.height, r.scale, r.nineSlice?.left, r.nineSlice?.right, r.nineSlice?.top, r.nineSlice?.bottom, r.css].map(q).join(','))].join('\n');
+    const get = (r, path) => path.split('.').reduce((o, k) => o?.[k], r);
+    return [cols.map((c) => c[0]).join(','), ...rows.map((r) => cols.map((c) => q(get(r, c[1]))).join(','))].join('\n');
   }
+
+  static COLS = [['id', 'id'], ['name', 'name'], ['variant', 'variant'], ['png', 'png'], ['svg', 'svg'], ['svg_type', 'svgType'], ['width', 'width'], ['height', 'height'], ['scale', 'scale'],
+    ['nine_left', 'nineSlice.left'], ['nine_right', 'nineSlice.right'], ['nine_top', 'nineSlice.top'], ['nine_bottom', 'nineSlice.bottom'], ['css', 'css']];
 }

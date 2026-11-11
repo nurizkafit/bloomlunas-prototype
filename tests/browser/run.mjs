@@ -3,7 +3,7 @@
  * Browser test loop (Playwright, needs Chromium). Starts the Vite dev server, runs each tests/browser/*.cjs,
  * writes screenshots to out/browser/, stops the server. Usage: npm run test:browser
  * An optional name runs only the matching test file: node tests/browser/run.mjs sheet (npm run sheet).
- * export.cjs (npm run export:ui) is a tool, not a test: it runs only when named.
+ * export.cjs (npm run export:ui) and export-unity.cjs (npm run export:unity) are tools, not tests: they run only when named.
  */
 import { spawn, execFileSync } from 'node:child_process';
 import { readdirSync, mkdirSync } from 'node:fs';
@@ -18,7 +18,7 @@ try {
   for (let i = 0; i < 40; i++) {
     try { await fetch('http://localhost:5173'); break; } catch { await new Promise((r) => setTimeout(r, 250)); }
   }
-  for (const f of readdirSync('tests/browser').filter((x) => x.endsWith('.cjs') && (only ? x.startsWith(only) : !x.startsWith('export'))).sort()) {
+  for (const f of readdirSync('tests/browser').filter((x) => x.endsWith('.cjs') && (only ? x === `${only}.cjs` : !x.startsWith('export'))).sort()) {
     process.stdout.write(`\n== ${f}\n`);
     try { execFileSync('node', [`tests/browser/${f}`, out], { stdio: 'inherit' }); } catch { failed += 1; console.error(`FAIL ${f}`); }
   }

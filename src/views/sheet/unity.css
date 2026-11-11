@@ -1,0 +1,16 @@
+/* Unity assets page only (unity.html). Layout comes from sheet.css, the look of each part from theme.css. */
+.u-spr { position: relative; flex: none; }
+.u-spr > * { position: relative; }
+.u-ctx { display: block; }
+.u-guide { position: absolute; z-index: 9; pointer-events: none; border: 0 dashed #E0479E; }
+.u-guide.left, .u-guide.right { top: -6px; bottom: -6px; width: 0; border-left-width: 1px; }
+.u-guide.top, .u-guide.bottom { left: -6px; right: -6px; height: 0; border-top-width: 1px; }
+.u-key { background: none !important; box-shadow: none !important; border: 1px dashed #E0479E; }
+.u-tgt.hot::after { display: none; }
+.u-tgt > .divider { margin: 0; height: 100%; }
+.u-tgt > svg { display: block; }
+.u-dial { filter: none !important; }
+.u-dial .dt, .u-dial .ph, .u-dial .en { display: none !important; }
+.sh-key b { font-family: var(--head); font-weight: 400; color: var(--teal); }
+.u-big { zoom: 2; }
+i.u-tgt, span.u-tgt { display: block; }

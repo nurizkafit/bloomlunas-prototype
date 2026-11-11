@@ -105,7 +105,7 @@ export class InterfaceSheet {
         h('p', `All ${total} interface components of the prototype and their variants, in ${secs.length} families. The art is placeholder. It will change to hand-drawn art. `,
           'Each item has an ID (family code + number) and a plain name, so you can write audit notes such as "unify BTN-02 and BTN-15". ',
           'The small grey line is the CSS class in src/views/ui/theme.css. "Used in" tells where the game shows it. Names and texts come from the game data; numbers are sample values.'),
-        h('div.sh-index', secs.map((s) => h('a', { href: `#${s.code}` }, `${s.code} ${s.title}`)), h('a', { href: '#notes' }, 'Audit notes'))),
+        h('div.sh-index', secs.map((s) => h('a', { href: `#${s.code}` }, `${s.code} ${s.title}`)), h('a', { href: '#notes' }, 'Audit notes'), h('a', { href: './unity.html' }, 'Unity assets'))),
       h('div.sh-key',
         h('span', h('i', { style: { background: '#1d3537' } }), 'On the 3D scene / dark'),
         h('span', h('i', { style: { background: '#F2E9D8' } }), 'On paper (windows, cards)'),
