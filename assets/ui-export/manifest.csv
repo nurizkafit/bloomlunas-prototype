@@ -157,8 +157,6 @@ id,name,variant,png,svg,svg_type,width,height,scale,nine_left,nine_right,nine_to
 "CHP-09","Hotspot pill","open","png/CHP-09_hotspot-pill_open.png","","","86","38","2","","","","",".hot (.on .here :disabled .place)"
 "CHP-09","Hotspot pill","closed","png/CHP-09_hotspot-pill_closed.png","","","128","38","2","","","","",".hot (.on .here :disabled .place)"
 "CHP-09","Hotspot pill","place, you are here","png/CHP-09_hotspot-pill_place-you-are-here.png","","","154","38","2","","","","",".hot (.on .here :disabled .place)"
-"CHP-09","Hotspot pill","action (runs at once)","png/CHP-09_hotspot-pill_action-runs-at-once.png","","","86","38","2","","","","",".hot (.on .here :disabled .place)"
-"CHP-09","Hotspot pill","door (Home rooms)","png/CHP-09_hotspot-pill_door-home-rooms.png","","","111","38","2","","","","",".hot (.on .here :disabled .place)"
 "CHP-10","Chart legend","default","png/CHP-10_chart-legend_default.png","","","112","23","2","","","","",".legend"
 "CHP-11","News dot","HUD button","png/CHP-11_news-dot_hud-button.png","","","64","84","2","","","","",".rb > .dot / .tab > .dot"
 "CHP-11","News dot","book tab","png/CHP-11_news-dot_book-tab.png","","","72","62","2","","","","",".rb > .dot / .tab > .dot"
