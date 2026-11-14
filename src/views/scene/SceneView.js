@@ -64,7 +64,7 @@ export class SceneView {
     if (!this.data) return;
     const inGame = local.screen === 'game', doing = inGame && state.phase === 'do';
     const room = this.data.rooms?.[state.place];
-    this.focus = doing && !local.map ? (room ? `room:${this.#roomKey(state.place, room, local)}` : state.place) : 'overview';
+    this.focus = doing && !local.map ? (room ? `room:${state.place}` : state.place) : 'overview';
     // Town list (user feedback 8 Nov 2026): all places in view; a picked place zooms in; travel shows the walk.
     if (doing && local.map) this.focus = 'townmap';
     this.zoom = !!(doing && local.map && local.pick?.zoom && this.data.places[local.pick.place]);
@@ -76,29 +76,6 @@ export class SceneView {
     // Free view area: right of the station list or the place list when no window is open.
     this.offsetX = doing && !local.station && !local.journal && !local.walk ? -150 : 0;
   }
-
-  /**
-   * Room to show for a place. A room with "sub" (Home, user decision 14 Nov 2026) has sub-rooms joined by doors.
-   * A door hotspot moves to its room; opening a station moves to the room that holds it (sub[station]).
-   * @param {string} place @param {any} room @param {any} local
-   */
-  #roomKey(place, room, local) {
-    if (!room.sub) return place;
-    if (this.subPlace !== place) { this.subPlace = place; this.subKey = null; this.lastDoor = local.door; this.lastStation = null; }
-    if (local.door && local.door !== this.lastDoor) { this.lastDoor = local.door; this.subKey = local.door.to; }
-    if (local.station !== this.lastStation) { this.lastStation = local.station; if (room.sub[local.station]) this.subKey = room.sub[local.station]; }
-    this.subKey ??= room.sub._default;
-    return this.subKey;
-  }
-
-  /** The current room data, or null. */
-  #curRoom() { const key = this.focus.startsWith('room:') ? this.focus.slice(5) : null; return key ? this.data?.rooms[key] : null; }
-
-  /** Doors of the current room: [{to, label}]. */
-  doors() { return this.#curRoom()?.doors ?? []; }
-
-  /** Action hotspots of the current room (whole-room GLB): [{id, label, icon}]. */
-  actions() { return this.#curRoom()?.actions ?? []; }
 
   /**
    * Start the player walk from one place to another along the town roads (round the plaza fountain).
@@ -127,7 +104,7 @@ export class SceneView {
 
   /**
    * DOM hotspots kept over 3D anchors. kind 'station' uses the current room; kind 'place' uses the town.
-   * @param {{kind:'station'|'place'|'door'|'action', id:string, el:HTMLElement}[]} items
+   * @param {{kind:'station'|'place', id:string, el:HTMLElement}[]} items
    */
   setSpots(items) {
     this.spots = items.map((it) => ({ ...it, pos: this.#anchor(it.kind, it.id) })).filter((s) => s.pos);
@@ -143,13 +120,6 @@ export class SceneView {
     }
     const key = this.focus.startsWith('room:') ? this.focus.slice(5) : null;
     const r = key && d.rooms[key];
-    // Door and action spots: an empty in the whole-room GLB (node), or a room-local point (at).
-    const it = kind === 'door' ? r?.doors?.find((x) => x.to === id) : kind === 'action' ? r?.actions?.find((x) => x.id === id) : null;
-    if (it) {
-      const n = it.node && this.rooms.get(key)?.nodes?.get(THREE.PropertyBinding.sanitizeNodeName(it.node)); // GLTFLoader turns spaces into _
-      if (n) return n.clone().add(new THREE.Vector3(0, it.lift ?? 0.25, 0));
-      return it.at ? new THREE.Vector3(r.origin[0] + it.at[0], it.at[1], r.origin[1] + it.at[2]) : null;
-    }
     const a = r?.stations?.[id];
     if (r && a) return new THREE.Vector3(r.origin[0] + a[0], a[1], r.origin[1] + a[2]);
     if (!key && id === 'explore' && d.places.outskirt) return new THREE.Vector3(d.places.outskirt.x, 1.0, d.places.outskirt.z);
@@ -234,15 +204,12 @@ export class SceneView {
     for (const w of d.walkers) names.add(w.m);
     names.add(d.player.m);
     for (const r of this.#roomList()) {
-      if (r.scene) names.add(r.scene.m);
-      for (const p of r.props ?? []) names.add(p.m);
+      for (const p of r.props) names.add(p.m);
       for (const n of r.npc ?? []) names.add(n.m);
       for (const w of r.walkers ?? []) names.add(w.m);
     }
     const loader = new GLTFLoader();
-    // Model key prefixes with their own folder (bases), for example "rooms/" = whole-room GLBs from Blender.
-    const url = (n) => { const pre = Object.keys(d.bases ?? {}).find((k) => n.startsWith(k)); return pre ? `${d.bases[pre]}${n.slice(pre.length)}.glb` : `${d.base}${n}.glb`; };
-    await Promise.all([...names].map((n) => loader.loadAsync(url(n)).then((g) => this.cache.set(n, g)).catch((e) => console.warn('missing model', n, e))));
+    await Promise.all([...names].map((n) => loader.loadAsync(`${d.base}${n}.glb`).then((g) => this.cache.set(n, g)).catch((e) => console.warn('missing model', n, e))));
     for (const h of d.houses) this.#house(h);
     for (const p of d.props) {
       const o = this.#inst(p.m);
@@ -260,49 +227,19 @@ export class SceneView {
 
   #roomList() { return Object.values(this.data.rooms ?? {}).filter((r) => r && r.origin); }
 
-  /**
-   * Whole-room GLB exported from Blender (user, 14 Nov 2026): placed as is (artist x, z), floor at y 0.
-   * Its empties (nodes with no mesh) become spot anchors by name. Unlit materials keep their colours (no tone mapping).
-   * @param {THREE.Group} g @param {any} r @returns {Map<string, THREE.Vector3>} empty name to world position
-   */
-  #scene(g, r) {
-    const nodes = new Map();
-    const src = this.cache.get(r.scene.m);
-    if (!src) return nodes;
-    const o = src.scene.clone(true);
-    o.scale.setScalar(r.scene.s ?? 1);
-    o.updateMatrixWorld(true);
-    const bb = new THREE.Box3();
-    o.traverse((m) => {
-      if (!m.isMesh) return;
-      bb.expandByObject(m);
-      m.material = m.material.clone();
-      if (m.material.isMeshBasicMaterial) m.material.toneMapped = false;
-      m.castShadow = true; m.receiveShadow = true;
-    });
-    o.position.y = -bb.min.y + (r.scene.y ?? 0);
-    g.add(o);
-    g.position.set(r.origin[0], 0, r.origin[1]);
-    g.updateMatrixWorld(true);
-    o.traverse((m) => { if (!m.isMesh && m !== o && !m.children.some((c) => c.isMesh)) nodes.set(m.name, m.getWorldPosition(new THREE.Vector3())); });
-    return nodes;
-  }
-
   /** One interior: floor, back and side walls (front open), beams, windows, boards, props and NPCs. */
   #room(key, r) {
     const g = new THREE.Group();
-    const mat = (c, extra = {}) => new THREE.MeshStandardMaterial({ color: c ?? '#FFFFFF', roughness: 1, ...extra });
+    const mat = (c, extra = {}) => new THREE.MeshStandardMaterial({ color: c, roughness: 1, ...extra });
     const box = (w, h, dd, x, y, z, m) => { const o = new THREE.Mesh(new THREE.BoxGeometry(w, h, dd), m); o.position.set(x, y, z); o.castShadow = true; o.receiveShadow = true; g.add(o); return o; };
     const W = r.w, D = r.d, H = r.h, t = 0.12;
     const wall = mat(r.wall), beam = mat(r.beam), floor = mat(r.floor);
-    let nodes = null;
-    if (r.scene) nodes = this.#scene(g, r);
-    else if (r.outdoor) this.#yard(g, r, mat);
+    if (r.outdoor) this.#yard(g, r, mat);
     else this.#walls(g, r, mat, box, W, D, H, t, wall, beam, floor);
-    if (!r.scene) this.#roomProps(g, r, mat, box, beam, H);
+    this.#roomProps(g, r, mat, box, beam, H);
     g.position.set(r.origin[0], 0, r.origin[1]);
     this.scene.add(g);
-    this.rooms.set(key, { g, r, nodes });
+    this.rooms.set(key, { g, r });
     // Shoppers walk in world space along room-local paths.
     for (const w of r.walkers ?? []) this.#walker({ ...w, path: w.path.map(([x, z]) => [x + r.origin[0], z + r.origin[1]]) });
   }
@@ -485,7 +422,7 @@ export class SceneView {
       dist = d.walk.camDist;
     } else if (room) {
       const c = room.cam;
-      goal = new THREE.Vector3(room.origin[0] + (c.tx ?? 0.2), c.ty ?? 0.55, room.origin[1] + (c.tz ?? 0.1));
+      goal = new THREE.Vector3(room.origin[0] + (c.tx ?? 0.2), 0.55, room.origin[1] + (c.tz ?? 0.1));
       dir = new THREE.Vector3(Math.sin(c.yaw + sway * 0.4), c.pitch, Math.cos(c.yaw + sway * 0.4)).normalize();
       dist = c.dist;
     } else {
@@ -518,10 +455,10 @@ export class SceneView {
       if (wp.ahead.distanceTo(wp.p) > 0.01) this.player.obj.lookAt(wp.ahead.x, 0, wp.ahead.z);
       this.player.obj.visible = true;
     } else if (this.player && this.playerPlace) {
-      const rp = this.inRoom && room?.player;
+      const rp = this.inRoom && d.rooms[this.playerPlace]?.player;
       if (rp) {
-        const o = room.origin;
-        this.player.obj.position.set(o[0] + rp[0], room.floorY ?? 0, o[1] + rp[1]); this.player.obj.rotation.y = THREE.MathUtils.degToRad(rp[2] ?? 0);
+        const o = d.rooms[this.playerPlace].origin;
+        this.player.obj.position.set(o[0] + rp[0], 0, o[1] + rp[1]); this.player.obj.rotation.y = THREE.MathUtils.degToRad(rp[2] ?? 0);
       } else {
         const s = d.player.spots[this.playerPlace];
         if (s) { this.player.obj.position.set(s[0], 0, s[1]); this.player.obj.rotation.y = 0.6; }

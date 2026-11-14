@@ -44,15 +44,6 @@ export class PlaceView {
       const shut = !open && id !== 'store' && id !== 'rest';
       ui.spot('station', id, h(`button.hot${L.station === id ? '.on' : ''}`, { onclick: () => ui.set({ station: L.station === id ? null : id, pick: {} }), disabled: shut }, Dom.icon(s.icon, 18), s.name));
     }
-    // Whole-room GLB (user, 14 Nov 2026): each action has its own hotspot and runs at once (Rest: sleep, eat, short break).
-    for (const x of L.station || L.recap ? [] : ui.o.scene?.actions?.() ?? []) {
-      const pv = ui.preview(x.id);
-      ui.spot('action', x.id, h('button.hot.act', { onclick: () => ui.act(x.id), disabled: !!pv.reason, title: ui.why(pv.reason) }, Dom.icon(x.icon, 18), x.label));
-    }
-    // Home doors: move between the rooms.
-    for (const d of L.station || L.recap ? [] : ui.o.scene?.doors?.() ?? []) {
-      ui.spot('door', d.to, h('button.hot.door', { onclick: () => ui.set({ door: { to: d.to }, station: null }) }, Dom.icon('house', 18), d.label));
-    }
     const els = [side];
     if (L.station) els.push(this.stations[L.station].render());
     if (L.recap) els.push(this.#recap(L.recap));
