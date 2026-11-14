@@ -3,6 +3,7 @@ import { GameManager } from './core/GameManager.js';
 import { SaveSystem } from './core/SaveSystem.js';
 import { UiRoot } from './views/ui/UiRoot.js';
 import { SceneView } from './views/scene/SceneView.js';
+import { ArtPack } from './views/ui/ArtPack.js';
 import './views/ui/theme.css';
 
 // Browser entry: load the data, build the GameManager, the 3D City View and the DOM views.
@@ -19,6 +20,8 @@ if (q.has('new')) save.clear();
 const saved = q.has('play') ? save.read() : null;
 const gm = new GameManager(content, { save: saved ?? undefined, seed: q.has('seed') ? Number(q.get('seed')) : undefined, onSave: (g) => save.save(g) });
 
+// Hand-drawn UI PNGs in assets/art/ui/ replace the code-drawn icons and skins (missing PNG = current look).
+ArtPack.mount();
 const app = document.querySelector('#app');
 const scene = new SceneView(content);
 const startScreen = q.has('new') ? (q.has('skip') ? 'game' : 'story') : q.has('play') && saved ? 'game' : 'start';

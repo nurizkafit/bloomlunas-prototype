@@ -262,14 +262,14 @@
    "height": 78,
    "scale": 2,
    "nineSlice": {
-    "left": 15,
-    "right": 51,
+    "left": 51,
+    "right": 15,
     "top": 15,
     "bottom": 15
    },
    "nineSlicePx": {
-    "left": 30,
-    "right": 102,
+    "left": 102,
+    "right": 30,
     "top": 30,
     "bottom": 30
    }
@@ -1794,18 +1794,18 @@
    "variant": "cream",
    "png": "png/ui_sk31_key_cap_cream.png",
    "mode": "Sliced",
-   "width": 564,
+   "width": 24,
    "height": 24,
    "scale": 2,
    "nineSlice": {
     "left": 8,
-    "right": 548,
+    "right": 8,
     "top": 8,
     "bottom": 8
    },
    "nineSlicePx": {
     "left": 16,
-    "right": 1096,
+    "right": 16,
     "top": 16,
     "bottom": 16
    }
@@ -1822,18 +1822,18 @@
    "variant": "teal",
    "png": "png/ui_sk31_key_cap_teal.png",
    "mode": "Sliced",
-   "width": 564,
+   "width": 24,
    "height": 24,
    "scale": 2,
    "nineSlice": {
     "left": 8,
-    "right": 548,
+    "right": 8,
     "top": 8,
     "bottom": 8
    },
    "nineSlicePx": {
     "left": 16,
-    "right": 1096,
+    "right": 16,
     "top": 16,
     "bottom": 16
    }

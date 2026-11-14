@@ -82,7 +82,7 @@ Visual style: approved style board v3 (project files `screens/overhaul-style/sty
 - Rattan cane only on big main frames (station windows, map window, large cards). Small parts use a slim wood frame.
 - Journal: night-teal bookcloth, gold tooling, Art Nouveau corners, die-cut tabs, purple ribbon. No rattan.
 - Help popup: any element with `data-help="<key>"` shows the text from `data/help/help.json` on hover. Headers carry a "?" mark.
-- Icon + number over words (user rule). Placeholder icons in `Icons.js`; the names stay when art replaces them.
+- Icon + number over words (user rule). Placeholder icons in `Icons.js`; the names stay when art replaces them. Hand-drawn PNGs in `assets/art/ui/` (Unity sprite names) replace icons and skins through `ArtPack` (user, 14 Nov 2026).
 - Layout: stage 1280x720 scaled to the window; 8 px spacing scale; 12-column grid (margin 32, gutter 16). Station windows start at column 4; the station list uses columns 1-3.
 
 | Class | Screen |

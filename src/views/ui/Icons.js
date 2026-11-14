@@ -3,6 +3,8 @@
  * Rule (user, 7 Nov 2026): show information with icon + number, keep words short.
  * Replace each path with final art later; the names stay.
  */
+import { ArtPack } from './ArtPack.js';
+
 const INK = '#2D3B3A';
 const C = { tur: '#D9A326', ver: '#5FA39A', bam: '#6B8A3A', rat: '#C8955A', wis: '#9C87C0', cream: '#F2E9D8', teal: '#1F3A3D', fern: '#2E5A56', red: '#B5523B', sky: '#A9B8E8', stone: '#E8DFCB' };
 
@@ -90,6 +92,8 @@ const P = {
 export class Icons {
   /** Inline SVG string. @param {string} name @param {number} [size] */
   static svg(name, size = 24) {
+    const art = ArtPack.icon(name);
+    if (art) return `<img class="icn" src="${art}" width="${size}" height="${size}" alt="" aria-hidden="true" draggable="false">`;
     const body = P[name] ?? P.info;
     return `<svg class="icn" width="${size}" height="${size}" viewBox="0 0 24 24" aria-hidden="true"><g stroke-linejoin="round">${body}</g></svg>`;
   }

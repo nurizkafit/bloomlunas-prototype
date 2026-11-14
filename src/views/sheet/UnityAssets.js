@@ -139,7 +139,7 @@ export class UnityAssets {
   }
 
   /**
-   * @param {{code:string, name:string, used:string, mode:'Sliced'|'Tiled'|'Simple', size:[number, number], nine?:number[], bg?:string, w?:number, note?:string,
+   * @param {{code:string, name:string, used:string, mode:'Sliced'|'Tiled'|'Simple', size:[number, number], nine?:number[], nineFor?:Object<string, number[]>, bg?:string, w?:number, note?:string,
    *   vars:[string, HTMLElement][]}} it  size and nine are in 1x px; nine = left, right, top, bottom.
    */
   card(it) {
@@ -151,7 +151,7 @@ export class UnityAssets {
       const tgt = el.classList.contains('u-tgt') ? el : (el.querySelector('.u-tgt') ?? el);
       Object.assign(tgt.style, { width: `${w}px`, height: `${ht}px`, minWidth: '0', minHeight: '0', margin: '0', flex: 'none' });
       const wrap = h('div.u-spr', { style: { width: `${w}px`, height: `${ht}px` } }, el);
-      return h('div.sh-var', { 'data-id': vcode(i), 'data-card': it.code, 'data-sheet': uses.join(' '), 'data-name': it.name, 'data-variant': tag, 'data-mode': it.mode, 'data-nine': it.nine ? it.nine.join(',') : '',
+      return h('div.sh-var', { 'data-id': vcode(i), 'data-card': it.code, 'data-sheet': uses.join(' '), 'data-name': it.name, 'data-variant': tag, 'data-mode': it.mode, 'data-nine': (it.nineFor?.[tag] ?? it.nine)?.join(',') ?? '',
         'data-file': UnityAssets.fileName(vcode(i), it.code === 'IC' ? tag : it.name, it.code === 'IC' ? '' : tag) }, wrap, h('span.sh-tag', it.code === 'IC' ? `${vcode(i)} ${tag}` : tag));
     });
     const nine = it.nine ? `9-slice L ${it.nine[0]} R ${it.nine[1]} T ${it.nine[2]} B ${it.nine[3]} (1x px)` : 'No 9-slice';
@@ -234,7 +234,7 @@ export class UnityAssets {
         { code: 'SK-04', name: 'Planner Book spine', mode: 'Simple', size: [40, 32], bg: 'scene', used: 'Centre of the book, between the pages. Stretch it to the book height.',
           vars: [['default', h('div.u-tgt', ctx('book', h('div.spineband', { style: { left: '0', width: '40px' } }), { position: 'relative', inset: 'auto', width: '40px', height: '32px', padding: '0', background: 'none', boxShadow: 'none' }))]] },
         { code: 'SK-05', name: 'Planner Book page', mode: 'Sliced', size: [100, 72], nine: [12, 48, 12, 12], bg: 'teal', used: 'Left and right Journal page. The dark hatch is the fold.',
-          note: 'Paper grain: Tiled keeps the grain sharp on large pages.', vars: [['left', h('div.pg.l.u-tgt')], ['right', (() => { const p = h('div.pg.r.u-tgt'); return p; })()]] },
+          note: 'Paper grain: Tiled keeps the grain sharp on large pages. The right page is the mirror: its 9-slice is L 48 R 12.', nineFor: { right: [48, 12, 12, 12] }, vars: [['left', h('div.pg.l.u-tgt')], ['right', (() => { const p = h('div.pg.r.u-tgt'); return p; })()]] },
         { code: 'SK-06', name: 'Inset panel', mode: 'Sliced', size: [28, 28], nine: [11, 11, 11, 11], bg: 'page', used: 'Stat tile, jar box, day cell, note pick.',
           vars: [['default', h('div.stat.u-tgt')]] },
         { code: 'SK-07', name: 'Table frame', mode: 'Sliced', size: [28, 28], nine: [10, 10, 10, 10], used: 'Station lists (compact table).',
@@ -294,7 +294,7 @@ export class UnityAssets {
         { code: 'SK-30', name: 'Hint bar', mode: 'Simple', size: [96, 32], bg: 'scene', w: 260, used: 'Bottom of the screen. Stretch it to the screen width.',
           vars: [['default', h('div.hint.u-tgt', { style: { position: 'relative', left: 'auto', right: 'auto', bottom: 'auto' } })]] },
         { code: 'SK-31', name: 'Key cap', mode: 'Sliced', size: [20, 20], nine: [6, 6, 6, 6], bg: 'scene', w: 260, used: 'Key letters in the hint bar (cream) and the station menu (teal).',
-          vars: [['cream', ctx('hint', h('i.u-tgt'), { position: 'static', height: 'auto', padding: '0', background: 'none' })], ['teal', h('i.key.u-tgt')]] }
+          vars: [['cream', ctx('hint', h('i.u-tgt'), { position: 'static', display: 'block', width: '20px', height: 'auto', padding: '0', background: 'none' })], ['teal', h('i.key.u-tgt')]] }
       ] },
       { code: 'SK', key: 'rows', title: 'Skins: rows', items: [
         { code: 'SK-32', name: 'Table row', mode: 'Sliced', size: [24, 36], nine: [6, 6, 0, 0], w: 380, used: 'Rows of station lists. Fixed height.',
