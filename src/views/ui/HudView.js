@@ -23,8 +23,8 @@ export class HudView {
       h('div.hcol',
         h('div.prow',
           h('div.pill.cal', { 'data-help': 'calendar' }, h('span', Dom.icon('calendar', 20), `M${st.cal.month}`, h('i', '·'), `W${st.cal.week}`, h('i', '·'), `D${st.cal.day}`)),
-          h('div.pill', { 'data-help': 'gold' }, h('span', Dom.icon('gold', 22), Math.round(st.gold).toLocaleString('en'))),
-          h('div.pill.debt', { 'data-help': 'debt' }, h('span', Dom.icon('debt', 22), Math.round(st.debt.balance).toLocaleString('en'))),
+          h('div.pill', { 'data-help': 'gold' }, h('span', Dom.icon('gold', 22), h('em.hn', { 'data-k': 'gold' }, this.#num('gold', st.gold)))),
+          h('div.pill.debt', { 'data-help': 'debt' }, h('span', Dom.icon('debt', 22), h('em.hn', { 'data-k': 'debt' }, this.#num('debt', st.debt.balance)))),
           h('div.pill', { 'data-help': 'food' }, h('span', Dom.icon('meal', 22), String(this.#food())))),
         goal ? Dom.slim('goalcard', { 'data-help': 'todayGoal' }, Dom.medal(goal.icon, 26), h('small', 'TODAY'), h('span.gn', goal.name), h('span.st', met ? Dom.icon('check', 18) : Dom.icon('clock', 16))) : null),
       st.phase === 'do' ? h('div.hright',
@@ -84,6 +84,11 @@ export class HudView {
     const k = Math.max(0, Math.min(1, (hr - h0) / (h1 - h0)));
     const mix = (a, b) => Math.round(parseInt(a, 16) + (parseInt(b, 16) - parseInt(a, 16)) * k).toString(16).padStart(2, '0');
     return `#${mix(c0.slice(1, 3), c1.slice(1, 3))}${mix(c0.slice(3, 5), c1.slice(3, 5))}${mix(c0.slice(5, 7), c1.slice(5, 7))}`;
+  }
+
+  /** HUD number; it counts up or down while FeedbackView runs a change (game feel, user 14 Nov 2026). */
+  #num(k, real) {
+    return Math.round(this.ui.views.fb?.shown(k, real) ?? real).toLocaleString('en');
   }
 
   #food() {

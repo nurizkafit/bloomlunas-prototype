@@ -11,6 +11,7 @@ import { EventCardView } from './EventCardView.js';
 import { RetroView } from './RetroView.js';
 import { ItemCardView } from './ItemCardView.js';
 import { TutorialView } from './TutorialView.js';
+import { FeedbackView } from './FeedbackView.js';
 import { Icons } from './Icons.js';
 import { Calendar, WEEKDAYS } from '../../model/Calendar.js';
 
@@ -45,6 +46,7 @@ export class UiRoot {
     host.append(this.stage);
     Ornaments.mount(this.stage);
     this.views = { hud: new HudView(this), start: new StartView(this), journal: new JournalView(this), map: new TownMapView(this), place: new PlaceView(this), event: new EventCardView(this), retro: new RetroView(this), card: new ItemCardView(this), tutor: new TutorialView(this) };
+    this.views.fb = new FeedbackView(this);
     this.#fit();
     addEventListener('resize', () => this.#fit());
     addEventListener('keydown', (e) => this.#key(e));

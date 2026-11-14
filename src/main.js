@@ -5,6 +5,7 @@ import { UiRoot } from './views/ui/UiRoot.js';
 import { SceneView } from './views/scene/SceneView.js';
 import { ArtPack } from './views/ui/ArtPack.js';
 import './views/ui/theme.css';
+import './views/ui/feedback.css';
 
 // Browser entry: load the data, build the GameManager, the 3D City View and the DOM views.
 // URL: no param = Start menu; ?new = fresh game with the story letter; ?new&skip = fresh game, no story; ?play = continue.

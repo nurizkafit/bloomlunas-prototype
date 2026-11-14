@@ -1,0 +1,40 @@
+{
+  "id": "feedback",
+  "_note": "Game feel (view only, user 14 Nov 2026): sound cues and effect timings. Sound files are CC0 (Kenney), see assets/audio/kenney/License.txt. Unity: AudioClip list + a FeedbackConfig ScriptableObject.",
+  "_placeholder": true,
+  "sounds": {
+    "click":    { "file": "audio/kenney/click.mp3",  "volume": 0.35, "rate": 1.0 },
+    "page":     { "file": "audio/kenney/page.mp3",   "volume": 0.6,  "rate": 0.9 },
+    "whoosh":   { "file": "audio/kenney/whoosh.mp3", "volume": 0.5,  "rate": 1.0 },
+    "coin":     { "file": "audio/kenney/coin.mp3",   "volume": 0.55, "rate": 1.0 },
+    "spend":    { "file": "audio/kenney/place.mp3",  "volume": 0.6,  "rate": 0.8 },
+    "place":    { "file": "audio/kenney/place.mp3",  "volume": 0.6,  "rate": 1.0 },
+    "made":     { "file": "audio/kenney/match.mp3",  "volume": 0.7,  "rate": 1.0 },
+    "gather":   { "file": "audio/kenney/land.mp3",   "volume": 0.7,  "rate": 1.1 },
+    "notice":   { "file": "audio/kenney/swap.mp3",   "volume": 0.6,  "rate": 1.2 },
+    "refuse":   { "file": "audio/kenney/refuse.mp3", "volume": 0.45, "rate": 1.0 },
+    "rest":     { "file": "audio/kenney/swap.mp3",   "volume": 0.5,  "rate": 0.8 },
+    "fanfare":  { "file": "audio/kenney/match.mp3",  "volume": 0.8,  "rate": 1.25, "then": "coin", "thenMs": 120 },
+    "dayEnd":   { "file": "audio/kenney/swap.mp3",   "volume": 0.6,  "rate": 0.7 }
+  },
+  "ambience": { "file": "audio/kenney/ambience.mp3", "volume": 0.18, "phases": ["do"] },
+  "actionSounds": {
+    "craft": "made", "dryCollect": "made", "grind": "made", "exploreGather": "gather",
+    "dryStart": "place", "stockShelf": "place", "storeOpen": "whoosh", "storeClose": "place",
+    "marketSell": "coin", "wholesaleSell": "coin",
+    "marketBuy": "spend", "wholesaleBuy": "spend", "buyFood": "spend", "questPost": "spend", "service": "spend", "questTake": "place",
+    "travel": "whoosh", "eat": "rest", "shortBreak": "rest", "exploreWalk": "whoosh"
+  },
+  "fx": {
+    "countMs": 600,
+    "popMs": 1200,
+    "coinFlyMs": 700,
+    "coinStaggerMs": 70,
+    "coinsMax": 8,
+    "goldPerCoin": 10,
+    "burstMs": 1100,
+    "bannerMs": 2600,
+    "dayCardMs": 6000,
+    "clickMinGapMs": 40
+  }
+}

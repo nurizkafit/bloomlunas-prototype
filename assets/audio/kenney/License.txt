@@ -1,0 +1,15 @@
+Sound effects by Kenney (www.kenney.nl)
+
+License: Creative Commons Zero, CC0
+http://creativecommons.org/publicdomain/zero/1.0/
+
+You can use this content for personal, educational, and commercial purposes.
+Support by crediting 'Kenney' or 'www.kenney.nl' (this is not a requirement).
+
+Source (official Kenney starter kits on GitHub; their READMEs say the sound effects are CC0):
+- coin.mp3                    <- KenneyNL/Starter-Kit-3D-Platformer sounds/coin.ogg (3fa8a04)
+- match.mp3, swap.mp3, land.mp3 <- KenneyNL/Starter-Kit-Match-3 sounds/tile-match, tile-swap, tile-land (4ddb3d2)
+- place.mp3, page.mp3, click.mp3, whoosh.mp3, refuse.mp3, ambience.mp3
+                              <- KenneyNL/Starter-Kit-City-Builder sounds/placement-a, placement-c, toggle, rotate, removal-a, ambience (4535092)
+
+Converted from OGG to MP3 (ffmpeg, libmp3lame) so that all browsers play them.
