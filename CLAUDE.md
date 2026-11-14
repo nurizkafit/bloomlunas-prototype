@@ -43,14 +43,13 @@ src/model/     GameState, Calendar, Inventory
 src/systems/   ActionRunner, TimeSystem, EffectApplier, EconomySystem, StoreSystem, ProductionSystem, ExploreSystem, QuestSystem, DebtSystem, EventSystem, PlanSystem, SkillSystem, ObjectiveSystem, Ledger, ActivityLog
 src/phases/    Phase, PlanPhase, DoPhase, CheckPhase, ActPhase, RetroPhase
 src/views/ui/    UiRoot, Dom, Icons, Ornaments, ArtPack (hand-drawn PNGs from assets/art/ui/), theme.css, HudView, StartView, JournalView, CheckView, ActView, RetroView, TownMapView, PlaceView, ItemCardView, station views, EventCardView, TutorialView
-src/views/scene/ SceneView (3D City View; rooms with an Astri shell model, Home sub-rooms by station)
+src/views/scene/ SceneView (3D City View)
 src/views/sheet/ InterfaceSheet, UnityAssets, SpriteMap (sprite to sheet part links), HoverPreview (hover popup with the other page PNGs), SheetDownloads, ZipWriter + sheet.css, unity.css (sheet.html: all UI components with IDs, for the art audit; unity.html: text-free Unity sprites; both with PNG downloads)
 assets/art/ui/    hand-drawn UI PNGs (same names as assets/unity-export/png/; missing file = code-drawn look). See its README.md
 assets/ui-export/ PNG placeholders + manifest from npm run export:ui (committed)
 assets/unity-export/ Unity sprites (9-slice) + manifest from npm run export:unity (committed)
 src/sim/       Bot, runMonths.js (headless CLI), loadDataNode, csv.js
 assets/models/kenney/<kit>/  used Kenney GLB files + Textures/colormap.png + License.txt (CC0)
-assets/models/astri/<set>/   team 3D models by Astri (shop, crafting, bedroom, guild, market), GLB + meshopt; see its README.md. Home shows one of the three home rooms by station (town.json rooms.home.sub)
 tests/         *.test.js (Vitest, logic only), browser/ (Playwright flow test)
 ```
 
