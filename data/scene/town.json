@@ -1118,10 +1118,54 @@
   "camDist": 15,
   "zoomDist": 10,
   "routes": {
-   "home": [[-2, 2.6], [-4.5, 4.4], [-6.2, 4.2]],
-   "market": [[-0.8, 2.4]],
-   "guild": [[2.5, -2.8], [5.5, -3.5], [7, -3.6]],
-   "outskirt": [[4, 2.5], [6.5, 4], [9.0, 6.4]]
+   "home": [
+    [
+     -2,
+     2.6
+    ],
+    [
+     -4.5,
+     4.4
+    ],
+    [
+     -6.2,
+     4.2
+    ]
+   ],
+   "market": [
+    [
+     -0.8,
+     2.4
+    ]
+   ],
+   "guild": [
+    [
+     2.5,
+     -2.8
+    ],
+    [
+     5.5,
+     -3.5
+    ],
+    [
+     7,
+     -3.6
+    ]
+   ],
+   "outskirt": [
+    [
+     4,
+     2.5
+    ],
+    [
+     6.5,
+     4
+    ],
+    [
+     9.0,
+     6.4
+    ]
+   ]
   }
  },
  "player": {
@@ -1363,7 +1407,16 @@
     0.3,
     0.9,
     25
-   ]
+   ],
+   "sub": {
+    "store": "home_shop",
+    "crafting": "home_craft",
+    "drying": "home_craft",
+    "grinding": "home_craft",
+    "rest": "home_bed",
+    "_default": "home_shop"
+   },
+   "_sub_doc": "Home shows one of Astri's three rooms by the open station (user decision 14 Nov 2026). The room above stays as the old greybox layout (not built while sub is set)."
   },
   "market": {
    "_doc": "Open-air market set (user decision 8 Nov 2026): ground, paving, stalls, trees and shoppers; no walls.",
@@ -1408,7 +1461,89 @@
     "tx": -1.0,
     "tz": 0.6
    },
-   "props": [
+   "npc": [
+    {
+     "m": "mini-characters/character-male-c",
+     "x": 1.45,
+     "z": -0.75,
+     "r": 0
+    },
+    {
+     "m": "mini-characters/character-male-e",
+     "x": -2.2,
+     "z": 1.4,
+     "r": 200
+    },
+    {
+     "m": "mini-characters/character-male-e",
+     "x": 3.2,
+     "z": 1.5,
+     "r": 150
+    }
+   ],
+   "walkers": [
+    {
+     "m": "mini-characters/character-female-a",
+     "path": [
+      [
+       -7,
+       3.6
+      ],
+      [
+       -2.5,
+       3.9
+      ],
+      [
+       2.5,
+       3.7
+      ],
+      [
+       7,
+       3.2
+      ]
+     ],
+     "speed": 0.5
+    },
+    {
+     "m": "mini-characters/character-female-b",
+     "path": [
+      [
+       -6.5,
+       -2.6
+      ],
+      [
+       -3,
+       -2.7
+      ],
+      [
+       0,
+       -2.75
+      ],
+      [
+       4,
+       -2.7
+      ],
+      [
+       6.5,
+       -2.8
+      ]
+     ],
+     "speed": 0.42
+    }
+   ],
+   "stations": {
+    "stall": [
+     0.0,
+     2.4000000000000004,
+     -1.2000000000000002
+    ]
+   },
+   "player": [
+    0.6,
+    1.0,
+    20
+   ],
+   "_old_props": [
     {
      "m": "fantasy-town-kit/stall-green",
      "x": 0.2,
@@ -1693,88 +1828,35 @@
      "s": 1.0
     }
    ],
-   "npc": [
-    {
-     "m": "mini-characters/character-male-c",
-     "x": 1.45,
-     "z": -0.75,
-     "r": 0
-    },
-    {
-     "m": "mini-characters/character-male-e",
-     "x": -2.2,
-     "z": 1.4,
-     "r": 200
-    },
-    {
-     "m": "mini-characters/character-male-e",
-     "x": 3.2,
-     "z": 1.5,
-     "r": 150
-    }
-   ],
-   "walkers": [
-    {
-     "m": "mini-characters/character-female-a",
-     "path": [
-      [
-       -7,
-       3.6
-      ],
-      [
-       -2.5,
-       3.9
-      ],
-      [
-       2.5,
-       3.7
-      ],
-      [
-       7,
-       3.2
-      ]
-     ],
-     "speed": 0.5
-    },
-    {
-     "m": "mini-characters/character-female-b",
-     "path": [
-      [
-       -6.5,
-       -2.6
-      ],
-      [
-       -3,
-       -2.7
-      ],
-      [
-       0,
-       -2.75
-      ],
-      [
-       4,
-       -2.7
-      ],
-      [
-       6.5,
-       -2.8
-      ]
-     ],
-     "speed": 0.42
-    }
-   ],
-   "stations": {
-    "stall": [
-     0.2,
-     1.6,
-     -0.9
-    ]
+   "shell": {
+    "m": "astri/market/base_market",
+    "s": 1.5,
+    "r": 90,
+    "keep": true
    },
-   "player": [
-    0.6,
-    1.0,
-    20
-   ]
+   "props": [
+    {
+     "m": "astri/market/stall_a",
+     "x": 0.0,
+     "z": -1.2,
+     "s": 1.5
+    },
+    {
+     "m": "astri/market/stall_b",
+     "x": -3.45,
+     "z": -0.9,
+     "s": 1.5,
+     "r": 20
+    },
+    {
+     "m": "astri/market/stall_c",
+     "x": 3.45,
+     "z": -0.9,
+     "s": 1.5,
+     "r": -20
+    }
+   ],
+   "floorY": 0.27
   },
   "guild": {
    "origin": [
@@ -1783,26 +1865,42 @@
    ],
    "w": 8,
    "d": 4.5,
-   "h": 2.0,
+   "h": 2.86,
    "wall": "#DCE3D6",
    "floor": "#A98A62",
    "beam": "#4A3A2A",
    "cam": {
-    "dist": 12.5,
-    "yaw": 0.5,
-    "pitch": 0.62
+    "dist": 19,
+    "yaw": -0.5,
+    "pitch": 0.62,
+    "ty": 0.9
    },
-   "windows": [
-    [
-     -3.0,
-     1.1
-    ],
-    [
-     0.6,
-     1.1
-    ]
+   "npc": [
+    {
+     "m": "mini-characters/character-female-a",
+     "x": -1.5,
+     "z": -1.8,
+     "r": 0
+    }
    ],
-   "props": [
+   "stations": {
+    "receptionist": [
+     -1.5,
+     2.0999999999999996,
+     -0.8999999999999999
+    ],
+    "questboard": [
+     3.0,
+     2.625,
+     -2.4000000000000004
+    ]
+   },
+   "player": [
+    1.2,
+    2.1,
+    200
+   ],
+   "_old_props": [
     {
      "m": "furniture-kit/kitchenBar",
      "x": -1.6,
@@ -1885,41 +1983,253 @@
      "s": 1.8
     }
    ],
-   "boards": [
+   "shell": {
+    "m": "astri/guild/base_guild",
+    "s": 1.5,
+    "keep": true
+   },
+   "props": [
     {
-     "x": 2.5,
-     "y": 1.05,
-     "z": -2.2,
-     "w": 1.8,
-     "h": 1.1,
-     "notes": 7
+     "m": "astri/guild/meja_guild_gede",
+     "x": -1.5,
+     "z": -0.9,
+     "s": 1.5,
+     "r": 90
+    },
+    {
+     "m": "astri/guild/quest_board",
+     "x": 3.0,
+     "z": -2.43,
+     "s": 1.5,
+     "y": 1.05
+    },
+    {
+     "m": "astri/guild/quest_paper",
+     "x": 2.78,
+     "z": -2.38,
+     "s": 1.5,
+     "y": 1.42
+    },
+    {
+     "m": "astri/guild/quest_paper",
+     "x": 3.3,
+     "z": -2.38,
+     "s": 1.5,
+     "y": 1.35
+    },
+    {
+     "m": "astri/guild/kursi_tunggu",
+     "x": 3.0,
+     "z": 0.45,
+     "s": 1.5
+    },
+    {
+     "m": "astri/guild/meja_guild_a",
+     "x": 0.9,
+     "z": 0.75,
+     "s": 1.5
+    },
+    {
+     "m": "astri/guild/meja_guild_b",
+     "x": -3.6,
+     "z": 1.05,
+     "s": 1.5
+    },
+    {
+     "m": "astri/guild/meja_guild_c",
+     "x": 4.5,
+     "z": -0.9,
+     "s": 1.5
+    },
+    {
+     "m": "astri/guild/pot_plant_a",
+     "x": -4.5,
+     "z": -2.25,
+     "s": 1.5
+    },
+    {
+     "m": "astri/guild/pot_plant_a",
+     "x": 4.5,
+     "z": 1.8,
+     "s": 1.5
     }
    ],
-   "npc": [
+   "floorY": 0.26
+  },
+  "home_shop": {
+   "origin": [
+    100,
+    -30
+   ],
+   "h": 2.82,
+   "shell": {
+    "m": "astri/shop/base_shop",
+    "s": 1.5,
+    "keep": true
+   },
+   "props": [
     {
-     "m": "mini-characters/character-female-a",
+     "m": "astri/shop/kasir",
+     "x": 0.83,
+     "z": 0.83,
+     "s": 1.5
+    },
+    {
+     "m": "astri/shop/etalase_meja",
      "x": -0.9,
-     "z": -1.35,
-     "r": 0
+     "z": 0.45,
+     "s": 1.5
     }
    ],
+   "cam": {
+    "dist": 13.5,
+    "yaw": -0.5,
+    "pitch": 0.62,
+    "ty": 0.9
+   },
    "stations": {
-    "receptionist": [
-     -0.9,
-     1.55,
-     -0.9
-    ],
-    "questboard": [
-     2.5,
-     1.85,
-     -2.1
+    "store": [
+     0.8250000000000001,
+     2.0999999999999996,
+     0.8250000000000001
     ]
    },
    "player": [
-    0.8,
+    -0.9,
+    1.3,
+    20
+   ],
+   "floorY": 0.26
+  },
+  "home_craft": {
+   "origin": [
+    100,
+    -60
+   ],
+   "h": 2.82,
+   "shell": {
+    "m": "astri/crafting/base_crafting",
+    "s": 1.5,
+    "keep": true
+   },
+   "props": [
+    {
+     "m": "astri/crafting/cauldron",
+     "x": -0.3,
+     "z": -1.35,
+     "s": 1.5
+    },
+    {
+     "m": "astri/crafting/rak_stok",
+     "x": 2.03,
+     "z": -0.9,
+     "s": 1.5
+    },
+    {
+     "m": "astri/crafting/meja_grind",
+     "x": -1.35,
+     "z": 0.75,
+     "s": 1.5
+    },
+    {
+     "m": "astri/crafting/meja_prepare",
+     "x": 1.12,
+     "z": 0.9,
+     "s": 1.5
+    },
+    {
+     "m": "astri/crafting/props_crafting",
+     "x": 1.12,
+     "z": 0.9,
+     "s": 1.5,
+     "y": 1.16
+    }
+   ],
+   "cam": {
+    "dist": 13.5,
+    "yaw": -0.5,
+    "pitch": 0.62,
+    "ty": 0.9
+   },
+   "stations": {
+    "crafting": [
+     -0.30000000000000004,
+     2.25,
+     -1.35
+    ],
+    "drying": [
+     2.0250000000000004,
+     1.875,
+     -0.8999999999999999
+    ],
+    "grinding": [
+     -1.35,
+     1.5,
+     0.75
+    ]
+   },
+   "player": [
+    0.4,
+    1.5,
+    20
+   ],
+   "floorY": 0.34
+  },
+  "home_bed": {
+   "origin": [
+    100,
+    -90
+   ],
+   "h": 2.81,
+   "shell": {
+    "m": "astri/bedroom/base_bedroom",
+    "s": 1.5,
+    "keep": true
+   },
+   "props": [
+    {
+     "m": "astri/bedroom/kasur",
+     "x": 0.0,
+     "z": -0.3,
+     "s": 1.5
+    },
+    {
+     "m": "astri/bedroom/meja_makan",
+     "x": 1.27,
+     "z": 1.12,
+     "s": 1.5
+    },
+    {
+     "m": "astri/bedroom/kompor",
+     "x": -1.35,
+     "z": 1.54,
+     "s": 1.5,
+     "y": 1.05
+    }
+   ],
+   "cam": {
+    "dist": 13.5,
+    "yaw": -0.5,
+    "pitch": 0.62,
+    "ty": 0.9
+   },
+   "stations": {
+    "rest": [
+     0.0,
+     1.7999999999999998,
+     -0.30000000000000004
+    ]
+   },
+   "player": [
+    -0.3,
     1.0,
-    15
-   ]
+    20
+   ],
+   "floorY": 0.32
   }
- }
+ },
+ "bases": {
+  "astri/": "models/astri/"
+ },
+ "_bases_doc": "Model key prefixes with their own folder. astri/ = the team's 3D models (Astri, 14 Nov 2026), converted from FBX to GLB (meshopt) in assets/models/astri/."
 }

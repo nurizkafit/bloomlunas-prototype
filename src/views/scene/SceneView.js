@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { clone as cloneSkinned } from 'three/addons/utils/SkeletonUtils.js';
 
 /**
@@ -64,7 +65,7 @@ export class SceneView {
     if (!this.data) return;
     const inGame = local.screen === 'game', doing = inGame && state.phase === 'do';
     const room = this.data.rooms?.[state.place];
-    this.focus = doing && !local.map ? (room ? `room:${state.place}` : state.place) : 'overview';
+    this.focus = doing && !local.map ? (room ? `room:${this.#roomKey(state.place, room, local)}` : state.place) : 'overview';
     // Town list (user feedback 8 Nov 2026): all places in view; a picked place zooms in; travel shows the walk.
     if (doing && local.map) this.focus = 'townmap';
     this.zoom = !!(doing && local.map && local.pick?.zoom && this.data.places[local.pick.place]);
@@ -75,6 +76,18 @@ export class SceneView {
     this.playerPlace = inGame ? state.place : null;
     // Free view area: right of the station list or the place list when no window is open.
     this.offsetX = doing && !local.station && !local.journal && !local.walk ? -150 : 0;
+  }
+
+  /**
+   * Room to show for a place. A room with "sub" (Home, user decision 14 Nov 2026) shows one of its sub-rooms
+   * by the open station: Store = shop, Crafting/Drying/Grinding = crafting room, Rest = bedroom.
+   * With no station open, the last sub-room stays. @param {string} place @param {any} room @param {any} local
+   */
+  #roomKey(place, room, local) {
+    if (!room.sub) return place;
+    if (this.subPlace !== place) { this.subPlace = place; this.subKey = null; }
+    this.subKey = room.sub[local.station] ?? this.subKey ?? room.sub._default;
+    return this.subKey;
   }
 
   /**
@@ -204,12 +217,16 @@ export class SceneView {
     for (const w of d.walkers) names.add(w.m);
     names.add(d.player.m);
     for (const r of this.#roomList()) {
+      if (r.shell) names.add(r.shell.m);
       for (const p of r.props) names.add(p.m);
       for (const n of r.npc ?? []) names.add(n.m);
       for (const w of r.walkers ?? []) names.add(w.m);
     }
     const loader = new GLTFLoader();
-    await Promise.all([...names].map((n) => loader.loadAsync(`${d.base}${n}.glb`).then((g) => this.cache.set(n, g)).catch((e) => console.warn('missing model', n, e))));
+    loader.setMeshoptDecoder(MeshoptDecoder);
+    // Model key prefixes with their own folder (bases), for example "astri/" = the team's models in models/astri/.
+    const url = (n) => { const pre = Object.keys(d.bases ?? {}).find((k) => n.startsWith(k)); return pre ? `${d.bases[pre]}${n.slice(pre.length)}.glb` : `${d.base}${n}.glb`; };
+    await Promise.all([...names].map((n) => loader.loadAsync(url(n)).then((g) => this.cache.set(n, g)).catch((e) => console.warn('missing model', n, e))));
     for (const h of d.houses) this.#house(h);
     for (const p of d.props) {
       const o = this.#inst(p.m);
@@ -222,19 +239,20 @@ export class SceneView {
     for (const w of d.walkers) this.#walker(w);
     this.player = this.#character(d.player.m, 'idle');
     if (this.player) this.scene.add(this.player.obj);
-    for (const [key, r] of Object.entries(d.rooms ?? {})) if (r && r.origin) this.#room(key, r);
+    for (const [key, r] of Object.entries(d.rooms ?? {})) if (r && r.origin && !r.sub) this.#room(key, r);
   }
 
-  #roomList() { return Object.values(this.data.rooms ?? {}).filter((r) => r && r.origin); }
+  #roomList() { return Object.values(this.data.rooms ?? {}).filter((r) => r && r.origin && !r.sub); }
 
   /** One interior: floor, back and side walls (front open), beams, windows, boards, props and NPCs. */
   #room(key, r) {
     const g = new THREE.Group();
-    const mat = (c, extra = {}) => new THREE.MeshStandardMaterial({ color: c, roughness: 1, ...extra });
+    const mat = (c, extra = {}) => new THREE.MeshStandardMaterial({ color: c ?? '#FFFFFF', roughness: 1, ...extra });
     const box = (w, h, dd, x, y, z, m) => { const o = new THREE.Mesh(new THREE.BoxGeometry(w, h, dd), m); o.position.set(x, y, z); o.castShadow = true; o.receiveShadow = true; g.add(o); return o; };
     const W = r.w, D = r.d, H = r.h, t = 0.12;
     const wall = mat(r.wall), beam = mat(r.beam), floor = mat(r.floor);
-    if (r.outdoor) this.#yard(g, r, mat);
+    if (r.shell) { this.#prop(g, r.shell); if (r.outdoor) this.#yard(g, { ...r, paveR: 0 }, mat); }
+    else if (r.outdoor) this.#yard(g, r, mat);
     else this.#walls(g, r, mat, box, W, D, H, t, wall, beam, floor);
     this.#roomProps(g, r, mat, box, beam, H);
     g.position.set(r.origin[0], 0, r.origin[1]);
@@ -248,6 +266,7 @@ export class SceneView {
   #yard(g, r, mat) {
     const ground = new THREE.Mesh(new THREE.CircleGeometry(r.groundR ?? 26, 48), mat(r.ground ?? '#A9B886'));
     ground.rotation.x = -Math.PI / 2; ground.position.y = -0.02; ground.receiveShadow = true; g.add(ground);
+    if (!r.paveR && r.paveR !== undefined) return;
     const pave = new THREE.Mesh(new THREE.CylinderGeometry(r.paveR ?? 5.2, r.paveR ?? 5.2, 0.06, 40), mat(r.floor));
     pave.position.set(0, 0.0, 0.2); pave.receiveShadow = true; g.add(pave);
     const ring = new THREE.Mesh(new THREE.TorusGeometry(r.paveR ?? 5.2, 0.07, 6, 48), mat(r.beam));
@@ -287,16 +306,7 @@ export class SceneView {
         n.rotation.z = ((i * 37) % 9 - 4) * 0.03;
       }
     }
-    for (const p of r.props) {
-      const o = this.#inst(p.m);
-      if (!o) continue;
-      o.scale.setScalar(p.s ?? 1);
-      o.rotation.y = THREE.MathUtils.degToRad(p.r ?? 0);
-      o.updateMatrixWorld(true);
-      const bb = new THREE.Box3().setFromObject(o), c = bb.getCenter(new THREE.Vector3());
-      o.position.set(p.x - c.x, (p.y ?? 0) - bb.min.y, p.z - c.z);
-      g.add(o);
-    }
+    for (const p of r.props) this.#prop(g, p, r.floorY ?? 0);
     if (!r.outdoor) {
       const lamp = new THREE.PointLight('#FFD9A0', 6, 9, 1.6);
       lamp.position.set(0, H + 0.6, 0.6);
@@ -305,10 +315,27 @@ export class SceneView {
     for (const n of r.npc ?? []) {
       const c = this.#character(n.m, 'idle');
       if (!c) continue;
-      c.obj.position.set(n.x, 0, n.z);
+      c.obj.position.set(n.x, r.floorY ?? 0, n.z);
       c.obj.rotation.y = THREE.MathUtils.degToRad(n.r ?? 0);
       g.add(c.obj);
     }
+  }
+
+  /**
+   * One prop (or a room shell): centred on x, z, standing on y (room-local). keep = keep the model's own x, z origin
+   * (a room shell, so props can use the artist's coordinates). base = floor height to stand on (room floorY).
+   * @param {THREE.Group} g @param {any} p @param {number} [base]
+   */
+  #prop(g, p, base = 0) {
+    const o = this.#inst(p.m);
+    if (!o) return;
+    o.scale.setScalar(p.s ?? 1);
+    o.rotation.y = THREE.MathUtils.degToRad(p.r ?? 0);
+    o.updateMatrixWorld(true);
+    const bb = new THREE.Box3().setFromObject(o), c = bb.getCenter(new THREE.Vector3());
+    if (p.keep) o.position.set(p.x ?? 0, base + (p.y ?? 0) - bb.min.y, p.z ?? 0);
+    else o.position.set((p.x ?? 0) - c.x, base + (p.y ?? 0) - bb.min.y, (p.z ?? 0) - c.z);
+    g.add(o);
   }
 
   /** A clone of a loaded model, with matte materials and shadows. @param {string} name @param {string} [tint] */
@@ -422,7 +449,7 @@ export class SceneView {
       dist = d.walk.camDist;
     } else if (room) {
       const c = room.cam;
-      goal = new THREE.Vector3(room.origin[0] + (c.tx ?? 0.2), 0.55, room.origin[1] + (c.tz ?? 0.1));
+      goal = new THREE.Vector3(room.origin[0] + (c.tx ?? 0.2), c.ty ?? 0.55, room.origin[1] + (c.tz ?? 0.1));
       dir = new THREE.Vector3(Math.sin(c.yaw + sway * 0.4), c.pitch, Math.cos(c.yaw + sway * 0.4)).normalize();
       dist = c.dist;
     } else {
@@ -455,10 +482,10 @@ export class SceneView {
       if (wp.ahead.distanceTo(wp.p) > 0.01) this.player.obj.lookAt(wp.ahead.x, 0, wp.ahead.z);
       this.player.obj.visible = true;
     } else if (this.player && this.playerPlace) {
-      const rp = this.inRoom && d.rooms[this.playerPlace]?.player;
+      const rp = this.inRoom && room?.player;
       if (rp) {
-        const o = d.rooms[this.playerPlace].origin;
-        this.player.obj.position.set(o[0] + rp[0], 0, o[1] + rp[1]); this.player.obj.rotation.y = THREE.MathUtils.degToRad(rp[2] ?? 0);
+        const o = room.origin;
+        this.player.obj.position.set(o[0] + rp[0], room.floorY ?? 0, o[1] + rp[1]); this.player.obj.rotation.y = THREE.MathUtils.degToRad(rp[2] ?? 0);
       } else {
         const s = d.player.spots[this.playerPlace];
         if (s) { this.player.obj.position.set(s[0], 0, s[1]); this.player.obj.rotation.y = 0.6; }
