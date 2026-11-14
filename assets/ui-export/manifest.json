@@ -1,7 +1,7 @@
 {
  "note": "Placeholder UI parts from the BloomLunas prototype interface sheet. Width and height are 1x px (1280x720 screen). PNG pixels = size x scale. nineSlice is in 1x px: multiply by scale for the Unity Sprite Editor border.",
  "scale": 2,
- "count": 280,
+ "count": 282,
  "parts": [
   {
    "id": "FRM-01",
@@ -2242,6 +2242,32 @@
    "svg": "",
    "svgType": "",
    "width": 154,
+   "height": 38,
+   "scale": 2,
+   "nineSlice": null,
+   "css": ".hot (.on .here :disabled .place)"
+  },
+  {
+   "id": "CHP-09",
+   "name": "Hotspot pill",
+   "variant": "action (runs at once)",
+   "png": "png/CHP-09_hotspot-pill_action-runs-at-once.png",
+   "svg": "",
+   "svgType": "",
+   "width": 86,
+   "height": 38,
+   "scale": 2,
+   "nineSlice": null,
+   "css": ".hot (.on .here :disabled .place)"
+  },
+  {
+   "id": "CHP-09",
+   "name": "Hotspot pill",
+   "variant": "door (Home rooms)",
+   "png": "png/CHP-09_hotspot-pill_door-home-rooms.png",
+   "svg": "",
+   "svgType": "",
+   "width": 111,
    "height": 38,
    "scale": 2,
    "nineSlice": null,
