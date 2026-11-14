@@ -3,6 +3,9 @@
  "_placeholder": true,
  "source": "Kenney CC0 kits (assets/models/kenney/*/License.txt); layout by Claude for the jam build",
  "base": "models/kenney/",
+ "bases": {
+  "rooms/": "models/rooms/"
+ },
  "places": {
   "home": {
    "x": -7,
@@ -930,182 +933,30 @@
   }
  ],
  "roads": [
-  [
-   [
-    -7,
-    4.6
-   ],
-   [
-    -4.5,
-    4.4
-   ],
-   [
-    -2,
-    2.6
-   ],
-   [
-    0,
-    1.2
-   ]
-  ],
-  [
-   [
-    0,
-    -1.2
-   ],
-   [
-    2.5,
-    -2.8
-   ],
-   [
-    5.5,
-    -3.5
-   ],
-   [
-    7,
-    -4.2
-   ]
-  ],
-  [
-   [
-    1.2,
-    0.6
-   ],
-   [
-    4,
-    2.5
-   ],
-   [
-    6.5,
-    4
-   ],
-   [
-    8.2,
-    5
-   ]
-  ],
-  [
-   [
-    -1.2,
-    -0.4
-   ],
-   [
-    -4,
-    -1.6
-   ],
-   [
-    -8,
-    -2
-   ],
-   [
-    -10.5,
-    -1.8
-   ]
-  ]
+  [[-7, 4.6], [-4.5, 4.4], [-2, 2.6], [0, 1.2]],
+  [[0, -1.2], [2.5, -2.8], [5.5, -3.5], [7, -4.2]],
+  [[1.2, 0.6], [4, 2.5], [6.5, 4], [8.2, 5]],
+  [[-1.2, -0.4], [-4, -1.6], [-8, -2], [-10.5, -1.8]]
  ],
  "walkers": [
   {
    "m": "mini-characters/character-female-a",
-   "path": [
-    [
-     -7,
-     4.6
-    ],
-    [
-     -4.5,
-     4.4
-    ],
-    [
-     -2,
-     2.6
-    ],
-    [
-     0,
-     1.2
-    ],
-    [
-     2.5,
-     -2.8
-    ],
-    [
-     5.5,
-     -3.5
-    ],
-    [
-     7,
-     -4.2
-    ]
-   ],
+   "path": [[-7, 4.6], [-4.5, 4.4], [-2, 2.6], [0, 1.2], [2.5, -2.8], [5.5, -3.5], [7, -4.2]],
    "speed": 0.55
   },
   {
    "m": "mini-characters/character-male-c",
-   "path": [
-    [
-     1.2,
-     0.6
-    ],
-    [
-     4,
-     2.5
-    ],
-    [
-     6.5,
-     4
-    ],
-    [
-     8.2,
-     5
-    ]
-   ],
+   "path": [[1.2, 0.6], [4, 2.5], [6.5, 4], [8.2, 5]],
    "speed": 0.5
   },
   {
    "m": "mini-characters/character-male-e",
-   "path": [
-    [
-     -1.2,
-     -0.4
-    ],
-    [
-     -4,
-     -1.6
-    ],
-    [
-     -8,
-     -2
-    ],
-    [
-     -10.5,
-     -1.8
-    ]
-   ],
+   "path": [[-1.2, -0.4], [-4, -1.6], [-8, -2], [-10.5, -1.8]],
    "speed": 0.45
   },
   {
    "m": "mini-characters/character-female-a",
-   "path": [
-    [
-     0,
-     -1.6
-    ],
-    [
-     1.6,
-     -0.4
-    ],
-    [
-     0,
-     1.6
-    ],
-    [
-     -1.6,
-     0.4
-    ],
-    [
-     0,
-     -1.6
-    ]
-   ],
+   "path": [[0, -1.6], [1.6, -0.4], [0, 1.6], [-1.6, 0.4], [0, -1.6]],
    "speed": 0.35
   }
  ],
@@ -1127,22 +978,10 @@
  "player": {
   "m": "mini-characters/character-female-b",
   "spots": {
-   "home": [
-    -6.2,
-    4.2
-   ],
-   "market": [
-    -0.8,
-    2.2
-   ],
-   "guild": [
-    7,
-    -3.6
-   ],
-   "outskirt": [
-    9.0,
-    6.4
-   ]
+   "home": [-6.2, 4.2],
+   "market": [-0.8, 2.2],
+   "guild": [7, -3.6],
+   "outskirt": [9.0, 6.4]
   }
  },
  "tints": {
@@ -1177,10 +1016,18 @@
  "rooms": {
   "_doc": "Interior rooms (user decision 8 Nov 2026: a 3D room for each building). Local coords: x right, z toward the camera; props are centred on x,z. stations: hotspot point per station. View data only.",
   "home": {
-   "origin": [
-    100,
-    0
-   ],
+   "_note": "Home sub-rooms joined by doors (user, 14 Nov 2026). sub maps a station to its room.",
+   "sub": {
+    "_default": "home_work",
+    "rest": "home_bed",
+    "store": "home_work",
+    "crafting": "home_work",
+    "drying": "home_work",
+    "grinding": "home_work"
+   }
+  },
+  "home_work": {
+   "origin": [100, 0],
    "w": 8,
    "d": 4.5,
    "h": 1.7,
@@ -1192,16 +1039,7 @@
     "yaw": 0.5,
     "pitch": 0.62
    },
-   "windows": [
-    [
-     -1.6,
-     0.95
-    ],
-    [
-     2.0,
-     0.95
-    ]
-   ],
+   "windows": [[-1.6, 0.95], [2.0, 0.95]],
    "props": [
     {
      "m": "mini-shop/shelf-bags",
@@ -1261,12 +1099,6 @@
      "z": -1.85,
      "y": 0.45,
      "s": 0.6
-    },
-    {
-     "m": "furniture-kit/bedSingle",
-     "x": 3.1,
-     "z": -1.2,
-     "s": 1.0
     },
     {
      "m": "furniture-kit/pottedPlant",
@@ -1333,45 +1165,69 @@
     }
    ],
    "stations": {
-    "store": [
-     -2.9,
-     1.2,
-     0.1
-    ],
-    "crafting": [
-     -0.5,
-     1.1,
-     -1.45
-    ],
-    "drying": [
-     1.3,
-     1.35,
-     -1.85
-    ],
-    "grinding": [
-     1.4,
-     0.95,
-     0.3
-    ],
-    "rest": [
-     3.1,
-     0.9,
-     -1.2
-    ]
+    "store": [-2.9, 1.2, 0.1],
+    "crafting": [-0.5, 1.1, -1.45],
+    "drying": [1.3, 1.35, -1.85],
+    "grinding": [1.4, 0.95, 0.3]
    },
-   "player": [
-    0.3,
-    0.9,
-    25
+   "player": [0.3, 0.9, 25],
+   "doors": [
+    {
+     "to": "home_bed",
+     "label": "Bedroom",
+     "at": [3.2, 1.0, -1.2]
+    }
    ]
+  },
+  "home_bed": {
+   "_note": "Whole-room GLB from Blender (Astri, 14 Nov 2026). Empties in the GLB anchor the action hotspots.",
+   "origin": [100, -30],
+   "scene": {
+    "m": "rooms/bedroom",
+    "s": 1
+   },
+   "outdoor": false,
+   "cam": {
+    "dist": 10,
+    "yaw": -0.785,
+    "pitch": 0.75,
+    "tx": 0.67,
+    "ty": 0.6,
+    "tz": -0.59
+   },
+   "actions": [
+    {
+     "id": "sleep",
+     "label": "Sleep",
+     "icon": "sleep",
+     "node": "sleep"
+    },
+    {
+     "id": "eat",
+     "label": "Eat a meal",
+     "icon": "meal",
+     "node": "eat a Meal"
+    },
+    {
+     "id": "shortBreak",
+     "label": "Short break",
+     "icon": "rest",
+     "node": "Rest Sit"
+    }
+   ],
+   "doors": [
+    {
+     "to": "home_work",
+     "label": "Workshop",
+     "at": [-0.8, 1.0, -1.2]
+    }
+   ],
+   "stations": {}
   },
   "market": {
    "_doc": "Open-air market set (user decision 8 Nov 2026): ground, paving, stalls, trees and shoppers; no walls.",
    "outdoor": true,
-   "origin": [
-    0,
-    140
-   ],
+   "origin": [0, 140],
    "w": 8,
    "d": 4.5,
    "h": 1.9,
@@ -1381,26 +1237,7 @@
    "beam": "#B8A887",
    "wall": "#EADFC8",
    "paveR": 4.6,
-   "paths": [
-    [
-     0,
-     6.5,
-     1.8,
-     4
-    ],
-    [
-     -8.5,
-     0.6,
-     7,
-     1.6
-    ],
-    [
-     8.5,
-     0.6,
-     7,
-     1.6
-    ]
-   ],
+   "paths": [[0, 6.5, 1.8, 4], [-8.5, 0.6, 7, 1.6], [8.5, 0.6, 7, 1.6]],
    "cam": {
     "dist": 16.5,
     "yaw": 0.5,
@@ -1716,71 +1553,22 @@
    "walkers": [
     {
      "m": "mini-characters/character-female-a",
-     "path": [
-      [
-       -7,
-       3.6
-      ],
-      [
-       -2.5,
-       3.9
-      ],
-      [
-       2.5,
-       3.7
-      ],
-      [
-       7,
-       3.2
-      ]
-     ],
+     "path": [[-7, 3.6], [-2.5, 3.9], [2.5, 3.7], [7, 3.2]],
      "speed": 0.5
     },
     {
      "m": "mini-characters/character-female-b",
-     "path": [
-      [
-       -6.5,
-       -2.6
-      ],
-      [
-       -3,
-       -2.7
-      ],
-      [
-       0,
-       -2.75
-      ],
-      [
-       4,
-       -2.7
-      ],
-      [
-       6.5,
-       -2.8
-      ]
-     ],
+     "path": [[-6.5, -2.6], [-3, -2.7], [0, -2.75], [4, -2.7], [6.5, -2.8]],
      "speed": 0.42
     }
    ],
    "stations": {
-    "stall": [
-     0.2,
-     1.6,
-     -0.9
-    ]
+    "stall": [0.2, 1.6, -0.9]
    },
-   "player": [
-    0.6,
-    1.0,
-    20
-   ]
+   "player": [0.6, 1.0, 20]
   },
   "guild": {
-   "origin": [
-    140,
-    0
-   ],
+   "origin": [140, 0],
    "w": 8,
    "d": 4.5,
    "h": 2.0,
@@ -1792,16 +1580,7 @@
     "yaw": 0.5,
     "pitch": 0.62
    },
-   "windows": [
-    [
-     -3.0,
-     1.1
-    ],
-    [
-     0.6,
-     1.1
-    ]
-   ],
+   "windows": [[-3.0, 1.1], [0.6, 1.1]],
    "props": [
     {
      "m": "furniture-kit/kitchenBar",
@@ -1904,22 +1683,10 @@
     }
    ],
    "stations": {
-    "receptionist": [
-     -0.9,
-     1.55,
-     -0.9
-    ],
-    "questboard": [
-     2.5,
-     1.85,
-     -2.1
-    ]
+    "receptionist": [-0.9, 1.55, -0.9],
+    "questboard": [2.5, 1.85, -2.1]
    },
-   "player": [
-    0.8,
-    1.0,
-    15
-   ]
+   "player": [0.8, 1.0, 15]
   }
  }
 }
